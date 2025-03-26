@@ -1,25 +1,13 @@
 <?php return array (
   'barryvdh/laravel-debugbar' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Barryvdh\\Debugbar\\ServiceProvider',
-    ),
     'aliases' => 
     array (
       'Debugbar' => 'Barryvdh\\Debugbar\\Facades\\Debugbar',
     ),
-  ),
-  'barryvdh/laravel-dompdf' => 
-  array (
     'providers' => 
     array (
-      0 => 'Barryvdh\\DomPDF\\ServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'Pdf' => 'Barryvdh\\DomPDF\\Facade\\Pdf',
-      'PDF' => 'Barryvdh\\DomPDF\\Facade\\Pdf',
+      0 => 'Barryvdh\\Debugbar\\ServiceProvider',
     ),
   ),
   'ckfinder/ckfinder-laravel-package' => 
@@ -31,13 +19,13 @@
   ),
   'facade/ignition' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Facade\\Ignition\\IgnitionServiceProvider',
-    ),
     'aliases' => 
     array (
       'Flare' => 'Facade\\Ignition\\Facades\\Flare',
+    ),
+    'providers' => 
+    array (
+      0 => 'Facade\\Ignition\\IgnitionServiceProvider',
     ),
   ),
   'fideloper/proxy' => 
@@ -54,26 +42,15 @@
       0 => 'Fruitcake\\Cors\\CorsServiceProvider',
     ),
   ),
-  'intervention/image' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Intervention\\Image\\ImageServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'Image' => 'Intervention\\Image\\Facades\\Image',
-    ),
-  ),
   'jenssegers/agent' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Jenssegers\\Agent\\AgentServiceProvider',
-    ),
     'aliases' => 
     array (
       'Agent' => 'Jenssegers\\Agent\\Facades\\Agent',
+    ),
+    'providers' => 
+    array (
+      0 => 'Jenssegers\\Agent\\AgentServiceProvider',
     ),
   ),
   'laravel/tinker' => 
@@ -85,13 +62,13 @@
   ),
   'maatwebsite/excel' => 
   array (
-    'providers' => 
-    array (
-      0 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
-    ),
     'aliases' => 
     array (
       'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
+    ),
+    'providers' => 
+    array (
+      0 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
     ),
   ),
   'nesbot/carbon' => 
@@ -106,27 +83,6 @@
     'providers' => 
     array (
       0 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
-    ),
-  ),
-  'unisharp/laravel-filemanager' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'UniSharp\\LaravelFilemanager\\LaravelFilemanagerServiceProvider',
-    ),
-    'aliases' => 
-    array (
-    ),
-  ),
-  'vinkla/hashids' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Vinkla\\Hashids\\HashidsServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'Hashids' => 'Vinkla\\Hashids\\Facades\\Hashids',
     ),
   ),
 );

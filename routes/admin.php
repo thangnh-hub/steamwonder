@@ -564,10 +564,7 @@ Route::group(['namespace' => 'Admin'], function () {
         Route::get('order_courses/{order}', 'OrderController@show')->name('order_courses.show');
         Route::put('order_courses/{order}', 'OrderController@update')->name('order_courses.update');
         Route::delete('order_courses/{order}', 'OrderController@destroy')->name('order_courses.destroy');
-        // Config to use laravel-filemanager
-        Route::group(['prefix' => 'filemanager'], function () {
-            \UniSharp\LaravelFilemanager\Lfm::routes();
-        });
+
         Route::get('detail_job/{id}', 'JobsController@detail')->name('jobs.detail');
         Route::post('apply_job', 'JobsController@apply_job')->name('apply.job');
         Route::get('ajax-update-evaluation', 'EvaluationController@ajaxUpdate')->name('ajax.update.evaluation');

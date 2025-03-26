@@ -145,4 +145,4 @@
         </div>
     </nav>
 </header>
-<?php /**PATH D:\project\steamwonders\resources\views/admin/panels/header.blade.php ENDPATH
+<?php /**PATH D:\project\steamwonders\resources\views/admin/panels/header.blade.php ENDPATH**/ ?>

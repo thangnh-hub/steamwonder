@@ -32,6 +32,7 @@ class AdminController extends Controller
 
   public function __construct()
   {
+    parent::__construct();
     $this->adminService = new AdminService();
     $this->routeDefault  = 'admins';
     $this->viewPart = 'admin.pages.admins';
@@ -69,7 +70,7 @@ class AdminController extends Controller
     $area = Area::getsqlArea($params_area)->get();
     $this->responseData['area'] =  $area;
     $this->responseData['params'] = $params;
-    $this->responseData['direct_manager'] = Staff::where('admins.admin_type', '!=', Consts::ADMIN_TYPE['student'])->where('status', Consts::STATUS['active'])->get();
+    $this->responseData['direct_manager'] = Admin::where('status', Consts::STATUS['active'])->get();
     $this->responseData['departments'] =  WarehouseDepartment::get();
     return $this->responseView($this->viewPart . '.index');
   }
@@ -92,7 +93,7 @@ class AdminController extends Controller
     $this->responseData['status'] = Consts::STATUS;
     $this->responseData['gender'] = Consts::GENDER;
     $this->responseData['departments'] =  WarehouseDepartment::get();
-    $this->responseData['direct_manager'] = Staff::where('admins.admin_type', '!=', Consts::ADMIN_TYPE['student'])->where('status', Consts::STATUS['active'])->get();
+    $this->responseData['direct_manager'] = Admin::where('status', Consts::STATUS['active'])->get();
 
     return $this->responseView($this->viewPart . '.create');
   }
@@ -105,6 +106,7 @@ class AdminController extends Controller
    */
   public function store(Request $request)
   {
+    $admin = Auth::guard('admin')->user();
     $request->validate([
       'name' => 'required',
       'email' => "required|email|max:255|unique:admins",
@@ -128,25 +130,10 @@ class AdminController extends Controller
       'department_id',
     ]);
 
-    // Tách tên thành các phần riêng biệt
-    $nameParts = explode(' ', $params['name']);
-    // Xác định các thành phần của tên
-    $count = count($nameParts);
-    $params['json_params']['last_name'] = $nameParts[0];
-    if ($count > 2) {
-      $params['json_params']['middle_name'] = $nameParts[1];
-      $params['json_params']['first_name'] = implode(' ', array_slice($nameParts, 2));
-    } elseif ($count > 1) {
-      $params['json_params']['middle_name'] = $nameParts[1];
-      $params['json_params']['first_name'] = ''; // Không có first_name nếu chỉ có 2 từ
-    } else {
-      $params['json_params']['middle_name'] = $params['json_params']['first_name'] = ''; // Không có middle_name và first_name nếu chỉ có 1 từ
-    }
-
     switch ($params['admin_type']) {
       case Consts::ADMIN_TYPE['staff']:
         // Find the last admin code
-        $lastAdmin = Staff::orderBy('id', 'desc')->first();
+        $lastAdmin = Admin::orderBy('id', 'desc')->first();
         $lastAdminCode = $lastAdmin->id ?? 0;
         // Extract the numeric part and increment it
         $numericPart = (int)$lastAdminCode;
@@ -158,22 +145,6 @@ class AdminController extends Controller
           $params['admin_code'] = 'CB' . $newNumericPart;
         }
         $params['admin_type'] = Consts::ADMIN_TYPE['staff'];
-        break;
-      case Consts::ADMIN_TYPE['student']:
-        // Find the last admin code
-        $lastAdmin = Student::orderBy('id', 'desc')->first();
-        $lastAdminCode = $lastAdmin->id ?? 0;
-        // Extract the numeric part and increment it
-        $numericPart = (int)$lastAdminCode;
-        // Calculate the number of digits required for the numeric part
-        $numDigits = max(4, strlen((string)$numericPart));
-        // Add one to the numeric part
-        $newNumericPart = str_pad($numericPart + 1, $numDigits, '0', STR_PAD_LEFT);
-        if (!isset($params['admin_code']) || $params['admin_code'] == null || $params['admin_code'] == '') {
-          $params['admin_code'] = 'HT' . $newNumericPart;
-        }
-        $params['state'] = Consts::STUDENT_STATUS['try learning'];
-        $params['admin_type'] = Consts::ADMIN_TYPE['student'];
         break;
 
       case Consts::ADMIN_TYPE['teacher']:
@@ -191,27 +162,15 @@ class AdminController extends Controller
         }
         $params['admin_type'] = Consts::ADMIN_TYPE['teacher'];
         break;
+
       default:
-        // Find the last admin code
-        $lastAdmin = Admin::orderBy('id', 'desc')->first();
-        $lastAdminCode = $lastAdmin->id ?? 0;
-        // Extract the numeric part and increment it
-        $numericPart = (int)$lastAdminCode;
-        // Calculate the number of digits required for the numeric part
-        $numDigits = max(4, strlen((string)$numericPart));
-        // Add one to the numeric part
-        $newNumericPart = str_pad($numericPart + 1, $numDigits, '0', STR_PAD_LEFT);
-        if (!isset($params['admin_code']) || $params['admin_code'] == null || $params['admin_code'] == '') {
-          $params['admin_code'] = 'DN' . $newNumericPart;
-        }
-        $params['admin_type'] = Consts::ADMIN_TYPE['diplomatic'];
+
+        abort(402, "Error: Admin type is not valid!");
         break;
     }
 
-    $params['admin_created_id'] = Auth::guard('admin')->user()->id;
-    $params['admin_updated_id'] = Auth::guard('admin')->user()->id;
-
-    $params['json_params'] = $params['json_params'];
+    $params['admin_created_id'] = $admin->id;
+    $params['admin_updated_id'] = $admin->id;
 
     Admin::create($params);
 
@@ -252,7 +211,7 @@ class AdminController extends Controller
     $this->responseData['area'] =  $area;
     $this->responseData['teacher_type'] = Consts::TEACHER_TYPE;
     $this->responseData['departments'] =  WarehouseDepartment::get();
-    $this->responseData['direct_manager'] = Staff::where('admins.admin_type', '!=', Consts::ADMIN_TYPE['student'])->where('status', Consts::STATUS['active'])->get();
+    $this->responseData['direct_manager'] = Admin::where('status', Consts::STATUS['active'])->get();
 
     return $this->responseView($this->viewPart . '.edit');
   }
