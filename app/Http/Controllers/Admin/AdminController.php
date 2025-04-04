@@ -21,9 +21,12 @@ use App\Http\Services\DataPermissionService;
 use App\Http\Services\NotifyService;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\UserExport;
+use App\Models\AdminMenu;
 use App\Models\Language;
+use App\Models\Module;
 use App\Models\WarehouseDepartment;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -47,31 +50,19 @@ class AdminController extends Controller
   public function index(Request $request)
   {
     $params = $request->all();
-    $admins = $this->adminService->getAdmins($params, true);
-    $admins->getCollection()->transform(function ($item) {
-      if (isset($item->json_params->area_id)) {
-        $area_id = (array) $item->json_params->area_id;
-        $list_area = Area::whereIn('id', $area_id)->get();
-        $item['list_area'] = $list_area ?? null;
-      }
-      if (isset($item->json_params->role_extend)) {
-        $role_extend = (array) $item->json_params->role_extend;
-        $list_role = Role::whereIn('id', $role_extend)->get();
-        $item['list_role'] = $list_role ?? null;
-      }
-      return $item;
-    });
-    $this->responseData['admins'] = $admins;
-    $this->responseData['status'] = Consts::USER_STATUS;
-    $roles = Role::where('status', '=', Consts::USER_STATUS['active'])->orderByRaw('status ASC, iorder ASC, id DESC')->get();
-    $this->responseData['roles'] = $roles;
-    $this->responseData['admin_type'] = Consts::ADMIN_TYPE;
-    $params_area['status'] = Consts::STATUS['active'];
-    $area = Area::getsqlArea($params_area)->get();
-    $this->responseData['area'] =  $area;
     $this->responseData['params'] = $params;
+
+    $admins = $this->adminService->getAdmins($params, true);
+
+    $this->responseData['admins'] = $admins;
+    $this->responseData['roles'] = Role::where('status', '=', Consts::STATUS['active'])->orderByRaw('status ASC, iorder ASC, id DESC')->get();
+    $this->responseData['area'] = Area::getsqlArea(['status' => Consts::STATUS['active']])->get();
     $this->responseData['direct_manager'] = Admin::where('status', Consts::STATUS['active'])->get();
     $this->responseData['departments'] =  WarehouseDepartment::get();
+
+    $this->responseData['status'] = Consts::USER_STATUS;
+    $this->responseData['admin_type'] = Consts::ADMIN_TYPE;
+
     return $this->responseView($this->viewPart . '.index');
   }
 
@@ -82,18 +73,15 @@ class AdminController extends Controller
    */
   public function create()
   {
-    $roles = Role::where('status', '=', Consts::USER_STATUS['active'])->orderByRaw('status ASC, iorder ASC, id DESC')->get();
-    $this->responseData['roles'] = $roles;
-    $this->responseData['admin_type'] = Consts::ADMIN_TYPE;
-    $this->responseData['teacher_type'] = Consts::TEACHER_TYPE;
-    $params['status'] = Consts::STATUS['active'];
-    $area = Area::getsqlArea($params)->get();
-    $this->responseData['area'] =  $area;
-    $this->responseData['my_info'] = Auth::guard('admin')->user()->id;
-    $this->responseData['status'] = Consts::STATUS;
-    $this->responseData['gender'] = Consts::GENDER;
+    $this->responseData['roles'] = Role::where('status', Consts::STATUS['active'])->orderByRaw('status ASC, iorder ASC, id DESC')->get();
+    $this->responseData['area'] =  Area::where('status', '=', Consts::STATUS['active'])->get();
     $this->responseData['departments'] =  WarehouseDepartment::get();
     $this->responseData['direct_manager'] = Admin::where('status', Consts::STATUS['active'])->get();
+
+    $this->responseData['admin_type'] = Consts::ADMIN_TYPE;
+    $this->responseData['teacher_type'] = Consts::TEACHER_TYPE;
+    $this->responseData['status'] = Consts::STATUS;
+    $this->responseData['gender'] = Consts::GENDER;
 
     return $this->responseView($this->viewPart . '.create');
   }
@@ -128,47 +116,33 @@ class AdminController extends Controller
       'admin_type',
       'admin_code',
       'department_id',
+      'json_params'
     ]);
-
-    switch ($params['admin_type']) {
-      case Consts::ADMIN_TYPE['staff']:
-        // Find the last admin code
-        $lastAdmin = Admin::orderBy('id', 'desc')->first();
-        $lastAdminCode = $lastAdmin->id ?? 0;
-        // Extract the numeric part and increment it
-        $numericPart = (int)$lastAdminCode;
-        // Calculate the number of digits required for the numeric part
-        $numDigits = max(4, strlen((string)$numericPart));
-        // Add one to the numeric part
-        $newNumericPart = str_pad($numericPart + 1, $numDigits, '0', STR_PAD_LEFT);
-        if (!isset($params['admin_code']) || $params['admin_code'] == null || $params['admin_code'] == '') {
+    // Find the last admin code
+    $lastAdmin = Admin::orderBy('id', 'desc')->first();
+    $lastAdminCode = $lastAdmin->id ?? 0;
+    // Extract the numeric part and increment it
+    $numericPart = (int)$lastAdminCode;
+    // Calculate the number of digits required for the numeric part
+    $numDigits = max(4, strlen((string)$numericPart));
+    // Add one to the numeric part
+    $newNumericPart = str_pad($numericPart + 1, $numDigits, '0', STR_PAD_LEFT);
+    if (!isset($params['admin_code']) || $params['admin_code'] == null || $params['admin_code'] == '') {
+      switch ($params['admin_type']) {
+        case Consts::ADMIN_TYPE['staff']:
           $params['admin_code'] = 'CB' . $newNumericPart;
-        }
-        $params['admin_type'] = Consts::ADMIN_TYPE['staff'];
-        break;
-
-      case Consts::ADMIN_TYPE['teacher']:
-        // Find the last admin code
-        $lastAdmin = Teacher::orderBy('id', 'desc')->first();
-        $lastAdminCode = $lastAdmin->id ?? 0;
-        // Extract the numeric part and increment it
-        $numericPart = (int)$lastAdminCode;
-        // Calculate the number of digits required for the numeric part
-        $numDigits = max(4, strlen((string)$numericPart));
-        // Add one to the numeric part
-        $newNumericPart = str_pad($numericPart + 1, $numDigits, '0', STR_PAD_LEFT);
-        if (!isset($params['admin_code']) || $params['admin_code'] == null || $params['admin_code'] == '') {
+          break;
+        case Consts::ADMIN_TYPE['teacher']:
           $params['admin_code'] = 'GV' . $newNumericPart;
-        }
-        $params['admin_type'] = Consts::ADMIN_TYPE['teacher'];
-        break;
-
-      default:
-
-        abort(402, "Error: Admin type is not valid!");
-        break;
+          break;
+        case Consts::ADMIN_TYPE['admission']:
+          $params['admin_code'] = 'TS' . $newNumericPart;
+          break;
+        default:
+          $params['admin_code'] = 'NV' . $newNumericPart;
+          break;
+      }
     }
-
     $params['admin_created_id'] = $admin->id;
     $params['admin_updated_id'] = $admin->id;
 
@@ -200,18 +174,23 @@ class AdminController extends Controller
     if (!$admin) {
       return redirect()->route($this->routeDefault . '.index')->with('errorMessage', __('Record not found!'));
     }
-    $roles = Role::where('status', '=', Consts::USER_STATUS['active'])->orderByRaw('status ASC, iorder ASC, id DESC')->get();
-    $this->responseData['status'] = Consts::USER_STATUS;
-    $this->responseData['roles'] = $roles;
     $this->responseData['admin'] = $admin;
-    $this->responseData['admin_type'] = Consts::ADMIN_TYPE;
-    $this->responseData['gender'] = Consts::GENDER;
-    $params['status'] = Consts::STATUS['active'];
-    $area = Area::getsqlArea($params)->get();
-    $this->responseData['area'] =  $area;
-    $this->responseData['teacher_type'] = Consts::TEACHER_TYPE;
+
+    $this->responseData['roles'] = Role::where('status', Consts::STATUS['active'])->orderByRaw('status ASC, iorder ASC, id DESC')->get();
+    $this->responseData['area'] =  Area::where('status', Consts::STATUS['active'])->get();
     $this->responseData['departments'] =  WarehouseDepartment::get();
     $this->responseData['direct_manager'] = Admin::where('status', Consts::STATUS['active'])->get();
+
+    $this->responseData['status'] = Consts::USER_STATUS;
+    $this->responseData['admin_type'] = Consts::ADMIN_TYPE;
+    $this->responseData['gender'] = Consts::GENDER;
+    $this->responseData['teacher_type'] = Consts::TEACHER_TYPE;
+
+    $activeModules = Module::where('status', '=', Consts::USER_STATUS['active'])->orderByRaw('status ASC, iorder ASC, id DESC')->get();
+    $this->responseData['activeModules'] = $activeModules;
+
+    $activeMenus = AdminMenu::whereNull('parent_id')->where('status', '=', Consts::USER_STATUS['active'])->with('children')->orderByRaw('status ASC, iorder ASC, id DESC')->get();
+    $this->responseData['activeMenus'] = $activeMenus;
 
     return $this->responseView($this->viewPart . '.edit');
   }
@@ -229,36 +208,44 @@ class AdminController extends Controller
       'email' => "required|email|max:255|unique:admins,email," . $admin->id,
       'password_new' => 'nullable|min:8',
     ]);
+    DB::beginTransaction();
+    try {
+      $params = $request->all();
 
-    $params = $request->all();
+      $params['admin_code'] = $params['admin_code'] ?? $admin->admin_code;
 
-    $params['admin_code'] = $params['admin_code'] ?? $admin->admin_code;
+      if ($request->filled('password_new')) {
+        $params['password'] = $request->input('password_new');
+      }
+      // Chuyển object về mảng
+      $old_json_params = is_object($admin->json_params)
+        ? json_decode(json_encode($admin->json_params), true)
+        : (is_array($admin->json_params) ? $admin->json_params : []);
 
-    if ($request->filled('password_new')) {
-      $params['password'] = $request->input('password_new');
+      // Merge 2 mảng và cập nhật nếu có dữ liệu mới 
+      $arr_insert['json_params'] = array_replace_recursive($old_json_params, $params['json_params'] ?? []);
+      // Update riêng phần quyền mở rộng
+      $arr_insert['json_params']['role_extend'] = $params['json_params']['role_extend'] ?? [];
+      // Nếu không tồn tại khu vực đc quản lý thì set null
+      $arr_insert['json_params']['area_id'] = $params['json_params']['area_id'] ?? [];
+      // Nếu không tồn tại menu mở rộng thì set null
+      $arr_insert['json_params']['menu_id'] = $params['json_params']['menu_id'] ?? [];
+      // Nếu không tồn tại chức năng mở rộng thì set null
+      $arr_insert['json_params']['function_code'] = $params['json_params']['function_code'] ?? [];
+      // Gán lại giá trị json_params
+      $params['json_params'] = $arr_insert['json_params'];
+      $params['admin_updated_id'] = Auth::guard('admin')->user()->id;
+      $admin->update($params);
+
+      DB::commit();
+      return redirect()->back()->with('successMessage', __('Successfully updated!'));
+    } catch (\Throwable $ex) {
+      DB::rollBack();
+      // Log lỗi để debug
+      Log::error('Lỗi khi update người dùng: ' . $ex->getMessage(), ['trace' => $ex->getTraceAsString()]);
+
+      return redirect()->back()->with('errorMessage', __('Có lỗi xảy ra, vui lòng thử lại!'));
     }
-    // Chuyển object về mảng
-    $old_json_params = is_object($admin->json_params)
-      ? json_decode(json_encode($admin->json_params), true)
-      : ($admin->json_params ?? []);
-
-    // Đảm bảo dữ liệu là mảng
-    $old_json_params = is_array($old_json_params) ? $old_json_params : [];
-
-    // Lấy json_params cũ và chuyển toàn bộ thành mảng (đa chiều)
-    // $old_json_params = json_decode(json_encode($admin->json_params), true);
-    // Merge 2 mảng và cập nhật nếu có dữ liệu mới 
-    $arr_insert['json_params'] = array_replace_recursive($old_json_params, $params['json_params'] ?? []);
-    // Update riêng phần quyền mở rộng
-    $arr_insert['json_params']['role_extend'] = $params['json_params']['role_extend'] ?? [];
-    // Nếu không tồn tại khu vực đc quản lý thì set null
-    $arr_insert['json_params']['area_id'] = $params['json_params']['area_id'] ?? [];
-    // Gán lại giá trị json_params
-    $params['json_params'] = $arr_insert['json_params'];
-    $params['admin_updated_id'] = Auth::guard('admin')->user()->id;
-    $admin->update($params);
-
-    return redirect()->back()->with('successMessage', __('Successfully updated!'));
   }
 
   /**
@@ -275,10 +262,6 @@ class AdminController extends Controller
 
   public function changeAccountForm()
   {
-    $roles = Role::where('status', '=', Consts::USER_STATUS['active'])->orderByRaw('status ASC, iorder ASC, id DESC')->get();
-
-    $this->responseData['roles'] = $roles;
-
     return $this->responseView($this->viewPart . '.account');
   }
 
@@ -288,8 +271,9 @@ class AdminController extends Controller
     if (!Auth::guard('admin')->check()) {
       return back()->withInput()->with('errorMessage', __('User is not found'));
     }
-    $id = Auth::guard('admin')->user()->id;
-    $password = Auth::guard('admin')->user()->password;
+    $admin = Auth::guard('admin')->user();
+    $id = $admin->id;
+    $password = $admin->password;
 
     $request->validate([
       'email' => "required|email|max:255|unique:admins,email," . $id,
@@ -315,16 +299,26 @@ class AdminController extends Controller
 
   public function forgotPasswordForm(Request $request)
   {
-    return redirect()->back()->with('warningMessage', __('This function is under development!'));
+    if (Auth::guard('admin')->check()) {
+      return redirect()->route('admin.home');
+    }
+    return $this->responseView($this->viewPart . '.password_forgot');
   }
 
   public function forgotPassword(Request $request)
   {
     $request->validate([
-      'email' => 'required|email|exists:users',
+      'email' => 'required|email:rfc,dns|exists:admins',
     ]);
 
     $token = Str::random(64);
+
+    $data = [
+      'email' => $request->email,
+      'token' => $token,
+      'time' => time(),
+    ];
+    $token_data = encrypt($data);
 
     DB::table('password_resets')->insert([
       'email' => $request->email,
@@ -332,48 +326,63 @@ class AdminController extends Controller
       'created_at' => Carbon::now()
     ]);
 
-    Mail::send('emails.forget_password', ['token' => $token], function ($message) use ($request) {
+    Mail::send('emails.forget_password', ['token' => $token_data], function ($message) use ($request) {
       $message->to($request->email);
       $message->subject(__('Reset Password'));
     });
 
-    return redirect()->back()->with('successMessage', __('We have e-mailed your password reset link!'));
+    return redirect()->route('admin.home')->with('successMessage', __('We have e-mailed your password reset link!'));
   }
 
   public function resetPasswordForm($token)
   {
+    if (Auth::guard('admin')->check()) {
+      return redirect()->route('admin.home');
+    }
+
+    $data = decrypt($token);
+    // 10 phút
+    if (isset($data['time']) && $data['time'] < time() - (10 * 6000)) {
+      return redirect()->route('admin.password.forgot.get')->with('errorMessage', __('The token has expired!'));
+    }
     $this->responseData['token'] = $token;
-    return $this->responseView($this->viewPart . '.reset_password');
+    return $this->responseView($this->viewPart . '.password_reset');
   }
 
   public function resetPassword(Request $request)
   {
-
     $request->validate([
-      'email' => 'required|email|exists:admins',
-      'password' => 'required|string|min:6|confirmed',
-      'password_confirmation' => 'required'
+      'password' => 'required',
+      'confirm_password' => 'required_with:password|same:password'
     ]);
+    try {
+      $data = decrypt($request->token);
 
-    $updatePassword = DB::table('password_resets')
-      ->where([
-        'email' => $request->email,
-        'token' => $request->token
-      ])
-      ->first();
+      if (isset($data['time']) && $data['time'] < time() - (10 * 6000)) {
+        return redirect()->route('admin.password.forgot.get')->with('errorMessage', __('The token has expired!'));
+      }
 
-    if (!$updatePassword) {
-      return back()->withInput()->with('errorMessage', __('Invalid token!'));
+      $updatePassword = DB::table('password_resets')
+        ->where([
+          'email' => $data['email'],
+          'token' => $data['token']
+        ])
+        ->first();
+
+      if (!$updatePassword) {
+        return redirect()->back()->with('errorMessage', __('The token is invalid!'));
+      }
+
+      Admin::where('email', $data['email'])->update(['password' => bcrypt($request->password)]);
+
+      DB::table('password_resets')->where(['email' => $data['email']])->delete();
+
+      return redirect()->route('admin.login')->with('successMessage', __('Your password has been changed!'));
+    } catch (\Exception $e) {
+      return redirect()->back()->with('errorMessage', __('The token is invalid!'));
     }
-
-    $user = Admin::where('email', $request->email)
-      ->update(['password' => bcrypt($request->password)]);
-
-    DB::table('password_resets')->where(['email' => $request->email])->delete();
-
-
-    return redirect()->route('admin.home')->with('successMessage', __('Your password has been changed!'));
   }
+
   public function exportUser(Request $request)
   {
     $params = $request->all();

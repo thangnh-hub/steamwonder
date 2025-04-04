@@ -6,6 +6,6 @@
 
     <p>@lang('You can reset password from bellow link:')</p>
 
-    <a href="{{ route('admin.resetpass', $token) }}">@lang('Reset Password')</a>
+    <a href="{{ route('admin.password.reset.get', $token) }}">@lang('Reset Password')</a>
   </div>
 @endsection

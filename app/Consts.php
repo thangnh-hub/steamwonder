@@ -4,7 +4,10 @@ namespace App;
 
 class Consts
 {
-
+  const ROOM_TYPE = [
+    'classroom' => 'classroom',
+    'working room' => 'working room'
+  ];
 
   const STATUS_LEAVE_REQUESTS = [
     'pending_confirmation' => 'pending_confirmation',

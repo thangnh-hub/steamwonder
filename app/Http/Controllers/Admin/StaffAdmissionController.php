@@ -36,6 +36,7 @@ class StaffAdmissionController extends Controller
   private $staffAdmission;
   public function __construct(StaffAdmission $staffAdmission)
   {
+    parent::__construct();
     $this->staffAdmission = $staffAdmission;
     $this->routeDefault  = 'staffadmissions';
     $this->viewPart = 'admin.pages.staffadmissions';
@@ -291,7 +292,6 @@ class StaffAdmissionController extends Controller
     $this->responseData['module_name'] = __('Quản lý học viên theo khu vực');
     $this->responseData['route_name'] = Consts::ROUTE_NAME;
     $this->responseData['status'] = Consts::STATUS;
-    $this->responseData['status_class'] = Consts::CLASS_STATUS;
     $admin =  Auth::guard('admin')->user()->id;
 
     // Lấy list id khu vực được quản lý
@@ -423,179 +423,4 @@ class StaffAdmissionController extends Controller
     return $str;
   }
 
-
-  public function admissions_student(Request $request)
-  {
-    $params = $request->all();
-    $admin = Auth::guard('admin')->user();
-    $params['list_id'] = DataPermissionService::getPermissionStudents($admin->id);
-    $params['status'] = Consts::STATUS['active'];
-    $rows = Student::getsqlStudent($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
-    $this->responseData['rows'] =  $rows;
-
-
-    $this->responseData['module_name'] = __('Thống kê học viên theo tuyển sinh');
-    $this->responseData['route_name'] = Consts::ROUTE_NAME;
-    $this->responseData['status'] = Consts::STATUS;
-    $this->responseData['admin'] =  $admin;
-
-    $staffs = Admin::where('admin_type', Consts::ADMIN_TYPE['admission'])
-      ->where('status', Consts::STATUS['active'])
-      ->get();
-    $class = tbClass::getsqlClass()->get();
-    $status_student = StatusStudent::getSqlStatusStudent()->get();
-    $this->responseData['staffs'] =  $staffs;
-    $this->responseData['class'] =  $class;
-    $this->responseData['status_study'] =  $status_student;
-    $this->responseData['route_name'] = Consts::ROUTE_NAME;
-    $this->responseData['status'] = Consts::STUDENT_STATUS;
-    $this->responseData['params'] = $params;
-    $paramCourse['status'] = Consts::STATUS['active'];
-    $this->responseData['course'] = Course::getSqlCourse($paramCourse)->get();
-
-    return $this->responseView($this->viewPart . '.student');
-  }
-
-  public function view_student(Request $request)
-  {
-    $params = $request->all();
-    $id = $params['student'] ?? '';
-    $student = Student::find($id);
-    $list_class = UserClass::where('user_id', $student->id)->groupBy('class_id')->get();
-    $this->responseData['detail'] = $student;
-    $this->responseData['module_name'] = 'Thông tin sinh viên: ' . $student->name;
-    $list_evolution = Evaluation::where('student_id', $student->id)->get();
-    foreach ($list_class as  $item) {
-
-      if (isset($item->class->json_params->teacher)) {
-        $item->teacher = Admin::find($item->class->json_params->teacher)->name ?? "";
-      } else $item->teacher = "";
-
-      $params_score['class_id'] = $item->class_id;
-      $params_score['user_id'] = $item->user_id;
-      //Điểm nghe nói đọc viết
-      $score = Score::getsqlScore($params_score)->first();
-      //xếp loại
-      (isset($score) && $score->status != '') ? $status_rank = $score->status : $status_rank = '';
-      $item->status_rank = $status_rank;
-      //nghe
-      (isset($score) && $score->score_listen != '') ? $score_listen = $score->score_listen : $score_listen = '-';
-      $item->score_listen = $score_listen;
-      //nói
-      (isset($score) && $score->score_speak != '') ? $score_speak = $score->score_speak : $score_speak = '-';
-      $item->score_speak = $score_speak;
-      //đọc
-      (isset($score) && $score->score_read != '') ? $score_read = $score->score_read : $score_read = '-';
-      $item->score_read = $score_read;
-      //viết
-      (isset($score) && $score->score_write != '') ? $score_write = $score->score_write : $score_write = '-';
-      $item->score_write = $score_write;
-      //trung bình
-      isset($score->json_params->score_average) && $score->json_params->score_average != '' ? $score_average = $score->json_params->score_average : $score_average = '-';
-      $item->score_average = $score_average;
-      //Nhận xét điểm
-      isset($score->json_params->note) && $score->json_params->note != '' ? $note_score = $score->json_params->note : $note_score = '-';
-      $item->note_score = $note_score;
-      //điểm danh
-      $getsqlAttendance = Attendance::getsqlAttendance($params_score)->get();
-      //có điểm danh
-      $attendant = $getsqlAttendance->filter(function ($val, $key) {
-        return $val->status == Consts::ATTENDANCE_STATUS['attendant'];
-      });
-      $item->attendant = $attendant->count();
-      //vắng
-      $absent = $getsqlAttendance->filter(function ($val, $key) {
-        return $val->status == Consts::ATTENDANCE_STATUS['absent'];
-      });
-      $item->absent = $absent->count();
-      //Vắng có lý do
-      $absent_has_reason = $absent->filter(function ($val, $key) {
-        return $val->json_params->value == 'there reason';
-      });
-      isset($absent_has_reason) ? $has_reason = count($absent_has_reason) : $has_reason = 0;
-      $item->absent_has_reason = $has_reason;
-      //vắng không lý do
-      $absent_no_reason = $absent->filter(function ($val, $key) {
-        return $val->json_params->value == 'no reason';
-      });
-      isset($absent_no_reason) ? $no_reason = count($absent_no_reason) : $no_reason = 0;
-      $item->no_reason = $no_reason;
-      //đi muộn
-      $late = $getsqlAttendance->filter(function ($val, $key) {
-        return $val->status == Consts::ATTENDANCE_STATUS['late'];
-      });
-      $item->late = $late->count();
-      //số phút đi muộn
-      $count_late = 0;
-      foreach ($late as $value) {
-        $count_late += $value->json_params->value;
-      }
-      $item->count_late = $count_late;
-      //có làm bài
-      $is_homework_have = $getsqlAttendance->filter(function ($val, $key) {
-        return $val->is_homework == 0;
-      });
-      $item->is_homework_have = $is_homework_have->count();
-      //ko làm bài
-      $is_homework_not_have = $getsqlAttendance->filter(function ($val, $key) {
-        return $val->is_homework == 1;
-      });
-      $item->is_homework_not_have = $is_homework_not_have->count();
-      //làm nhưng k đủ
-      $is_homework_did_not_complete = $getsqlAttendance->filter(function ($val, $key) {
-        return $val->is_homework == 2;
-      });
-      $item->is_homework_did_not_complete = $is_homework_did_not_complete->count();
-    }
-    $this->responseData['list_class'] = $list_class;
-    $this->responseData['list_evolution'] = $list_evolution;
-    return $this->responseView('admin.pages.staffadmissions.view_student');
-  }
-
-  public function ScoreByStaff(Request $request)
-  {
-    $params = $request->all();
-    $list_class = tbClass::getsqlClass(['type' => 'lopchinh'])->get();
-    $this->responseData['list_class'] =  $list_class;
-
-    $list_admission = StaffAdmission::getsqlStaffAdmission(['admin_type' => 'admission'])->get();
-    $this->responseData['list_admission'] =  $list_admission;
-
-    $params['staff_permission'] = isset($params['admission_id']) ? DataPermissionService::getPermissionUsersAndSelfAll($params['admission_id']) : [];
-    $this->responseData['module_name'] = __('Lấy bảng điểm theo lớp');
-
-    if (isset($params['class_id'])) {
-      $this_class = tbClass::find($params['class_id']);
-      $this->responseData['this_class'] = $this_class;
-
-      $admin = Auth::guard('admin')->user();
-      $params['list_id'] = DataPermissionService::getPermissionStudents($admin->id);
-      // Lấy danh sách điểm với danh sách học viên
-      $rows = Score::getsqlScore($params)
-        ->with(['student' => function ($query) use ($this_class) {
-          $query->with(['userClasses' => function ($query) use ($this_class) {
-            $query->whereHas('class', function ($subQuery) use ($this_class) {
-              $subQuery->where('level_id', $this_class->level_id);
-            });
-          }]);
-        }])
-        ->get();
-
-      // Gán điểm vào danh sách lớp của học viên
-      foreach ($rows as $row) {
-        $row->userClasses = $row->student->userClasses->map(function ($userClass) {
-          $userClass->score = $userClass->class
-            ? $userClass->class->scores->firstWhere('user_id', $userClass->user_id)
-            : null;
-
-          return $userClass;
-        });
-      }
-
-      $this->responseData['rows'] =  $rows;
-      $this->responseData['params'] = $params;
-    }
-
-    return $this->responseView($this->viewPart . '.score_by_staff');
-  }
 }
