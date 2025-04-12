@@ -2,7 +2,7 @@
 
 <head>
   <title>
-    @yield('title') | DWN
+    @yield('title') | SteamWonder
   </title>
   <style>
     body {

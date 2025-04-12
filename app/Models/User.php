@@ -71,15 +71,12 @@ class User extends Authenticatable
       ->when(!empty($params['keyword']), function ($query) use ($params) {
         $keyword = $params['keyword'];
         return $query->where(function ($where) use ($keyword) {
-          return $where->where('users.name', 'like', '%' . $keyword . '%')
-            ->orWhere('users.json_params->contact', 'like', '%' . $keyword . '%')
+          return $where->where('users.username', 'like', '%' . $keyword . '%')
+            ->orWhere('users.first_name', 'like', '%' . $keyword . '%')
+            ->orWhere('users.last_name', 'like', '%' . $keyword . '%')
             ->orWhere('users.email', 'like', '%' . $keyword . '%')
-            ->orWhere('users.phone', 'like', '%' . $keyword . '%')
-            ->orWhere('users.user_code', 'like', '%' . $keyword . '%');
+            ->orWhere('users.phone', 'like', '%' . $keyword . '%');
         });
-      })
-      ->when(!empty($params['user_type']), function ($query) use ($params) {
-        return $query->where('users.user_type', $params['user_type']);
       })
       ->when(!empty($params['status']), function ($query) use ($params) {
         return $query->where('users.status', $params['status']);

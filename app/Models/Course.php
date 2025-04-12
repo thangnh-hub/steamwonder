@@ -41,12 +41,6 @@ class Course extends Model
                         ->orWhere('tb_courses.json_params->title->vi', 'like', '%' . $keyword . '%');
                 });
             })
-            ->when(!empty($params['level_id']), function ($query) use ($params) {
-                return $query->where('tb_courses.level_id', $params['level_id']);
-            })
-            ->when(!empty($params['syllabus_id']), function ($query) use ($params) {
-                return $query->where('tb_courses.syllabus_id', $params['syllabus_id']);
-            })
             ->when(!empty($params['id']), function ($query) use ($params) {
                 return $query->where('tb_courses.id', $params['id']);
             });
@@ -56,16 +50,6 @@ class Course extends Model
         } else {
             $query->where('tb_courses.status', "!=", Consts::STATUS_DELETE);
         }
-        if (!empty($params['offline'])) {
-            $query->leftJoin('tb_syllabuss', 'tb_syllabuss.id', '=', 'tb_courses.syllabus_id');
-            $query->where('tb_syllabuss.type', '!=', 'elearning');
-            $query->orWhereNull('tb_syllabuss.type');
-        }
-        if (!empty($params['type'])) {
-            $query->where('tb_courses.type', $params['type']);
-        } else {
-            $query->where('tb_courses.type', "!=", Consts::SYLLABUS_TYPE['elearning']);
-        }
         if (!empty($params['order_by'])) {
             if (is_array($params['order_by'])) {
                 foreach ($params['order_by'] as $key => $value) {
@@ -74,27 +58,10 @@ class Course extends Model
             } else {
                 $query->orderByRaw('tb_courses.' . $params['order_by'] . ' desc');
             }
-        } else {
-            $query->orderBy('tb_courses.day_opening', 'desc');
-            $query->orderBy('tb_courses.id', 'desc');
-            // $query->orderByRaw('tb_courses.id desc');
-        }
-        if (!empty($params['user_id'])) {
-            $query->leftJoin('tb_orders', 'tb_orders.json_params->courses_id', '=', 'tb_courses.id');
-            $query->where('tb_orders.customer_id', $params['user_id']);
-            $query->where('tb_orders.status', '1');
         }
 
         $query->groupBy('tb_courses.id');
         return $query;
-    }
-    public function level()
-    {
-        return $this->belongsTo(Level::class, 'level_id', 'id');
-    }
-    public function syllabus()
-    {
-        return $this->belongsTo(Syllabus::class, 'syllabus_id', 'id');
     }
     public function classs()
     {

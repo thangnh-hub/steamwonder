@@ -1,8 +1,8 @@
 <footer class="main-footer hide-print">
     <div class="pull-right hidden-xs">
-        <b>Version</b> 2.0.0
+        <b>Version</b> 1.0.0
     </div>
-    <strong>Copyright &copy; 2024 <a href="#" target="_blank">DWN SOFTWARE</a>.</strong> All rights
+    <strong>Copyright &copy; 2025 <a href="#" target="_blank">STEAMWONDER SOFTWARE</a>.</strong> All rights
     reserved.
 </footer>
 

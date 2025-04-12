@@ -96,6 +96,12 @@ Route::group(['namespace' => 'Admin'], function () {
         'payment_request' => 'PaymentRequestController',
         // For SteamWonder
         'users' => 'UserController',
+        'data_crms' => 'DataCrmController',
+        'parents' => 'ParentController',
+
+
+
+        // End for SteamWonder
       ]);
 
       //update kpi teacher
