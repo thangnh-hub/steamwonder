@@ -63,5 +63,9 @@
     "Admin user management": " Quản lý người dùng",
     "Successfully updated!": "Cập nhật thành công!",
     "Active": "Hoạt động",
-    "Deactive": "Không hoạt động"
+    "Deactive": "Không hoạt động",
+    "new": "Mới",
+    "First Name": "Tên",
+    "Last Name": "Họ",
+    "is_advise": "Đang tư vấn"
 }

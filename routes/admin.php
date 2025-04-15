@@ -185,6 +185,10 @@ Route::group(['namespace' => 'Admin'], function () {
       Route::get('leave_balances/create', 'LeaveController@createLeaveBalance')->name('leave.balance.create');
       Route::post('leave_balances/store', 'LeaveController@storeLeaveBalance')->name('leave.balance.store');
     });
+
+    //import data crm
+    Route::post('import_data_crm', 'DataCrmController@importDataCrm')->name('data_crm.import');
+
     // In phiếu đề nghị thanh toán
     Route::post('warehouse_order_product_print', 'WareHouseOrderBuyController@printPaymentRequest')->name('warehouse_order_product_buy.print_payment_request');
     // Export Thống kê số lượng tài sản
