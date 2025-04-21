@@ -119,91 +119,76 @@
                         <?php echo app('translator')->get('not_found'); ?>
                     </div>
                 <?php else: ?>
-                    <table class="table table-hover table-bordered">
-                        <thead>
-                            <tr>
-                                <th><?php echo app('translator')->get('STT'); ?></th>
-                                <th><?php echo app('translator')->get('First Name'); ?></th>
-                                <th><?php echo app('translator')->get('Last Name'); ?></th>
-                                <th><?php echo app('translator')->get('Số điện thoại'); ?></th>
-                                <th><?php echo app('translator')->get('Email'); ?></th>  
-                                <th><?php echo app('translator')->get('Địa chỉ'); ?></th>
-                                <th><?php echo app('translator')->get('Khu vực'); ?></th>
-                                <th><?php echo app('translator')->get('CBTS'); ?></th>
-                                <th><?php echo app('translator')->get('Status'); ?></th>
-                                <th><?php echo app('translator')->get('Action'); ?></th>
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th><?php echo app('translator')->get('STT'); ?></th>
+                            <th><?php echo app('translator')->get('Avatar'); ?></th>
+                            <th><?php echo app('translator')->get('First Name'); ?></th>
+                            <th><?php echo app('translator')->get('Last Name'); ?></th>
+                            <th><?php echo app('translator')->get('Giới tính'); ?></th>
+                            <th><?php echo app('translator')->get('Ngày sinh'); ?></th>
+                            <th><?php echo app('translator')->get('Số CMND/CCCD'); ?></th>
+                            <th><?php echo app('translator')->get('Số điện thoại'); ?></th>
+                            <th><?php echo app('translator')->get('Email'); ?></th>  
+                            <th><?php echo app('translator')->get('Địa chỉ'); ?></th>
+                            <th><?php echo app('translator')->get('Khu vực'); ?></th>
+                            <th><?php echo app('translator')->get('Trạng thái'); ?></th>
+                            <th><?php echo app('translator')->get('Thao tác'); ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php $__currentLoopData = $rows; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <tr class="valign-middle">
+                                <td>
+                                    <?php echo e($loop->iteration + ($rows->currentPage() - 1) * $rows->perPage()); ?>
+
+                                </td>
+                                <td>
+                                    <?php if(!empty($row->avatar)): ?>
+                                        <img src="<?php echo e(asset($row->avatar)); ?>" alt="Avatar" width="100" height="100" style="object-fit: cover;">
+                                    <?php else: ?>
+                                        <span class="text-muted">No image</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td><?php echo e($row->first_name ?? ''); ?></td>
+                                <td><?php echo e($row->last_name ?? ''); ?></td>
+                                <td>
+                                    <?php echo app('translator')->get($row->sex ?? ''); ?>
+                                </td>
+                                <td><?php echo e(\Carbon\Carbon::parse($row->birthday)->format('d/m/Y') ?? ''); ?></td>
+                                <td><?php echo e($row->identity_card ?? ''); ?></td>
+                                <td><?php echo e($row->phone ?? ''); ?></td>
+                                <td><?php echo e($row->email ?? ''); ?></td>
+                                <td><?php echo e($row->address ?? ''); ?></td>
+                                <td><?php echo e($row->area->name ?? ''); ?></td>
+                                <td><?php echo app('translator')->get($row->status); ?></td>
+                                <td>
+                                    <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="<?php echo app('translator')->get('Update'); ?>"
+                                       href="<?php echo e(route('parents.edit', $row->id)); ?>">
+                                        <i class="fa fa-pencil-square-o"></i>
+                                    </a>
+                
+                                    <form action="<?php echo e(route('parents.destroy', $row->id)); ?>" method="POST"
+                                          style="display:inline-block"
+                                          onsubmit="return confirm('<?php echo app('translator')->get('confirm_action'); ?>')">
+                                        <?php echo csrf_field(); ?>
+                                        <?php echo method_field('DELETE'); ?>
+                                        <button class="btn btn-sm btn-danger" type="submit" data-toggle="tooltip" title="<?php echo app('translator')->get('Delete'); ?>">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </form>
+                
+                                    <a class="btn btn-sm btn-primary" data-toggle="tooltip" title="<?php echo app('translator')->get('Chi tiết'); ?>"
+                                       href="<?php echo e(route('parents.show', $row->id)); ?>">
+                                        <i class="fa fa-eye"></i> Chi tiết
+                                    </a>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <?php $__currentLoopData = $rows; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <form action="<?php echo e(route(Request::segment(2) . '.destroy', $row->id)); ?>" method="POST"
-                                    onsubmit="return confirm('<?php echo app('translator')->get('confirm_action'); ?>')">
-                                    <tr class="valign-middle">
-                                        <td>
-                                            <?php echo e($loop->iteration + ($rows->currentPage() - 1) * $rows->perPage()); ?>
-
-                                        </td>
-                                        <td>
-                                            <strong
-                                                style="font-size: 14px"><?php echo e($row->first_name ?? ""); ?></strong>
-                                        </td>
-                                        <td>
-                                            <strong
-                                                style="font-size: 14px"><?php echo e($row->last_name ?? ""); ?></strong>
-                                        </td>
-                                        <td>
-                                            <?php echo e($row->phone ?? ""); ?>
-
-                                        </td>
-                                        <td>
-                                            <?php echo e($row->email ?? ""); ?>
-
-                                        </td>
-
-                                        <td>
-                                            <?php echo e($row->address ?? ""); ?>
-
-                                        </td>
-
-                                        <td>
-                                            <?php echo e($row->area->name ?? ""); ?>
-
-                                        </td>
-
-                                        <td>
-                                            <?php echo e($row->admission->name ?? ""); ?>
-
-                                        </td>
-
-                                        <td>
-                                            <?php echo app('translator')->get($row->status); ?>
-                                        </td>
-                                        
-                                        <td>
-                                            <a class="btn btn-sm btn-warning" data-toggle="tooltip"
-                                                title="<?php echo app('translator')->get('Update'); ?>" data-original-title="<?php echo app('translator')->get('Update'); ?>"
-                                                href="<?php echo e(route(Request::segment(2) . '.edit', $row->id)); ?>">
-                                                <i class="fa fa-pencil-square-o"></i>
-                                            </a>
-                                            
-                                            <?php echo csrf_field(); ?>
-                                            <?php echo method_field('DELETE'); ?>
-                                            <button class="btn btn-sm btn-danger" type="submit" data-toggle="tooltip"
-                                                title="<?php echo app('translator')->get('Delete'); ?>" data-original-title="<?php echo app('translator')->get('Delete'); ?>">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-
-                                            <a class="btn btn-sm btn-primary" data-toggle="tooltip"
-                                                title="<?php echo app('translator')->get('Update'); ?>" data-original-title="<?php echo app('translator')->get('Chi tiết'); ?>"
-                                                href="<?php echo e(route(Request::segment(2) . '.show', $row->id)); ?>">
-                                                <i class="fa fa-eye"></i> Chi tiết
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </form>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        </tbody>
-                    </table>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </tbody>
+                </table>
+                
                 <?php endif; ?>
             </div>
 
@@ -222,37 +207,6 @@
         </div>
     </section>
 
-    <div id="create_crmdata" class="modal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Import biến động</h4>
-                </div>
-                <form action="<?php echo e(route('data_crm.import')); ?>" method="post" enctype="multipart/form-data">
-                    <?php echo csrf_field(); ?>
-                    <div class="modal-body row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Chọn tệp'); ?> <a href="<?php echo e(url('themes\admin\img\data.xlsx')); ?>" target="_blank">(<?php echo app('translator')->get('Minh họa file excel'); ?>)</a></label>
-                                <small class="text-red">*</small>
-                                <label class="text-danger">Lưu ý nếu không điền mã CBTS trong file excel thì hệ thống sẽ mặc định CBTS là bạn.</label>
-                                <div style="display: flex" class="d-flex">
-                                    <input id="file" class="form-control" type="file" required name="file"
-                                        placeholder="<?php echo app('translator')->get('Select File'); ?>" value="">
-                                    <button type="submit" class="btn btn-success"><i class="fa fa-file-excel-o"
-                                            aria-hidden="true"></i> <?php echo app('translator')->get('Import'); ?></button>   
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-        </div>
-    </div>
-
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('script'); ?>
     <script>
@@ -262,4 +216,4 @@
     </script>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\steamwonder\resources\views/admin/pages/data_crms/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\steamwonder\resources\views/admin/pages/parents/index.blade.php ENDPATH**/ ?>

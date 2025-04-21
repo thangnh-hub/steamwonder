@@ -49,6 +49,10 @@ class StudentController extends Controller
      */
     public function create()
     {
+        $params_area['id'] = DataPermissionService::getPermisisonAreas(Auth::guard('admin')->user()->id);
+        $this->responseData['list_area'] = Area::getsqlArea($params_area)->get();
+        $this->responseData['list_status'] = Consts::STATUS;
+        $this->responseData['list_sex'] = Consts::GENDER;
 
         return $this->responseView($this->viewPart . '.create');
     }
@@ -61,27 +65,20 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        DB::beginTransaction();
-        try {
-            $params = $request->all();
+        $request->validate([
+            'area_id' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'phone' => 'required|unique:tb_parents,phone',
+            'email' => 'required|email|unique:tb_parents,email',
+        ]);
 
-            $request->validate(
-                [
-                    'first_name' => "required|max:255",
-                    'last_name' => "required|max:255",
-                    'student_code' => 'nullable|max:255|unique:tb_students,student_code',
-                    'gender' => "required",
-                    'area_id' => "required",
-                ]
-            );
+        $params = $request->all();
+        $params['admin_created_id'] = Auth::guard('admin')->user()->id;
 
-            DB::commit();
-            return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Add new successfully!'));
-        } catch (Exception $ex) {
-            DB::rollBack();
-            return redirect()->bach()->with('errorMessage', $ex->getMessage());
-            abort(422, __($ex->getMessage()));
-        }
+        tbParent::create($params);
+
+        return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Add new successfully!'));
     }
     /**
      * Display the specified resource.

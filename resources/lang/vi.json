@@ -67,5 +67,11 @@
     "new": "Mới",
     "First Name": "Tên",
     "Last Name": "Họ",
-    "is_advise": "Đang tư vấn"
+    "is_advise": "Đang tư vấn",
+    "end_advise": "Kết thúc tư vấn",
+    "yes": "Đồng ý",
+    "male": "Nam",
+    "female": "Nữ",
+    "other": "Khác",
+    "no": "Không đồng ý"
 }

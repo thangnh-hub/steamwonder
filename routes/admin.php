@@ -98,11 +98,10 @@ Route::group(['namespace' => 'Admin'], function () {
         'users' => 'UserController',
         'data_crms' => 'DataCrmController',
         'parents' => 'ParentController',
-
-
-
+        'relationships' => 'RelationshipController',
         // End for SteamWonder
       ]);
+      Route::post('data_crms_log_store', 'DataCrmController@storeCRMLOG')->name('data_crms_log_store');
 
       //update kpi teacher
       Route::get('ajax-kpi-teacher-update', 'ReportController@AjaxkpiTeacher')->name('ajax_kpi_teacher_index');

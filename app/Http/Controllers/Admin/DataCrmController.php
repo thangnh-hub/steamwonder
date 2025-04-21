@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\DataCrm;
+use App\Models\DataCrmLog;
 use Illuminate\Support\Facades\Auth;
 use App\Consts;
 use App\Http\Services\DataPermissionService;
@@ -73,6 +74,7 @@ class DataCrmController extends Controller
             'email' => 'required|email|unique:tb_data_crms,email',
         ]);
         $params = $request->all();
+        $params['admin_created_id'] = Auth::guard('admin')->user()->id;
         $crm = DataCrm::create($params);
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Add new successfully!'));
     }
@@ -85,7 +87,12 @@ class DataCrmController extends Controller
      */
     public function show(DataCrm $dataCrm)
     {
-        //
+        $this->responseData['detail'] = $dataCrm;
+        $this->responseData['status_crmlog'] = Consts::STATUS_DATACRMLOG;
+        $this->responseData['result_crmlog'] = Consts::RESULT_DATACRMLOG;
+        $this->responseData['dataCrmLogs'] = $dataCrm->dataCrmLogs;
+       
+        return $this->responseView($this->viewPart . '.show');
     }
 
     /**
@@ -123,6 +130,7 @@ class DataCrmController extends Controller
         ]);
 
         $params = $request->all();
+        $params['admin_updated_id'] = Auth::guard('admin')->user()->id;
         $dataCrm->update($params);
 
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Update successfully!'));
@@ -170,5 +178,12 @@ class DataCrmController extends Controller
             // Bắt lỗi chung khác
             return redirect()->back()->with('errorMessage', 'Lỗi khi import: ' . $e->getMessage());
         }
+    }
+    public function storeCRMLOG(Request $request)
+    {
+        $params = $request->all();
+        $params['admin_created_id'] = Auth::guard('admin')->user()->id;
+        DataCrmLog::create($params);
+        return redirect()->back()->with('successMessage', __('Add new successfully!'));
     }
 }
