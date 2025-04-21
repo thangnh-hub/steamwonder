@@ -4,14 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Consts;
 use App\Models\Student;
+use App\Models\tbParent;
+use App\Models\Relationship;
+use App\Models\StudentParent;
 use App\Models\Area;
 use App\Http\Services\DataPermissionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Exception;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
-use Maatwebsite\Excel\Facades\Excel;
 
 class StudentController extends Controller
 {
@@ -43,7 +42,7 @@ class StudentController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new resource
      *
      * @return \Illuminate\Http\Response
      */
@@ -66,20 +65,25 @@ class StudentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'area_id' => 'required',
+            'area_id'    => 'required',
             'first_name' => 'required',
-            'last_name' => 'required',
-            'phone' => 'required|unique:tb_parents,phone',
-            'email' => 'required|email|unique:tb_parents,email',
+            'last_name'  => 'required',
         ]);
-
+    
         $params = $request->all();
         $params['admin_created_id'] = Auth::guard('admin')->user()->id;
-
-        tbParent::create($params);
-
+        $params['student_code'] = 'TEMP';
+    
+        // Tạo học sinh
+        $student = Student::create($params);
+    
+        // Gán lại student_code đúng chuẩn
+        $student->student_code = 'HS' . str_pad($student->id, 3, '0', STR_PAD_LEFT);
+        $student->save();
+    
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Add new successfully!'));
     }
+    
     /**
      * Display the specified resource.
      *
@@ -101,11 +105,20 @@ class StudentController extends Controller
      */
     public function edit(Student $student)
     {
-        $admin_id = Auth::guard('admin')->user()->id;
-        $list_students = DataPermissionService::getPermissionStudents($admin_id);
-        if (!in_array($student->id, $list_students)) {
-            return redirect()->back()->with('errorMessage', __('Bạn không có quyền thao tác với dữ liệu của học viên này!'));
-        }
+        $params_area['id'] = DataPermissionService::getPermisisonAreas(Auth::guard('admin')->user()->id);
+        $this->responseData['list_area'] = Area::getsqlArea($params_area)->get();
+        $this->responseData['list_status'] = Consts::STATUS;
+        $this->responseData['list_sex'] = Consts::GENDER;
+        $this->responseData['detail'] = $student;
+
+        //lấy ra danh sách tài khoản parent
+        $params_active['status'] = Consts::STATUS_ACTIVE;
+        $allParents= tbParent::getSqlParent($params_active)->get();
+        $this->responseData['allParents'] = $allParents;
+
+        //danh sách mqh
+        $this->responseData['list_relationship'] = Relationship::getSqlRelationship($params_active)->get();
+
 
         return $this->responseView($this->viewPart . '.edit');
     }
@@ -119,26 +132,18 @@ class StudentController extends Controller
      */
     public function update(Request $request, Student $student)
     {
-        $request->validate(
-            [
-                'first_name' => "required|max:255",
-                'last_name' => "required|max:255",
-                'student_code' => "required|max:255|unique:tb_students,student_code," . $student->id,
-                'gender' => "required",
-                'area_id' => "required",
-            ]
-        );
-        DB::beginTransaction();
-        try {
+        $request->validate([
+            'area_id'    => 'required',
+            'first_name' => 'required',
+            'last_name'  => 'required',
+            'student_code' => 'required|unique:students,student_code,' . $student->id,
+        ]);
+        $params = $request->all();
+        $params['admin_updated_id'] = Auth::guard('admin')->user()->id;
 
-            $student->save();
-            DB::commit();
-            return redirect()->back()->with('successMessage', __('Successfully updated!'));
-        } catch (Exception $ex) {
-            DB::rollBack();
-            return redirect()->back()->with('errorMessage', $ex->getMessage());
-            // abort(422, __($ex->getMessage()));
-        }
+        $student->update($params);
+
+        return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Update successfully!'));
     }
 
     /**
@@ -149,13 +154,29 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
-        $admin_id = Auth::guard('admin')->user()->id;
-        $list_students = DataPermissionService::getPermissionStudents($admin_id);
-        if (!in_array($student->id, $list_students)) {
-            return redirect()->back()->with('errorMessage', __('Bạn không có quyền thao tác với dữ liệu của học viên này!'));
-        }
         $student->delete();
-
+        $student->studentParents()->delete();
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Delete record successfully!'));
     }
+
+    public function addParent(Request $request, $id)
+    {
+        $student = Student::findOrFail($id);
+        $parentsData = $request->input('parents', []);
+
+        foreach ($parentsData as $parentId => $data) {
+            if (!empty($data['id']) && !empty($data['relationship_id'])) {
+                StudentParent::firstOrCreate([
+                    'student_id'     => $student->id,
+                    'parent_id'      => $data['id'],
+                ], [
+                    'relationship_id'=> $data['relationship_id'],
+                    'admin_created_id' => Auth::guard('admin')->user()->id,
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('successMessage', __('Đã thêm người thân thành công!'));
+    }
+
 }

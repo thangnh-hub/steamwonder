@@ -31,7 +31,7 @@
             <form action="{{ route(Request::segment(2) . '.index') }}" id="form_filter" method="GET">
                 <div class="box-body">
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label>@lang('Keyword') </label>
                                 <input type="text" class="form-control" name="keyword" placeholder="@lang('Lọc theo mã học viên, họ tên hoặc email')"
@@ -39,7 +39,7 @@
                             </div>
                         </div>
                        
-                        <div class="col-md-2">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label>@lang('Area')</label>
                                 <select name="area_id" id="area_id" class="form-control select2" style="width: 100%;">
@@ -111,12 +111,14 @@
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th>@lang('Order')</th>
+                                <th>@lang('STT')</th>
+                                <th>@lang('Avatar')</th>
                                 <th>@lang('Student code')</th>
                                 <th>@lang('Full name')</th>
+                                <th>@lang('Tên thường gọi')</th>
                                 <th>@lang('Gender')</th>
                                 <th>@lang('Area')</th>
-                                <th>@lang('Class')</th>
+                                <th>@lang('Lớp đang học')</th>
                                 <th>@lang('Ngày nhập học chính thức')</th>
                                 <th>@lang('Action')</th>
                             </tr>
@@ -129,39 +131,38 @@
                                         <td>{{ $loop->index + 1 }}</td>
 
                                         <td>
+                                            @if (!empty($row->avatar))
+                                                <img src="{{ asset($row->avatar) }}" alt="Avatar" width="100" height="100" style="object-fit: cover;">
+                                            @else
+                                                <span class="text-muted">No image</span>
+                                            @endif
+                                        </td>
+
+                                        <td>
                                             <a target="_blank" class="btn btn-sm" data-toggle="tooltip"
                                                 title="@lang('Xem chi tiết')" data-original-title="@lang('Xem chi tiết')"
                                                 href="{{ route(Request::segment(2) . '.show', $row->id) }}">
-                                                {{ $row->admin_code }}
+                                                {{ $row->student_code  }}
                                             </a>
                                         </td>
                                         <td>
-                                            {{ $row->name ?? '' }}
+                                            {{ $row->last_name ?? '' }} {{ $row->first_name ?? '' }}
                                         </td>
                                         <td>
-                                            @lang($row->gender)
+                                            {{ $row->nickname ?? '' }} 
+                                        </td>
+                                        <td>
+                                            @lang($row->sex)
                                         </td>
                                         <td>
                                             {{ $row->area->code ?? '' }}
                                         </td>
                                         <td>
-                                            @php
-                                                $list_class = $row->allClassesWithStatus();
-                                            @endphp
-                                            @if (isset($list_class))
-                                                <ul>
-                                                    @foreach ($list_class as $i)
-                                                        <li>
-                                                            {{ $i->name }}
-                                                            ({{ __($i->pivot_status  ?? '') }})
-                                                        </li>
-                                                    @endforeach
-                                                </ul>
-                                            @endif
+                                            {{ $row->currentClass->name ?? '' }}
                                         </td>
 
                                         <td>
-                                            {{ isset($row->day_official) &&  $row->day_official !="" ?date("d-m-Y", strtotime($row->day_official)): '' }}
+                                            {{ isset($row->enrolled_at) &&  $row->enrolled_at !="" ?date("d-m-Y", strtotime($row->enrolled_at)): '' }}
                                         </td>
                                     
                                         <td>

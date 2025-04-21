@@ -31,7 +31,7 @@
             <form action="<?php echo e(route(Request::segment(2) . '.index')); ?>" id="form_filter" method="GET">
                 <div class="box-body">
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Keyword'); ?> </label>
                                 <input type="text" class="form-control" name="keyword" placeholder="<?php echo app('translator')->get('Lọc theo mã học viên, họ tên hoặc email'); ?>"
@@ -39,7 +39,7 @@
                             </div>
                         </div>
                        
-                        <div class="col-md-2">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Area'); ?></label>
                                 <select name="area_id" id="area_id" class="form-control select2" style="width: 100%;">
@@ -114,12 +114,14 @@
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th><?php echo app('translator')->get('Order'); ?></th>
+                                <th><?php echo app('translator')->get('STT'); ?></th>
+                                <th><?php echo app('translator')->get('Avatar'); ?></th>
                                 <th><?php echo app('translator')->get('Student code'); ?></th>
                                 <th><?php echo app('translator')->get('Full name'); ?></th>
+                                <th><?php echo app('translator')->get('Tên thường gọi'); ?></th>
                                 <th><?php echo app('translator')->get('Gender'); ?></th>
                                 <th><?php echo app('translator')->get('Area'); ?></th>
-                                <th><?php echo app('translator')->get('Class'); ?></th>
+                                <th><?php echo app('translator')->get('Lớp đang học'); ?></th>
                                 <th><?php echo app('translator')->get('Ngày nhập học chính thức'); ?></th>
                                 <th><?php echo app('translator')->get('Action'); ?></th>
                             </tr>
@@ -132,43 +134,42 @@
                                         <td><?php echo e($loop->index + 1); ?></td>
 
                                         <td>
+                                            <?php if(!empty($row->avatar)): ?>
+                                                <img src="<?php echo e(asset($row->avatar)); ?>" alt="Avatar" width="100" height="100" style="object-fit: cover;">
+                                            <?php else: ?>
+                                                <span class="text-muted">No image</span>
+                                            <?php endif; ?>
+                                        </td>
+
+                                        <td>
                                             <a target="_blank" class="btn btn-sm" data-toggle="tooltip"
                                                 title="<?php echo app('translator')->get('Xem chi tiết'); ?>" data-original-title="<?php echo app('translator')->get('Xem chi tiết'); ?>"
                                                 href="<?php echo e(route(Request::segment(2) . '.show', $row->id)); ?>">
-                                                <?php echo e($row->admin_code); ?>
+                                                <?php echo e($row->student_code); ?>
 
                                             </a>
                                         </td>
                                         <td>
-                                            <?php echo e($row->name ?? ''); ?>
+                                            <?php echo e($row->last_name ?? ''); ?> <?php echo e($row->first_name ?? ''); ?>
 
                                         </td>
                                         <td>
-                                            <?php echo app('translator')->get($row->gender); ?>
+                                            <?php echo e($row->nickname ?? ''); ?> 
+                                        </td>
+                                        <td>
+                                            <?php echo app('translator')->get($row->sex); ?>
                                         </td>
                                         <td>
                                             <?php echo e($row->area->code ?? ''); ?>
 
                                         </td>
                                         <td>
-                                            <?php
-                                                $list_class = $row->allClassesWithStatus();
-                                            ?>
-                                            <?php if(isset($list_class)): ?>
-                                                <ul>
-                                                    <?php $__currentLoopData = $list_class; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                        <li>
-                                                            <?php echo e($i->name); ?>
+                                            <?php echo e($row->currentClass->name ?? ''); ?>
 
-                                                            (<?php echo e(__($i->pivot_status  ?? '')); ?>)
-                                                        </li>
-                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                </ul>
-                                            <?php endif; ?>
                                         </td>
 
                                         <td>
-                                            <?php echo e(isset($row->day_official) &&  $row->day_official !="" ?date("d-m-Y", strtotime($row->day_official)): ''); ?>
+                                            <?php echo e(isset($row->enrolled_at) &&  $row->enrolled_at !="" ?date("d-m-Y", strtotime($row->enrolled_at)): ''); ?>
 
                                         </td>
                                     

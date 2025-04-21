@@ -11,7 +11,7 @@ class StudentParent extends Model
      *
      * @var array
      */
-    protected $table = 'tb_parents';
+    protected $table = 'tb_student_parents';
 
     /**
      * The attributes that aren't mass assignable.
