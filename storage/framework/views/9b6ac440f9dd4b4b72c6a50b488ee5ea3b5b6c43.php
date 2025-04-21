@@ -55,7 +55,7 @@
                                     <ul class="nav nav-tabs">
                                         <li class="active">
                                             <a href="#tab_1" data-toggle="tab">
-                                                <h5>Thông tin phụ huynh <span class="text-danger">*</span></h5>
+                                                <h5>Thông tin học sinh <span class="text-danger">*</span></h5>
                                             </a>
                                         </li>
                                         <button type="submit" class="btn btn-info btn-sm pull-right">
@@ -81,44 +81,24 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label><?php echo app('translator')->get('Họ'); ?><small class="text-red">*</small></label>
-                                                        <input type="text" class="form-control" name="first_name" value="<?php echo e(old('first_name')); ?>" required>
+                                                        <input type="text" class="form-control" name="last_name" value="<?php echo e(old('last_name')); ?>" required>
                                                     </div>
                                                 </div>
             
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label><?php echo app('translator')->get('Tên'); ?><small class="text-red">*</small></label>
-                                                        <input type="text" class="form-control" name="last_name" value="<?php echo e(old('last_name')); ?>" required>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label><?php echo app('translator')->get('Số CMND/CCCD'); ?> <small class="text-red">*</small></label>
-                                                        <input required type="text" class="form-control" name="identity_card" value="<?php echo e(old('identity_card')); ?>">
+                                                        <input type="text" class="form-control" name="first_name" value="<?php echo e(old('first_name')); ?>" required>
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label><?php echo app('translator')->get('Số điện thoại'); ?><small class="text-red">*</small></label>
-                                                        <input type="text" class="form-control" name="phone" value="<?php echo e(old('phone')); ?>" required>
+                                                        <label><?php echo app('translator')->get('Tên thường gọi'); ?></label>
+                                                        <input type="text" class="form-control" name="nickname" value="<?php echo e(old('nickname')); ?>" >
                                                     </div>
                                                 </div>
-            
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label><?php echo app('translator')->get('Email'); ?><small class="text-red">*</small></label>
-                                                        <input type="email" class="form-control" name="email" value="<?php echo e(old('email')); ?>" required>
-                                                    </div>
-                                                </div>
-            
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label><?php echo app('translator')->get('Địa chỉ'); ?></label>
-                                                        <input type="text" class="form-control" name="address" value="<?php echo e(old('address')); ?>">
-                                                    </div>
-                                                </div>
+                                               
             
                                                 <div class="col-md-4">
                                                     <div class="form-group">
@@ -137,7 +117,28 @@
                                                         <input type="date" class="form-control" name="birthday" value="<?php echo e(old('birthday')); ?>">
                                                     </div>
                                                 </div>
-                        
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label><?php echo app('translator')->get('Ngày nhập học'); ?></label>
+                                                        <input type="date" class="form-control" name="enrolled_at" value="<?php echo e(old('enrolled_at')); ?>">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label><?php echo app('translator')->get('Trạng thái'); ?></label>
+                                                        <select name="status" class="form-control select2">
+                                                            <?php $__currentLoopData = $list_status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <option value="<?php echo e($key); ?>" <?php echo e(old('status') == $key ? 'selected' : ''); ?>>
+                                                                    <?php echo e(__($value)); ?>
+
+                                                                </option>
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
                                                 <div class="col-md-4">
                                                     <div class="form-group box_img_right">
                                                         <label><?php echo app('translator')->get('Ảnh đại diện'); ?></label>

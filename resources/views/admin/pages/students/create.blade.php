@@ -53,7 +53,7 @@
                                     <ul class="nav nav-tabs">
                                         <li class="active">
                                             <a href="#tab_1" data-toggle="tab">
-                                                <h5>Thông tin phụ huynh <span class="text-danger">*</span></h5>
+                                                <h5>Thông tin học sinh <span class="text-danger">*</span></h5>
                                             </a>
                                         </li>
                                         <button type="submit" class="btn btn-info btn-sm pull-right">
@@ -79,44 +79,24 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label>@lang('Họ')<small class="text-red">*</small></label>
-                                                        <input type="text" class="form-control" name="first_name" value="{{ old('first_name') }}" required>
+                                                        <input type="text" class="form-control" name="last_name" value="{{ old('last_name') }}" required>
                                                     </div>
                                                 </div>
             
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label>@lang('Tên')<small class="text-red">*</small></label>
-                                                        <input type="text" class="form-control" name="last_name" value="{{ old('last_name') }}" required>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label>@lang('Số CMND/CCCD') <small class="text-red">*</small></label>
-                                                        <input required type="text" class="form-control" name="identity_card" value="{{ old('identity_card') }}">
+                                                        <input type="text" class="form-control" name="first_name" value="{{ old('first_name') }}" required>
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label>@lang('Số điện thoại')<small class="text-red">*</small></label>
-                                                        <input type="text" class="form-control" name="phone" value="{{ old('phone') }}" required>
+                                                        <label>@lang('Tên thường gọi')</label>
+                                                        <input type="text" class="form-control" name="nickname" value="{{ old('nickname') }}" >
                                                     </div>
                                                 </div>
-            
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label>@lang('Email')<small class="text-red">*</small></label>
-                                                        <input type="email" class="form-control" name="email" value="{{ old('email') }}" required>
-                                                    </div>
-                                                </div>
-            
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label>@lang('Địa chỉ')</label>
-                                                        <input type="text" class="form-control" name="address" value="{{ old('address') }}">
-                                                    </div>
-                                                </div>
+                                               
             
                                                 <div class="col-md-4">
                                                     <div class="form-group">
@@ -135,7 +115,27 @@
                                                         <input type="date" class="form-control" name="birthday" value="{{ old('birthday') }}">
                                                     </div>
                                                 </div>
-                        
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>@lang('Ngày nhập học')</label>
+                                                        <input type="date" class="form-control" name="enrolled_at" value="{{ old('enrolled_at') }}">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>@lang('Trạng thái')</label>
+                                                        <select name="status" class="form-control select2">
+                                                            @foreach ($list_status as $key => $value)
+                                                                <option value="{{ $key }}" {{ old('status') == $key ? 'selected' : '' }}>
+                                                                    {{ __($value) }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+
                                                 <div class="col-md-4">
                                                     <div class="form-group box_img_right">
                                                         <label>@lang('Ảnh đại diện')</label>
