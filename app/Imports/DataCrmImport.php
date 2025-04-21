@@ -46,6 +46,8 @@ class DataCrmImport implements ToModel,WithHeadingRow,WithValidation
             'email'      => $row['email'] ?? '',
             'address'    => $row['dia_chi'] ?? '',
             'status'     => Consts::STATUS_DATACRM['new'],
+            'admin_created_id'     => Auth::guard('admin')->user()->id,
+            'type_import'       => 'excel',
         ]);
     }
 

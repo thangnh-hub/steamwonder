@@ -116,85 +116,75 @@
                         @lang('not_found')
                     </div>
                 @else
-                    <table class="table table-hover table-bordered">
-                        <thead>
-                            <tr>
-                                <th>@lang('STT')</th>
-                                <th>@lang('First Name')</th>
-                                <th>@lang('Last Name')</th>
-                                <th>@lang('Số điện thoại')</th>
-                                <th>@lang('Email')</th>  
-                                <th>@lang('Địa chỉ')</th>
-                                <th>@lang('Khu vực')</th>
-                                <th>@lang('CBTS')</th>
-                                <th>@lang('Status')</th>
-                                <th>@lang('Action')</th>
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th>@lang('STT')</th>
+                            <th>@lang('Avatar')</th>
+                            <th>@lang('First Name')</th>
+                            <th>@lang('Last Name')</th>
+                            <th>@lang('Giới tính')</th>
+                            <th>@lang('Ngày sinh')</th>
+                            <th>@lang('Số CMND/CCCD')</th>
+                            <th>@lang('Số điện thoại')</th>
+                            <th>@lang('Email')</th>  
+                            <th>@lang('Địa chỉ')</th>
+                            <th>@lang('Khu vực')</th>
+                            <th>@lang('Trạng thái')</th>
+                            <th>@lang('Thao tác')</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($rows as $row)
+                            <tr class="valign-middle">
+                                <td>
+                                    {{ $loop->iteration + ($rows->currentPage() - 1) * $rows->perPage() }}
+                                </td>
+                                <td>
+                                    @if (!empty($row->avatar))
+                                        <img src="{{ asset($row->avatar) }}" alt="Avatar" width="100" height="100" style="object-fit: cover;">
+                                    @else
+                                        <span class="text-muted">No image</span>
+                                    @endif
+                                </td>
+                                <td>{{ $row->first_name ?? '' }}</td>
+                                <td>{{ $row->last_name ?? '' }}</td>
+                                <td>
+                                    @lang($row->sex ?? '')
+                                </td>
+                                <td>{{ \Carbon\Carbon::parse($row->birthday)->format('d/m/Y') ?? '' }}</td>
+                                <td>{{ $row->identity_card ?? '' }}</td>
+                                <td>{{ $row->phone ?? '' }}</td>
+                                <td>{{ $row->email ?? '' }}</td>
+                                <td>{{ $row->address ?? '' }}</td>
+                                <td>{{ $row->area->name ?? '' }}</td>
+                                <td>@lang($row->status)</td>
+                                <td>
+                                    <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="@lang('Update')"
+                                       href="{{ route('parents.edit', $row->id) }}">
+                                        <i class="fa fa-pencil-square-o"></i>
+                                    </a>
+                
+                                    <form action="{{ route('parents.destroy', $row->id) }}" method="POST"
+                                          style="display:inline-block"
+                                          onsubmit="return confirm('@lang('confirm_action')')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-sm btn-danger" type="submit" data-toggle="tooltip" title="@lang('Delete')">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </form>
+                
+                                    <a class="btn btn-sm btn-primary" data-toggle="tooltip" title="@lang('Chi tiết')"
+                                       href="{{ route('parents.show', $row->id) }}">
+                                        <i class="fa fa-eye"></i> Chi tiết
+                                    </a>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($rows as $row)
-                                <form action="{{ route(Request::segment(2) . '.destroy', $row->id) }}" method="POST"
-                                    onsubmit="return confirm('@lang('confirm_action')')">
-                                    <tr class="valign-middle">
-                                        <td>
-                                            {{ $loop->iteration + ($rows->currentPage() - 1) * $rows->perPage() }}
-                                        </td>
-                                        <td>
-                                            <strong
-                                                style="font-size: 14px">{{  $row->first_name ?? "" }}</strong>
-                                        </td>
-                                        <td>
-                                            <strong
-                                                style="font-size: 14px">{{  $row->last_name ?? "" }}</strong>
-                                        </td>
-                                        <td>
-                                            {{ $row->phone ?? "" }}
-                                        </td>
-                                        <td>
-                                            {{ $row->email ?? "" }}
-                                        </td>
-
-                                        <td>
-                                            {{ $row->address ?? "" }}
-                                        </td>
-
-                                        <td>
-                                            {{ $row->area->name ?? "" }}
-                                        </td>
-
-                                        <td>
-                                            {{ $row->admission->name ?? "" }}
-                                        </td>
-
-                                        <td>
-                                            @lang($row->status)
-                                        </td>
-                                        
-                                        <td>
-                                            <a class="btn btn-sm btn-warning" data-toggle="tooltip"
-                                                title="@lang('Update')" data-original-title="@lang('Update')"
-                                                href="{{ route(Request::segment(2) . '.edit', $row->id) }}">
-                                                <i class="fa fa-pencil-square-o"></i>
-                                            </a>
-                                            
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-sm btn-danger" type="submit" data-toggle="tooltip"
-                                                title="@lang('Delete')" data-original-title="@lang('Delete')">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-
-                                            <a class="btn btn-sm btn-primary" data-toggle="tooltip"
-                                                title="@lang('Update')" data-original-title="@lang('Chi tiết')"
-                                                href="{{ route(Request::segment(2) . '.show', $row->id) }}">
-                                                <i class="fa fa-eye"></i> Chi tiết
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </form>
-                            @endforeach
-                        </tbody>
-                    </table>
+                        @endforeach
+                    </tbody>
+                </table>
+                
                 @endif
             </div>
 
@@ -211,37 +201,6 @@
 
         </div>
     </section>
-
-    <div id="create_crmdata" class="modal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Import biến động</h4>
-                </div>
-                <form action="{{ route('data_crm.import') }}" method="post" enctype="multipart/form-data">
-                    @csrf
-                    <div class="modal-body row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label>@lang('Chọn tệp') <a href="{{ url('themes\admin\img\data.xlsx') }}" target="_blank">(@lang('Minh họa file excel'))</a></label>
-                                <small class="text-red">*</small>
-                                <label class="text-danger">Lưu ý nếu không điền mã CBTS trong file excel thì hệ thống sẽ mặc định CBTS là bạn.</label>
-                                <div style="display: flex" class="d-flex">
-                                    <input id="file" class="form-control" type="file" required name="file"
-                                        placeholder="@lang('Select File')" value="">
-                                    <button type="submit" class="btn btn-success"><i class="fa fa-file-excel-o"
-                                            aria-hidden="true"></i> @lang('Import')</button>   
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-        </div>
-    </div>
 
 @endsection
 @section('script')
