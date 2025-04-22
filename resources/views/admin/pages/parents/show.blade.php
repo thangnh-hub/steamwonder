@@ -120,7 +120,53 @@
                                             </div>
         
                                             <div class="tab-pane " id="tab_2">
-                                                
+                                                <div class="tab-pane" id="tab_2">
+                                                    <h4>@lang('Danh sách học sinh mà phụ huynh này là người thân')</h4>
+                                                    <br>
+                                                    @if($detail->parentStudents->count())
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>@lang('Avatar')</th>
+                                                                    <th>@lang('Student code')</th>
+                                                                    <th>@lang('Full name')</th>
+                                                                    <th>@lang('Tên thường gọi')</th>
+                                                                    <th>@lang('Gender')</th>
+                                                                    <th>@lang('Area')</th>
+                                                                    <th>@lang('Lớp đang học')</th>
+                                                                    <th>@lang('Ngày nhập học chính thức')</th>
+                                                                    <th>@lang('Quan hệ')</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach($detail->parentStudents as $relation)
+                                                                    @php $student = $relation->student; @endphp
+                                                                    @if($student)
+                                                                        <tr>
+                                                                            <td>
+                                                                                <a target="_blank" href="{{ $student->avatar ?? url('themes/admin/img/no_image.jpg') }}">
+                                                                                    <img src="{{ $student->avatar ?? url('themes/admin/img/no_image.jpg') }}" alt="avatar" style="max-height: 60px;">
+                                                                                </a>
+                                                                            </td>
+                                                                            <td>{{ $student->student_code ?? '' }}</td>
+                                                                            <td>{{ $student->last_name }} {{ $student->first_name }}</td>
+                                                                            <td>{{ $student->nickname ?? '' }}</td>
+                                                                            <td>{{ __($student->sex) }}</td>
+                                                                            <td>{{ $student->area->name ?? '' }}</td>
+                                                                            <td>{{ $student->currentClass->name ?? '' }}</td>
+                                                                            <td>
+                                                                                {{ isset($student->enrolled_at) &&  $student->enrolled_at !="" ?date("d-m-Y", strtotime($student->enrolled_at)): '' }}
+                                                                            </td>
+                                                                            <td>{{ $relation->relationship->title ?? '' }}</td>
+                                                                        </tr>
+                                                                    @endif
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
+                                                    @else
+                                                        <p class="text-muted">@lang('Phụ huynh này chưa được liên kết với học sinh nào.')</p>
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
                                     </div><!-- /.tab-content -->
