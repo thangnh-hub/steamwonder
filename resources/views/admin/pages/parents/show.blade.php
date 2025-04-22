@@ -122,8 +122,6 @@
                                             <div class="tab-pane " id="tab_2">
                                                 
                                             </div>
-        
-                                            
                                         </div>
                                     </div><!-- /.tab-content -->
                                 </div><!-- nav-tabs-custom -->

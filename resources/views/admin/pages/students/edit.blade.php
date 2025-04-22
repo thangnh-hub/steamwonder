@@ -170,7 +170,7 @@
                                         <div class="box-body table-responsive">
                                             <div>
                                                 <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addParentModal">
-                                                    <i class="fa fa-plus"></i> @lang('Thêm người thân')
+                                                    <i class="fa fa-plus"></i> @lang('Cập nhật người thân')
                                                 </button>     
                                             </div>
                                             
@@ -180,8 +180,7 @@
                                                     <tr>
                                                         <th>@lang('STT')</th>
                                                         <th>@lang('Avatar')</th>
-                                                        <th>@lang('First Name')</th>
-                                                        <th>@lang('Last Name')</th>
+                                                        <th>@lang('Họ và tên')</th>
                                                         <th>@lang('Giới tính')</th>
                                                         <th>@lang('Ngày sinh')</th>
                                                         <th>@lang('Số CMND/CCCD')</th>
@@ -191,7 +190,6 @@
                                                         <th>@lang('Khu vực')</th>
                                                         <th>@lang('Trạng thái')</th>
                                                         <th>@lang('Quan hệ')</th>
-                                                        <th>@lang('Thao tác')</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -208,10 +206,13 @@
                                                                     <span class="text-muted">No image</span>
                                                                 @endif
                                                             </td>
-                                                            <td>{{ $row->parent->first_name ?? '' }}</td>
-                                                            <td>{{ $row->parent->last_name ?? '' }}</td>
+                                                            <td>
+                                                                <a target="_blank" href="{{ route('parents.show', $row->parent->id) }}">
+                                                                    {{ $row->parent->first_name ?? '' }} {{ $row->parent->last_name ?? '' }}  
+                                                                </a>
+                                                            </td>
                                                             <td>@lang($row->parent->sex ?? '')</td>
-                                                            <td>{{ optional($row->parent->birthday)->format('d/m/Y') }}</td>
+                                                            <td>{{ $row->parent->birthday ? \Carbon\Carbon::parse($row->parent->birthday)->format('d/m/Y') : '' }}</td>
                                                             <td>{{ $row->parent->identity_card ?? '' }}</td>
                                                             <td>{{ $row->parent->phone ?? '' }}</td>
                                                             <td>{{ $row->parent->email ?? '' }}</td>
@@ -219,28 +220,6 @@
                                                             <td>{{ $row->parent->area->name ?? '' }}</td>
                                                             <td>@lang($row->parent->status ?? '')</td>
                                                             <td>{{ $row->relationship->title ?? '' }}</td>
-
-                                                            <td>
-                                                                <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="@lang('Update')"
-                                                                href="{{ route('parents.edit', $row->parent->id) }}">
-                                                                    <i class="fa fa-pencil-square-o"></i>
-                                                                </a>
-                                                
-                                                                <form action="{{ route('parents.destroy', $row->parent->id) }}" method="POST"
-                                                                    style="display:inline-block"
-                                                                    onsubmit="return confirm('@lang('confirm_action')')">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button class="btn btn-sm btn-danger" type="submit" data-toggle="tooltip" title="@lang('Delete')">
-                                                                        <i class="fa fa-trash"></i>
-                                                                    </button>
-                                                                </form>
-                                                
-                                                                <a class="btn btn-sm btn-primary" data-toggle="tooltip" title="@lang('Chi tiết')"
-                                                                href="{{ route('parents.show', $row->parent->id) }}">
-                                                                    <i class="fa fa-eye"></i> Chi tiết
-                                                                </a>
-                                                            </td>
                                                         </tr>
                                                     @endforeach
                                                     @else
@@ -287,7 +266,7 @@
                         <table class="table table-hover table-bordered" id="parent-table">
                             <thead>
                                 <tr>
-                                    <th><input type="checkbox" id="checkAll"></th>
+                                    <th>Chọn</th>
                                     <th>@lang('Họ và tên')</th>
                                     <th>@lang('Giới tính')</th>
                                     <th>@lang('Số điện thoại')</th>
@@ -297,8 +276,14 @@
                             </thead>
                             <tbody>
                                 @foreach($allParents as $parent)
+                                @php
+                                    $isChecked = in_array($parent->id, $studentParentIds);
+                                    $existingRelation = $detail->studentParents->firstWhere('parent_id', $parent->id);
+                                @endphp
                                     <tr>
-                                        <td><input type="checkbox" name="parents[]" value="{{ $parent->id }}"></td>
+                                        <td>
+                                            <input type="checkbox" name="parents[{{ $parent->id }}][id]" value="{{ $parent->id }}" {{ $isChecked ? 'checked' : '' }}>
+                                        </td>
                                         <td class="parent-name">{{ $parent->first_name }} {{ $parent->last_name }}</td>
                                         <td>@lang($parent->sex)</td>
                                         <td>{{ $parent->phone }}</td>
@@ -306,7 +291,7 @@
                                         <td>
                                             <select style="width:100%" name="parents[{{ $parent->id }}][relationship_id]" class="form-control select2">
                                                 @foreach($list_relationship as $relation)
-                                                    <option value="{{ $relation->id }}">{{ $relation->title }}</option>
+                                                    <option {{ $existingRelation && $existingRelation->relationship_id == $relation->id ? 'selected' : '' }} value="{{ $relation->id }}">{{ $relation->title }}</option>
                                                 @endforeach
                                             </select>
                                         </td>
@@ -328,9 +313,6 @@
 
 @section('script')
     <script>
-       $('#checkAll').on('click', function() {
-            $('input[name="parents[]"]').prop('checked', this.checked);
-        });
         $('#search-parent').on('keyup', function() {
             let value = $(this).val().toLowerCase();
             $('#parent-table tbody tr').filter(function() {

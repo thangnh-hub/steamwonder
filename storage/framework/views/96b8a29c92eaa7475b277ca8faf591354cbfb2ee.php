@@ -145,7 +145,7 @@
                                             <a target="_blank" class="btn btn-sm" data-toggle="tooltip"
                                                 title="<?php echo app('translator')->get('Xem chi tiết'); ?>" data-original-title="<?php echo app('translator')->get('Xem chi tiết'); ?>"
                                                 href="<?php echo e(route(Request::segment(2) . '.show', $row->id)); ?>">
-                                                <?php echo e($row->student_code); ?>
+                                                <i class="fa fa-eye"></i> <?php echo e($row->student_code); ?>
 
                                             </a>
                                         </td>

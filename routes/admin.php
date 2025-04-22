@@ -102,7 +102,10 @@ Route::group(['namespace' => 'Admin'], function () {
         // End for SteamWonder
       ]);
       Route::post('data_crms_log_store', 'DataCrmController@storeCRMLOG')->name('data_crms_log_store');
+      //thêm ng thân cho bé
       Route::post('student/{id}/add-parent', 'StudentController@addParent')->name('student.addParent');
+      //xóa mqh ng thân
+      Route::delete('student-parent/{id}', 'StudentController@removeParentRelation')->name('student.removeParentRelation');
 
 
       //update kpi teacher
