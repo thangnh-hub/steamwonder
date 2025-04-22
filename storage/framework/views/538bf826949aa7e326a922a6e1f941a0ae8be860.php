@@ -130,10 +130,55 @@
                                             </div>
         
                                             <div class="tab-pane " id="tab_2">
-                                                
+                                                <div class="tab-pane" id="tab_2">
+                                                    <h4><?php echo app('translator')->get('Danh sách học sinh mà phụ huynh này là người thân'); ?></h4>
+                                                    <br>
+                                                    <?php if($detail->parentStudents->count()): ?>
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th><?php echo app('translator')->get('Avatar'); ?></th>
+                                                                    <th><?php echo app('translator')->get('Student code'); ?></th>
+                                                                    <th><?php echo app('translator')->get('Full name'); ?></th>
+                                                                    <th><?php echo app('translator')->get('Tên thường gọi'); ?></th>
+                                                                    <th><?php echo app('translator')->get('Gender'); ?></th>
+                                                                    <th><?php echo app('translator')->get('Area'); ?></th>
+                                                                    <th><?php echo app('translator')->get('Lớp đang học'); ?></th>
+                                                                    <th><?php echo app('translator')->get('Ngày nhập học chính thức'); ?></th>
+                                                                    <th><?php echo app('translator')->get('Quan hệ'); ?></th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <?php $__currentLoopData = $detail->parentStudents; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $relation): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                    <?php $student = $relation->student; ?>
+                                                                    <?php if($student): ?>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <a target="_blank" href="<?php echo e($student->avatar ?? url('themes/admin/img/no_image.jpg')); ?>">
+                                                                                    <img src="<?php echo e($student->avatar ?? url('themes/admin/img/no_image.jpg')); ?>" alt="avatar" style="max-height: 60px;">
+                                                                                </a>
+                                                                            </td>
+                                                                            <td><?php echo e($student->student_code ?? ''); ?></td>
+                                                                            <td><?php echo e($student->last_name); ?> <?php echo e($student->first_name); ?></td>
+                                                                            <td><?php echo e($student->nickname ?? ''); ?></td>
+                                                                            <td><?php echo e(__($student->sex)); ?></td>
+                                                                            <td><?php echo e($student->area->name ?? ''); ?></td>
+                                                                            <td><?php echo e($student->currentClass->name ?? ''); ?></td>
+                                                                            <td>
+                                                                                <?php echo e(isset($student->enrolled_at) &&  $student->enrolled_at !="" ?date("d-m-Y", strtotime($student->enrolled_at)): ''); ?>
+
+                                                                            </td>
+                                                                            <td><?php echo e($relation->relationship->title ?? ''); ?></td>
+                                                                        </tr>
+                                                                    <?php endif; ?>
+                                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                            </tbody>
+                                                        </table>
+                                                    <?php else: ?>
+                                                        <p class="text-muted"><?php echo app('translator')->get('Phụ huynh này chưa được liên kết với học sinh nào.'); ?></p>
+                                                    <?php endif; ?>
+                                                </div>
                                             </div>
-        
-                                            
                                         </div>
                                     </div><!-- /.tab-content -->
                                 </div><!-- nav-tabs-custom -->

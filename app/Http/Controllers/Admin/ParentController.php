@@ -76,6 +76,7 @@ class ParentController extends Controller
     public function show(tbParent $parent)
     {
         $this->responseData['detail'] = $parent;
+        $this->responseData['childStudentIds'] = $parent->parentStudents->pluck('student_id')->toArray();
         return $this->responseView($this->viewPart . '.show');
     }
 
