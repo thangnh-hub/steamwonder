@@ -92,8 +92,7 @@ class StudentController extends Controller
      */
     public function show(Student $student)
     {
-
-
+        $this->responseData['detail'] = $student;
         return $this->responseView($this->viewPart . '.detail');
     }
 
@@ -118,7 +117,8 @@ class StudentController extends Controller
 
         //danh sách mqh
         $this->responseData['list_relationship'] = Relationship::getSqlRelationship($params_active)->get();
-
+        //lấy ra danh sách mqh của học sinh
+        $this->responseData['studentParentIds'] = $student->studentParents->pluck('parent_id')->toArray();
 
         return $this->responseView($this->viewPart . '.edit');
     }
@@ -136,7 +136,7 @@ class StudentController extends Controller
             'area_id'    => 'required',
             'first_name' => 'required',
             'last_name'  => 'required',
-            'student_code' => 'required|unique:students,student_code,' . $student->id,
+            'student_code' => 'unique:students,student_code,' . $student->id,
         ]);
         $params = $request->all();
         $params['admin_updated_id'] = Auth::guard('admin')->user()->id;
@@ -162,21 +162,20 @@ class StudentController extends Controller
     public function addParent(Request $request, $id)
     {
         $student = Student::findOrFail($id);
-        $parentsData = $request->input('parents', []);
+        $student->studentParents()->delete();
 
-        foreach ($parentsData as $parentId => $data) {
-            if (!empty($data['id']) && !empty($data['relationship_id'])) {
-                StudentParent::firstOrCreate([
-                    'student_id'     => $student->id,
-                    'parent_id'      => $data['id'],
-                ], [
-                    'relationship_id'=> $data['relationship_id'],
-                    'admin_created_id' => Auth::guard('admin')->user()->id,
+        $parentsInput = $request->input('parents', []);
+        foreach ($parentsInput as $parentId => $data) {
+            if (!empty($data['id'])) {
+                StudentParent::create([
+                    'student_id'      => $student->id,
+                    'parent_id'       => $data['id'],
+                    'relationship_id' => $data['relationship_id'] ?? null,
                 ]);
             }
         }
 
-        return redirect()->back()->with('successMessage', __('Đã thêm người thân thành công!'));
+        return redirect()->back()->with('successMessage', __('Cập nhật người thân thành công!'));
     }
 
 }

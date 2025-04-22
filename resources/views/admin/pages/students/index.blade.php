@@ -142,7 +142,7 @@
                                             <a target="_blank" class="btn btn-sm" data-toggle="tooltip"
                                                 title="@lang('Xem chi tiết')" data-original-title="@lang('Xem chi tiết')"
                                                 href="{{ route(Request::segment(2) . '.show', $row->id) }}">
-                                                {{ $row->student_code  }}
+                                                <i class="fa fa-eye"></i> {{ $row->student_code  }}
                                             </a>
                                         </td>
                                         <td>

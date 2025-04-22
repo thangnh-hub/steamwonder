@@ -175,7 +175,7 @@
                                         <div class="box-body table-responsive">
                                             <div>
                                                 <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addParentModal">
-                                                    <i class="fa fa-plus"></i> <?php echo app('translator')->get('Thêm người thân'); ?>
+                                                    <i class="fa fa-plus"></i> <?php echo app('translator')->get('Cập nhật người thân'); ?>
                                                 </button>     
                                             </div>
                                             
@@ -185,8 +185,7 @@
                                                     <tr>
                                                         <th><?php echo app('translator')->get('STT'); ?></th>
                                                         <th><?php echo app('translator')->get('Avatar'); ?></th>
-                                                        <th><?php echo app('translator')->get('First Name'); ?></th>
-                                                        <th><?php echo app('translator')->get('Last Name'); ?></th>
+                                                        <th><?php echo app('translator')->get('Họ và tên'); ?></th>
                                                         <th><?php echo app('translator')->get('Giới tính'); ?></th>
                                                         <th><?php echo app('translator')->get('Ngày sinh'); ?></th>
                                                         <th><?php echo app('translator')->get('Số CMND/CCCD'); ?></th>
@@ -196,7 +195,6 @@
                                                         <th><?php echo app('translator')->get('Khu vực'); ?></th>
                                                         <th><?php echo app('translator')->get('Trạng thái'); ?></th>
                                                         <th><?php echo app('translator')->get('Quan hệ'); ?></th>
-                                                        <th><?php echo app('translator')->get('Thao tác'); ?></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -214,10 +212,13 @@
                                                                     <span class="text-muted">No image</span>
                                                                 <?php endif; ?>
                                                             </td>
-                                                            <td><?php echo e($row->parent->first_name ?? ''); ?></td>
-                                                            <td><?php echo e($row->parent->last_name ?? ''); ?></td>
+                                                            <td>
+                                                                <a target="_blank" href="<?php echo e(route('parents.show', $row->parent->id)); ?>">
+                                                                    <?php echo e($row->parent->first_name ?? ''); ?> <?php echo e($row->parent->last_name ?? ''); ?>  
+                                                                </a>
+                                                            </td>
                                                             <td><?php echo app('translator')->get($row->parent->sex ?? ''); ?></td>
-                                                            <td><?php echo e(optional($row->parent->birthday)->format('d/m/Y')); ?></td>
+                                                            <td><?php echo e($row->parent->birthday ? \Carbon\Carbon::parse($row->parent->birthday)->format('d/m/Y') : ''); ?></td>
                                                             <td><?php echo e($row->parent->identity_card ?? ''); ?></td>
                                                             <td><?php echo e($row->parent->phone ?? ''); ?></td>
                                                             <td><?php echo e($row->parent->email ?? ''); ?></td>
@@ -225,28 +226,6 @@
                                                             <td><?php echo e($row->parent->area->name ?? ''); ?></td>
                                                             <td><?php echo app('translator')->get($row->parent->status ?? ''); ?></td>
                                                             <td><?php echo e($row->relationship->title ?? ''); ?></td>
-
-                                                            <td>
-                                                                <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="<?php echo app('translator')->get('Update'); ?>"
-                                                                href="<?php echo e(route('parents.edit', $row->parent->id)); ?>">
-                                                                    <i class="fa fa-pencil-square-o"></i>
-                                                                </a>
-                                                
-                                                                <form action="<?php echo e(route('parents.destroy', $row->parent->id)); ?>" method="POST"
-                                                                    style="display:inline-block"
-                                                                    onsubmit="return confirm('<?php echo app('translator')->get('confirm_action'); ?>')">
-                                                                    <?php echo csrf_field(); ?>
-                                                                    <?php echo method_field('DELETE'); ?>
-                                                                    <button class="btn btn-sm btn-danger" type="submit" data-toggle="tooltip" title="<?php echo app('translator')->get('Delete'); ?>">
-                                                                        <i class="fa fa-trash"></i>
-                                                                    </button>
-                                                                </form>
-                                                
-                                                                <a class="btn btn-sm btn-primary" data-toggle="tooltip" title="<?php echo app('translator')->get('Chi tiết'); ?>"
-                                                                href="<?php echo e(route('parents.show', $row->parent->id)); ?>">
-                                                                    <i class="fa fa-eye"></i> Chi tiết
-                                                                </a>
-                                                            </td>
                                                         </tr>
                                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                     <?php else: ?>
@@ -293,7 +272,7 @@
                         <table class="table table-hover table-bordered" id="parent-table">
                             <thead>
                                 <tr>
-                                    <th><input type="checkbox" id="checkAll"></th>
+                                    <th>Chọn</th>
                                     <th><?php echo app('translator')->get('Họ và tên'); ?></th>
                                     <th><?php echo app('translator')->get('Giới tính'); ?></th>
                                     <th><?php echo app('translator')->get('Số điện thoại'); ?></th>
@@ -303,8 +282,14 @@
                             </thead>
                             <tbody>
                                 <?php $__currentLoopData = $allParents; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $parent): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php
+                                    $isChecked = in_array($parent->id, $studentParentIds);
+                                    $existingRelation = $detail->studentParents->firstWhere('parent_id', $parent->id);
+                                ?>
                                     <tr>
-                                        <td><input type="checkbox" name="parents[]" value="<?php echo e($parent->id); ?>"></td>
+                                        <td>
+                                            <input type="checkbox" name="parents[<?php echo e($parent->id); ?>][id]" value="<?php echo e($parent->id); ?>" <?php echo e($isChecked ? 'checked' : ''); ?>>
+                                        </td>
                                         <td class="parent-name"><?php echo e($parent->first_name); ?> <?php echo e($parent->last_name); ?></td>
                                         <td><?php echo app('translator')->get($parent->sex); ?></td>
                                         <td><?php echo e($parent->phone); ?></td>
@@ -312,7 +297,7 @@
                                         <td>
                                             <select style="width:100%" name="parents[<?php echo e($parent->id); ?>][relationship_id]" class="form-control select2">
                                                 <?php $__currentLoopData = $list_relationship; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $relation): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                    <option value="<?php echo e($relation->id); ?>"><?php echo e($relation->title); ?></option>
+                                                    <option <?php echo e($existingRelation && $existingRelation->relationship_id == $relation->id ? 'selected' : ''); ?> value="<?php echo e($relation->id); ?>"><?php echo e($relation->title); ?></option>
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </select>
                                         </td>
@@ -334,9 +319,6 @@
 
 <?php $__env->startSection('script'); ?>
     <script>
-       $('#checkAll').on('click', function() {
-            $('input[name="parents[]"]').prop('checked', this.checked);
-        });
         $('#search-parent').on('keyup', function() {
             let value = $(this).val().toLowerCase();
             $('#parent-table tbody tr').filter(function() {

@@ -64,6 +64,9 @@ class Student extends Model
         if (!empty($params['status'])) {
             $query->where('tb_students.status', $params['status']);
         }
+        if (!empty($params['area_id'])) {
+            $query->where('tb_students.area_id', $params['area_id']);
+        }
         return $query;
     }
 

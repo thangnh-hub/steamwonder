@@ -85,7 +85,6 @@
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title"><?php echo app('translator')->get('List'); ?></h3>
-
             </div>
             <div class="box-body table-responsive">
                 <?php if(session('errorMessage')): ?>
