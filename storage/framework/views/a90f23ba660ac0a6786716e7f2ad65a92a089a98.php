@@ -173,21 +173,27 @@
                             <h3 class="box-title"><?php echo app('translator')->get('Image'); ?></h3>
                         </div>
                         <div class="box-body">
-                            <div class="form-group box_img_right">
-                                <div id="image-holder" class="box_image <?php echo e(isset($detail->avatar) ? 'active' : ''); ?>">
-                                    <img class="img-width"
-                                        src="<?php echo e($detail->avatar ?? url('themes/admin/img/no_image.jpg')); ?>">
-                                    <input id="image" class="form-control hidden list_image" type="text"
-                                        name="avatar" value="<?php echo e($detail->avatar ?? ''); ?>">
-                                    <span class="btn btn-sm btn-danger btn-remove" style="display: none"><i
-                                            class="fa fa-trash"></i></span>
+                            <div class="form-group box_img_right <?php echo e(isset($detail->avatar) ? 'active' : ''); ?>">
+                                <div id="image-holder" class="img-width">
+                                    <?php if($detail->avatar != ''): ?>
+                                        <img src="<?php echo e($detail->avatar); ?>">
+                                    <?php else: ?>
+                                        <img src="<?php echo e(url('themes/admin/img/no_image.jpg')); ?>">
+                                    <?php endif; ?>
                                 </div>
-                                <span class="input-group-btn">
-                                    <a data-input="image" class="btn btn-primary lfm" data-type="cms-image">
-                                        <i class="fa fa-picture-o"></i> <?php echo app('translator')->get('choose'); ?>
-                                    </a>
-                                </span>
+                                <span class="btn btn-sm btn-danger btn-remove"><i class="fa fa-trash"></i></span>
+                                <div class="input-group">
+                                    <span class="input-group-btn">
+                                        <a data-input="image" data-preview="image-holder" class="btn btn-primary lfm"
+                                            data-type="cms-image">
+                                            <i class="fa fa-picture-o"></i> <?php echo app('translator')->get('Choose'); ?>
+                                        </a>
+                                    </span>
+                                    <input id="image" class="form-control inp_hidden" type="hidden" name="avatar"
+                                        placeholder="<?php echo app('translator')->get('Image source'); ?>" value="<?php echo e($detail->avatar ?? ''); ?>">
+                                </div>
                             </div>
+                            
                         </div>
                     </div>
 

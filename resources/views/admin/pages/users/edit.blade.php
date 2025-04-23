@@ -174,20 +174,25 @@
                             <h3 class="box-title">@lang('Image')</h3>
                         </div>
                         <div class="box-body">
-                            <div class="form-group box_img_right">
-                                <div id="image-holder" class="box_image {{ isset($detail->avatar) ? 'active' : '' }}">
-                                    <img class="img-width"
-                                        src="{{ $detail->avatar ?? url('themes/admin/img/no_image.jpg') }}">
-                                    <input id="image" class="form-control hidden list_image" type="text"
-                                        name="avatar" value="{{ $detail->avatar ?? '' }}">
-                                    <span class="btn btn-sm btn-danger btn-remove" style="display: none"><i
-                                            class="fa fa-trash"></i></span>
+                            <div class="form-group box_img_right {{ isset($detail->avatar) ? 'active' : '' }}">
+                                <div id="image-holder" class="img-width">
+                                    @if ($detail->avatar != '')
+                                        <img src="{{ $detail->avatar }}">
+                                    @else
+                                        <img src="{{ url('themes/admin/img/no_image.jpg') }}">
+                                    @endif
                                 </div>
-                                <span class="input-group-btn">
-                                    <a data-input="image" class="btn btn-primary lfm" data-type="cms-image">
-                                        <i class="fa fa-picture-o"></i> @lang('choose')
-                                    </a>
-                                </span>
+                                <span class="btn btn-sm btn-danger btn-remove"><i class="fa fa-trash"></i></span>
+                                <div class="input-group">
+                                    <span class="input-group-btn">
+                                        <a data-input="image" data-preview="image-holder" class="btn btn-primary lfm"
+                                            data-type="cms-image">
+                                            <i class="fa fa-picture-o"></i> @lang('Choose')
+                                        </a>
+                                    </span>
+                                    <input id="image" class="form-control inp_hidden" type="hidden" name="avatar"
+                                        placeholder="@lang('Image source')" value="{{ $detail->avatar ?? '' }}">
+                                </div>
                             </div>
                         </div>
                     </div>
