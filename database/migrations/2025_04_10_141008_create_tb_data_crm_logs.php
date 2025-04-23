@@ -17,7 +17,7 @@ class CreateTbDataCrmLogs extends Migration
             $table->id();
             $table->foreignId('data_crm_id')->nullable()->constrained('tb_data_crms');
             $table->string('status', 50)->nullable();
-            $table->text('address')->nullable();
+            $table->text('content')->nullable();
             $table->json('json_params')->nullable();
             $table->dateTime('consulted_at')->nullable();
             $table->string('result', 50)->nullable();
