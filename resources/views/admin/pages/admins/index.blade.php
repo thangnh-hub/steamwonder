@@ -213,13 +213,13 @@
                                             </td>
 
                                             <td>
-                                                {{-- @isset($admin->area_extends)
+                                                {{-- @if (isset($admin->area_extends) && count($admin->area_extends) > 0)
                                                     <ul>
                                                         @foreach ($admin->area_extends as $i)
                                                             <li>{{ $i->name }}</li>
                                                         @endforeach
                                                     </ul>
-                                                @endisset --}}
+                                                @endif --}}
                                             </td>
                                             <td>
                                                 {{ $admin->department->name ?? '' }}

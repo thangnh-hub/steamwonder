@@ -90,7 +90,7 @@ class AdminsImport implements ToCollection
                     "area_id" =>  '',
                     "role_extend" =>  '',
                 ];
-                $student = Admin::create([
+                $user = Admin::create([
                     'admin_code' => $admin_code_auto,
                     'admin_type' => trim($row[4]),
                     'department_id' => $department->id ?? null,
