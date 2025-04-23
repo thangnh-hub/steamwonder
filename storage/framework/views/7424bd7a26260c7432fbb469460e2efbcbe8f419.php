@@ -220,7 +220,13 @@
                                             </td>
 
                                             <td>
-                                                
+                                                <?php if(isset($admin->list_area) && count($admin->list_area) > 0): ?>
+                                                    <ul>
+                                                        <?php $__currentLoopData = $admin->list_area; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                            <li><?php echo e($i->name); ?></li>
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    </ul>
+                                                <?php endif; ?>
                                             </td>
                                             <td>
                                                 <?php echo e($admin->department->name ?? ''); ?>
@@ -232,7 +238,11 @@
                                             <td>
                                                 <ul>
                                                     <li><?php echo e($admin->role_name); ?></li>
-                                                    
+                                                    <?php if(isset($admin->list_role)): ?>
+                                                        <?php $__currentLoopData = $admin->list_role; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                            <li><?php echo e($i->name); ?></li>
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    <?php endif; ?>
                                                 </ul>
                                             </td>
                                             
