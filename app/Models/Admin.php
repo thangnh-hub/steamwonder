@@ -62,7 +62,7 @@ class Admin extends Authenticatable
 
   public function department()
   {
-    return $this->belongsTo(WarehouseDepartment::class, 'department_id', 'id');
+    return $this->belongsTo(Department::class, 'department_id', 'id');
   }
 
   public function direct_manager()
@@ -94,7 +94,7 @@ class Admin extends Authenticatable
       ->unique()  // Loại bỏ giá trị trùng nhau
       ->values()  // Reset key index của mảng
       ->toArray(); // Chuyển về mảng thuần
-      
+
     $access = (object) [
       'menu_id' => $extractAccess('menu_id'),
       'function_code' => $extractAccess('function_code'),
