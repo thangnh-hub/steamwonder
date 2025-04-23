@@ -98,11 +98,16 @@ Route::group(['namespace' => 'Admin'], function () {
         'users' => 'UserController',
         'data_crms' => 'DataCrmController',
         'parents' => 'ParentController',
-
-
-
+        'relationships' => 'RelationshipController',
         // End for SteamWonder
       ]);
+      Route::post('data_crms_log_store', 'DataCrmController@storeCRMLOG')->name('data_crms_log_store');
+      //thêm ng thân cho bé
+      Route::post('student/{id}/add-parent', 'StudentController@addParent')->name('student.addParent');
+      //xóa mqh ng thân
+      Route::delete('student-parent/{id}', 'StudentController@removeParentRelation')->name('student.removeParentRelation');
+
+
       // Import nguời dùng
       Route::post('import_user', 'AdminController@importUser')->name('admin.import_user');
       //update kpi teacher
@@ -186,6 +191,10 @@ Route::group(['namespace' => 'Admin'], function () {
       Route::get('leave_balances/create', 'LeaveController@createLeaveBalance')->name('leave.balance.create');
       Route::post('leave_balances/store', 'LeaveController@storeLeaveBalance')->name('leave.balance.store');
     });
+
+    //import data crm
+    Route::post('import_data_crm', 'DataCrmController@importDataCrm')->name('data_crm.import');
+
     // In phiếu đề nghị thanh toán
     Route::post('warehouse_order_product_print', 'WareHouseOrderBuyController@printPaymentRequest')->name('warehouse_order_product_buy.print_payment_request');
     // Export Thống kê số lượng tài sản

@@ -47,18 +47,25 @@ class Student extends Model
     public static function getSqlStudent($params = [])
     {
         $query = Student::select('tb_students.*', 'a.name as area_name')
-            ->leftJoin('tb_areas as a', 'tb_students.area_id', '=', 'a.id');
-
+            ->leftJoin('tb_areas as a', 'tb_students.area_id', '=', 'a.id')
+            ->when(!empty($params['keyword']), function ($query) use ($params) {
+                $keyword = $params['keyword'];
+                return $query->where(function ($where) use ($keyword) {
+                    return $where->where('tb_students.first_name', 'like', '%' . $keyword . '%')
+                        ->orWhere('tb_students.last_name', 'like', '%' . $keyword . '%')
+                        ->orWhere('tb_students.student_code', 'like', '%' . $keyword . '%')
+                        ->orWhere('tb_students.nickname', 'like', '%' . $keyword . '%');
+                });
+            });
         if (isset($params['list_id']) && !empty($params['list_id'])) {
             $query->whereIn('tb_students.id', $params['list_id']);
         }
-
-        if (isset($params['name']) && !empty($params['name'])) {
-            $query->where('tb_students.name', 'like', '%' . $params['name'] . '%');
-        }
-
+        
         if (!empty($params['status'])) {
             $query->where('tb_students.status', $params['status']);
+        }
+        if (!empty($params['area_id'])) {
+            $query->where('tb_students.area_id', $params['area_id']);
         }
         return $query;
     }
