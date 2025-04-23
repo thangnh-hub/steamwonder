@@ -64,11 +64,14 @@
     "Successfully updated!": "Cập nhật thành công!",
     "Active": "Hoạt động",
     "Deactive": "Không hoạt động",
-    "User management": "Quản lý tài khoản phụ huynh",
-    "pending": "Chờ duyệt",
-    "delete": "Đã xóa",
-    "Image": "Hình ảnh",
-    "choose": "Chọn",
-    "Address": "Địa chỉ",
-    "Phone": "Điện thoại"
+    "new": "Mới",
+    "First Name": "Tên",
+    "Last Name": "Họ",
+    "is_advise": "Đang tư vấn",
+    "end_advise": "Kết thúc tư vấn",
+    "yes": "Đồng ý",
+    "male": "Nam",
+    "female": "Nữ",
+    "other": "Khác",
+    "no": "Không đồng ý"
 }

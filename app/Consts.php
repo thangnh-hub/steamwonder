@@ -4,6 +4,19 @@ namespace App;
 
 class Consts
 {
+  const STATUS_ACTIVE = 'active';
+  const STATUS_DATACRM = [
+    'new' => 'new',
+    'is_advise' => 'is_advise',
+  ];
+  const STATUS_DATACRMLOG = [
+    'is_advise' => 'is_advise',
+    'end_advise' => 'end_advise',
+  ];
+  const RESULT_DATACRMLOG = [
+    'yes' => 'yes',
+    'no' => 'no',
+  ];
   const ROOM_TYPE = [
     'classroom' => 'classroom',
     'working room' => 'working room'
