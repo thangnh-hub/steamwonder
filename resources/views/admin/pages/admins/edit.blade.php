@@ -188,7 +188,7 @@
 
                                     <div class="tab-pane" id="tab_3">
 
-                                        {{-- <div class="masonry-container">
+                                        <div class="masonry-container">
                       @if (count($activeModules) == 0)
                         <p>
                           @lang('No record found on the system!')
@@ -237,7 +237,7 @@
                         @endforeach
                       @endif
 
-                    </div> --}}
+                    </div>
 
                                     </div>
 
@@ -248,7 +248,7 @@
                                                     @lang('No record found on the system!')
                                                 </div>
                                             @else
-                                                {{-- @foreach ($activeMenus as $menu)
+                                                @foreach ($activeMenus as $menu)
                                                     <div class="masonry-box-item">
                                                         <ul class="checkbox_list">
                                                             @include('admin.pages.admins.role-menu-item', [
@@ -260,7 +260,7 @@
                                                             ])
                                                         </ul>
                                                     </div>
-                                                @endforeach --}}
+                                                @endforeach
                                             @endif
 
                                         </div>

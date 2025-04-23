@@ -55,7 +55,7 @@
               </div>
             </div>
 
-            
+
 
             <div class="col-md-2">
               <div class="form-group">
@@ -114,7 +114,9 @@
             <thead>
               <tr>
                 <th>#</th>
-                <th>@lang('Name')</th>
+                <th>@lang('User Name')</th>
+                <th>@lang('First Name')</th>
+                <th>@lang('Last Name')</th>
                 <th>@lang('Avata')</th>
                 <th>@lang('Email')</th>
                 <th>@lang('Created at')</th>
@@ -131,9 +133,15 @@
                     <tr class="valign-middle">
                       <td>{{ ++$t }}</td>
                       <td>
-                        <strong style="font-size: 14px;">{{ $row->name }}</strong>
+                        <strong style="font-size: 14px;">{{ $row->username }}</strong>
                       </td>
-                     
+                      <td>
+                        <strong style="font-size: 14px;">{{ $row->first_name }}</strong>
+                      </td>
+                      <td>
+                        <strong style="font-size: 14px;">{{ $row->last_name }}</strong>
+                      </td>
+
                       <td>
                         <img width="100px" src="{{ $row->avatar ?? url('themes/admin/img/no_image.jpg') }}"
                           alt="{{ $row->name }}">

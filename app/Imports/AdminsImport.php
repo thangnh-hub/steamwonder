@@ -64,7 +64,7 @@ class AdminsImport implements ToCollection
                     if (empty($department)) {
                         $department = Department::create([
                             'name' => trim($row[9]),
-                            'code' => $code,
+                            'code' => strtoupper($code),
                             'area_id' => trim($row[6]),
                             'admin_created_id' => $user->id,
                         ]);
@@ -84,11 +84,11 @@ class AdminsImport implements ToCollection
 
                 $json = [
                     "position" =>  trim($row[3]),
-                    "address" =>  '',
+                    "address" =>  null,
                     "brief" =>  trim($row[11]),
-                    "content" =>  '',
-                    "area_id" =>  '',
-                    "role_extend" =>  '',
+                    "content" =>  null,
+                    "area_id" =>  null,
+                    "role_extend" =>  null,
                 ];
                 $user = Admin::create([
                     'admin_code' => $admin_code_auto,

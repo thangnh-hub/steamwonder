@@ -1,56 +1,55 @@
-@extends('admin.layouts.app')
+<?php $__env->startSection('title'); ?>
+    <?php echo app('translator')->get($module_name); ?>
+<?php $__env->stopSection(); ?>
 
 
-@section('title')
-    @lang($module_name)
-@endsection
-
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
-            @lang($module_name)
-            <a class="btn btn-sm btn-warning pull-right" href="{{ route(Request::segment(2) . '.create') }}"><i
-                    class="fa fa-plus"></i> @lang('Add')</a>
+            <?php echo app('translator')->get($module_name); ?>
+            <a class="btn btn-sm btn-warning pull-right" href="<?php echo e(route(Request::segment(2) . '.create')); ?>"><i
+                    class="fa fa-plus"></i> <?php echo app('translator')->get('Add'); ?></a>
         </h1>
     </section>
 
     <!-- Main content -->
     <section class="content">
-        @if (session('errorMessage'))
+        <?php if(session('errorMessage')): ?>
             <div class="alert alert-warning alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                {{ session('errorMessage') }}
+                <?php echo e(session('errorMessage')); ?>
+
             </div>
-        @endif
-        @if (session('successMessage'))
+        <?php endif; ?>
+        <?php if(session('successMessage')): ?>
             <div class="alert alert-success alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                {{ session('successMessage') }}
-            </div>
-        @endif
+                <?php echo e(session('successMessage')); ?>
 
-        @if ($errors->any())
+            </div>
+        <?php endif; ?>
+
+        <?php if($errors->any()): ?>
             <div class="alert alert-danger alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 
-                @foreach ($errors->all() as $error)
-                    <p>{{ $error }}</p>
-                @endforeach
+                <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <p><?php echo e($error); ?></p>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
             </div>
-        @endif
-        <form role="form" action="{{ route(Request::segment(2) . '.store') }}" method="POST">
+        <?php endif; ?>
+        <form role="form" action="<?php echo e(route(Request::segment(2) . '.store')); ?>" method="POST">
             <div class="row">
                 <div class="col-lg-8">
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title">@lang('Update form')</h3>
+                            <h3 class="box-title"><?php echo app('translator')->get('Update form'); ?></h3>
                         </div>
                         <!-- /.box-header -->
                         <!-- form start -->
-                        @csrf
+                        <?php echo csrf_field(); ?>
                         <div class="box-body">
                             <!-- Custom Tabs -->
                             <div class="nav-tabs-custom">
@@ -68,17 +67,17 @@
 
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>@lang('Username') <small class="text-red">*</small></label>
+                                                    <label><?php echo app('translator')->get('Username'); ?> <small class="text-red">*</small></label>
                                                     <input type="text" class="form-control" name="username"
-                                                        placeholder="@lang('Name')" value="{{ old('username') }}"
+                                                        placeholder="<?php echo app('translator')->get('Name'); ?>" value="<?php echo e(old('username')); ?>"
                                                         required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>@lang('Password') <small class="text-red">*</small></label>
+                                                    <label><?php echo app('translator')->get('Password'); ?> <small class="text-red">*</small></label>
                                                     <input type="password" class="form-control" required name="password"
-                                                        placeholder="@lang('Password must be at least 8 characters')" value="{{ old('password') }}"
+                                                        placeholder="<?php echo app('translator')->get('Password must be at least 8 characters'); ?>" value="<?php echo e(old('password')); ?>"
                                                         autocomplete="new-password">
                                                 </div>
                                             </div>
@@ -86,40 +85,40 @@
 
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>@lang('First name') <small class="text-red">*</small></label>
+                                                    <label><?php echo app('translator')->get('First name'); ?> <small class="text-red">*</small></label>
                                                     <input type="text" class="form-control" name="first_name"
-                                                        placeholder="@lang('First name')" value="{{ old('first_name') }}"
+                                                        placeholder="<?php echo app('translator')->get('First name'); ?>" value="<?php echo e(old('first_name')); ?>"
                                                         required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>@lang('Last name') <small class="text-red">*</small></label>
+                                                    <label><?php echo app('translator')->get('Last name'); ?> <small class="text-red">*</small></label>
                                                     <input type="text" class="form-control" name="last_name"
-                                                        placeholder="@lang('Last name')" value="{{ old('last_name') }}"
+                                                        placeholder="<?php echo app('translator')->get('Last name'); ?>" value="<?php echo e(old('last_name')); ?>"
                                                         required>
                                                 </div>
                                             </div>
 
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>@lang('Email')</label>
+                                                    <label><?php echo app('translator')->get('Email'); ?></label>
                                                     <input type="email" class="form-control" name="email"
-                                                        placeholder="@lang('Email')" value="{{ old('email') }}">
+                                                        placeholder="<?php echo app('translator')->get('Email'); ?>" value="<?php echo e(old('email')); ?>">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>@lang('Phone')<small class="text-red">*</small></label>
+                                                    <label><?php echo app('translator')->get('Phone'); ?><small class="text-red">*</small></label>
                                                     <input type="text" class="form-control" name="phone" required
-                                                        placeholder="@lang('Phone')" value="{{ old('phone') }}">
+                                                        placeholder="<?php echo app('translator')->get('Phone'); ?>" value="<?php echo e(old('phone')); ?>">
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label>@lang('Address')</label>
+                                                    <label><?php echo app('translator')->get('Address'); ?></label>
                                                     <input type="text" class="form-control" name="address"
-                                                        placeholder="@lang('Address')" value="{{ old('address') }}">
+                                                        placeholder="<?php echo app('translator')->get('Address'); ?>" value="<?php echo e(old('address')); ?>">
                                                 </div>
                                             </div>
 
@@ -135,32 +134,32 @@
                 <div class="col-lg-4">
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title">@lang('Publish')</h3>
+                            <h3 class="box-title"><?php echo app('translator')->get('Publish'); ?></h3>
                         </div>
                         <div class="box-body">
                             <div class="btn-set">
                                 <button type="submit" class="btn btn-info">
-                                    <i class="fa fa-save"></i> @lang('Save')
+                                    <i class="fa fa-save"></i> <?php echo app('translator')->get('Save'); ?>
                                 </button>
                                 &nbsp;&nbsp;
-                                <a class="btn btn-success " href="{{ route(Request::segment(2) . '.index') }}">
-                                    <i class="fa fa-bars"></i> @lang('List')
+                                <a class="btn btn-success " href="<?php echo e(route(Request::segment(2) . '.index')); ?>">
+                                    <i class="fa fa-bars"></i> <?php echo app('translator')->get('List'); ?>
                                 </a>
                             </div>
                         </div>
                     </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title">@lang('Status')</h3>
+                            <h3 class="box-title"><?php echo app('translator')->get('Status'); ?></h3>
                         </div>
                         <div class="box-body">
                             <div class="form-group">
                                 <select name="status" class=" form-control select2">
-                                    @foreach (App\Consts::USER_STATUS as $key => $val)
-                                        <option value="{{ $key }}"
-                                            {{ old('status') && old('status') == $val ? 'selected' : '' }}>
-                                            @lang($val)</option>
-                                    @endforeach
+                                    <?php $__currentLoopData = App\Consts::USER_STATUS; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($key); ?>"
+                                            <?php echo e(old('status') && old('status') == $val ? 'selected' : ''); ?>>
+                                            <?php echo app('translator')->get($val); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
                         </div>
@@ -168,23 +167,23 @@
 
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title">@lang('Image')</h3>
+                            <h3 class="box-title"><?php echo app('translator')->get('Image'); ?></h3>
                         </div>
                         <div class="box-body">
                             <div class="form-group box_img_right">
                                 <div id="image-holder">
-                                    <img src="{{ url('themes/admin/img/no_image.jpg') }}">
+                                    <img src="<?php echo e(url('themes/admin/img/no_image.jpg')); ?>">
                                 </div>
                                 <span class="btn btn-sm btn-danger btn-remove"><i class="fa fa-trash"></i></span>
                                 <div class="input-group">
                                     <span class="input-group-btn">
                                         <a data-input="image" data-preview="image-holder" class="btn btn-primary lfm"
                                             data-type="cms-image">
-                                            <i class="fa fa-picture-o"></i> @lang('choose')
+                                            <i class="fa fa-picture-o"></i> <?php echo app('translator')->get('choose'); ?>
                                         </a>
                                     </span>
                                     <input id="image" class="form-control inp_hidden" type="hidden" name="avatar"
-                                        placeholder="@lang('Image source')" value="{{ old('avatar') ?? '' }}">
+                                        placeholder="<?php echo app('translator')->get('Image source'); ?>" value="<?php echo e(old('avatar') ?? ''); ?>">
                                 </div>
                             </div>
                         </div>
@@ -192,16 +191,16 @@
 
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title">@lang('Publish')</h3>
+                            <h3 class="box-title"><?php echo app('translator')->get('Publish'); ?></h3>
                         </div>
                         <div class="box-body">
                             <div class="btn-set">
                                 <button type="submit" class="btn btn-info">
-                                    <i class="fa fa-save"></i> @lang('Save')
+                                    <i class="fa fa-save"></i> <?php echo app('translator')->get('Save'); ?>
                                 </button>
                                 &nbsp;&nbsp;
-                                <a class="btn btn-success " href="{{ route(Request::segment(2) . '.index') }}">
-                                    <i class="fa fa-bars"></i> @lang('List')
+                                <a class="btn btn-success " href="<?php echo e(route(Request::segment(2) . '.index')); ?>">
+                                    <i class="fa fa-bars"></i> <?php echo app('translator')->get('List'); ?>
                                 </a>
                             </div>
                         </div>
@@ -211,8 +210,10 @@
         </form>
 
     </section>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('script')
+<?php $__env->startSection('script'); ?>
     <script></script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\steamwonder\resources\views/admin/pages/users/create.blade.php ENDPATH**/ ?>
