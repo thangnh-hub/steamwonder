@@ -103,7 +103,8 @@ Route::group(['namespace' => 'Admin'], function () {
 
         // End for SteamWonder
       ]);
-
+      // Import nguời dùng
+      Route::post('import_user', 'AdminController@importUser')->name('admin.import_user');
       //update kpi teacher
       Route::get('ajax-kpi-teacher-update', 'ReportController@AjaxkpiTeacher')->name('ajax_kpi_teacher_index');
       //ĐỀ XUẤT TS
@@ -246,7 +247,7 @@ Route::group(['namespace' => 'Admin'], function () {
     Route::post('warehouse_filter_asset_recall', 'WareHouseRecallController@getAssetFromFilter')->name('warehouse_filter_asset_recall');
     Route::get('export-excel-report-warhouse-entry-deliver', 'WareHouseController@export')->name('export_report_warhouse_entry_deliver');
 
-    //import decision 
+    //import decision
     Route::get('ajax_update_vat_entry_detail', 'WareHouseEntryController@updateVAT')->name('ajax_update_vat_entry_detail');
   });
   // Test teacher
