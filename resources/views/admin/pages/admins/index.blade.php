@@ -183,7 +183,7 @@
                                     <th>@lang('Phòng ban')</th>
                                     <th>@lang('Admin type')</th>
                                     <th>@lang('Role')</th>
-                                    {{-- <th>@lang('Chức năng mở rộng')</th> --}}
+                                    <th>@lang('Chức năng mở rộng')</th>
                                     <th>@lang('Direct manager')</th>
                                     <th>@lang('Status')</th>
                                     <th>@lang('Action')</th>
@@ -211,10 +211,9 @@
                                             <td>
                                                 {{ $admin->area->name ?? '' }}
                                             </td>
-
                                             <td>
 
-                                                @if (isset($admin->area_extends) && count($admin->area_extends) > 0)
+                                                @if (isset($admin->area_extends))
                                                     <ul>
                                                         @foreach ($admin->area_extends as $i)
                                                             <li>{{ $i->name }}</li>
@@ -231,14 +230,14 @@
                                             <td>
                                                 <ul>
                                                     <li>{{ $admin->role_name }}</li>
-                                                    {{-- @isset($admin->role_extends)
+                                                    @isset($admin->role_extends)
                                                         @foreach ($admin->role_extends as $i)
                                                             <li>{{ $i->name }}</li>
                                                         @endforeach
-                                                    @endisset --}}
+                                                    @endisset
                                                 </ul>
                                             </td>
-                                            {{-- <td>
+                                            <td>
                                                 @isset($admin->function_extends)
                                                     <ul>
                                                         @foreach ($admin->function_extends as $i)
@@ -246,7 +245,7 @@
                                                         @endforeach
                                                     </ul>
                                                 @endisset
-                                            </td> --}}
+                                            </td>
                                             <td>
                                                 {{ $admin->direct_manager->name ?? '' }}
                                             </td>

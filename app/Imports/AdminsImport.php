@@ -84,11 +84,11 @@ class AdminsImport implements ToCollection
 
                 $json = [
                     "position" =>  trim($row[3]),
-                    "address" =>  '',
+                    "address" =>  null,
                     "brief" =>  trim($row[11]),
-                    "content" =>  '',
-                    "area_id" =>  '',
-                    "role_extend" =>  '',
+                    "content" =>  null,
+                    "area_id" =>  null,
+                    "role_extend" =>  null,
                 ];
                 $user = Admin::create([
                     'admin_code' => $admin_code_auto,

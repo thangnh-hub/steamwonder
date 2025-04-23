@@ -189,7 +189,58 @@
 
                                     <div class="tab-pane" id="tab_3">
 
-                                        
+                                        <div class="masonry-container">
+                      <?php if(count($activeModules) == 0): ?>
+                        <p>
+                          <?php echo app('translator')->get('No record found on the system!'); ?>
+                        </p>
+                      <?php else: ?>
+                        <?php $__currentLoopData = $activeModules; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $module): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                          <div class="masonry-box-item">
+                            <ul class="checkbox_list">
+                              <li>
+                                <label
+                                  for="json_access_module_code_<?php echo e($module->id); ?>"><strong><?php echo e(__($module->name)); ?></strong></label>
+                              </li>
+                              <?php $__currentLoopData = $module->moduleFunctions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $func): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php if(isset($admin->permission_access_by_role->function_code) && in_array($func->function_code, $admin->permission_access_by_role->function_code)): ?>
+                                  <li>
+                                    <input type="checkbox" class="mr-15" checked disabled>
+                                    <label style="font-style: italic;" class="text-danger"
+                                      for="json_access_function_code_<?php echo e($func->id); ?>"><?php echo e(__($func->name)); ?>
+
+                                      (<?php echo e($func->function_code ?? ''); ?>)
+                                    </label>
+                                  </li>
+                                <?php else: ?>
+                                  <?php
+                                    $checked = '';
+                                    if (
+                                        isset($admin->json_params->function_code) &&
+                                        in_array($func->function_code, $admin->json_params->function_code)
+                                    ) {
+                                        $checked = 'checked';
+                                    }
+                                  ?>
+                                  <li>
+                                    <input name="json_params[function_code][]" type="checkbox"
+                                      value="<?php echo e($func->function_code); ?>"
+                                      id="json_access_function_code_<?php echo e($func->id); ?>" class="mr-15"
+                                      <?php echo e($checked); ?>>
+                                    <label for="json_access_function_code_<?php echo e($func->id); ?>"><?php echo e(__($func->name)); ?>
+
+                                      (<?php echo e($func->function_code ?? ''); ?>)
+                                    </label>
+                                  </li>
+                                <?php endif; ?>
+                              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
+                            </ul>
+                          </div>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                      <?php endif; ?>
+
+                    </div>
 
                                     </div>
 
@@ -200,7 +251,19 @@
                                                     <?php echo app('translator')->get('No record found on the system!'); ?>
                                                 </div>
                                             <?php else: ?>
-                                                
+                                                <?php $__currentLoopData = $activeMenus; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $menu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <div class="masonry-box-item">
+                                                        <ul class="checkbox_list">
+                                                            <?php echo $__env->make('admin.pages.admins.role-menu-item', [
+                                                                'menu' => $menu,
+                                                                'selectedMenus' => array_merge(
+                                                                    $admin->permission_access_by_role->menu_id ??
+                                                                        [],
+                                                                    $admin->json_params->menu_id ?? []),
+                                                            ], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                                                        </ul>
+                                                    </div>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             <?php endif; ?>
 
                                         </div>

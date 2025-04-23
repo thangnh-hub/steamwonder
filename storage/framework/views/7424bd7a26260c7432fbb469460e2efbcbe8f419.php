@@ -184,7 +184,7 @@
                                     <th><?php echo app('translator')->get('Phòng ban'); ?></th>
                                     <th><?php echo app('translator')->get('Admin type'); ?></th>
                                     <th><?php echo app('translator')->get('Role'); ?></th>
-                                    
+                                    <th><?php echo app('translator')->get('Chức năng mở rộng'); ?></th>
                                     <th><?php echo app('translator')->get('Direct manager'); ?></th>
                                     <th><?php echo app('translator')->get('Status'); ?></th>
                                     <th><?php echo app('translator')->get('Action'); ?></th>
@@ -218,11 +218,11 @@
                                                 <?php echo e($admin->area->name ?? ''); ?>
 
                                             </td>
-
                                             <td>
-                                                <?php if(isset($admin->list_area) && count($admin->list_area) > 0): ?>
+
+                                                <?php if(isset($admin->area_extends)): ?>
                                                     <ul>
-                                                        <?php $__currentLoopData = $admin->list_area; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <?php $__currentLoopData = $admin->area_extends; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                             <li><?php echo e($i->name); ?></li>
                                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                     </ul>
@@ -238,14 +238,22 @@
                                             <td>
                                                 <ul>
                                                     <li><?php echo e($admin->role_name); ?></li>
-                                                    <?php if(isset($admin->list_role)): ?>
-                                                        <?php $__currentLoopData = $admin->list_role; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <?php if(isset($admin->role_extends)): ?>
+                                                        <?php $__currentLoopData = $admin->role_extends; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                             <li><?php echo e($i->name); ?></li>
                                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                     <?php endif; ?>
                                                 </ul>
                                             </td>
-                                            
+                                            <td>
+                                                <?php if(isset($admin->function_extends)): ?>
+                                                    <ul>
+                                                        <?php $__currentLoopData = $admin->function_extends; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                            <li><?php echo e($i->name); ?></li>
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    </ul>
+                                                <?php endif; ?>
+                                            </td>
                                             <td>
                                                 <?php echo e($admin->direct_manager->name ?? ''); ?>
 
