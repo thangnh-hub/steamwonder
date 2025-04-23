@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class WarehouseDepartment extends Model
 {
-    protected $table = 'tb_warehouse_department';
+    protected $table = 'tb_department';
 
     /**
      * The attributes that aren't mass assignable.
@@ -26,29 +26,29 @@ class WarehouseDepartment extends Model
 
     public static function getSqlWareHouseDepartment($params = [])
     {
-        $query = WarehouseDepartment::select('tb_warehouse_department.*')
+        $query = WarehouseDepartment::select('tb_department.*')
             ->when(!empty($params['keyword']), function ($query) use ($params) {
                 $keyword = $params['keyword'];
                 return $query->where(function ($where) use ($keyword) {
-                    return $where->where('tb_warehouse_department.name', 'like', '%' . $keyword . '%')
-                        ->orWhere('tb_warehouse_department.code', 'like', '%' . $keyword . '%');
+                    return $where->where('tb_department.name', 'like', '%' . $keyword . '%')
+                        ->orWhere('tb_department.code', 'like', '%' . $keyword . '%');
                 });
             })
             ->when(!empty($params['id']), function ($query) use ($params) {
                 if (is_array($params['id'])) {
-                    return $query->whereIn('tb_warehouse_department.id', $params['id']);
+                    return $query->whereIn('tb_department.id', $params['id']);
                 } else {
-                    return $query->where('tb_warehouse_department.id', $params['id']);
+                    return $query->where('tb_department.id', $params['id']);
                 }
             })
             ->when(!empty($params['area_id']), function ($query) use ($params) {
-                return $query->where('tb_warehouse_department.area_id', $params['area_id']);
+                return $query->where('tb_department.area_id', $params['area_id']);
             })
             ->when(!empty($params['status']), function ($query) use ($params) {
-                return $query->where('tb_warehouse_department.status', $params['status']);
+                return $query->where('tb_department.status', $params['status']);
             })
             ;
-        $query->groupBy('tb_warehouse_department.id')->orderBy('tb_warehouse_department.id','desc');
+        $query->groupBy('tb_department.id')->orderBy('tb_department.id','desc');
         return $query;
     }
 

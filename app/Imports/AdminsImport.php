@@ -64,7 +64,7 @@ class AdminsImport implements ToCollection
                     if (empty($department)) {
                         $department = Department::create([
                             'name' => trim($row[9]),
-                            'code' => $code,
+                            'code' => strtoupper($code),
                             'area_id' => trim($row[6]),
                             'admin_created_id' => $user->id,
                         ]);
