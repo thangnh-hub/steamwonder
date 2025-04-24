@@ -116,7 +116,7 @@ class ParentController extends Controller
     }
 
     public function destroy(tbParent $parent)
-    {
+    {   $parent->parentStudents()->delete();
         $parent->delete();
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Delete record successfully!'));
     }

@@ -32,6 +32,17 @@ class Consts
     'deliver' => 'deliver',
     'transfer' => 'transfer',
   ];
+  const STATUS_STUDY = [
+    'dang_hoc' => 'dang_hoc',
+    'chuyen_di' => 'chuyen_di',
+    'tot_nghiep' => 'tot_nghiep',
+    'bao_luu' => 'bao_luu',
+    'nghi_hoc' => 'nghi_hoc',
+    'ghi_danh' => 'ghi_danh',
+    'chua_di_hoc' => 'chua_di_hoc',
+    'ra_truong' => 'ra_truong',
+    'khac' => 'khac',
+  ];
   const WAREHOUSE_TYPE_ASSET_HISTORY = [
     'xuatkho' => 'xuatkho',
     'nhapkho' => 'nhapkho',
