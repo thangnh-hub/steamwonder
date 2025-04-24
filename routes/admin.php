@@ -196,6 +196,7 @@ Route::group(['namespace' => 'Admin'], function () {
 
     //import data crm
     Route::post('import_data_crm', 'DataCrmController@importDataCrm')->name('data_crm.import');
+    Route::post('import_data_student', 'StudentController@importDataStudent')->name('data_student.import');
 
     // In phiếu đề nghị thanh toán
     Route::post('warehouse_order_product_print', 'WareHouseOrderBuyController@printPaymentRequest')->name('warehouse_order_product_buy.print_payment_request');
