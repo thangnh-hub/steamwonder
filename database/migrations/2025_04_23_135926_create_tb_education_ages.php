@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTbDataCrmLogs extends Migration
+class CreateTbEducationAges extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,15 @@ class CreateTbDataCrmLogs extends Migration
      */
     public function up()
     {
-        Schema::create('tb_data_crm_logs', function (Blueprint $table) {
+        Schema::create('tb_education_ages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('data_crm_id')->nullable()->constrained('tb_data_crms');
-            $table->string('status', 50)->nullable();
-            $table->text('content')->nullable();
+            $table->foreignId('area_id')->nullable()->constrained('tb_areas');
+            $table->string('name', 255);
+            $table->integer('from_month')->nullable();
+            $table->integer('to_month')->nullable();
             $table->json('json_params')->nullable();
-            $table->dateTime('consulted_at')->nullable();
-            $table->string('result', 50)->nullable();
+            $table->string('status')->nullable()->default('active');
+            $table->integer('iorder')->default(0);
             $table->foreignId('admin_created_id')->nullable()->constrained('admins');
             $table->foreignId('admin_updated_id')->nullable()->constrained('admins');
             $table->timestamps();
@@ -34,6 +35,6 @@ class CreateTbDataCrmLogs extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tb_data_crm_logs');
+        Schema::dropIfExists('tb_education_ages');
     }
 }

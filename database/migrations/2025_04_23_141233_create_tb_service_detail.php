@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTbUserClassTable extends Migration
+class CreateTbServiceDetail extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,8 @@ class CreateTbUserClassTable extends Migration
      */
     public function up()
     {
-        Schema::create('tb_user_class', function (Blueprint $table) {
+        Schema::create('tb_service_detail', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('class_id');
-            $table->bigInteger('user_id');
-            $table->string('status')->nullable();
-            $table->json('json_params')->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +26,6 @@ class CreateTbUserClassTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tb_user_class');
+        Schema::dropIfExists('tb_service_detail');
     }
 }

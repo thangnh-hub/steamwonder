@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class WarehouseDepartment extends Model
+class Department extends Model
 {
     protected $table = 'tb_department';
 
@@ -24,7 +24,7 @@ class WarehouseDepartment extends Model
         'json_params' => 'object',
     ];
 
-    public static function getSqlWareHouseDepartment($params = [])
+    public static function getSqlDepartment($params = [])
     {
         $query = WarehouseDepartment::select('tb_department.*')
             ->when(!empty($params['keyword']), function ($query) use ($params) {
@@ -46,9 +46,8 @@ class WarehouseDepartment extends Model
             })
             ->when(!empty($params['status']), function ($query) use ($params) {
                 return $query->where('tb_department.status', $params['status']);
-            })
-            ;
-        $query->groupBy('tb_department.id')->orderBy('tb_department.id','desc');
+            });
+        $query->groupBy('tb_department.id')->orderBy('tb_department.id', 'desc');
         return $query;
     }
 
