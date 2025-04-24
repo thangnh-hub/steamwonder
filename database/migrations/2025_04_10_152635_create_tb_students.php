@@ -28,7 +28,7 @@ class CreateTbStudents extends Migration
             $table->json('json_params')->nullable();
             $table->string('status')->nullable()->default('active');
             $table->date('enrolled_at')->nullable();
-            $table->foreignId('current_class_id')->nullable()->constrained('tb_classs');
+            $table->foreignId('current_class_id')->nullable()->constrained('tb_class');
             $table->foreignId('admin_created_id')->nullable()->constrained('admins');
             $table->foreignId('admin_updated_id')->nullable()->constrained('admins');
             $table->timestamps();

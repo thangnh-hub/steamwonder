@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTbServiceDetail extends Migration
+class CreateTbServiceCategory extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,12 @@ class CreateTbServiceDetail extends Migration
      */
     public function up()
     {
-        Schema::create('tb_service_detail', function (Blueprint $table) {
+        Schema::create('tb_service_category', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('service_id')->constrained('tb_service');
-            $table->decimal('price', 10, 2)->default(0)->comment('Số tiền/đơn giá');
-            $table->double('quantity', 10, 2)->default(1)->comment('Số lượng áp dụng');
-            $table->dateTime('start_at')->nullable()->comment('Thời gian bắt đầu áp dụng');
-            $table->dateTime('end_at')->nullable()->comment('Thời gian kết thúc áp dụng');
+            $table->string('name', 255);
             $table->json('json_params')->nullable();
+            $table->string('status', 50)->nullable()->default('active');
+            $table->integer('iorder')->default(0);
             $table->foreignId('admin_created_id')->nullable()->constrained('admins');
             $table->foreignId('admin_updated_id')->nullable()->constrained('admins');
             $table->timestamps();
@@ -34,6 +32,6 @@ class CreateTbServiceDetail extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tb_service_detail');
+        Schema::dropIfExists('tb_service_category');
     }
 }
