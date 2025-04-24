@@ -11,6 +11,8 @@ use App\Models\Area;
 use App\Http\Services\DataPermissionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Imports\StudentImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StudentController extends Controller
 {
@@ -154,8 +156,8 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
-        $student->delete();
         $student->studentParents()->delete();
+        $student->delete();
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Delete record successfully!'));
     }
 
@@ -178,4 +180,34 @@ class StudentController extends Controller
         return redirect()->back()->with('successMessage', __('Cập nhật người thân thành công!'));
     }
 
+    public function importDataStudent(Request $request)
+    {
+        $params = $request->all();
+        // Kiểm tra và validate file đầu vào
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv',
+        ]);
+
+        if (!isset($params['file'])) {
+            return redirect()->back()->with('errorMessage', __('Cần chọn file để Import!'));
+        }
+
+        try {
+            // Import file
+            $import = new StudentImport($params);
+            Excel::import($import, request()->file('file'));
+
+            return redirect()->back()->with('successMessage', 'Import data thành công');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            $errorMessages = [];
+            foreach ($failures as $failure) {
+                $errorMessages[] = "Lỗi tại dòng " . $failure->row() . ": " . implode(", ", $failure->errors());
+            }
+            return redirect()->back()->with('errorMessage', implode("<br>", $errorMessages));
+        } catch (\Exception $e) {
+            // Bắt lỗi chung khác
+            return redirect()->back()->with('errorMessage', 'Lỗi khi import: ' . $e->getMessage());
+        }
+    }
 }

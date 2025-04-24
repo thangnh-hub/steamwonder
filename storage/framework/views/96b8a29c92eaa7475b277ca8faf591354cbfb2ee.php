@@ -66,6 +66,9 @@
                                         href="<?php echo e(route(Request::segment(2) . '.index')); ?>">
                                         <?php echo app('translator')->get('Reset'); ?>
                                     </a>
+
+                                    <button type="button" data-toggle="modal" data-target="#create_crmdata_student"
+                                    class="btn btn-success btn-sm"><?php echo app('translator')->get('Import Excel'); ?></button>
                                 </div>
                             </div>
                         </div>
@@ -74,7 +77,35 @@
             </form>
         </div>
         
-
+        <div id="create_crmdata_student" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Import học sinh</h4>
+                    </div>
+                    <form action="<?php echo e(route('data_student.import')); ?>" method="post" enctype="multipart/form-data">
+                        <?php echo csrf_field(); ?>
+                        <div class="modal-body row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label><?php echo app('translator')->get('Chọn tệp'); ?> <a href="<?php echo e(url('themes\admin\img\data.xlsx')); ?>" target="_blank">(<?php echo app('translator')->get('Minh họa file excel'); ?>)</a></label>
+                                    <small class="text-red">*</small>
+                                    <div style="display: flex" class="d-flex">
+                                        <input id="file" class="form-control" type="file" required name="file"
+                                            placeholder="<?php echo app('translator')->get('Select File'); ?>" value="">
+                                        <button type="submit" class="btn btn-success"><i class="fa fa-file-excel-o"
+                                                aria-hidden="true"></i> <?php echo app('translator')->get('Import'); ?></button>   
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+    
+            </div>
+        </div>
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title"><?php echo app('translator')->get('List'); ?></h3>

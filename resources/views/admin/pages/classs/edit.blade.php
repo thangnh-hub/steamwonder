@@ -640,6 +640,7 @@
                                                                                     </ul>
                                                                                 @endif
                                                                             </td>
+                                                                            
                                                                             <td>
                                                                                 <select class="form-control"
                                                                                     name="user_class_status[]" id="">

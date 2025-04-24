@@ -65,6 +65,9 @@
                                         href="{{ route(Request::segment(2) . '.index') }}">
                                         @lang('Reset')
                                     </a>
+
+                                    <button type="button" data-toggle="modal" data-target="#create_crmdata_student"
+                                    class="btn btn-success btn-sm">@lang('Import Excel')</button>
                                 </div>
                             </div>
                         </div>
@@ -73,7 +76,35 @@
             </form>
         </div>
         {{-- End search form --}}
-
+        <div id="create_crmdata_student" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Import học sinh</h4>
+                    </div>
+                    <form action="{{ route('data_student.import') }}" method="post" enctype="multipart/form-data">
+                        @csrf
+                        <div class="modal-body row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>@lang('Chọn tệp') <a href="{{ url('themes\admin\img\data.xlsx') }}" target="_blank">(@lang('Minh họa file excel'))</a></label>
+                                    <small class="text-red">*</small>
+                                    <div style="display: flex" class="d-flex">
+                                        <input id="file" class="form-control" type="file" required name="file"
+                                            placeholder="@lang('Select File')" value="">
+                                        <button type="submit" class="btn btn-success"><i class="fa fa-file-excel-o"
+                                                aria-hidden="true"></i> @lang('Import')</button>   
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+    
+            </div>
+        </div>
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title">@lang('List')</h3>
