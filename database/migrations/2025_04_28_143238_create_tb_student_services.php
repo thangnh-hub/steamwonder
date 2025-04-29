@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTbClassAttendance extends Migration
+class CreateTbStudentServices extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,13 @@ class CreateTbClassAttendance extends Migration
      */
     public function up()
     {
-        Schema::create('tb_class_attendance', function (Blueprint $table) {
+        Schema::create('tb_student_services', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('class_id')->nullable()->constrained('tb_class');
-            $table->dateTime('tracked_at')->nullable();
+            $table->foreignId('student_id')->constrained('tb_students');
+            $table->foreignId('service_id')->constrained('tb_service');
+            $table->foreignId('payment_cycle_id')->constrained('tb_payment_cycle');
+            $table->string('status')->default('active')->comment('Trạng thái dịch vụ: active, cancelled');
+            $table->dateTime('cancelled_at')->nullable();
             $table->json('json_params')->nullable();
             $table->foreignId('admin_created_id')->nullable()->constrained('admins');
             $table->foreignId('admin_updated_id')->nullable()->constrained('admins');
@@ -31,6 +34,6 @@ class CreateTbClassAttendance extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tb_class_attendance');
+        Schema::dropIfExists('tb_student_services');
     }
 }
