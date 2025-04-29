@@ -99,6 +99,8 @@ Route::group(['namespace' => 'Admin'], function () {
         'data_crms' => 'DataCrmController',
         'parents' => 'ParentController',
         'relationships' => 'RelationshipController',
+        'service_categorys' => 'ServiceCategoryController',
+        'services' => 'ServiceController',
         // End for SteamWonder
       ]);
       Route::post('data_crms_log_store', 'DataCrmController@storeCRMLOG')->name('data_crms_log_store');
@@ -190,6 +192,7 @@ Route::group(['namespace' => 'Admin'], function () {
       Route::post('leave_balances/update/{id}', 'LeaveController@updateLeaveBalance')->name('leave.balance.update');
       Route::get('leave_balances/create', 'LeaveController@createLeaveBalance')->name('leave.balance.create');
       Route::post('leave_balances/store', 'LeaveController@storeLeaveBalance')->name('leave.balance.store');
+      
     });
 
     //import data crm

@@ -42,6 +42,7 @@ class StudentImport implements ToModel,WithHeadingRow
         
         $genderValue = strtolower(trim($row['gioi_tinh'] ?? ''));
         $gender = $genderMapping[$genderValue] ?? Consts::GENDER['other'];
+        
         //mapping trạng thái học sinh
         $statusSlug = Str::slug(trim($row['trang_thai'] ?? ''));
         $statusStudyMapping = array_flip(array_map(fn($item) => Str::slug($item), Consts::STATUS_STUDY));
@@ -66,8 +67,7 @@ class StudentImport implements ToModel,WithHeadingRow
                 'birthday' => $this->excelDateToCarbon($row['ngay_sinh']),
                 'sex' => $gender,
                 'area_id' => $area_id,
-                'status' => 'active',
-                'status_study' => $status_study,
+                'status' => $status_study,
                 'enrolled_at' =>$this->excelDateToCarbon($row['ngay_bat_dau_hoc_chinh_thuc']) ,
                 'address' => $row['dia_chi_gia_dinh'] ?? '',
             ]
@@ -79,8 +79,8 @@ class StudentImport implements ToModel,WithHeadingRow
         }
 
         // Import Mẹ
-        if (!empty($row['ten_me'])) {
-            $this->importParentAndRelation($row['ten_me'], $student->id, 'mẹ',$area_id, $row['so_dien_thoai_me'] , $row['email_me']);
+        if (!empty($row['ho_ten_me'])) {
+            $this->importParentAndRelation($row['ho_ten_me'], $student->id, 'mẹ',$area_id, $row['so_dien_thoai_me'] , $row['email_me']);
         }
 
         return null; 
@@ -93,17 +93,28 @@ class StudentImport implements ToModel,WithHeadingRow
         $firstName = array_pop($nameParts); // Tên riêng
         $lastName = implode(' ', $nameParts); // Họ + tên đệm
        
-        $parent = tbParent::updateOrCreate(
-            [
-                'phone' => $phone,
-                'email' => $email,
-            ],
-            [
+        // Tìm parent theo phone hoặc email
+        $parent = tbParent::where('phone', $phone)
+        ->orWhere('email', $email)
+        ->first();
+
+        if ($parent) {
+            // Nếu đã có, cập nhật lại
+            $parent->update([
                 'first_name' => $firstName,
                 'last_name' => $lastName,
                 'area_id' => $area_id,
-            ]
-        );
+            ]);
+        } else {
+            // Nếu chưa có thì tạo mới
+            $parent = tbParent::create([
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'phone' => $phone,
+                'email' => $email,
+                'area_id' => $area_id,
+            ]);
+        }
 
         $relationship = Relationship::firstOrCreate([
             'title' => ucfirst($relationship_title),

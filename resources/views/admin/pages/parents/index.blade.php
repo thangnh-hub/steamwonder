@@ -120,8 +120,8 @@
                         <tr>
                             <th>@lang('STT')</th>
                             <th>@lang('Avatar')</th>
-                            <th>@lang('First Name')</th>
                             <th>@lang('Last Name')</th>
+                            <th>@lang('First Name')</th>
                             <th>@lang('Giới tính')</th>
                             <th>@lang('Ngày sinh')</th>
                             <th>@lang('Số CMND/CCCD')</th>
@@ -146,8 +146,8 @@
                                         <span class="text-muted">No image</span>
                                     @endif
                                 </td>
-                                <td>{{ $row->first_name ?? '' }}</td>
                                 <td>{{ $row->last_name ?? '' }}</td>
+                                <td>{{ $row->first_name ?? '' }}</td>
                                 <td>
                                     @lang($row->sex ?? '')
                                 </td>

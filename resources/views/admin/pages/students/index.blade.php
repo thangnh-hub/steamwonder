@@ -89,7 +89,7 @@
                         <div class="modal-body row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>@lang('Chọn tệp') <a href="{{ url('themes\admin\img\data.xlsx') }}" target="_blank">(@lang('Minh họa file excel'))</a></label>
+                                    <label>@lang('Chọn tệp') <a href="{{ url('themes\admin\img\data_student.xlsx') }}" target="_blank">(@lang('Minh họa file excel'))</a></label>
                                     <small class="text-red">*</small>
                                     <div style="display: flex" class="d-flex">
                                         <input id="file" class="form-control" type="file" required name="file"
@@ -109,7 +109,7 @@
             <div class="box-header">
                 <h3 class="box-title">@lang('List')</h3>
             </div>
-            <div class="box-body table-responsive">
+            <div class="box-body ">
                 @if (session('errorMessage'))
                     <div class="alert alert-warning alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -149,6 +149,8 @@
                                 <th>@lang('Tên thường gọi')</th>
                                 <th>@lang('Gender')</th>
                                 <th>@lang('Area')</th>
+                                <th>@lang('Địa chỉ')</th>
+                                <th>@lang('Trạng thái')</th>
                                 <th>@lang('Lớp đang học')</th>
                                 <th>@lang('Ngày nhập học chính thức')</th>
                                 <th>@lang('Action')</th>
@@ -188,6 +190,13 @@
                                         <td>
                                             {{ $row->area->code ?? '' }}
                                         </td>
+
+                                        <td>
+                                            {{ $row->address ?? '' }}
+                                        </td>
+
+                                        <td>
+                                            {{ __($row->status ?? '') }}
                                         <td>
                                             {{ $row->currentClass->name ?? '' }}
                                         </td>

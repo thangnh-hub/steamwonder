@@ -52,7 +52,7 @@ class StudentController extends Controller
     {
         $params_area['id'] = DataPermissionService::getPermisisonAreas(Auth::guard('admin')->user()->id);
         $this->responseData['list_area'] = Area::getsqlArea($params_area)->get();
-        $this->responseData['list_status'] = Consts::STATUS;
+        $this->responseData['list_status'] = Consts::STATUS_STUDY;
         $this->responseData['list_sex'] = Consts::GENDER;
 
         return $this->responseView($this->viewPart . '.create');
@@ -108,7 +108,7 @@ class StudentController extends Controller
     {
         $params_area['id'] = DataPermissionService::getPermisisonAreas(Auth::guard('admin')->user()->id);
         $this->responseData['list_area'] = Area::getsqlArea($params_area)->get();
-        $this->responseData['list_status'] = Consts::STATUS;
+        $this->responseData['list_status'] = Consts::STATUS_STUDY;
         $this->responseData['list_sex'] = Consts::GENDER;
         $this->responseData['detail'] = $student;
 
