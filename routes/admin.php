@@ -102,6 +102,8 @@ Route::group(['namespace' => 'Admin'], function () {
         'service_categorys' => 'ServiceCategoryController',
         'services' => 'ServiceController',
         // End for SteamWonder
+        'education_ages'=>'EducationAgesController',
+        'education_programs'=>'EducationProgramsController',
       ]);
       Route::post('data_crms_log_store', 'DataCrmController@storeCRMLOG')->name('data_crms_log_store');
       //thêm ng thân cho bé
