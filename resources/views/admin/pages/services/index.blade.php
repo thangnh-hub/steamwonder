@@ -179,6 +179,7 @@
                                 <th>@lang('Tính chất dịch vụ')</th>
                                 <th>@lang('Loại dịch vụ')</th>
                                 <th>@lang('Status')</th>
+                                <th>@lang('Sắp xếp')</th>
                                 <th>@lang('Action')</th>
                             </tr>
                         </thead>
@@ -194,6 +195,9 @@
                                     <td>{{ $row->is_attendance== 0 ? "Không theo điểm danh" : "Tính theo điểm danh" }}</td>
                                     <td>{{ __($row->service_type??"") }}</td>
                                     <td>@lang($row->status)</td>
+                                    <td>
+                                        {{ $row->iorder ?? "" }}
+                                    </td>
                                     <td>
                                         <a class="btn btn-sm btn-warning" href="{{ route($routeDefault . '.edit', $row->id) }}">
                                             <i class="fa fa-pencil-square-o"></i>

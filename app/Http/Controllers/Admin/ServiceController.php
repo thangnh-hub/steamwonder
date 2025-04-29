@@ -34,6 +34,7 @@ class ServiceController extends Controller
      public function index(Request $request)
      {
          $params = $request->all();
+         $params['order_by'] = 'iorder';
          $rows = Service::getSqlService($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
          $this->responseData['rows'] = $rows;
          $this->responseData['params'] = $params;

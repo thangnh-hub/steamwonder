@@ -54,7 +54,7 @@ class Service extends Model
             return $query->where('tb_service.area_id', $params['area_id']);
         }) ;   
         if (!empty($params['order_by'])) {
-            $query->orderBy('tb_service.' . $params['order_by'], 'desc');
+            $query->orderBy('tb_service.' . $params['order_by'], 'asc');
         } else {
             $query->orderBy('id', 'desc');
         }
