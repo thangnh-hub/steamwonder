@@ -105,6 +105,7 @@ Route::group(['namespace' => 'Admin'], function () {
         'education_ages'=>'EducationAgesController',
         'education_programs'=>'EducationProgramsController',
       ]);
+
       Route::post('data_crms_log_store', 'DataCrmController@storeCRMLOG')->name('data_crms_log_store');
       //thêm ng thân cho bé
       Route::post('student/{id}/add-parent', 'StudentController@addParent')->name('student.addParent');
