@@ -67,6 +67,7 @@ class EducationProgramsController extends Controller
             'status',
             'iorder',
         ]);
+        $params['iorder'] = $params['iorder'] ?? 0;
         $params['admin_updated_id'] = $admin->id;
         EducationPrograms::create($params);
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Add new successfully!'));
@@ -120,6 +121,7 @@ class EducationProgramsController extends Controller
                 'status',
                 'iorder',
             ]);
+            $params['iorder'] = $params['iorder'] ?? 0;
             $params['admin_updated_id'] = Auth::guard('admin')->user()->id;
             $educationAges->update($params);
             DB::commit();

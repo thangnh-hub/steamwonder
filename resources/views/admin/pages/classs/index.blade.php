@@ -3,22 +3,6 @@
 @section('title')
     @lang($module_name)
 @endsection
-@section('style')
-    <style>
-        th {
-            text-align: center;
-            vertical-align: middle !important;
-        }
-    </style>
-@endsection
-
-@php
-    if (Request::get('lang') == $languageDefault->lang_locale || Request::get('lang') == '') {
-        $lang = $languageDefault->lang_locale;
-    } else {
-        $lang = Request::get('lang');
-    }
-@endphp
 @section('content-header')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -47,52 +31,11 @@
             <form action="{{ route(Request::segment(2) . '.index') }}" method="GET">
                 <div class="box-body">
                     <div class="row">
-
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>@lang('Tên lớp') </label>
                                 <input type="text" class="form-control" name="keyword" placeholder="@lang('Nhập tên lớp')"
                                     value="{{ isset($params['keyword']) ? $params['keyword'] : '' }}">
-                            </div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>@lang('Level')</label>
-                                <select name="level_id" id="" class="form-control select2" style="width: 100%;">
-                                    <option value="">@lang('Please select')</option>
-                                    @foreach ($levels as $item)
-                                        <option value="{{ $item->id }}"
-                                            {{ isset($params['level_id']) && $params['level_id'] == $item->id ? 'selected' : '' }}>
-                                            {{ $item->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>@lang('Syllabus')</label>
-                                <select name="syllabus_id" id="" class="form-control select2" style="width: 100%;">
-                                    <option value="">@lang('Please select')</option>
-                                    @foreach ($syllabuss as $item)
-                                        <option value="{{ $item->id }}"
-                                            {{ isset($params['syllabus_id']) && $params['syllabus_id'] == $item->id ? 'selected' : '' }}>
-                                            {{ $item->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>@lang('Course')</label>
-                                <select name="course_id" id="course_id" class="form-control select2" style="width: 100%;">
-                                    <option value="">@lang('Please select')</option>
-                                    @foreach ($course as $item)
-                                        <option value="{{ $item->id }}"
-                                            {{ isset($params['course_id']) && $params['course_id'] == $item->id ? 'selected' : '' }}>
-                                            {{ $item->name }}</option>
-                                    @endforeach
-                                </select>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -108,7 +51,6 @@
                                 </select>
                             </div>
                         </div>
-
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>@lang('Room')</label>
@@ -127,19 +69,40 @@
                                 <label>@lang('Trạng thái')</label>
                                 <select name="status" id="status" class="form-control select2" style="width: 100%;">
                                     <option value="">@lang('Please select')</option>
-                                    @foreach ($status_class as $key => $item)
+                                    @foreach ($status as $key => $item)
                                         <option value="{{ $key }}"
                                             {{ isset($params['status']) && $params['status'] == $key ? 'selected' : '' }}>
-                                            {{ $item }}</option>
+                                            {{ __($item) }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label>@lang('Năm học')</label>
-                                <input type="text" class="form-control" name="year" placeholder="@lang('Nhập năm học')"
-                                    value="{{ isset($params['year']) ? $params['year'] : '' }}">
+                                <label>@lang('Độ tuổi')</label>
+                                <select name="education_age_id" id="education_age" class="form-control select2"
+                                    style="width: 100%;">
+                                    <option value="">@lang('Please select')</option>
+                                    @foreach ($ages as $key => $item)
+                                        <option value="{{ $item->id }}"
+                                            {{ isset($params['education_age_id']) && $params['education_age_id'] == $item->id ? 'selected' : '' }}>
+                                            {{ $item->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>@lang('Chương trình')</label>
+                                <select name="education_programs_id" id="education_programs" class="form-control select2"
+                                    style="width: 100%;">
+                                    <option value="">@lang('Please select')</option>
+                                    @foreach ($programs as $key => $item)
+                                        <option value="{{ $item->id }}"
+                                            {{ isset($params['education_programs_id']) && $params['education_programs_id'] == $item->id ? 'selected' : '' }}>
+                                            {{ $item->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -163,29 +126,8 @@
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title">@lang('List')</h3>
-                @isset($languages)
-                    @foreach ($languages as $item)
-                        @if ($item->is_default == 1 && $item->lang_locale != Request::get('lang'))
-                            @if (Request::get('lang') != '')
-                                <a class="text-primary pull-right" href="{{ route(Request::segment(2) . '.index') }}"
-                                    style="padding-left: 15px">
-                                    <i class="fa fa-language"></i> {{ __($item->lang_name) }}
-                                </a>
-                            @endif
-                        @else
-                            @if (Request::get('lang') != $item->lang_locale)
-                                <a class="text-primary pull-right"
-                                    href="{{ route(Request::segment(2) . '.index') }}?lang={{ $item->lang_locale }}"
-                                    style="padding-left: 15px">
-                                    <i class="fa fa-language"></i> {{ __($item->lang_name) }}
-                                </a>
-                            @endif
-                        @endif
-                    @endforeach
-                @endisset
-
             </div>
-            <div class="box-body table-responsive">
+            <div class="box-body box_alert">
                 @if (session('errorMessage'))
                     <div class="alert alert-warning alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -218,137 +160,54 @@
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th rowspan="2">@lang('Title')</th>
-                                <th rowspan="2">@lang('Syllabus')</th>
-                                <th rowspan="2">@lang('Area')</th>
-                                <th rowspan="2">@lang('Room')</th>
-                                <th rowspan="2">@lang('Period')</th>
-                                <th rowspan="2">@lang('Teacher')</th>
-                                <th rowspan="2">@lang('Trạng thái')</th>
-                                <th rowspan="2">@lang('Sĩ số')</th>
-                                <th rowspan="2">@lang('Số buổi')</th>
-                                <th colspan="3">@lang('Thời gian')</th>
-                                <th rowspan="2">@lang('Action')</th>
-                            </tr>
-                            <tr>
-                                <th style="width:120px">@lang('Bắt đầu')</th>
-                                <th style="width:120px">@lang('Dự kiến')</th>
-                                <th style="width:120px">@lang('Thực tế')</th>
+                                <th>@lang('Mã lớp')</th>
+                                <th>@lang('Title')</th>
+                                <th>@lang('Area')</th>
+                                <th>@lang('Room')</th>
+                                <th>@lang('Sĩ số')</th>
+                                <th>@lang('Giáo viên chủ nhiệm')</th>
+                                <th>@lang('Trạng thái')</th>
+                                <th>@lang('Action')</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($rows as $row)
-                                @php
-                                    $teacher = \App\Models\Teacher::where(
-                                        'id',
-                                        $row->json_params->teacher ?? 0,
-                                    )->first();
-                                    if (isset($row->schedules->first()->room_id)) {
-                                        $room = \App\Models\Room::where(
-                                            'id',
-                                            $row->schedules->first()->room_id,
-                                        )->first();
-                                    }
-                                    $quantity_student = \App\Models\UserClass::where('class_id', $row->id)
-                                        ->get()
-                                        ->count();
-                                @endphp
-
                                 <tr class="valign-middle">
                                     <td>
-                                        <strong
-                                            style="font-size: 14px">{{ $row->json_params->name->{$lang} ?? $row->name }}</strong>
+                                        <strong style="font-size: 14px">{{ $row->code ?? '' }}</strong>
                                     </td>
 
                                     <td>
-                                        <a
-                                            href="{{ route('syllabuss.show', $row->syllabus_id) }}">{{ $row->syllabus->name ?? '' }}</a>
+                                        {{ $row->name ?? '' }}
                                     </td>
 
                                     <td>
                                         {{ $row->area->name ?? '' }}
                                     </td>
                                     <td>
-                                        {{ $room->name ?? '' }}
+                                        {{ $row->room->name ?? '' }}
                                     </td>
                                     <td>
-                                        {{ $row->period->iorder ?? '' }} ({{ $row->period->start_time ?? '' }} -
-                                        {{ $row->period->end_time ?? '' }})
+                                        {{ count($row->students) }} / {{ $row->slot }}
                                     </td>
                                     <td>
-                                        {{ $teacher->name ?? '' }}
+                                        {{ $row->mainTeacher->teacher->name ?? '' }}
                                     </td>
                                     <td>
-                                        {{ App\Consts::CLASS_STATUS[$row->status] ?? '' }}
-                                        {{ $row->status == 'huy' && $row->end_date != '' ? ' ( ' . date('d-m-Y', strtotime($row->end_date)) . ' )' : '' }}
+                                        {{ __($row->status) }}
                                     </td>
-                                    <td>
-                                        {{ $quantity_student }}
-                                    </td>
-
-                                    <td>
-                                        {{ $row->total_attendance }}/{{ $row->total_schedules }}
-                                    </td>
-                                    <td class="text-center">
-                                        <p class="text-success" style="font-weight: 700">
-                                            {{ date('d-m-Y', strtotime($row->day_start)) }}</p>
-                                    </td>
-                                    <td class="text-center">
-                                        <p class="text-success" style="font-weight: 700">
-                                            {{ date('d-m-Y', strtotime($row->day_end_expected)) }}</p>
-                                    </td>
-                                    <td class="text-center">
-                                        <p class="text-success" style="font-weight: 700">
-                                            {{ date('d-m-Y', strtotime($row->day_end)) }}</p>
-                                    </td>
-
                                     <td style="width:150px">
-                                        @if (!isset($row->syllabus->type) || (isset($row->syllabus->type) && $row->syllabus->type != 'online'))
-                                            <p>
-                                                <a target="_blank"
-                                                    href="{{ route('schedule_class.index', ['class_id' => $row->id]) }}">
-                                                    - @lang('Lịch học')
-                                                </a>
-                                            </p>
-                                            <p>
-                                                <a target="_blank"
-                                                    href="{{ route('scores.index', ['class_id' => $row->id]) }}">
-                                                    - @lang('Nhập điểm thi lần 1')
-                                                </a>
-                                            </p>
-                                            @if (isset($row->syllabus->score_type) && $row->syllabus->score_type != 'telc')
-                                                <p>
-                                                    <a target="_blank"
-                                                        href="{{ route('input_score_second.index', ['class_id' => $row->id]) }}">
-                                                        - @lang('Nhập điểm thi lần 2')
-                                                    </a>
-                                                </p>
-                                            @endif
-
-                                            <p>
-                                                <a target="_blank"
-                                                    href="{{ route('evaluationclass.history', ['class_id' => $row->id]) }}">
-                                                    - @lang('Nhận xét - Đánh giá')
-                                                </a>
-                                            </p>
-                                            <p>
-                                                <a target="_blank"
-                                                    href="{{ route(Request::segment(2) . '.edit', $row->id) }}">
-                                                    - @lang('Chi tiết lớp')
-                                                </a>
-                                            </p>
-                                            <p>
-                                                <a target="_blank"
-                                                    href="{{ route('class.editByTeacher', ['id' => $row->id]) }}">
-                                                    - @lang('Chỉnh sửa buổi học (Giáo viên)')
-                                                </a>
-                                            </p>
-                                            <p><a target="_blank"
-                                                    href="{{ route(Request::segment(2) . '.show', $row->id) }}">
-                                                    - @lang('Danh sách học viên')
-                                                </a>
-                                            </p>
-                                        @endif
+                                        <button class="btn btn-sm btn-success btn_show_detail" data-toggle="tooltip"
+                                            data-id="{{ $row->id }}"
+                                            data-url="{{ route(Request::segment(2) . '.show', $row->id) }}"
+                                            title="@lang('Show')" data-original-title="@lang('Show')">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                        <a class="btn btn-sm btn-warning" data-toggle="tooltip"
+                                            title="@lang('Update')" data-original-title="@lang('Update')"
+                                            href="{{ route(Request::segment(2) . '.edit', $row->id) }}">
+                                            <i class="fa fa-pencil-square-o"></i>
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -370,5 +229,58 @@
 
         </div>
     </section>
+    <div class="modal fade" id="modal_show_class" data-backdrop="static" tabindex="-1" role="dialog">
+        <div class="modal-dialog " role="document">
+            <div class="modal-content">
+                <div class="modal-header ">
+                    <h3 class="modal-title text-center col-md-12">@lang('Thông tin lớp học')</h3>
+                    </h3>
+                </div>
+                <div class="modal-body show_detail_class">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                        <i class="fa fa-remove"></i> @lang('Close')
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
+
+@endsection
+@section('script')
+    <script>
+        $('.btn_show_detail').click(function() {
+            var url = $(this).data('url');
+            var id = $(this).data('id');
+            $.ajax({
+                type: "GET",
+                url: url,
+                success: function(response) {
+                    if (response) {
+                        $('.show_detail_class').html(response.data.view);
+                        $('#modal_show_class').modal('show');
+                    } else {
+                        var _html = `<div class="alert alert-warning alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            Bạn không có quyền thao tác chức năng này!
+                            </div>`;
+                        $('.box_alert').prepend(_html);
+                        $('html, body').animate({
+                            scrollTop: $(".alert").offset().top
+                        }, 1000);
+                        setTimeout(function() {
+                            $('.alert').remove();
+                        }, 3000);
+                    }
+
+                },
+                error: function(response) {
+                    var errors = response.responseJSON.message;
+                    console.log(errors);
+                }
+            });
+        })
+    </script>
 @endsection

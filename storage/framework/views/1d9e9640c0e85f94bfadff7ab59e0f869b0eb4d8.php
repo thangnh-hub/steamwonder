@@ -23,31 +23,20 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                                <label class="control-label"><strong>@lang('Khu vực')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Khu vực'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-                                <p>{{ $detail->area->name ?? '' }}</p>
+                                <p><?php echo e($detail->area->name ?? ''); ?></p>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                                <label class="control-label"><strong>@lang('Mã lớp')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Mã lớp'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-                                <p>{{ $detail->code ?? '' }}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <div class="form-group">
-                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                                <label class="control-label"><strong>@lang('Tên lớp')</strong></label>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-                                <p>{{ $detail->name ?? '' }}</p>
+                                <p><?php echo e($detail->code ?? ''); ?></p>
                             </div>
                         </div>
                     </div>
@@ -55,10 +44,10 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                                <label class="control-label"><strong>@lang('Nhóm trẻ')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Tên lớp'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-                                <p>{{ $detail->education_ages->name ?? '' }}</p>
+                                <p><?php echo e($detail->name ?? ''); ?></p>
                             </div>
                         </div>
                     </div>
@@ -66,10 +55,10 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                                <label class="control-label"><strong>@lang('Hệ đào tạo')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Nhóm trẻ'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-                                <p>{{ $detail->education_programs->name ?? '' }}</p>
+                                <p><?php echo e($detail->education_ages->name ?? ''); ?></p>
                             </div>
                         </div>
                     </div>
@@ -77,10 +66,10 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                                <label class="control-label"><strong>@lang('Phòng học')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Hệ đào tạo'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-                                <p>{{ $detail->room->name ?? '' }}</p>
+                                <p><?php echo e($detail->education_programs->name ?? ''); ?></p>
                             </div>
                         </div>
                     </div>
@@ -88,23 +77,34 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                                <label class="control-label"><strong>@lang('Sức chứa')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Phòng học'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-                                <p>{{ $detail->slot ?? 0 }}</p>
+                                <p><?php echo e($detail->room->name ?? ''); ?></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                                <label class="control-label"><strong><?php echo app('translator')->get('Sức chứa'); ?></strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                                <p><?php echo e($detail->slot ?? 0); ?></p>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                                <label class="control-label"><strong>@lang('Năm cuối')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Năm cuối'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
                                 <div class="sw_featured d-flex-al-center">
                                     <label class="switch">
                                         <input class="teacher_main about-banner" type="checkbox" value="1" disabled
-                                            {{ isset($detail->is_lastyear) && $detail->is_lastyear == '1' ? 'checked' : '' }}>
+                                            <?php echo e(isset($detail->is_lastyear) && $detail->is_lastyear == '1' ? 'checked' : ''); ?>>
                                         <span class="slider round"></span>
                                     </label>
                                 </div>
@@ -117,21 +117,10 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <label class="control-label"><strong>@lang('Ngày tạo')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Ngày tạo'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <p>{{ date('H:i - d/m/Y', strtotime($detail->created_at)) }}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <div class="form-group">
-                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <label class="control-label"><strong>@lang('Người tạo')</strong></label>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <p>{{ $detail->admin_created->name ?? '' }}</p>
+                                <p><?php echo e(date('H:i - d/m/Y', strtotime($detail->created_at))); ?></p>
                             </div>
                         </div>
                     </div>
@@ -139,10 +128,10 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <label class="control-label"><strong>@lang('Ngày cập nhật')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Người tạo'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <p>{{ date('H:i - d/m/Y', strtotime($detail->updated_at)) }}</p>
+                                <p><?php echo e($detail->admin_created->name ?? ''); ?></p>
                             </div>
                         </div>
                     </div>
@@ -150,10 +139,21 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <label class="control-label"><strong>@lang('Người cập nhật')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Ngày cập nhật'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <p>{{ $detail->admin_updated->name ?? '' }}</p>
+                                <p><?php echo e(date('H:i - d/m/Y', strtotime($detail->updated_at))); ?></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <label class="control-label"><strong><?php echo app('translator')->get('Người cập nhật'); ?></strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <p><?php echo e($detail->admin_updated->name ?? ''); ?></p>
                             </div>
                         </div>
                     </div>
@@ -166,38 +166,41 @@
                 <div class="col-xs-12">
                     <div class="box" style="border-top: 3px solid #d2d6de;">
                         <div class="box-header">
-                            <h3 class="box-title">@lang('Danh sách học viên')</h3>
+                            <h3 class="box-title"><?php echo app('translator')->get('Danh sách học viên'); ?></h3>
                         </div>
                         <div class="box-body no-padding">
                             <table class="table table-hover sticky">
                                 <thead>
                                     <tr>
-                                        <th>@lang('Mã Học Viên')</th>
-                                        <th>@lang('Họ tên')</th>
-                                        <th>@lang('Nickname')</th>
-                                        <th>@lang('Ngày vào')</th>
-                                        <th>@lang('Ngày ra')</th>
-                                        <th>@lang('Trạng thái')</th>
-                                        <th>@lang('Loại')</th>
+                                        <th><?php echo app('translator')->get('Mã Học Viên'); ?></th>
+                                        <th><?php echo app('translator')->get('Họ tên'); ?></th>
+                                        <th><?php echo app('translator')->get('Nickname'); ?></th>
+                                        <th><?php echo app('translator')->get('Ngày vào'); ?></th>
+                                        <th><?php echo app('translator')->get('Ngày ra'); ?></th>
+                                        <th><?php echo app('translator')->get('Trạng thái'); ?></th>
+                                        <th><?php echo app('translator')->get('Loại'); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody class="box_student">
-                                    @isset($detail->students)
-                                        @foreach ($detail->students as $item)
-                                            <tr class="item_student" data-id="{{ $item->id }}">
-                                                <td>{{ $item->student_code }}</td>
-                                                <td>{{ $item->last_name ?? '' }}
-                                                    {{ $item->first_name ?? '' }}</td>
-                                                <td>{{ $item->nickname ?? '' }}</td>
-                                                <td>{{ optional($item->pivot)->start_at ? date('d-m-Y', strtotime($item->pivot->start_at)) : '' }}
+                                    <?php if(isset($detail->students)): ?>
+                                        <?php $__currentLoopData = $detail->students; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <tr class="item_student" data-id="<?php echo e($item->id); ?>">
+                                                <td><?php echo e($item->student_code); ?></td>
+                                                <td><?php echo e($item->last_name ?? ''); ?>
+
+                                                    <?php echo e($item->first_name ?? ''); ?></td>
+                                                <td><?php echo e($item->nickname ?? ''); ?></td>
+                                                <td><?php echo e(optional($item->pivot)->start_at ? date('d-m-Y', strtotime($item->pivot->start_at)) : ''); ?>
+
                                                 </td>
-                                                <td>{{ optional($item->pivot)->stop_at ? date('d-m-Y', strtotime($item->pivot->stop_at)) : '' }}
+                                                <td><?php echo e(optional($item->pivot)->stop_at ? date('d-m-Y', strtotime($item->pivot->stop_at)) : ''); ?>
+
                                                 </td>
-                                                <td>{{ __($item->pivot->status) }} </td>
-                                                <td>{{ __($item->pivot->type) }} </td>
+                                                <td><?php echo e(__($item->pivot->status)); ?> </td>
+                                                <td><?php echo e(__($item->pivot->type)); ?> </td>
                                             </tr>
-                                        @endforeach
-                                    @endisset
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>
@@ -212,44 +215,46 @@
                 <div class="col-xs-12">
                     <div class="box">
                         <div class="box-header">
-                            <h3 class="box-title">@lang('Danh sách giáo viên')</h3>
+                            <h3 class="box-title"><?php echo app('translator')->get('Danh sách giáo viên'); ?></h3>
                         </div>
                         <div class="box-body no-padding">
                             <table class="table table-hover sticky ">
                                 <thead>
                                     <tr class="text-center">
-                                        <th>@lang('Giáo viên')</th>
-                                        <th>@lang('Ngày bắt đầu')</th>
-                                        <th>@lang('Ngày kết thúc')</th>
-                                        <th>@lang('GVCN')</th>
-                                        <th>@lang('Status')</th>
+                                        <th><?php echo app('translator')->get('Giáo viên'); ?></th>
+                                        <th><?php echo app('translator')->get('Ngày bắt đầu'); ?></th>
+                                        <th><?php echo app('translator')->get('Ngày kết thúc'); ?></th>
+                                        <th><?php echo app('translator')->get('GVCN'); ?></th>
+                                        <th><?php echo app('translator')->get('Status'); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody class="box_teacher">
-                                    @isset($detail->teacher)
-                                        @foreach ($detail->teacher as $item)
-                                            <tr class="item_teacher" data-id="{{ $item->id }}">
-                                                <td>{{ $item->name ?? '' }} </td>
-                                                <td>{{ optional($item->pivot)->start_at ? date('d-m-Y', strtotime($item->pivot->start_at)) : '' }}
+                                    <?php if(isset($detail->teacher)): ?>
+                                        <?php $__currentLoopData = $detail->teacher; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <tr class="item_teacher" data-id="<?php echo e($item->id); ?>">
+                                                <td><?php echo e($item->name ?? ''); ?> </td>
+                                                <td><?php echo e(optional($item->pivot)->start_at ? date('d-m-Y', strtotime($item->pivot->start_at)) : ''); ?>
+
                                                 </td>
-                                                <td>{{ optional($item->pivot)->stop_at ? date('d-m-Y', strtotime($item->pivot->stop_at)) : '' }}
+                                                <td><?php echo e(optional($item->pivot)->stop_at ? date('d-m-Y', strtotime($item->pivot->stop_at)) : ''); ?>
+
                                                 </td>
                                                 <td>
                                                     <div class="sw_featured d-flex-al-center">
                                                         <label class="switch">
                                                             <input class="teacher_main about-banner"
-                                                                name="teacher[{{ $item->id }}][is_teacher_main]"
+                                                                name="teacher[<?php echo e($item->id); ?>][is_teacher_main]"
                                                                 type="checkbox" value="1" disabled
-                                                                {{ isset($item->pivot->is_teacher_main) && $item->pivot->is_teacher_main == '1' ? 'checked' : '' }}>
+                                                                <?php echo e(isset($item->pivot->is_teacher_main) && $item->pivot->is_teacher_main == '1' ? 'checked' : ''); ?>>
 
                                                             <span class="slider round"></span>
                                                         </label>
                                                     </div>
                                                 </td>
-                                                <td>{{ __($item->pivot->status) }}</td>
+                                                <td><?php echo e(__($item->pivot->status)); ?></td>
                                             </tr>
-                                        @endforeach
-                                    @endisset
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>
@@ -261,3 +266,4 @@
         </div>
     </div>
 </div>
+<?php /**PATH C:\xampp\htdocs\steamwonder\resources\views/admin/pages/classs/show.blade.php ENDPATH**/ ?>

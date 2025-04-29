@@ -4,6 +4,12 @@ namespace App;
 
 class Consts
 {
+    const TYPE_CLASS_STUDENT = [
+        'hoc_thu' => 'hoc_thu',
+        'giu_cho' => 'giu_cho',
+        'dang_hoc' => 'dang_hoc',
+        'tot_nghiep' => 'tot_nghiep',
+      ];
   const STATUS_ACTIVE = 'active';
   const STATUS_DATACRM = [
     'new' => 'new',

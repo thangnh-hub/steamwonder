@@ -61,6 +61,9 @@
     "Forgot password?": "Quên mật khẩu?",
     "Remember me": "Ghi nhớ",
     "Admin user management": " Quản lý người dùng",
+    "Education Ages management": " Quản lý độ tuổi",
+    "Education Programs management": " Quản lý chương trình học",
+    "Class management": " Quản lý lớp học",
     "Successfully updated!": "Cập nhật thành công!",
     "Active": "Hoạt động",
     "Deactive": "Không hoạt động",
@@ -73,5 +76,9 @@
     "male": "Nam",
     "female": "Nữ",
     "other": "Khác",
-    "no": "Không đồng ý"
+    "no": "Không đồng ý",
+    "hoc_thu": "Học thử",
+    "giu_cho": "Giữ chỗ",
+    "dang_hoc": "Đang học",
+    "tot_nghiep": "Tốt nghiệp"
 }
