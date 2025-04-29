@@ -36,7 +36,7 @@
             <div class="box-header">
                 <h3 class="text-title">@lang($module_name)</h3>
             </div>
-            <div class="box-body table-responsive">
+            <div class="box-body ">
                 <div class="form-horizontal">
                     <div class="row">
                         <div class="col-lg-12">

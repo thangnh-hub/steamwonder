@@ -83,17 +83,19 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label><?php echo app('translator')->get('Họ'); ?><small class="text-red">*</small></label>
-                                            <input type="text" class="form-control" name="first_name" value="<?php echo e(old('first_name', $detail->first_name)); ?>" required>
+                                            <label><?php echo app('translator')->get('Last Name'); ?><small class="text-red">*</small></label>
+                                            <input type="text" class="form-control" name="last_name" value="<?php echo e(old('last_name', $detail->last_name)); ?>" required>
                                         </div>
                                     </div>
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label><?php echo app('translator')->get('Tên'); ?><small class="text-red">*</small></label>
-                                            <input type="text" class="form-control" name="last_name" value="<?php echo e(old('last_name', $detail->last_name)); ?>" required>
+                                            <label><?php echo app('translator')->get('First Name'); ?><small class="text-red">*</small></label>
+                                            <input type="text" class="form-control" name="first_name" value="<?php echo e(old('first_name', $detail->first_name)); ?>" required>
                                         </div>
                                     </div>
+
+                                    
 
                                     <div class="col-md-4">
                                         <div class="form-group">
