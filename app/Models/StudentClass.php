@@ -13,7 +13,7 @@ class StudentClass extends Model
    *
    * @var string
    */
-  protected $table = 'tb_student_classs';
+  protected $table = 'tb_class_student';
 
   /**
    * The attributes that aren't mass assignable.
