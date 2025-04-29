@@ -123,8 +123,8 @@
                         <tr>
                             <th><?php echo app('translator')->get('STT'); ?></th>
                             <th><?php echo app('translator')->get('Avatar'); ?></th>
-                            <th><?php echo app('translator')->get('First Name'); ?></th>
                             <th><?php echo app('translator')->get('Last Name'); ?></th>
+                            <th><?php echo app('translator')->get('First Name'); ?></th>
                             <th><?php echo app('translator')->get('Giới tính'); ?></th>
                             <th><?php echo app('translator')->get('Ngày sinh'); ?></th>
                             <th><?php echo app('translator')->get('Số CMND/CCCD'); ?></th>
@@ -150,8 +150,8 @@
                                         <span class="text-muted">No image</span>
                                     <?php endif; ?>
                                 </td>
-                                <td><?php echo e($row->first_name ?? ''); ?></td>
                                 <td><?php echo e($row->last_name ?? ''); ?></td>
+                                <td><?php echo e($row->first_name ?? ''); ?></td>
                                 <td>
                                     <?php echo app('translator')->get($row->sex ?? ''); ?>
                                 </td>

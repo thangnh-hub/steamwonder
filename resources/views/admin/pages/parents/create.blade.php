@@ -79,15 +79,15 @@
             
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label>@lang('Họ')<small class="text-red">*</small></label>
-                                                        <input type="text" class="form-control" name="first_name" value="{{ old('first_name') }}" required>
+                                                        <label>@lang('Last Name')<small class="text-red">*</small></label>
+                                                        <input type="text" class="form-control" name="last_name" value="{{ old('last_name') }}" required>
                                                     </div>
                                                 </div>
             
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label>@lang('Tên')<small class="text-red">*</small></label>
-                                                        <input type="text" class="form-control" name="last_name" value="{{ old('last_name') }}" required>
+                                                        <label>@lang('First Name')<small class="text-red">*</small></label>
+                                                        <input type="text" class="form-control" name="first_name" value="{{ old('first_name') }}" required>
                                                     </div>
                                                 </div>
                                                 
