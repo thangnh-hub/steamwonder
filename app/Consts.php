@@ -11,6 +11,21 @@ class Consts
         'tot_nghiep' => 'tot_nghiep',
       ];
   const STATUS_ACTIVE = 'active';
+  const SERVICE_IS_ATTENDANCE= [
+    '0' => 'Không theo điểm danh',
+    '1' => 'Tính theo điểm danh',
+  ];
+  const SERVICE_IS_DEFAULT= [
+    '0' => 'Không',
+    '1' => 'Mặc đinh',
+  ];
+  const SERVICE_TYPE= [
+    'binh_thuong' => 'binh_thuong',
+    'thang_tuoi' => 'thang_tuoi',
+    'thang_nhap_hoc' => 'thang_nhap_hoc',
+    'dau_nam_hoc' => 'dau_nam_hoc',
+    'tu_huy_sau_khi_su_dung' => 'tu_huy_sau_khi_su_dung',
+  ];
   const STATUS_DATACRM = [
     'new' => 'new',
     'is_advise' => 'is_advise',

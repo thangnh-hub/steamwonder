@@ -15,6 +15,11 @@ class CreateTbClassAttendance extends Migration
     {
         Schema::create('tb_class_attendance', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('class_id')->nullable()->constrained('tb_class');
+            $table->dateTime('tracked_at')->nullable();
+            $table->json('json_params')->nullable();
+            $table->foreignId('admin_created_id')->nullable()->constrained('admins');
+            $table->foreignId('admin_updated_id')->nullable()->constrained('admins');
             $table->timestamps();
         });
     }

@@ -86,14 +86,14 @@
                                                 
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label>@lang('Họ')<small class="text-red">*</small></label>
+                                                        <label>@lang('Last Name')<small class="text-red">*</small></label>
                                                         <input type="text" class="form-control" name="last_name" value="{{ old('last_name', $detail->last_name) }}" required>
                                                     </div>
                                                 </div>
                                                 
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label>@lang('Tên')<small class="text-red">*</small></label>
+                                                        <label>@lang('First Name')<small class="text-red">*</small></label>
                                                         <input type="text" class="form-control" name="first_name" value="{{ old('first_name', $detail->first_name) }}" required>
                                                     </div>
                                                 </div>
@@ -167,7 +167,7 @@
                                     </div>
 
                                     <div class="tab-pane " id="tab_2">
-                                        <div class="box-body table-responsive">
+                                        <div class="box-body ">
                                             <div>
                                                 <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addParentModal">
                                                     <i class="fa fa-plus"></i> @lang('Cập nhật người thân')

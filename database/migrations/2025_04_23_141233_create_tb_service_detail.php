@@ -15,6 +15,14 @@ class CreateTbServiceDetail extends Migration
     {
         Schema::create('tb_service_detail', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('service_id')->constrained('tb_service');
+            $table->decimal('price', 10, 2)->default(0)->comment('Số tiền/đơn giá');
+            $table->double('quantity', 10, 2)->default(1)->comment('Số lượng áp dụng');
+            $table->dateTime('start_at')->nullable()->comment('Thời gian bắt đầu áp dụng');
+            $table->dateTime('end_at')->nullable()->comment('Thời gian kết thúc áp dụng');
+            $table->json('json_params')->nullable();
+            $table->foreignId('admin_created_id')->nullable()->constrained('admins');
+            $table->foreignId('admin_updated_id')->nullable()->constrained('admins');
             $table->timestamps();
         });
     }
