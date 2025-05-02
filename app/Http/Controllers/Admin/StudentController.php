@@ -12,7 +12,11 @@ use App\Http\Services\DataPermissionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Imports\StudentImport;
+use App\Models\PaymentCycle;
+use App\Models\Service;
+use App\Models\StudentService;
 use Maatwebsite\Excel\Facades\Excel;
+use Exception;
 
 class StudentController extends Controller
 {
@@ -111,17 +115,22 @@ class StudentController extends Controller
         $this->responseData['list_status'] = Consts::STATUS_STUDY;
         $this->responseData['list_sex'] = Consts::GENDER;
         $this->responseData['detail'] = $student;
-
         //lấy ra danh sách tài khoản parent
         $params_active['status'] = Consts::STATUS_ACTIVE;
         $allParents= tbParent::getSqlParent($params_active)->get();
         $this->responseData['allParents'] = $allParents;
-
-        //danh sách mqh
-        $this->responseData['list_relationship'] = Relationship::getSqlRelationship($params_active)->get();
         //lấy ra danh sách mqh của học sinh
         $this->responseData['studentParentIds'] = $student->studentParents->pluck('parent_id')->toArray();
 
+        // lấy ra danh sách  dịch vụ còn lại (chưa đăng ký)
+        $studentServiceIds= $student->studentServices->pluck('service_id')->toArray();
+        $params_service['status'] = Consts::STATUS_ACTIVE;
+        $params_service['different_id'] = $studentServiceIds;
+        $this->responseData['unregisteredServices'] =  Service::getSqlService($params_service)->get();
+        //danh sách mqh
+        $this->responseData['list_relationship'] = Relationship::getSqlRelationship($params_active)->get();
+        //list chu kỳ 
+        $this->responseData['list_payment_cycle'] = PaymentCycle::getSqlPaymentCycle()->get(); 
         return $this->responseView($this->viewPart . '.edit');
     }
 
@@ -167,17 +176,36 @@ class StudentController extends Controller
         $student->studentParents()->delete();
 
         $parentsInput = $request->input('parents', []);
-        foreach ($parentsInput as $parentId => $data) {
+        foreach ($parentsInput as $data) {
             if (!empty($data['id'])) {
                 StudentParent::create([
                     'student_id'      => $student->id,
                     'parent_id'       => $data['id'],
                     'relationship_id' => $data['relationship_id'] ?? null,
+                    'admin_created_id' => Auth::guard('admin')->user()->id,
                 ]);
             }
         }
 
         return redirect()->back()->with('successMessage', __('Cập nhật người thân thành công!'));
+    }
+    public function addService(Request $request, $id)
+    {
+        $student = Student::findOrFail($id);
+        $parentsInput = $request->input('services', []);
+        foreach ($parentsInput as $data) {
+            if (!empty($data['id'])) {
+                StudentService::create([
+                    'student_id'      => $student->id,
+                    'service_id'       => $data['id'],
+                    'payment_cycle_id' => $data['payment_cycle_id'] ?? null,
+                    'json_params.note' => $data['note'] ?? "",
+                    'status' => Consts::STATUS_ACTIVE,
+                    'admin_created_id' => Auth::guard('admin')->user()->id,
+                ]);
+            }
+        }
+        return redirect()->back()->with('successMessage', __('Cập nhật đăng ký dịch vụ thành công!'));
     }
 
     public function importDataStudent(Request $request)
@@ -208,6 +236,29 @@ class StudentController extends Controller
         } catch (\Exception $e) {
             // Bắt lỗi chung khác
             return redirect()->back()->with('errorMessage', 'Lỗi khi import: ' . $e->getMessage());
+        }
+    }
+
+
+    public function deleteStudentService(Request $request)
+    {
+        $admin = Auth::guard('admin')->user();
+        try {
+            $studentService = StudentService::find($request->id);
+            if (isset($studentService)) {
+                    $updateResult =  $studentService->update([
+                        'status' => 'cancelled',
+                        'admin_updated_id' => $admin->id,
+                    ]);
+                if ($updateResult) {
+                    session()->flash('successMessage', __('Hủy thành công dịch vụ khỏi học sinh!'));
+                    return $this->sendResponse("", 'success');
+                }
+            }
+            session()->flash('errorMessage', __('Hủy dịch vụ không thành công! Bạn không có quyền thao tác dữ liệu!'));
+            return $this->sendResponse('', __('No records available!'));
+        } catch (Exception $ex) {
+            abort(422, __($ex->getMessage()));
         }
     }
 }

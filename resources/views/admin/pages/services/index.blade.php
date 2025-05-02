@@ -180,6 +180,7 @@
                                 <th>@lang('Loại dịch vụ')</th>
                                 <th>@lang('Status')</th>
                                 <th>@lang('Sắp xếp')</th>
+                                <th>@lang('Biểu phí')</th>
                                 <th>@lang('Action')</th>
                             </tr>
                         </thead>
@@ -197,6 +198,19 @@
                                     <td>@lang($row->status)</td>
                                     <td>
                                         {{ $row->iorder ?? "" }}
+                                    </td>
+                                    <td>
+                                        @if(isset($row->serviceDetail) && $row->serviceDetail->count() > 0)
+                                        @foreach ($row->serviceDetail as $detail)
+                                        <ul>
+                                            <li>Số tiền: {{ isset($detail->price) && is_numeric($detail->price) ? number_format($detail->price, 0, ',', '.') . ' đ' : '' }}</li>
+                                            <li>Số lượng: {{ $detail->quantity ?? '' }}</li>
+                                            <li>Từ: {{ (isset($detail->start_at) ? \Illuminate\Support\Carbon::parse($detail->start_at)->format('d-m-Y') : '') }}</li>
+                                            <li>Đến: {{ (isset($detail->end_at) ? \Illuminate\Support\Carbon::parse($detail->end_at)->format('d-m-Y') : '') }}</li>
+                                        </ul>
+                                        @endforeach
+
+                                        @endif
                                     </td>
                                     <td>
                                         <a class="btn btn-sm btn-warning" href="{{ route($routeDefault . '.edit', $row->id) }}">

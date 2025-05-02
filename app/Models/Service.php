@@ -29,6 +29,12 @@ class Service extends Model
                     return $where->where('name', 'like', '%' . $keyword . '%');
                 });
             })
+        ->when(!empty($params['different_id']), function ($query) use ($params) {
+            if (is_array($params['different_id'])) {
+                return $query->whereNotIn('tb_service.id', $params['different_id']);
+            }
+            return $query->where('tb_service.id', '!=', $params['different_id']);
+        })
         ->when(!empty($params['service_category_id']), function ($query) use ($params) {
             return $query->where('tb_service.service_category_id', $params['service_category_id']);
         }) 

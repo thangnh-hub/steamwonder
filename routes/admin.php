@@ -108,9 +108,10 @@ Route::group(['namespace' => 'Admin'], function () {
       Route::post('data_crms_log_store', 'DataCrmController@storeCRMLOG')->name('data_crms_log_store');
       //thêm ng thân cho bé
       Route::post('student/{id}/add-parent', 'StudentController@addParent')->name('student.addParent');
+      Route::post('student/{id}/add-service', 'StudentController@addService')->name('student.addService');
       //xóa mqh ng thân
       Route::delete('student-parent/{id}', 'StudentController@removeParentRelation')->name('student.removeParentRelation');
-
+      Route::get('delete_student_service', 'StudentController@deleteStudentService')->name('delete_student_service');
 
       // Import nguời dùng
       Route::post('import_user', 'AdminController@importUser')->name('admin.import_user');
