@@ -90,7 +90,7 @@
                         <div class="modal-body row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label><?php echo app('translator')->get('Chọn tệp'); ?> <a href="<?php echo e(url('themes\admin\img\data.xlsx')); ?>" target="_blank">(<?php echo app('translator')->get('Minh họa file excel'); ?>)</a></label>
+                                    <label><?php echo app('translator')->get('Chọn tệp'); ?> <a href="<?php echo e(url('themes\admin\img\data_student.xlsx')); ?>" target="_blank">(<?php echo app('translator')->get('Minh họa file excel'); ?>)</a></label>
                                     <small class="text-red">*</small>
                                     <div style="display: flex" class="d-flex">
                                         <input id="file" class="form-control" type="file" required name="file"
@@ -110,7 +110,7 @@
             <div class="box-header">
                 <h3 class="box-title"><?php echo app('translator')->get('List'); ?></h3>
             </div>
-            <div class="box-body table-responsive">
+            <div class="box-body ">
                 <?php if(session('errorMessage')): ?>
                     <div class="alert alert-warning alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -152,6 +152,8 @@
                                 <th><?php echo app('translator')->get('Tên thường gọi'); ?></th>
                                 <th><?php echo app('translator')->get('Gender'); ?></th>
                                 <th><?php echo app('translator')->get('Area'); ?></th>
+                                <th><?php echo app('translator')->get('Địa chỉ'); ?></th>
+                                <th><?php echo app('translator')->get('Trạng thái'); ?></th>
                                 <th><?php echo app('translator')->get('Lớp đang học'); ?></th>
                                 <th><?php echo app('translator')->get('Ngày nhập học chính thức'); ?></th>
                                 <th><?php echo app('translator')->get('Action'); ?></th>
@@ -194,6 +196,15 @@
                                             <?php echo e($row->area->code ?? ''); ?>
 
                                         </td>
+
+                                        <td>
+                                            <?php echo e($row->address ?? ''); ?>
+
+                                        </td>
+
+                                        <td>
+                                            <?php echo e(__($row->status ?? '')); ?>
+
                                         <td>
                                             <?php echo e($row->currentClass->name ?? ''); ?>
 
