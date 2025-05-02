@@ -51,14 +51,14 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label><?php echo app('translator')->get('Trạng thái'); ?></label>
-                                <select name="status" id="status" class="form-control select2 w-100">
+                                <label><?php echo app('translator')->get('Số tháng'); ?></label>
+                                <select name="months" class="form-control select2 w-100">
                                     <option value=""><?php echo app('translator')->get('Please select'); ?></option>
-                                    <?php $__currentLoopData = $status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($key); ?>"
-                                            <?php echo e(isset($params['status']) && $params['status'] == $key ? 'selected' : ''); ?>>
-                                            <?php echo e(__($item)); ?></option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php for($i = 1; $i <= 12; $i++): ?>
+                                        <option value="<?php echo e($i); ?>"
+                                            <?php echo e(isset($params['months']) && $params['months'] == $i ? 'selected' : ''); ?>>
+                                            <?php echo e($i); ?> Tháng</option>
+                                    <?php endfor; ?>
                                 </select>
                             </div>
                         </div>
@@ -119,10 +119,10 @@
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th><?php echo app('translator')->get('Mã chính sách'); ?></th>
-                                <th><?php echo app('translator')->get('Tên chính sách'); ?></th>
+                                <th><?php echo app('translator')->get('Tên chu kỳ'); ?></th>
+                                <th><?php echo app('translator')->get('Số tháng'); ?></th>
                                 <th><?php echo app('translator')->get('Khu vực'); ?></th>
-                                <th><?php echo app('translator')->get('Trạng thái'); ?></th>
+                                <th><?php echo app('translator')->get('Mặc định'); ?></th>
                                 <th><?php echo app('translator')->get('Cập nhật'); ?></th>
                                 <th><?php echo app('translator')->get('Ngày cập nhật'); ?></th>
                                 <th><?php echo app('translator')->get('Action'); ?></th>
@@ -132,21 +132,25 @@
                             <?php $__currentLoopData = $rows; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr class="valign-middle">
                                     <td>
-                                        <strong style="font-size: 14px"><?php echo e($row->code ?? ''); ?></strong>
+                                        <strong style="font-size: 14px"><?php echo e($row->name ?? ''); ?></strong>
                                     </td>
-
+                                    <?php echo e($row->months); ?> tháng
                                     <td>
-                                        <?php echo e($row->name ?? ''); ?>
-
                                     </td>
-
                                     <td>
                                         <?php echo e($row->area->name ?? ''); ?>
 
                                     </td>
                                     <td>
-                                        <?php echo e(__($row->status)); ?>
+                                        <div class="sw_featured d-flex-al-center">
+                                            <label class="switch ">
+                                                <input id="sw_featured" name="is_default" value="1" type="checkbox"
+                                                    disabled
+                                                    <?php echo e($row->is_default && $row->is_default == '1' ? 'checked' : ''); ?>>
+                                                <span class="slider round"></span>
+                                            </label>
 
+                                        </div>
                                     </td>
                                     <td>
                                         <?php echo e($row->admin_updated->name ?? ''); ?>
@@ -156,18 +160,29 @@
                                         <?php echo e(date('H:i - d/m/Y', strtotime($row->updated_at))); ?>
 
                                     </td>
-                                    <td style="width:150px">
-                                        <button class="btn btn-sm btn-success btn_show_detail" data-toggle="tooltip"
+                                    <td class="d-flex-wap">
+                                        <button class="btn btn-sm btn-success btn_show_detail mr-10" data-toggle="tooltip"
                                             data-id="<?php echo e($row->id); ?>"
                                             data-url="<?php echo e(route(Request::segment(2) . '.show', $row->id)); ?>"
                                             title="<?php echo app('translator')->get('Show'); ?>" data-original-title="<?php echo app('translator')->get('Show'); ?>">
                                             <i class="fa fa-eye"></i>
                                         </button>
-                                        <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="<?php echo app('translator')->get('Update'); ?>"
-                                            data-original-title="<?php echo app('translator')->get('Update'); ?>"
+
+                                        <a class="btn btn-sm btn-warning mr-10" data-toggle="tooltip"
+                                            title="<?php echo app('translator')->get('Update'); ?>" data-original-title="<?php echo app('translator')->get('Update'); ?>"
                                             href="<?php echo e(route(Request::segment(2) . '.edit', $row->id)); ?>">
                                             <i class="fa fa-pencil-square-o"></i>
                                         </a>
+
+                                        <form action="<?php echo e(route(Request::segment(2) . '.destroy', $row->id)); ?>"
+                                            method="POST" onsubmit="return confirm('<?php echo app('translator')->get('confirm_action'); ?>')">
+                                            <?php echo csrf_field(); ?>
+                                            <?php echo method_field('DELETE'); ?>
+                                            <button class="btn btn-sm btn-danger" type="submit" data-toggle="tooltip"
+                                                title="<?php echo app('translator')->get('Delete'); ?>" data-original-title="<?php echo app('translator')->get('Delete'); ?>">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -190,14 +205,14 @@
 
         </div>
     </section>
-    <div class="modal fade" id="modal_show_policies" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal fade" id="modal_show_payment_cycle" data-backdrop="static" tabindex="-1" role="dialog">
         <div class="modal-dialog " role="document">
             <div class="modal-content">
                 <div class="modal-header ">
                     <h3 class="modal-title text-center col-md-12"><?php echo app('translator')->get('Thông tin chính sách'); ?></h3>
                     </h3>
                 </div>
-                <div class="modal-body show_detail_policies">
+                <div class="modal-body show_detail_payment_cycle">
 
                 </div>
                 <div class="modal-footer">
@@ -208,7 +223,6 @@
             </div>
         </div>
     </div>
-
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('script'); ?>
     <script>
@@ -220,13 +234,13 @@
                 url: url,
                 success: function(response) {
                     if (response) {
-                        $('.show_detail_policies').html(response.data.view);
-                        $('#modal_show_policies').modal('show');
+                        $('.show_detail_payment_cycle').html(response.data.view);
+                        $('#modal_show_payment_cycle').modal('show');
                     } else {
                         var _html = `<div class="alert alert-warning alert-dismissible">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            Bạn không có quyền thao tác chức năng này!
-                            </div>`;
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        Bạn không có quyền thao tác chức năng này!
+                        </div>`;
                         $('.box_alert').prepend(_html);
                         $('html, body').animate({
                             scrollTop: $(".alert").offset().top
@@ -246,4 +260,4 @@
     </script>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\steamwonder\resources\views/admin/pages/policies/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\steamwonder\resources\views/admin/pages/payment_cycle/index.blade.php ENDPATH**/ ?>
