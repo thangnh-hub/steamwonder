@@ -62,7 +62,7 @@
     "Remember me": "Ghi nhớ",
     "Admin user management": " Quản lý người dùng",
     "Education Ages management": " Quản lý độ tuổi",
-    "Education Programs management": " Quản lý chương trình học",
+    "Education Programs management": " Quản lý hệ đào tạo",
     "Class management": " Quản lý lớp học",
     "Successfully updated!": "Cập nhật thành công!",
     "Active": "Hoạt động",
@@ -96,5 +96,6 @@
     "hoc_thu": "Học thử",
     "giu_cho": "Giữ chỗ",
     "percent": "Phần trăm",
-    "fixed_amount": "Số tiền cố định"
+    "fixed_amount": "Số tiền cố định",
+    "Edit form": "Thông tin cập nhật"
 }
