@@ -41,6 +41,9 @@ class Policies extends Model
                         ->orWhere('tb_policies.code', 'like', '%' . $keyword . '%');
                 });
             })
+            ->when(!empty($params['area_id']), function ($query) use ($params) {
+                return $query->where('tb_policies.area_id', $params['area_id']);
+            })
             ->when(!empty($params['id']), function ($query) use ($params) {
                 return $query->where('tb_policies.id', $params['id']);
             });
