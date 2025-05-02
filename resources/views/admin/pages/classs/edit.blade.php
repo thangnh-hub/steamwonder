@@ -212,10 +212,10 @@
                                             <div class="col-xs-12">
                                                 <div class="box" style="border-top: 3px solid #d2d6de;">
                                                     <div class="box-header">
-                                                        <h3 class="box-title">@lang('Danh sách học viên')</h3>
+                                                        <h3 class="box-title">@lang('Danh sách học sinh')</h3>
                                                         <button type="button"
                                                             class="btn btn-warning btn-sm btn_modal_student pull-right">Thêm
-                                                            học viên</button>
+                                                            học sinh</button>
                                                     </div>
                                                     <div class="box-body no-padding">
                                                         <table class="table table-hover sticky">
@@ -253,7 +253,7 @@
                                                                                     name="student[{{ $item->id }}][status]">
                                                                                     @foreach ($status as $val)
                                                                                         <option value="{{ $val }}"
-                                                                                            {{ $item->pivot->status == $val ? 'selected' : '' }}>
+                                                                                            {{ isset($item->pivot->status) && $item->pivot->status == $val ? 'selected' : '' }}>
                                                                                             {{ __($val) }}
                                                                                         </option>
                                                                                     @endforeach
@@ -343,7 +343,7 @@
                                                                                         @foreach ($status as $val)
                                                                                             <option
                                                                                                 value="{{ $val }}"
-                                                                                                {{ $item->pivot->status == $val ? 'selected' : '' }}>
+                                                                                                {{ isset($item->pivot->status) && $item->pivot->status == $val ? 'selected' : '' }}>
                                                                                                 {{ __($val) }}
                                                                                             </option>
                                                                                         @endforeach
@@ -432,7 +432,7 @@
             <div class="modal-dialog " role="document">
                 <div class="modal-content">
                     <div class="modal-header ">
-                        <h3 class="modal-title text-center col-md-12">@lang('Thêm học viên vào lớp')</h3>
+                        <h3 class="modal-title text-center col-md-12">@lang('Thêm học sinh vào lớp')</h3>
                         </h3>
                     </div>
                     <div class="box_alert_modal">
@@ -441,7 +441,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>@lang('Chọn học viên') <small class="text-red">*</small></label>
+                                    <label>@lang('Chọn học sinh') <small class="text-red">*</small></label>
                                     <select required id="select_student" name="student_id[]" multiple
                                         class="form-control select2  w-100">
                                         <option value="">@lang('Please select')</option>
@@ -595,7 +595,6 @@
                                     name="student[${student.id}][status]">
                                     @foreach ($status as $val)
                                         <option value="{{ $val }}"
-                                            {{ $item->pivot->status == $val ? 'selected' : '' }}>
                                             {{ __($val) }}
                                         </option>
                                     @endforeach
@@ -606,7 +605,6 @@
                                     name="student[${student.id}][type]">
                                     @foreach ($type_student as $val)
                                         <option value="{{ $val }}"
-                                            {{ $item->pivot->type == $val ? 'selected' : '' }}>
                                             {{ __($val) }}
                                         </option>
                                     @endforeach
