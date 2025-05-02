@@ -6,6 +6,10 @@
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('style'); ?>
     <style>
+        .modal-header{
+            background-color: #3c8dbc;
+            color: white;
+        }
         .table-wrapper {
             max-height: 450px; 
             overflow-y: auto;
@@ -169,7 +173,33 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label><?php echo app('translator')->get('Chính sách được hưởng'); ?></label>
+                                                        <select name="policies[]" class="form-control select2" multiple>
+                                                            <?php
+                                                                $selectedPolicies = $detail->studentPolicies->pluck('policy_id')->toArray();
+                                                            ?>
+                                                            <?php $__currentLoopData = $list_policies; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $policy): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <option value="<?php echo e($policy->id); ?>" <?php echo e(in_array($policy->id, $detail->studentPolicies->pluck('policy_id')->toArray()) ? 'selected' : ''); ?>>
+                                                                    <?php echo e($policy->name); ?>
+
+                                                                </option>
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label><?php echo app('translator')->get('Chu kỳ thu dịch vụ'); ?></label>
+                                                        <select name="payment_cycle_id" class="form-control select2">
+                                                            <option value="">Chọn</option>
+                                                            <?php $__currentLoopData = $list_payment_cycle; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $payment_cycle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <option <?php echo e(old('payment_cycle_id', $detail->payment_cycle_id) == $payment_cycle->id ? 'selected' : ''); ?> value="<?php echo e($payment_cycle->id); ?>"><?php echo e($payment_cycle->name ?? ""); ?></option>
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group box_img_right">
                                                         <label><?php echo app('translator')->get('Ảnh đại diện'); ?></label>
@@ -265,8 +295,9 @@
                                         <div class="box-body ">
                                             <div>
                                                 <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addServiceModal">
-                                                    <i class="fa fa-plus"></i> <?php echo app('translator')->get('Thêm dịch vụ'); ?>
+                                                    <i class="fa fa-plus"></i> <?php echo app('translator')->get('Đăng ký dịch vụ'); ?>
                                                 </button>     
+                                                    
                                             </div>
                                             
                                             <br>
@@ -282,6 +313,7 @@
                                                         <th><?php echo app('translator')->get('Loại dịch vụ'); ?></th>
                                                         <th><?php echo app('translator')->get('Biểu phí'); ?></th>
                                                         <th><?php echo app('translator')->get('Chu kỳ thu'); ?></th>
+                                                        <th><?php echo app('translator')->get('Ghi chú'); ?></th>
                                                         <th><?php echo app('translator')->get('Chức năng'); ?></th>
                                                     </tr>
                                                 </thead>
@@ -318,12 +350,16 @@
 
                                                         </td>
                                                         <td>
-                                                            <button type="button" class="btn btn-sm btn-danger delete_student_service approve_payment" data-id="<?php echo e($row->id); ?>">
-                                                                <i class="fa fa-trash"></i> Xóa
+                                                            <?php echo e($row->json_params->note ?? ""); ?>
+
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-sm btn-danger delete_student_service" data-id="<?php echo e($row->id); ?>">
+                                                                <i class="fa fa-close"></i> Hủy
                                                             </button>
-                                                            <button type="button" class="btn btn-sm btn-primary">
-                                                                <i class="fa fa-pencil"></i> Cập nhật
-                                                            </button>
+                                                            <button data-id="<?php echo e($row->id); ?>" type="button" class="btn btn-primary btn-sm update_student_service" data-toggle="modal" data-target="#editServiceModal">
+                                                                <i class="fa fa-pencil"></i> <?php echo app('translator')->get('Cập nhật'); ?>
+                                                            </button> 
                                                         </td>
                                                     </tr>
                                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -356,7 +392,7 @@
                                                 <tbody>
                                                     <?php $__currentLoopData = $cancelledServices; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                         <tr>
-                                                            <td><?php echo e($index + 1); ?></td>
+                                                            <td><?php echo e($loop->index + 1); ?></td>
                                                             <td><?php echo e($row->services->name ?? ''); ?></td>
                                                             <td>
                                                                 <?php echo e(optional($row->services->serviceDetail->first())->start_at 
@@ -482,7 +518,7 @@
                                     <th><?php echo app('translator')->get('Tính chất dịch vụ'); ?></th>
                                     <th><?php echo app('translator')->get('Loại dịch vụ'); ?></th>
                                     <th><?php echo app('translator')->get('Biểu phí'); ?></th>
-                                    <th><?php echo app('translator')->get('Chu kỳ thu'); ?></th>
+                                    
                                     <th><?php echo app('translator')->get('Ghi chú'); ?></th>
                                     <th>Chọn</th>
                                 </tr>
@@ -508,13 +544,7 @@
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             <?php endif; ?>
                                         </td>
-                                        <td>
-                                            <select style="width:100%" name="services[<?php echo e($service->id); ?>][payment_cycle_id]" class="form-control select2">
-                                                <?php $__currentLoopData = $list_payment_cycle; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $payment_cycle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                    <option  value="<?php echo e($payment_cycle->id); ?>"><?php echo e($payment_cycle->name ?? ""); ?></option>
-                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                            </select>
-                                        </td>
+                                        
                                         <td>
                                             <input type="text" class="form-control" name="services[<?php echo e($service->id); ?>][note]" value="" placeholder="<?php echo app('translator')->get('Ghi chú'); ?>">
                                         </td>
@@ -535,6 +565,34 @@
         </form>
         </div>
     </div>
+
+    
+    <div  class="modal fade" id="editServiceModal" tabindex="-1" role="dialog" aria-labelledby="editServiceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+        <form id="updateStudentServiceForm" method="POST">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editServiceModalLabel"><?php echo app('translator')->get('Cập nhật dịch vụ'); ?></h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">Ghi chú</label>
+                                <input type="text" class="form-control" name="note" value="" placeholder="<?php echo app('translator')->get('Ghi chú'); ?>">
+                            </div>
+                        </div>           
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnUpdateService" type="button" class="btn btn-primary"><?php echo app('translator')->get('Cập nhật'); ?></button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo app('translator')->get('Đóng'); ?></button>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('script'); ?>
@@ -577,6 +635,58 @@
                     }
                 });
             }
+        });
+        $('.update_student_service').click(function(e) {
+            e.preventDefault();
+            let _id = $(this).data('id');
+            let url = "<?php echo e(route('get_student_service_info')); ?>"; // → bạn cần tạo route này để lấy dữ liệu dịch vụ
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {
+                    id: _id,
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#editServiceModal input[name="note"]').val(response.data.note);
+                        // Mở modal
+                        $('#editServiceModal').modal('show');
+                        $('#btnUpdateService').attr('data-id', _id); // Lưu ID dịch vụ hiện tại vào nút cập nhật
+                    } else {
+                        alert("Không tìm thấy dữ liệu dịch vụ.");
+                    }
+                },
+                error: function(response) {
+                    alert("Đã có lỗi xảy ra khi tải dữ liệu.");
+                }
+            });
+        });
+
+        $('#btnUpdateService').click(function () {
+            let noteValue = $('input[name="note"]').val();
+            let currentStudentServiceId = $(this).data('id'); // Lấy ID dịch vụ hiện tại từ nút cập nhật
+            $.ajax({
+                type: "POST",
+                url: "<?php echo e(route('student.updateService.ajax')); ?>",
+                data: {
+                    id: currentStudentServiceId,
+                    note: noteValue,
+                    _token: '<?php echo e(csrf_token()); ?>'
+                },
+                success: function(response) {
+                    if (response.message === 'success') {
+                        $('#editServiceModal').modal('hide');
+                        localStorage.setItem('activeTab', '#tab_3');
+                        location.reload();
+                    } else {
+                        alert("Không thể cập nhật ghi chú.");
+                    }
+                },
+                error: function() {
+                    alert("Lỗi cập nhật ghi chú.");
+                }
+            });
         });
 
         $(document).ready(function () {

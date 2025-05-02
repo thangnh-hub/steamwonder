@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Consts;
 use App\Models\Student;
 use App\Models\tbParent;
+use App\Models\Policies;
+use App\Models\StudentPolicie;
 use App\Models\Relationship;
 use App\Models\StudentParent;
 use App\Models\Area;
@@ -123,7 +125,7 @@ class StudentController extends Controller
         $this->responseData['studentParentIds'] = $student->studentParents->pluck('parent_id')->toArray();
 
         // lấy ra danh sách  dịch vụ còn lại (chưa đăng ký)
-        $studentServiceIds= $student->studentServices->pluck('service_id')->toArray();
+        $studentServiceIds = $student->studentServices()->where('status', 'active')->pluck('service_id')->toArray();
         $params_service['status'] = Consts::STATUS_ACTIVE;
         $params_service['different_id'] = $studentServiceIds;
         $this->responseData['unregisteredServices'] =  Service::getSqlService($params_service)->get();
@@ -131,6 +133,9 @@ class StudentController extends Controller
         $this->responseData['list_relationship'] = Relationship::getSqlRelationship($params_active)->get();
         //list chu kỳ 
         $this->responseData['list_payment_cycle'] = PaymentCycle::getSqlPaymentCycle()->get(); 
+
+        //list policies
+        $this->responseData['list_policies'] = Policies::getSqlPolicies($params_active)->get();
         return $this->responseView($this->viewPart . '.edit');
     }
 
@@ -149,10 +154,31 @@ class StudentController extends Controller
             'last_name'  => 'required',
             'student_code' => 'unique:students,student_code,' . $student->id,
         ]);
-        $params = $request->all();
+        $params = $request->except(['policies']);
         $params['admin_updated_id'] = Auth::guard('admin')->user()->id;
 
         $student->update($params);
+        try {
+            // Xoá các chính sách cũ
+            $student->studentPolicies()->delete();
+    
+            // Thêm mới nếu có chính sách gửi lên
+            if ($request->has('policies') && is_array($request->policies)) {
+                foreach ($request->policies as $policyId) {
+                    StudentPolicie::create([
+                        'student_id' => $student->id,
+                        'policy_id'  => $policyId,
+                        'status'  => Consts::STATUS_ACTIVE,
+                        'admin_created_id' => Auth::guard('admin')->user()->id,
+                    ]);
+                }
+            }
+    
+            return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Update successfully!'));
+    
+        } catch (\Exception $e) {
+            return back()->with('errorMessage', __('Có lỗi xảy ra: ') . $e->getMessage());
+        }
 
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Update successfully!'));
     }
@@ -192,13 +218,16 @@ class StudentController extends Controller
     public function addService(Request $request, $id)
     {
         $student = Student::findOrFail($id);
+        if($student->payment_cycle_id==""){
+            return redirect()->back()->with('errorMessage', __('Học sinh chưa chọn chu kỳ thanh toán!'));
+        }
         $parentsInput = $request->input('services', []);
         foreach ($parentsInput as $data) {
             if (!empty($data['id'])) {
                 StudentService::create([
                     'student_id'      => $student->id,
                     'service_id'       => $data['id'],
-                    'payment_cycle_id' => $data['payment_cycle_id'] ?? null,
+                    'payment_cycle_id' => $student->payment_cycle_id??"",
                     'json_params.note' => $data['note'] ?? "",
                     'status' => Consts::STATUS_ACTIVE,
                     'admin_created_id' => Auth::guard('admin')->user()->id,
@@ -258,6 +287,42 @@ class StudentController extends Controller
             session()->flash('errorMessage', __('Hủy dịch vụ không thành công! Bạn không có quyền thao tác dữ liệu!'));
             return $this->sendResponse('', __('No records available!'));
         } catch (Exception $ex) {
+            abort(422, __($ex->getMessage()));
+        }
+    }
+
+    public function getStudentServiceInfo(Request $request)
+    {
+        $id = $request->id;
+        $studentService = StudentService::find($id);
+
+        if (!$studentService) {
+            return response()->json(['success' => false, 'message' => 'Không tìm thấy dịch vụ']);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'note' => $studentService->json_params->note ??"",
+            ]
+        ]);
+    }
+    public function updateServiceNoteAjax(Request $request)
+    {
+        try {
+            $studentService = StudentService::find($request->id);
+            if (!$studentService) {
+                session()->flash('errorMessage', __('Không tìm thấy dịch vụ đăng ký!'));
+            }
+            $params['json_params']['note'] = $request->note??"";
+            $studentService->update($params);
+    
+            if ($studentService->save()) {
+                session()->flash('successMessage', __('Cập nhật ghi chú thành công!'));
+            }
+    
+            return $this->sendResponse("", 'success');
+        } catch (\Exception $ex) {
             abort(422, __($ex->getMessage()));
         }
     }
