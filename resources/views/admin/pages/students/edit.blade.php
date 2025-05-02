@@ -4,13 +4,28 @@
 @section('title')
     @lang($module_name)
 @endsection
-@php
-    if (Request::get('lang') == $languageDefault->lang_locale || Request::get('lang') == '') {
-        $lang = $languageDefault->lang_locale;
-    } else {
-        $lang = Request::get('lang');
-    }
-@endphp
+@section('style')
+    <style>
+        .table-wrapper {
+            max-height: 450px; 
+            overflow-y: auto;
+            display: block;
+        }
+
+        .table-wrapper thead {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            z-index: 2;
+        }
+
+        .table-wrapper table {
+            border-collapse: separate;
+            width: 100%;
+        }
+    </style>
+@endsection
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -63,6 +78,11 @@
                                     <li class="">
                                         <a href="#tab_2" data-toggle="tab">
                                             <h5>Người thân của bé</h5>
+                                        </a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_3" data-toggle="tab">
+                                            <h5>Dịch vụ đã đăng ký</h5>
                                         </a>
                                     </li>
                                 </ul>
@@ -166,6 +186,7 @@
                                         </div>
                                     </div>
 
+                                    {{-- người thân --}}
                                     <div class="tab-pane " id="tab_2">
                                         <div class="box-body ">
                                             <div>
@@ -233,7 +254,127 @@
                                             
                                         </div>                      
                                     </div>
-                                </div> <!-- tab-content -->
+                                    {{-- Dịch vụ đã đăng ký --}}
+                                    <div class="tab-pane " id="tab_3">
+                                        <div class="box-body ">
+                                            <div>
+                                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addServiceModal">
+                                                    <i class="fa fa-plus"></i> @lang('Thêm dịch vụ')
+                                                </button>     
+                                            </div>
+                                            
+                                            <br>
+                                            <table class="table table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>@lang('STT')</th>
+                                                        <th>@lang('Tên dịch vụ')</th>
+                                                        <th>@lang('Nhóm dịch vụ')</th>
+                                                        <th>@lang('Hệ đào tạo')</th>
+                                                        <th>@lang('Độ tuổi')</th>
+                                                        <th>@lang('Tính chất dịch vụ')</th>
+                                                        <th>@lang('Loại dịch vụ')</th>
+                                                        <th>@lang('Biểu phí')</th>
+                                                        <th>@lang('Chu kỳ thu')</th>
+                                                        <th>@lang('Chức năng')</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @php
+                                                        $activeServices = $detail->studentServices->where('status', 'active');
+                                                    @endphp
+                                                    @if($activeServices->count())
+                                                    @foreach ($activeServices as $row)
+                                                    <tr>
+                                                        <td>{{ $loop->index + 1 }}</td>
+                                                        <td>{{ $row->services->name ?? "" }}</td>
+                                                        <td>{{ $row->services->service_category->name ?? "" }}</td>
+                                                        <td>{{ $row->services->education_program->name ?? "" }}</td>
+                                                        <td>{{ $row->services->education_age->name ?? "" }}</td>
+                                                        <td>{{ $row->services->is_attendance== 0 ? "Không theo điểm danh" : "Tính theo điểm danh"}}</td>
+                                                        <td>{{ __($row->services->service_type??"") }}</td>
+                                                        
+                                                        <td>
+                                                            @if(isset($row->services->serviceDetail) && $row->services->serviceDetail->count() > 0)
+                                                            @foreach ($row->services->serviceDetail as $detail_service)
+                                                            <ul>
+                                                                <li>Số tiền: {{ isset($detail_service->price) && is_numeric($detail_service->price) ? number_format($detail_service->price, 0, ',', '.') . ' đ' : '' }}</li>
+                                                                <li>Số lượng: {{ $detail_service->quantity ?? '' }}</li>
+                                                                <li>Từ: {{ (isset($detail_service->start_at) ? \Illuminate\Support\Carbon::parse($detail_service->start_at)->format('d-m-Y') : '') }}</li>
+                                                                <li>Đến: {{ (isset($detail_service->end_at) ? \Illuminate\Support\Carbon::parse($detail_service->end_at)->format('d-m-Y') : '') }}</li>
+                                                            </ul>
+                                                            @endforeach
+                    
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            {{ $row->paymentcycle->name ?? "" }}
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-sm btn-danger delete_student_service approve_payment" data-id="{{ $row->id }}">
+                                                                <i class="fa fa-trash"></i> Xóa
+                                                            </button>
+                                                            <button type="button" class="btn btn-sm btn-primary">
+                                                                <i class="fa fa-pencil"></i> Cập nhật
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                    @else
+                                                        <tr>
+                                                            <td colspan="14" class="text-center">Không có dữ liệu</td>
+                                                        </tr>
+                                                    @endif
+                                                </tbody>
+                                                
+                                            </table>
+                                            <br>
+                                            @php
+                                                $cancelledServices = $detail->studentServices->where('status', 'cancelled');
+                                            @endphp
+                                            @if($cancelledServices->count())
+                                            <h4 class="mt-4 ">Danh sách dịch vụ bị huỷ</h4>
+                                            <br>
+                                            <table class="table table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>@lang('STT')</th>
+                                                        <th>@lang('Tên dịch vụ')</th>
+                                                        <th>@lang('Ngày bắt đầu')</th>
+                                                        <th>@lang('Ngày kết thúc')</th>
+                                                        <th>@lang('Người cập nhật')</th>
+                                                        <th>@lang('Trạng thái')</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($cancelledServices as $index => $row)
+                                                        <tr>
+                                                            <td>{{ $index + 1 }}</td>
+                                                            <td>{{ $row->services->name ?? '' }}</td>
+                                                            <td>
+                                                                {{ optional($row->services->serviceDetail->first())->start_at 
+                                                                    ? \Carbon\Carbon::parse($row->services->serviceDetail->first()->start_at)->format('d-m-Y') 
+                                                                    : '' 
+                                                                }}
+                                                            </td>
+                                                            <td>
+                                                                {{ optional($row->services->serviceDetail->first())->end_at 
+                                                                    ? \Carbon\Carbon::parse($row->services->serviceDetail->first()->end_at)->format('d-m-Y') 
+                                                                    : '' 
+                                                                }}
+                                                            </td>
+                                                            <td>
+                                                                {{ $row->adminUpdated->name ?? "" }} ({{ $row->updated_at ? \Carbon\Carbon::parse($row->updated_at)->format('H:i:s d-m-Y') : '' }})   
+                                                            </td>
+                                                            <td><span class="badge badge-danger">Đã huỷ</span></td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                            @endif
+                                        </div>                      
+                                    </div>
+                                </div> 
                             </div>
                         </div>
                     
@@ -250,9 +391,9 @@
             </div>    
         </form>
     </section>
-    <!-- Modal -->
+    <!-- Modal Người thân-->
     <div class="modal fade" id="addParentModal" tabindex="-1" role="dialog" aria-labelledby="addParentModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-full" role="document">
         <form action="{{ route('student.addParent', $detail->id) }}" method="POST">
             @csrf
             <div class="modal-content">
@@ -260,9 +401,10 @@
                     <h5 class="modal-title" id="addParentModalLabel">@lang('Chọn người thân')</h5>
                 </div>
                 <div class="modal-body">
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="search-parent" placeholder="@lang('Tìm theo tên phụ huynh...')">
-                        </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="search-parent" placeholder="@lang('Tìm theo tên phụ huynh...')">
+                    </div>
+                    <div class="table-wrapper">
                         <table class="table table-hover table-bordered" id="parent-table">
                             <thead>
                                 <tr>
@@ -298,7 +440,9 @@
                                     </tr>
                                 @endforeach
                             </tbody>
-                        </table>
+                        </table>    
+                    </div>
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">@lang('Lưu người thân đã chọn')</button>
@@ -308,7 +452,82 @@
         </form>
         </div>
     </div>
-  
+
+    <!-- Modal dịch vụ-->
+    <div data-backdrop="static" class="modal fade" id="addServiceModal" tabindex="-1" role="dialog" aria-labelledby="addServiceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-full" role="document">
+        <form action="{{ route('student.addService', $detail->id) }}" method="POST">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addServiceModalLabel">@lang('Chọn dịch vụ')</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="search-service" placeholder="@lang('Tìm theo tên phụ huynh...')">
+                    </div>
+                    <div class="table-wrapper" >
+                        <table class="table table-hover table-bordered" id="service-table">
+                            <thead>
+                                <tr>
+                                    <th>@lang('Tên dịch vụ')</th>
+                                    <th>@lang('Nhóm dịch vụ')</th>
+                                    <th>@lang('Tính chất dịch vụ')</th>
+                                    <th>@lang('Loại dịch vụ')</th>
+                                    <th>@lang('Biểu phí')</th>
+                                    <th>@lang('Chu kỳ thu')</th>
+                                    <th>@lang('Ghi chú')</th>
+                                    <th>Chọn</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($unregisteredServices as $service)
+                                
+                                    <tr>
+                                        <td class="service-name">{{ $service->name ?? "" }}</td>
+                                        <td>{{ $service->service_category->name ?? "" }}</td>
+                                        <td>{{ $service->is_attendance== 0 ? "Không theo điểm danh" : "Tính theo điểm danh"}}</td>
+                                        <td>{{ __($service->service_type??"") }}</td>
+                                        
+                                        <td>
+                                            @if(isset($service->serviceDetail) && $service->serviceDetail->count() > 0)
+                                                @foreach ($service->serviceDetail as $detail_service)
+                                                <ul>
+                                                    <li>Số tiền: {{ isset($detail_service->price) && is_numeric($detail_service->price) ? number_format($detail_service->price, 0, ',', '.') . ' đ' : '' }}</li>
+                                                    <li>Số lượng: {{ $detail_service->quantity ?? '' }}</li>
+                                                    <li>Từ: {{ (isset($detail_service->start_at) ? \Illuminate\Support\Carbon::parse($detail_service->start_at)->format('d-m-Y') : '') }}</li>
+                                                    <li>Đến: {{ (isset($detail_service->end_at) ? \Illuminate\Support\Carbon::parse($detail_service->end_at)->format('d-m-Y') : '') }}</li>
+                                                </ul>
+                                                @endforeach
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <select style="width:100%" name="services[{{ $service->id }}][payment_cycle_id]" class="form-control select2">
+                                                @foreach($list_payment_cycle as $payment_cycle)
+                                                    <option  value="{{ $payment_cycle->id }}">{{ $payment_cycle->name ?? "" }}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" name="services[{{ $service->id }}][note]" value="" placeholder="@lang('Ghi chú')">
+                                        </td>
+                                        <td>
+                                            <input type="checkbox" name="services[{{ $service->id }}][id]" value="{{ $service->id }}" >
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">@lang('Lưu dịch vụ đã chọn')</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@lang('Đóng')</button>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
 @endsection
 
 @section('script')
@@ -318,6 +537,54 @@
             $('#parent-table tbody tr').filter(function() {
                 $(this).toggle($(this).find('.parent-name').text().toLowerCase().indexOf(value) > -1);
             });
+        });
+        $('#search-service').on('keyup', function() {
+            let value = $(this).val().toLowerCase();
+            $('#service-table tbody tr').filter(function() {
+                $(this).toggle($(this).find('.service-name').text().toLowerCase().indexOf(value) > -1);
+            });
+        });
+
+
+        $('.delete_student_service').click(function(e) {
+            if (confirm('Bạn có chắc chắn muốn xóa dịch vụ này khỏi học sinh ?')) {
+                let _id = $(this).attr('data-id');
+                let url = "{{ route('delete_student_service') }}/";
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    data: {
+                        id: _id,
+                    },
+                    success: function(response) {
+                        if (response.message === 'success') {
+                            localStorage.setItem('activeTab', '#tab_3'); 
+                            location.reload(); 
+                        } else {
+                            alert("Bạn không có quyền thao tác dữ liệu");
+                        }
+                    },
+                    error: function(response) {
+                        let errors = response.responseJSON.message;
+                        alert(errors);
+                    }
+                });
+            }
+        });
+
+        $(document).ready(function () {
+            var activeTab = localStorage.getItem('activeTab');
+            if (activeTab) {
+                // Bỏ class active hiện tại
+                $('.nav-tabs li, .tab-content .tab-pane').removeClass('active');
+
+                // Thêm active cho tab tương ứng
+                $('.nav-tabs li a[href="' + activeTab + '"]').parent().addClass('active');
+                $(activeTab).addClass('active');
+
+                // Xoá dữ liệu đã lưu để tránh kích hoạt lại lần sau
+                localStorage.removeItem('activeTab');
+            }
         });
     </script>
 @endsection

@@ -4,6 +4,10 @@ namespace App;
 
 class Consts
 {
+    const TYPE_POLICIES = [
+        'percent' => 'percent',
+        'fixed_amount' => 'fixed_amount',
+      ];
     const TYPE_CLASS_STUDENT = [
         'hoc_thu' => 'hoc_thu',
         'giu_cho' => 'giu_cho',

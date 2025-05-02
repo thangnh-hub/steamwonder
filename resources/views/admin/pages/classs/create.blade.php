@@ -150,7 +150,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>@lang('Status') </label>
-                                                    <select required name="status " class="form-control select2">
+                                                    <select required name="status" class="form-control select2">
                                                         @foreach ($status as $key => $val)
                                                             <option value="{{ $key }}"
                                                                 {{ old('status') && old('status') == $val ? 'selected' : '' }}>

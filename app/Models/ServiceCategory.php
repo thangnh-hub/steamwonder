@@ -34,7 +34,7 @@ class ServiceCategory extends Model
             return $query->where('tb_service_category.status', $params['status']);
         }) ;   
         if (!empty($params['order_by'])) {
-            $query->orderBy('tb_service_category.' . $params['order_by'], 'desc');
+            $query->orderBy('tb_service_category.' . $params['order_by'], 'asc');
         } else {
             $query->orderBy('id', 'desc');
         }

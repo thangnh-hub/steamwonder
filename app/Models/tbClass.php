@@ -56,11 +56,11 @@ class tbClass extends Model
     }
     public function admin_created()
     {
-        return $this->belongsTo(Admin::class, 'admin_created_id ', 'id');
+        return $this->belongsTo(Admin::class, 'admin_created_id', 'id');
     }
     public function admin_updated()
     {
-        return $this->belongsTo(Admin::class, 'admin_updated_id  created_id ', 'id');
+        return $this->belongsTo(Admin::class, 'admin_updated_id', 'id');
     }
     public function education_programs()
     {

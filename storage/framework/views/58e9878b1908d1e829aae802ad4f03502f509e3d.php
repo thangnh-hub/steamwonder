@@ -250,7 +250,7 @@
                                                                                     name="student[<?php echo e($item->id); ?>][status]">
                                                                                     <?php $__currentLoopData = $status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                                                         <option value="<?php echo e($val); ?>"
-                                                                                            <?php echo e($item->pivot->status == $val ? 'selected' : ''); ?>>
+                                                                                            <?php echo e(isset($item->pivot->status) && $item->pivot->status == $val ? 'selected' : ''); ?>>
                                                                                             <?php echo e(__($val)); ?>
 
                                                                                         </option>
@@ -342,7 +342,7 @@
                                                                                         <?php $__currentLoopData = $status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                                                             <option
                                                                                                 value="<?php echo e($val); ?>"
-                                                                                                <?php echo e($item->pivot->status == $val ? 'selected' : ''); ?>>
+                                                                                                <?php echo e(isset($item->pivot->status) && $item->pivot->status == $val ? 'selected' : ''); ?>>
                                                                                                 <?php echo e(__($val)); ?>
 
                                                                                             </option>
@@ -596,7 +596,6 @@
                                     name="student[${student.id}][status]">
                                     <?php $__currentLoopData = $status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <option value="<?php echo e($val); ?>"
-                                            <?php echo e($item->pivot->status == $val ? 'selected' : ''); ?>>
                                             <?php echo e(__($val)); ?>
 
                                         </option>
@@ -608,7 +607,6 @@
                                     name="student[${student.id}][type]">
                                     <?php $__currentLoopData = $type_student; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <option value="<?php echo e($val); ?>"
-                                            <?php echo e($item->pivot->type == $val ? 'selected' : ''); ?>>
                                             <?php echo e(__($val)); ?>
 
                                         </option>
