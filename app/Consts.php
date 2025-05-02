@@ -4,6 +4,16 @@ namespace App;
 
 class Consts
 {
+    const TYPE_POLICIES = [
+        'percent' => 'percent',
+        'fixed_amount' => 'fixed_amount',
+      ];
+    const TYPE_CLASS_STUDENT = [
+        'hoc_thu' => 'hoc_thu',
+        'giu_cho' => 'giu_cho',
+        'dang_hoc' => 'dang_hoc',
+        'tot_nghiep' => 'tot_nghiep',
+      ];
   const STATUS_ACTIVE = 'active';
   const SERVICE_IS_ATTENDANCE= [
     '0' => 'Không theo điểm danh',

@@ -83,7 +83,7 @@ class Admin extends Authenticatable
     // Lẩy ra danh sách menu_id và function_code của các quyền (role và json_params->role_extend) đi theo user (không tính config mở rộng)
     public function getPermissionAccessByRoleAttribute()
     {
-        $arr_role_extend = $this->json_params->role_extend ?? [];
+        $arr_role_extend = (array) ($this->json_params->role_extend ?? []);
         array_push($arr_role_extend, $this->role);
 
         $role = Role::whereIn('id', $arr_role_extend)->get();

@@ -42,7 +42,7 @@ class AdminsImport implements ToCollection
     {
         DB::beginTransaction();
         try {
-            $user = Auth::guard('admin')->user();
+            $admin = Auth::guard('admin')->user();
             foreach ($rows as $key => $row) {
                 $this->rowCount++;
                 if (empty(array_filter($row->toArray()))) {
@@ -66,7 +66,7 @@ class AdminsImport implements ToCollection
                             'name' => trim($row[9]),
                             'code' => strtoupper($code),
                             'area_id' => trim($row[6]),
-                            'admin_created_id' => $user->id,
+                            'admin_created_id' => $admin->id,
                         ]);
                     }
                 }
@@ -102,7 +102,7 @@ class AdminsImport implements ToCollection
                     'status' => Consts::STATUS['active'],
                     'gender' => Consts::GENDER['other'],
                     'json_params' => $json,
-                    'admin_created_id' => $user->id,
+                    'admin_created_id' => $admin->id,
                 ]);
                 $this->rowInsert++;
                 continue;

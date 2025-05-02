@@ -61,6 +61,9 @@
     "Forgot password?": "Quên mật khẩu?",
     "Remember me": "Ghi nhớ",
     "Admin user management": " Quản lý người dùng",
+    "Education Ages management": " Quản lý độ tuổi",
+    "Education Programs management": " Quản lý hệ đào tạo",
+    "Class management": " Quản lý lớp học",
     "Successfully updated!": "Cập nhật thành công!",
     "Active": "Hoạt động",
     "Deactive": "Không hoạt động",
@@ -89,5 +92,10 @@
     "chua_di_hoc": "Chưa đi học",
     "ra_truong": "Ra trường",
     "khac": "Khác",
-    "no": "Không đồng ý"
+    "no": "Không đồng ý",
+    "hoc_thu": "Học thử",
+    "giu_cho": "Giữ chỗ",
+    "percent": "Phần trăm",
+    "fixed_amount": "Số tiền cố định",
+    "Edit form": "Thông tin cập nhật"
 }

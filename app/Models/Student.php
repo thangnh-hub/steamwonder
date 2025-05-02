@@ -60,7 +60,7 @@ class Student extends Model
         if (isset($params['list_id']) && !empty($params['list_id'])) {
             $query->whereIn('tb_students.id', $params['list_id']);
         }
-        
+
         if (!empty($params['status'])) {
             $query->where('tb_students.status', $params['status']);
         }

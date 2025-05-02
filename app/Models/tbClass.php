@@ -11,8 +11,8 @@ class tbClass extends Model
      *
      * @var string
      */
-    protected $table = 'tb_classs';
-    protected $with = array('level', 'syllabus', 'course');
+    protected $table = 'tb_class';
+    // protected $with = array('level', 'syllabus', 'course');
 
     /**
      * The attributes that aren't mass assignable.
@@ -50,6 +50,22 @@ class tbClass extends Model
     {
         return $this->belongsTo(Area::class, 'area_id', 'id');
     }
+    public function education_ages()
+    {
+        return $this->belongsTo(EducationAges::class, 'education_age_id', 'id');
+    }
+    public function admin_created()
+    {
+        return $this->belongsTo(Admin::class, 'admin_created_id', 'id');
+    }
+    public function admin_updated()
+    {
+        return $this->belongsTo(Admin::class, 'admin_updated_id', 'id');
+    }
+    public function education_programs()
+    {
+        return $this->belongsTo(EducationPrograms::class, 'education_program_id', 'id');
+    }
 
     // Lấy dánh sách học sinh hiện tại trong lớp
     public function currentStudents()
@@ -61,13 +77,22 @@ class tbClass extends Model
     {
         return $this
             ->belongsToMany(Student::class, StudentClass::class, 'class_id', 'student_id')
-            ->withPivot('status', 'json_params')
+            ->withPivot('start_at', 'stop_at','status','type', 'json_params')
             ->withTimestamps();
     }
 
     // Relation với bảng teachers
     public function teacher()
     {
-        return $this->belongsTo(Teacher::class, 'teacher_id', 'id');
+        return $this
+            ->belongsToMany(Teacher::class, TeacherClass::class, 'class_id', 'teacher_id')
+            ->withPivot('start_at', 'stop_at', 'status', 'is_teacher_main')
+            ->withTimestamps();
+    }
+    public function mainTeacher()
+    {
+        return $this->hasOne(TeacherClass::class, 'class_id', 'id')
+            ->where('is_teacher_main', 1)
+            ->with('teacher');
     }
 }

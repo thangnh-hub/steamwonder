@@ -26,7 +26,7 @@ class EducationAgesController extends Controller
     public function index(Request $request)
     {
         $params = $request->all();
-        $params['order_by'] = ['iorder'=>'asc'];
+        $params['order_by'] = ['iorder' => 'asc'];
         $this->responseData['params'] = $params;
 
         $rows = EducationAges::getSqlEducationAges($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
@@ -71,6 +71,7 @@ class EducationAgesController extends Controller
             'status',
             'iorder',
         ]);
+        $params['iorder'] = $params['iorder'] ?? 0;
         $params['admin_updated_id'] = $admin->id;
         EducationAges::create($params);
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Add new successfully!'));
@@ -128,6 +129,7 @@ class EducationAgesController extends Controller
                 'status',
                 'iorder',
             ]);
+            $params['iorder'] = $params['iorder'] ?? 0;
             $params['admin_updated_id'] = Auth::guard('admin')->user()->id;
             $educationAges->update($params);
             DB::commit();
