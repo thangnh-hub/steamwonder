@@ -53,14 +53,14 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label>@lang('Trạng thái')</label>
-                                <select name="status" id="status" class="form-control select2 w-100">
+                                <label>@lang('Số tháng')</label>
+                                <select name="months" class="form-control select2 w-100">
                                     <option value="">@lang('Please select')</option>
-                                    @foreach ($status as $key => $item)
-                                        <option value="{{ $key }}"
-                                            {{ isset($params['status']) && $params['status'] == $key ? 'selected' : '' }}>
-                                            {{ __($item) }}</option>
-                                    @endforeach
+                                    @for ($i = 1; $i <= 12; $i++)
+                                        <option value="{{ $i }}"
+                                            {{ isset($params['months']) && $params['months'] == $i ? 'selected' : '' }}>
+                                            {{ $i }} Tháng</option>
+                                    @endfor
                                 </select>
                             </div>
                         </div>
@@ -119,10 +119,10 @@
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th>@lang('Mã chính sách')</th>
-                                <th>@lang('Tên chính sách')</th>
+                                <th>@lang('Tên chu kỳ')</th>
+                                <th>@lang('Số tháng')</th>
                                 <th>@lang('Khu vực')</th>
-                                <th>@lang('Trạng thái')</th>
+                                <th>@lang('Mặc định')</th>
                                 <th>@lang('Cập nhật')</th>
                                 <th>@lang('Ngày cập nhật')</th>
                                 <th>@lang('Action')</th>
@@ -132,18 +132,24 @@
                             @foreach ($rows as $row)
                                 <tr class="valign-middle">
                                     <td>
-                                        <strong style="font-size: 14px">{{ $row->code ?? '' }}</strong>
+                                        <strong style="font-size: 14px">{{ $row->name ?? '' }}</strong>
                                     </td>
-
+                                    {{ $row->months }} tháng
                                     <td>
-                                        {{ $row->name ?? '' }}
                                     </td>
-
                                     <td>
                                         {{ $row->area->name ?? '' }}
                                     </td>
                                     <td>
-                                        {{ __($row->status) }}
+                                        <div class="sw_featured d-flex-al-center">
+                                            <label class="switch ">
+                                                <input id="sw_featured" name="is_default" value="1" type="checkbox"
+                                                    disabled
+                                                    {{ $row->is_default && $row->is_default == '1' ? 'checked' : '' }}>
+                                                <span class="slider round"></span>
+                                            </label>
+
+                                        </div>
                                     </td>
                                     <td>
                                         {{ $row->admin_updated->name ?? '' }}
@@ -151,18 +157,29 @@
                                     <td>
                                         {{ date('H:i - d/m/Y', strtotime($row->updated_at)) }}
                                     </td>
-                                    <td style="width:150px">
-                                        <button class="btn btn-sm btn-success btn_show_detail" data-toggle="tooltip"
+                                    <td class="d-flex-wap">
+                                        <button class="btn btn-sm btn-success btn_show_detail mr-10" data-toggle="tooltip"
                                             data-id="{{ $row->id }}"
                                             data-url="{{ route(Request::segment(2) . '.show', $row->id) }}"
                                             title="@lang('Show')" data-original-title="@lang('Show')">
                                             <i class="fa fa-eye"></i>
                                         </button>
-                                        <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="@lang('Update')"
-                                            data-original-title="@lang('Update')"
+
+                                        <a class="btn btn-sm btn-warning mr-10" data-toggle="tooltip"
+                                            title="@lang('Update')" data-original-title="@lang('Update')"
                                             href="{{ route(Request::segment(2) . '.edit', $row->id) }}">
                                             <i class="fa fa-pencil-square-o"></i>
                                         </a>
+
+                                        <form action="{{ route(Request::segment(2) . '.destroy', $row->id) }}"
+                                            method="POST" onsubmit="return confirm('@lang('confirm_action')')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-sm btn-danger" type="submit" data-toggle="tooltip"
+                                                title="@lang('Delete')" data-original-title="@lang('Delete')">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
@@ -184,14 +201,14 @@
 
         </div>
     </section>
-    <div class="modal fade" id="modal_show_policies" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal fade" id="modal_show_payment_cycle" data-backdrop="static" tabindex="-1" role="dialog">
         <div class="modal-dialog " role="document">
             <div class="modal-content">
                 <div class="modal-header ">
                     <h3 class="modal-title text-center col-md-12">@lang('Thông tin chính sách')</h3>
                     </h3>
                 </div>
-                <div class="modal-body show_detail_policies">
+                <div class="modal-body show_detail_payment_cycle">
 
                 </div>
                 <div class="modal-footer">
@@ -202,7 +219,6 @@
             </div>
         </div>
     </div>
-
 @endsection
 @section('script')
     <script>
@@ -214,13 +230,13 @@
                 url: url,
                 success: function(response) {
                     if (response) {
-                        $('.show_detail_policies').html(response.data.view);
-                        $('#modal_show_policies').modal('show');
+                        $('.show_detail_payment_cycle').html(response.data.view);
+                        $('#modal_show_payment_cycle').modal('show');
                     } else {
                         var _html = `<div class="alert alert-warning alert-dismissible">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            Bạn không có quyền thao tác chức năng này!
-                            </div>`;
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        Bạn không có quyền thao tác chức năng này!
+                        </div>`;
                         $('.box_alert').prepend(_html);
                         $('html, body').animate({
                             scrollTop: $(".alert").offset().top
