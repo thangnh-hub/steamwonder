@@ -45,74 +45,74 @@ Route::group(['namespace' => 'Admin'], function () {
         Route::get('account', 'AdminController@changeAccountForm')->name('admin.account.change.get');
         Route::post('change-account', 'AdminController@changeAccount')->name('admin.account.change.post');
 
-        Route::group(['middleware' => ['permission']], function () {
-            Route::resources([
-                'admins' => 'AdminController',
-                'admin_menus' => 'AdminMenuController',
-                'modules' => 'ModuleController',
-                'module_functions' => 'ModuleFunctionController',
-                'roles' => 'RoleController',
-                'blocks' => 'BlockController',
-                'block_contents' => 'BlockContentController',
-                'pages' => 'PageController',
-                'menus' => 'MenuController',
-                'options' => 'OptionController',
-                'widgets' => 'WidgetController',
-                'components' => 'ComponentController',
-                'component_configs' => 'ComponentConfigController',
-                'widget_configs' => 'WidgetConfigController',
-                'cms_taxonomys' => 'CmsTaxonomyController',
-                'cms_posts' => 'CmsPostController',
-                'cms_products' => 'CmsProductController',
-                'product_category' => 'ProductCategoryController',
-                'post_category' => 'PostCategoryController',
-                'settings' => 'SettingController',
-                'languages' => 'LanguageController',
-                'comments' => 'CommentController',
-                'contacts' => 'ContactController',
-                //datdt new module
-                'courses' => 'CourseController',
-                'classs' => 'ClassController',
-                'rooms' => 'RoomController',
-                'periods' => 'PeriodController',
-                'areas' => 'AreaController',
-                'students' => 'StudentController',
-                'staffadmissions' => 'StaffAdmissionController',
-                'holiday' => 'HolidayController',
-                'warehouse' => 'WareHouseController',
-                'warehouse_asset' => 'WarehouseAssetController',
-                'warehouse_department' => 'WarehouseDepartmentController',
-                'warehouse_position' => 'WareHousePositionController',
-                'warehouse_product' => 'WareHouseProductController',
-                'warehouse_category_product' => 'WareHouseCategoryProductController',
-                'warehouse_order_product' => 'WareHouseOrderController',
-                'warehouse_order_product_buy' => 'WareHouseOrderBuyController',
-                'warehouse_transfer' => 'WarehouseTransferController',
-                'warehouse_recall' => 'WareHouseRecallController',
-                'warehouse_inventory' => 'WereHouseInventoryController',
-                // Module test GV
-                'teacher_quizs' => 'TeacherQuizController',
-                //đề nghị thanh toán
-                'payment_request' => 'PaymentRequestController',
-                // For SteamWonder
-                'users' => 'UserController',
-                'data_crms' => 'DataCrmController',
-                'parents' => 'ParentController',
-                'relationships' => 'RelationshipController',
-                'service_categorys' => 'ServiceCategoryController',
-                'services' => 'ServiceController',
-                // End for SteamWonder
-                'education_ages' => 'EducationAgesController',
-                'education_programs' => 'EducationProgramsController',
-                'policies' => 'PoliciesController',
-            ]);
-
-            Route::post('data_crms_log_store', 'DataCrmController@storeCRMLOG')->name('data_crms_log_store');
-            //thêm ng thân cho bé
-            Route::post('student/{id}/add-parent', 'StudentController@addParent')->name('student.addParent');
-            //xóa mqh ng thân
-            Route::delete('student-parent/{id}', 'StudentController@removeParentRelation')->name('student.removeParentRelation');
-
+    Route::group(['middleware' => ['permission']], function () {
+      Route::resources([
+        'admins' => 'AdminController',
+        'admin_menus' => 'AdminMenuController',
+        'modules' => 'ModuleController',
+        'module_functions' => 'ModuleFunctionController',
+        'roles' => 'RoleController',
+        'blocks' => 'BlockController',
+        'block_contents' => 'BlockContentController',
+        'pages' => 'PageController',
+        'menus' => 'MenuController',
+        'options' => 'OptionController',
+        'widgets' => 'WidgetController',
+        'components' => 'ComponentController',
+        'component_configs' => 'ComponentConfigController',
+        'widget_configs' => 'WidgetConfigController',
+        'cms_taxonomys' => 'CmsTaxonomyController',
+        'cms_posts' => 'CmsPostController',
+        'cms_products' => 'CmsProductController',
+        'product_category' => 'ProductCategoryController',
+        'post_category' => 'PostCategoryController',
+        'settings' => 'SettingController',
+        'languages' => 'LanguageController',
+        'comments' => 'CommentController',
+        'contacts' => 'ContactController',
+        //datdt new module
+        'courses' => 'CourseController',
+        'classs' => 'ClassController',
+        'rooms' => 'RoomController',
+        'periods' => 'PeriodController',
+        'areas' => 'AreaController',
+        'students' => 'StudentController',
+        'staffadmissions' => 'StaffAdmissionController',
+        'holiday' => 'HolidayController',
+        'warehouse' => 'WareHouseController',
+        'warehouse_asset' => 'WarehouseAssetController',
+        'warehouse_department' => 'WarehouseDepartmentController',
+        'warehouse_position' => 'WareHousePositionController',
+        'warehouse_product' => 'WareHouseProductController',
+        'warehouse_category_product' => 'WareHouseCategoryProductController',
+        'warehouse_order_product' => 'WareHouseOrderController',
+        'warehouse_order_product_buy' => 'WareHouseOrderBuyController',
+        'warehouse_transfer' => 'WarehouseTransferController',
+        'warehouse_recall' => 'WareHouseRecallController',
+        'warehouse_inventory' => 'WereHouseInventoryController',
+        // Module test GV
+        'teacher_quizs' => 'TeacherQuizController',
+        //đề nghị thanh toán
+        'payment_request' => 'PaymentRequestController',
+        // For SteamWonder
+        'users' => 'UserController',
+        'data_crms' => 'DataCrmController',
+        'parents' => 'ParentController',
+        'relationships' => 'RelationshipController',
+        'service_categorys' => 'ServiceCategoryController',
+        'services' => 'ServiceController',
+        // End for SteamWonder
+        'education_ages'=>'EducationAgesController',
+        'education_programs'=>'EducationProgramsController',
+        'policies' => 'PoliciesController',
+      ]);
+      Route::post('data_crms_log_store', 'DataCrmController@storeCRMLOG')->name('data_crms_log_store');
+      //thêm ng thân cho bé
+      Route::post('student/{id}/add-parent', 'StudentController@addParent')->name('student.addParent');
+      Route::post('student/{id}/add-service', 'StudentController@addService')->name('student.addService');
+      //xóa mqh ng thân
+      Route::delete('student-parent/{id}', 'StudentController@removeParentRelation')->name('student.removeParentRelation');
+      Route::get('delete_student_service', 'StudentController@deleteStudentService')->name('delete_student_service');
 
             // Import nguời dùng
             Route::post('import_user', 'AdminController@importUser')->name('admin.import_user');

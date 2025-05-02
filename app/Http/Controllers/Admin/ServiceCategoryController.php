@@ -27,6 +27,7 @@ class ServiceCategoryController extends Controller
      public function index(Request $request)
      {
          $params = $request->all();
+         $params['order_by'] = 'iorder';
          $rows = ServiceCategory::getSqlServiceCategory($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
          $this->responseData['rows'] = $rows;
          $this->responseData['params'] = $params;
