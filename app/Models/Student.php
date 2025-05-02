@@ -60,7 +60,7 @@ class Student extends Model
         if (isset($params['list_id']) && !empty($params['list_id'])) {
             $query->whereIn('tb_students.id', $params['list_id']);
         }
-        
+
         if (!empty($params['status'])) {
             $query->where('tb_students.status', $params['status']);
         }
@@ -104,5 +104,10 @@ class Student extends Model
     public function admission()
     {
         return $this->belongsTo(Admin::class, 'admission_id', 'id');
+    }
+
+    public function paymentCycle()
+    {
+        return $this->belongsTo(PaymentCycle::class, 'payment_cycle_id');
     }
 }
