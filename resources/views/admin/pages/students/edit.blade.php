@@ -498,7 +498,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <input type="text" class="form-control" id="search-service" placeholder="@lang('Tìm theo tên phụ huynh...')">
+                        <input type="text" class="form-control" id="search-service" placeholder="@lang('Tìm theo tên dịch vụ...')">
                     </div>
                     <div class="table-wrapper" >
                         <table class="table table-hover table-bordered" id="service-table">

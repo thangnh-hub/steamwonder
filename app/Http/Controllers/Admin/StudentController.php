@@ -27,7 +27,7 @@ class StudentController extends Controller
         parent::__construct();
         $this->routeDefault  = 'students';
         $this->viewPart = 'admin.pages.students';
-        $this->responseData['module_name'] = __('Students Management');
+        $this->responseData['module_name'] = __('Quản lý học sinh');
     }
     /**
      * Display a listing of the resource.
@@ -101,6 +101,7 @@ class StudentController extends Controller
     public function show(Student $student)
     {
         $this->responseData['detail'] = $student;
+        $this->responseData['module_name'] = "Chi tiết học sinh";
         return $this->responseView($this->viewPart . '.detail');
     }
 
@@ -228,7 +229,9 @@ class StudentController extends Controller
                     'student_id'      => $student->id,
                     'service_id'       => $data['id'],
                     'payment_cycle_id' => $student->payment_cycle_id??"",
-                    'json_params.note' => $data['note'] ?? "",
+                    'json_params'       => [
+                        'note' => $data['note'] ?? "",
+                    ],
                     'status' => Consts::STATUS_ACTIVE,
                     'admin_created_id' => Auth::guard('admin')->user()->id,
                 ]);

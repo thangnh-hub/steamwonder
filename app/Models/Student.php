@@ -113,4 +113,9 @@ class Student extends Model
     {
         return $this->belongsTo(Admin::class, 'admission_id', 'id');
     }
+
+    public function studentReceipt()
+    {
+        return $this->hasMany(StudentService::class, 'student_id', 'id');
+    }
 }
