@@ -49,19 +49,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Số tháng'); ?></label>
-                                <select name="months" class="form-control select2 w-100">
-                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
-                                    <?php for($i = 1; $i <= 12; $i++): ?>
-                                        <option value="<?php echo e($i); ?>"
-                                            <?php echo e(isset($params['months']) && $params['months'] == $i ? 'selected' : ''); ?>>
-                                            <?php echo e($i); ?> Tháng</option>
-                                    <?php endfor; ?>
-                                </select>
-                            </div>
-                        </div>
+
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Filter'); ?></label>
@@ -119,10 +107,14 @@
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th><?php echo app('translator')->get('Tên chu kỳ'); ?></th>
-                                <th><?php echo app('translator')->get('Số tháng'); ?></th>
+                                <th><?php echo app('translator')->get('Mã giảm trừ'); ?></th>
+                                <th><?php echo app('translator')->get('Tên giảm trừ'); ?></th>
+                                <th><?php echo app('translator')->get('Mô tả'); ?></th>
                                 <th><?php echo app('translator')->get('Khu vực'); ?></th>
-                                <th><?php echo app('translator')->get('Mặc định'); ?></th>
+                                <th><?php echo app('translator')->get('Giảm lũy kế'); ?></th>
+                                <th><?php echo app('translator')->get('Loại giảm trừ'); ?></th>
+                                <th><?php echo app('translator')->get('Kiểu điều kiện'); ?></th>
+                                <th><?php echo app('translator')->get('Trạng thái'); ?></th>
                                 <th><?php echo app('translator')->get('Cập nhật'); ?></th>
                                 <th><?php echo app('translator')->get('Ngày cập nhật'); ?></th>
                                 <th><?php echo app('translator')->get('Action'); ?></th>
@@ -132,10 +124,15 @@
                             <?php $__currentLoopData = $rows; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr class="valign-middle">
                                     <td>
-                                        <strong style="font-size: 14px"><?php echo e($row->name ?? ''); ?></strong>
+                                        <strong style="font-size: 14px"><?php echo e($row->code ?? ''); ?></strong>
                                     </td>
                                     <td>
-                                        <?php echo e($row->months); ?> tháng
+                                        <?php echo e($row->name); ?>
+
+                                    </td>
+                                    <td>
+                                        <?php echo e($row->description ?? ''); ?>
+
                                     </td>
                                     <td>
                                         <?php echo e($row->area->name ?? ''); ?>
@@ -144,13 +141,24 @@
                                     <td>
                                         <div class="sw_featured d-flex-al-center">
                                             <label class="switch ">
-                                                <input id="sw_featured" name="is_default" value="1" type="checkbox"
-                                                    disabled
-                                                    <?php echo e($row->is_default && $row->is_default == '1' ? 'checked' : ''); ?>>
+                                                <input id="sw_featured" value="1" type="checkbox" disabled
+                                                    <?php echo e($row->is_cumulative && $row->is_cumulative == '1' ? 'checked' : ''); ?>>
                                                 <span class="slider round"></span>
                                             </label>
 
                                         </div>
+                                    </td>
+                                    <td>
+                                        <?php echo e(__($row->type) ?? ''); ?>
+
+                                    </td>
+                                    <td>
+                                        <?php echo e(__($row->condition_type) ?? ''); ?>
+
+                                    </td>
+                                    <td>
+                                        <?php echo e(__($row->status) ?? ''); ?>
+
                                     </td>
                                     <td>
                                         <?php echo e($row->admin_updated->name ?? ''); ?>
@@ -205,14 +213,14 @@
 
         </div>
     </section>
-    <div class="modal fade" id="modal_show_payment_cycle" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal fade" id="modal_show_đeuction" data-backdrop="static" tabindex="-1" role="dialog">
         <div class="modal-dialog " role="document">
             <div class="modal-content">
                 <div class="modal-header ">
                     <h3 class="modal-title text-center col-md-12"><?php echo app('translator')->get('Thông tin chính sách'); ?></h3>
                     </h3>
                 </div>
-                <div class="modal-body show_detail_payment_cycle">
+                <div class="modal-body show_detail_đeuction">
 
                 </div>
                 <div class="modal-footer">
@@ -234,8 +242,8 @@
                 url: url,
                 success: function(response) {
                     if (response) {
-                        $('.show_detail_payment_cycle').html(response.data.view);
-                        $('#modal_show_payment_cycle').modal('show');
+                        $('.show_detail_đeuction').html(response.data.view);
+                        $('#modal_show_đeuction').modal('show');
                     } else {
                         var _html = `<div class="alert alert-warning alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -260,4 +268,4 @@
     </script>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\steamwonder\resources\views/admin/pages/payment_cycle/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\steamwonder\resources\views/admin/pages/deductions/index.blade.php ENDPATH**/ ?>
