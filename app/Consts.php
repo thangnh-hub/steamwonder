@@ -24,11 +24,10 @@ class Consts
     '1' => 'Mặc đinh',
   ];
   const SERVICE_TYPE= [
-    'binh_thuong' => 'binh_thuong',
-    'thang_tuoi' => 'thang_tuoi',
-    'thang_nhap_hoc' => 'thang_nhap_hoc',
-    'dau_nam_hoc' => 'dau_nam_hoc',
-    'tu_huy_sau_khi_su_dung' => 'tu_huy_sau_khi_su_dung',
+    'monthly' => 'monthly',
+    'yearly' => 'yearly',
+    'once' => 'once',
+    'auto_cancel' => 'auto_cancel',
   ];
   const STATUS_DATACRM = [
     'new' => 'new',

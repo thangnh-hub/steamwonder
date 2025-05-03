@@ -51,7 +51,7 @@ class StudentPolicie extends Model
 
     public function policy()
     {
-        return $this->belongsTo(Policie::class, 'policy_id', 'id');
+        return $this->belongsTo(Policies::class, 'policy_id', 'id');
     }
 
     public function relationship()
