@@ -4,7 +4,33 @@
   @lang($module_name)
 @endsection
 @section('style')
-  
+  <style>
+        th{
+            text-align: center;
+            vertical-align: middle;
+        }
+        .modal-header{
+            background-color: #3c8dbc;
+            color: white;
+        }
+        .table-wrapper {
+            max-height: 450px; 
+            overflow-y: auto;
+            display: block;
+        }
+
+        .table-wrapper thead {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            z-index: 2;
+        }
+
+        .table-wrapper table {
+            border-collapse: separate;
+            width: 100%;
+        }
+  </style>
 @endsection
 
 
@@ -276,11 +302,13 @@
                                         <!-- TAB 4: Biên lai thu phí -->
                                         <div class="tab-pane active" id="tab_4">
                                             <div class="box-body ">
-                                                <div>
-                                                    <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addServiceModal">
+                                                <form method="POST" action="{{ route('receipt.calculStudent') }}">
+                                                    @csrf
+                                                    <input type="hidden" name="student_id" value="{{ $detail->id }}">
+                                                    <button type="submit" class="btn btn-success btn-sm">
                                                         <i class="fa fa-money"></i> @lang('Tính toán thu phí')
-                                                    </button>     
-                                                </div>
+                                                    </button>
+                                                </form>
                                                 <br>
                                                 <table class="table table-hover table-bordered">
                                                     <thead>
@@ -332,10 +360,10 @@
                                                                 <td>{{ $row->cashier->name ?? "" }}</td>
                                                                 <td>{{ (isset($row->receipt_date) ? \Illuminate\Support\Carbon::parse($row->receipt_date)->format('d-m-Y') : '') }} </td>
                                                                 <td>
-                                                                    <button type="button" class="btn btn-sm btn-danger">
+                                                                    {{-- <button type="button" class="btn btn-sm btn-danger">
                                                                         <i class="fa fa-close"></i> Hủy
-                                                                    </button>
-                                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#">
+                                                                    </button> --}}
+                                                                    <button type="button" data-id="{{ $row->id }}" class="btn btn-primary btn-sm show_detail_receipt" data-toggle="modal" data-target="#showDetailReceipt">
                                                                         <i class="fa fa-money"></i> @lang('Chi tiết')
                                                                     </button>
                                                                 </td>
@@ -360,7 +388,95 @@
             </div>
         </div>
     </section>
+
+    <div class="modal fade" id="showDetailReceipt" tabindex="-1" role="dialog" aria-labelledby="showDetailReceipt" aria-hidden="true">
+        <div class="modal-dialog modal-full" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="showDetailReceipt">@lang('Chi tiết biểu phí')</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="table-wrapper" >
+                        <table class="table table-hover table-bordered" >
+                            <thead>
+                                <tr>
+                                    <th rowspan="2">@lang('Tên dịch vụ')</th>
+                                    <th rowspan="2">@lang('Tháng áp dụng')</th>
+                                    <th colspan="2">@lang('Số lượng sử dụng')</th>
+                                    <th rowspan="2">@lang('Giá')</th>
+                                    <th rowspan="2">@lang('Giảm trừ')</th>
+                                    <th rowspan="2">@lang('Thành tiền')</th>
+                                    <th rowspan="2">@lang('Truy thu/Hoàn trả')</th>
+                                    <th rowspan="2">@lang('Tổng tiền')</th>
+                                    <th rowspan="2">@lang('Trạng thái')</th>
+                                    <th rowspan="2">@lang('Cập nhật')</th>
+                                </tr>
+                                <tr>
+                                    <th>@lang('Dự kiến')</th>
+                                    <th>@lang('Thực tế')</th>
+                                </tr>
+                            </thead>
+                            <tbody class="showDetailReceiptBody">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@lang('Đóng')</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 @section('script')
-  
+  <script>
+    $('.show_detail_receipt').click(function(e) {
+            e.preventDefault();
+            let _id = $(this).data('id');
+            let url = "{{ route('get_detail_receipt_info') }}";
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {
+                    id: _id,
+                },
+                success: function(response) {
+                    console.log(response);
+                    if (response.message == "success" && response.data.length > 0) {
+                        let data = response.data;
+                        let html = '';
+
+                        $.each(data, function(index, item) {
+                            html += '<tr>';
+                            html += '<td>' + item.services_receipt.name + '</td>';
+                            html += '<td>' + item.month + '</td>';
+                            html += '<td>' + item.by_number + '</td>';
+                            html += '<td>' + item.spent_number + '</td>';
+                            html += '<td>' + item.unit_price + '</td>';
+                            html += '<td>' + item.discount_amount + '</td>';
+                            html += '<td>' + item.amount + '</td>';
+                            html += '<td>' + item.adjustment_amount + '</td>';
+                            html += '<td>' + item.final_amount + '</td>';
+                            html += '<td>' + item.status + '</td>';
+                            html += '<td>' + item.created_at + '</td>';
+                            html += '</tr>';
+                        });
+
+                        $('.showDetailReceiptBody').html(html);
+                    } else  {
+                        $('.showDetailReceiptBody').html('<tr><td colspan="12" class="text-center">Không có dữ liệu</td></tr>');
+                    } 
+                    // Show the modal if the response is successful
+                    if (response.message == "success") {
+                        $('#showDetailReceipt').modal('show');
+                    }
+                },
+                error: function(response) {
+                    alert("Đã có lỗi xảy ra khi tải dữ liệu.");
+                }
+            });
+        });
+  </script>
 @endsection
