@@ -62,14 +62,8 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>@lang('Số tháng') <small class="text-red">*</small></label>
-                                <select required name="months" class="form-control select2 w-100">
-                                    <option value="">@lang('Please select')</option>
-                                    @for ($i = 1; $i <= 12; $i++)
-                                        <option value="{{ $i }}"
-                                            {{ $detail->months && $detail->months == $i ? 'selected' : '' }}>
-                                            {{ $i }} Tháng</option>
-                                    @endfor
-                                </select>
+                                <input type="number" class="form-control" name="months" placeholder="@lang('Số tháng')"
+                                    value="{{ $detail->months ?? old('months') }}" required>
                             </div>
                         </div>
                         <div class="col-md-6">

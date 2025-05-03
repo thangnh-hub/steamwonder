@@ -59,14 +59,8 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Số tháng'); ?> <small class="text-red">*</small></label>
-                                <select required name="months" class="form-control select2 w-100">
-                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
-                                    <?php for($i = 1; $i <= 12; $i++): ?>
-                                        <option value="<?php echo e($i); ?>"
-                                            <?php echo e(old('months') && old('months') == $i ? 'selected' : ''); ?>>
-                                            <?php echo e($i); ?> Tháng</option>
-                                    <?php endfor; ?>
-                                </select>
+                                <input type="number" class="form-control" name="months"
+                                    placeholder="<?php echo app('translator')->get('Số tháng'); ?>" value="<?php echo e(old('months')); ?>" required>
                             </div>
                         </div>
                         <div class="col-md-6">
