@@ -6,6 +6,10 @@
 @endsection
 @section('style')
     <style>
+        .modal-header{
+            background-color: #3c8dbc;
+            color: white;
+        }
         .table-wrapper {
             max-height: 450px; 
             overflow-y: auto;
@@ -164,7 +168,32 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>@lang('Chính sách được hưởng')</label>
+                                                        <select name="policies[]" class="form-control select2" multiple>
+                                                            @php
+                                                                $selectedPolicies = $detail->studentPolicies->pluck('policy_id')->toArray();
+                                                            @endphp
+                                                            @foreach ($list_policies as $policy)
+                                                                <option value="{{ $policy->id }}" {{ in_array($policy->id, $detail->studentPolicies->pluck('policy_id')->toArray()) ? 'selected' : '' }}>
+                                                                    {{ $policy->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>@lang('Chu kỳ thu dịch vụ')</label>
+                                                        <select name="payment_cycle_id" class="form-control select2">
+                                                            <option value="">Chọn</option>
+                                                            @foreach($list_payment_cycle as $payment_cycle)
+                                                                <option {{ old('payment_cycle_id', $detail->payment_cycle_id) == $payment_cycle->id ? 'selected' : '' }} value="{{ $payment_cycle->id }}">{{ $payment_cycle->name ?? "" }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
                                                 <div class="col-md-4">
                                                     <div class="form-group box_img_right">
                                                         <label>@lang('Ảnh đại diện')</label>
@@ -259,8 +288,9 @@
                                         <div class="box-body ">
                                             <div>
                                                 <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addServiceModal">
-                                                    <i class="fa fa-plus"></i> @lang('Thêm dịch vụ')
+                                                    <i class="fa fa-plus"></i> @lang('Đăng ký dịch vụ')
                                                 </button>     
+                                                    
                                             </div>
                                             
                                             <br>
@@ -276,6 +306,7 @@
                                                         <th>@lang('Loại dịch vụ')</th>
                                                         <th>@lang('Biểu phí')</th>
                                                         <th>@lang('Chu kỳ thu')</th>
+                                                        <th>@lang('Ghi chú')</th>
                                                         <th>@lang('Chức năng')</th>
                                                     </tr>
                                                 </thead>
@@ -311,12 +342,15 @@
                                                             {{ $row->paymentcycle->name ?? "" }}
                                                         </td>
                                                         <td>
-                                                            <button type="button" class="btn btn-sm btn-danger delete_student_service approve_payment" data-id="{{ $row->id }}">
-                                                                <i class="fa fa-trash"></i> Xóa
+                                                            {{ $row->json_params->note ?? "" }}
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-sm btn-danger delete_student_service" data-id="{{ $row->id }}">
+                                                                <i class="fa fa-close"></i> Hủy
                                                             </button>
-                                                            <button type="button" class="btn btn-sm btn-primary">
-                                                                <i class="fa fa-pencil"></i> Cập nhật
-                                                            </button>
+                                                            <button data-id="{{ $row->id }}" type="button" class="btn btn-primary btn-sm update_student_service" data-toggle="modal" data-target="#editServiceModal">
+                                                                <i class="fa fa-pencil"></i> @lang('Cập nhật')
+                                                            </button> 
                                                         </td>
                                                     </tr>
                                                     @endforeach
@@ -349,7 +383,7 @@
                                                 <tbody>
                                                     @foreach ($cancelledServices as $index => $row)
                                                         <tr>
-                                                            <td>{{ $index + 1 }}</td>
+                                                            <td>{{ $loop->index + 1 }}</td>
                                                             <td>{{ $row->services->name ?? '' }}</td>
                                                             <td>
                                                                 {{ optional($row->services->serviceDetail->first())->start_at 
@@ -475,7 +509,7 @@
                                     <th>@lang('Tính chất dịch vụ')</th>
                                     <th>@lang('Loại dịch vụ')</th>
                                     <th>@lang('Biểu phí')</th>
-                                    <th>@lang('Chu kỳ thu')</th>
+                                    {{-- <th>@lang('Chu kỳ thu')</th> --}}
                                     <th>@lang('Ghi chú')</th>
                                     <th>Chọn</th>
                                 </tr>
@@ -501,13 +535,13 @@
                                                 @endforeach
                                             @endif
                                         </td>
-                                        <td>
+                                        {{-- <td>
                                             <select style="width:100%" name="services[{{ $service->id }}][payment_cycle_id]" class="form-control select2">
                                                 @foreach($list_payment_cycle as $payment_cycle)
                                                     <option  value="{{ $payment_cycle->id }}">{{ $payment_cycle->name ?? "" }}</option>
                                                 @endforeach
                                             </select>
-                                        </td>
+                                        </td> --}}
                                         <td>
                                             <input type="text" class="form-control" name="services[{{ $service->id }}][note]" value="" placeholder="@lang('Ghi chú')">
                                         </td>
@@ -528,6 +562,34 @@
         </form>
         </div>
     </div>
+
+    {{-- modal chỉnh sửa dịch vụ/ --}}
+    <div  class="modal fade" id="editServiceModal" tabindex="-1" role="dialog" aria-labelledby="editServiceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+        <form id="updateStudentServiceForm" method="POST">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editServiceModalLabel">@lang('Cập nhật dịch vụ')</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">Ghi chú</label>
+                                <input type="text" class="form-control" name="note" value="" placeholder="@lang('Ghi chú')">
+                            </div>
+                        </div>           
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnUpdateService" type="button" class="btn btn-primary">@lang('Cập nhật')</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@lang('Đóng')</button>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+
 @endsection
 
 @section('script')
@@ -570,6 +632,58 @@
                     }
                 });
             }
+        });
+        $('.update_student_service').click(function(e) {
+            e.preventDefault();
+            let _id = $(this).data('id');
+            let url = "{{ route('get_student_service_info') }}"; // → bạn cần tạo route này để lấy dữ liệu dịch vụ
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {
+                    id: _id,
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#editServiceModal input[name="note"]').val(response.data.note);
+                        // Mở modal
+                        $('#editServiceModal').modal('show');
+                        $('#btnUpdateService').attr('data-id', _id); // Lưu ID dịch vụ hiện tại vào nút cập nhật
+                    } else {
+                        alert("Không tìm thấy dữ liệu dịch vụ.");
+                    }
+                },
+                error: function(response) {
+                    alert("Đã có lỗi xảy ra khi tải dữ liệu.");
+                }
+            });
+        });
+
+        $('#btnUpdateService').click(function () {
+            let noteValue = $('input[name="note"]').val();
+            let currentStudentServiceId = $(this).data('id'); // Lấy ID dịch vụ hiện tại từ nút cập nhật
+            $.ajax({
+                type: "POST",
+                url: "{{ route('student.updateService.ajax') }}",
+                data: {
+                    id: currentStudentServiceId,
+                    note: noteValue,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.message === 'success') {
+                        $('#editServiceModal').modal('hide');
+                        localStorage.setItem('activeTab', '#tab_3');
+                        location.reload();
+                    } else {
+                        alert("Không thể cập nhật ghi chú.");
+                    }
+                },
+                error: function() {
+                    alert("Lỗi cập nhật ghi chú.");
+                }
+            });
         });
 
         $(document).ready(function () {

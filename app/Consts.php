@@ -4,9 +4,15 @@ namespace App;
 
 class Consts
 {
+    const CONDITION_TYPE = [
+        'start_day_range' => 'start_day_range',
+        'absent_days' => 'absent_days',
+        'present_days' => 'present_days',
+      ];
     const TYPE_POLICIES = [
         'percent' => 'percent',
         'fixed_amount' => 'fixed_amount',
+        'extra_amount' => 'extra_amount',
       ];
     const TYPE_CLASS_STUDENT = [
         'hoc_thu' => 'hoc_thu',

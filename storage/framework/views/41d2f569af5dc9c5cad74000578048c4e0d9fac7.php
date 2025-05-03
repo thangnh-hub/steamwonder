@@ -123,7 +123,6 @@
                                 <th><?php echo app('translator')->get('Tên chính sách'); ?></th>
                                 <th><?php echo app('translator')->get('Khu vực'); ?></th>
                                 <th><?php echo app('translator')->get('Trạng thái'); ?></th>
-                                <th><?php echo app('translator')->get('Dịch vụ'); ?></th>
                                 <th><?php echo app('translator')->get('Cập nhật'); ?></th>
                                 <th><?php echo app('translator')->get('Ngày cập nhật'); ?></th>
                                 <th><?php echo app('translator')->get('Action'); ?></th>
@@ -147,9 +146,6 @@
                                     </td>
                                     <td>
                                         <?php echo e(__($row->status)); ?>
-
-                                    </td>
-                                    <td>
 
                                     </td>
                                     <td>
@@ -198,7 +194,7 @@
         <div class="modal-dialog " role="document">
             <div class="modal-content">
                 <div class="modal-header ">
-                    <h3 class="modal-title text-center col-md-12"><?php echo app('translator')->get('Thông tin lớp học'); ?></h3>
+                    <h3 class="modal-title text-center col-md-12"><?php echo app('translator')->get('Thông tin chính sách'); ?></h3>
                     </h3>
                 </div>
                 <div class="modal-body show_detail_policies">

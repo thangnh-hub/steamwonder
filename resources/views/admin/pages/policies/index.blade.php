@@ -123,7 +123,6 @@
                                 <th>@lang('Tên chính sách')</th>
                                 <th>@lang('Khu vực')</th>
                                 <th>@lang('Trạng thái')</th>
-                                <th>@lang('Dịch vụ')</th>
                                 <th>@lang('Cập nhật')</th>
                                 <th>@lang('Ngày cập nhật')</th>
                                 <th>@lang('Action')</th>
@@ -145,9 +144,6 @@
                                     </td>
                                     <td>
                                         {{ __($row->status) }}
-                                    </td>
-                                    <td>
-
                                     </td>
                                     <td>
                                         {{ $row->admin_updated->name ?? '' }}
@@ -192,7 +188,7 @@
         <div class="modal-dialog " role="document">
             <div class="modal-content">
                 <div class="modal-header ">
-                    <h3 class="modal-title text-center col-md-12">@lang('Thông tin lớp học')</h3>
+                    <h3 class="modal-title text-center col-md-12">@lang('Thông tin chính sách')</h3>
                     </h3>
                 </div>
                 <div class="modal-body show_detail_policies">
