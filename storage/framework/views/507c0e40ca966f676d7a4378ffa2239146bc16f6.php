@@ -164,6 +164,7 @@
                                     <tr>
                                         <th><?php echo app('translator')->get('Tên dịch vụ'); ?></th>
                                         <th><?php echo app('translator')->get('Loại dịch vụ'); ?></th>
+                                        <th><?php echo app('translator')->get('Loại giảm trừ'); ?></th>
                                         <th><?php echo app('translator')->get('Giảm trừ'); ?></th>
                                     </tr>
                                 </thead>
@@ -173,6 +174,7 @@
                                             <tr class="item_policies">
                                                 <td><?php echo e($item->detail->name ?? ''); ?></td>
                                                 <td><?php echo e(__($item->detail->service_type) ?? ''); ?></td>
+                                                <td><?php echo e(__($item->type) ?? ''); ?></td>
                                                 <td><?php echo e($item->value ?? 0); ?></td>
                                             </tr>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

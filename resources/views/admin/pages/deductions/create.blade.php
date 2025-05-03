@@ -88,7 +88,7 @@
                                     value="{{ old('name') }}" required>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6">
                             <div class="form-group">
                                 <label>@lang('Kiểu giảm trừ')<small class="text-red">*</small></label>
                                 <select required name="type" class="form-control select2 w-100">
@@ -100,7 +100,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>@lang('Kiểu điều kiện')<small class="text-red">*</small></label>
@@ -114,21 +114,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>@lang('Từ')</label>
-                                <input type="number" class="form-control" name="json_params[condition][start]"
-                                    value="{{ old('json_params[condition][start]') }}">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>@lang('Đến')</label>
-                                <input type="number" class="form-control" name="json_params[condition][end]"
-                                    value="{{ old('json_params[condition][end]') }}">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="sw_featured">@lang('Cho phép giảm lũy kế')</label>
                                 <div class="sw_featured d-flex-al-center">
@@ -140,6 +126,21 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>@lang('Từ')</label>
+                                <input type="number" class="form-control" name="json_params[condition][start]"
+                                    value="{{ old('json_params[condition][start]') }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>@lang('Đến')</label>
+                                <input type="number" class="form-control" name="json_params[condition][end]"
+                                    value="{{ old('json_params[condition][end]') }}">
+                            </div>
+                        </div>
+
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>@lang('Mô tả')</label>
@@ -160,6 +161,13 @@
                                             style="width:250px;"
                                             name="json_params[services][{{ $item_service->id }}][value]" type="number"
                                             value="">
+                                        <select name="json_params[services][{{ $item_service->id }}][type]"
+                                            class="form-control select2 mr-10 check_disable" disabled
+                                            style="width: 250px">
+                                            @foreach ($type as $item)
+                                                <option value="{{ $item }}">{{ __($item) }}</option>
+                                            @endforeach
+                                        </select>
                                         <span class="fw-bold ml-10"
                                             style="min-width:200px;">{{ $item_service->name ?? '' }}
                                         </span>
