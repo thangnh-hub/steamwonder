@@ -62,13 +62,11 @@ class DeductionController extends Controller
         $request->validate([
             'code' => 'required',
             'name' => 'required|max:255',
-            'type' => 'required',
             'condition_type' => 'required',
         ]);
         $params = $request->only([
             'code',
             'name',
-            'type',
             'condition_type',
             'area_id',
             'description',
@@ -135,13 +133,11 @@ class DeductionController extends Controller
         $request->validate([
             'code' => 'required',
             'name' => 'required|max:255',
-            'type' => 'required',
             'condition_type' => 'required',
         ]);
         $params = $request->only([
             'code',
             'name',
-            'type',
             'condition_type',
             'area_id',
             'description',

@@ -164,6 +164,7 @@
                                     <tr>
                                         <th>@lang('Tên dịch vụ')</th>
                                         <th>@lang('Loại dịch vụ')</th>
+                                        <th>@lang('Loại giảm trừ')</th>
                                         <th>@lang('Giảm trừ')</th>
                                     </tr>
                                 </thead>
@@ -173,6 +174,7 @@
                                             <tr class="item_policies">
                                                 <td>{{ $item->detail->name ?? '' }}</td>
                                                 <td>{{ __($item->detail->service_type) ?? '' }}</td>
+                                                <td>{{ __($item->type) ?? '' }}</td>
                                                 <td>{{ $item->value ?? 0 }}</td>
                                             </tr>
                                         @endforeach
