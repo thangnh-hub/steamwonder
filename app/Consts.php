@@ -4,6 +4,11 @@ namespace App;
 
 class Consts
 {
+    const STATUS_RECEIPT = [
+        'pending' => 'pending',
+        'paid' => 'paid',
+        'completed' => 'completed',
+    ];
     const CONDITION_TYPE = [
         'start_day_range' => 'start_day_range',
         'start_month_range' => 'start_month_range',

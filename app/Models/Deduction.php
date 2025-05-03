@@ -51,13 +51,13 @@ class Deduction extends Model
                 return $query->where('tb_deductions.status', $params['status']);
             })
             ->when(!empty($params['area_id']), function ($query) use ($params) {
-                return $query->where('tb_policies.area_id', $params['area_id']);
+                return $query->where('tb_deductions.area_id', $params['area_id']);
             })
             ->when(!empty($params['type']), function ($query) use ($params) {
-                return $query->where('tb_policies.type', $params['type']);
+                return $query->where('tb_deductions.type', $params['type']);
             })
             ->when(!empty($params['condition_type']), function ($query) use ($params) {
-                return $query->where('tb_policies.condition_type', $params['condition_type']);
+                return $query->where('tb_deductions.condition_type', $params['condition_type']);
             })
             ->when(!empty($params['id']), function ($query) use ($params) {
                 return $query->where('tb_deductions.id', $params['id']);
