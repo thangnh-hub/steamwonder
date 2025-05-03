@@ -51,19 +51,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>@lang('Số tháng')</label>
-                                <select name="months" class="form-control select2 w-100">
-                                    <option value="">@lang('Please select')</option>
-                                    @for ($i = 1; $i <= 12; $i++)
-                                        <option value="{{ $i }}"
-                                            {{ isset($params['months']) && $params['months'] == $i ? 'selected' : '' }}>
-                                            {{ $i }} Tháng</option>
-                                    @endfor
-                                </select>
-                            </div>
-                        </div>
+
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>@lang('Filter')</label>
@@ -119,10 +107,14 @@
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th>@lang('Tên chu kỳ')</th>
-                                <th>@lang('Số tháng')</th>
+                                <th>@lang('Mã giảm trừ')</th>
+                                <th>@lang('Tên giảm trừ')</th>
+                                <th>@lang('Mô tả')</th>
                                 <th>@lang('Khu vực')</th>
-                                <th>@lang('Mặc định')</th>
+                                <th>@lang('Giảm lũy kế')</th>
+                                <th>@lang('Loại giảm trừ')</th>
+                                <th>@lang('Kiểu điều kiện')</th>
+                                <th>@lang('Trạng thái')</th>
                                 <th>@lang('Cập nhật')</th>
                                 <th>@lang('Ngày cập nhật')</th>
                                 <th>@lang('Action')</th>
@@ -132,10 +124,13 @@
                             @foreach ($rows as $row)
                                 <tr class="valign-middle">
                                     <td>
-                                        <strong style="font-size: 14px">{{ $row->name ?? '' }}</strong>
+                                        <strong style="font-size: 14px">{{ $row->code ?? '' }}</strong>
                                     </td>
                                     <td>
-                                        {{ $row->months }} tháng
+                                        {{ $row->name }}
+                                    </td>
+                                    <td>
+                                        {{ $row->description ?? '' }}
                                     </td>
                                     <td>
                                         {{ $row->area->name ?? '' }}
@@ -143,13 +138,21 @@
                                     <td>
                                         <div class="sw_featured d-flex-al-center">
                                             <label class="switch ">
-                                                <input id="sw_featured" name="is_default" value="1" type="checkbox"
-                                                    disabled
-                                                    {{ $row->is_default && $row->is_default == '1' ? 'checked' : '' }}>
+                                                <input id="sw_featured" value="1" type="checkbox" disabled
+                                                    {{ $row->is_cumulative && $row->is_cumulative == '1' ? 'checked' : '' }}>
                                                 <span class="slider round"></span>
                                             </label>
 
                                         </div>
+                                    </td>
+                                    <td>
+                                        {{ __($row->type) ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ __($row->condition_type) ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ __($row->status) ?? '' }}
                                     </td>
                                     <td>
                                         {{ $row->admin_updated->name ?? '' }}
@@ -201,14 +204,14 @@
 
         </div>
     </section>
-    <div class="modal fade" id="modal_show_payment_cycle" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal fade" id="modal_show_đeuction" data-backdrop="static" tabindex="-1" role="dialog">
         <div class="modal-dialog " role="document">
             <div class="modal-content">
                 <div class="modal-header ">
                     <h3 class="modal-title text-center col-md-12">@lang('Thông tin chính sách')</h3>
                     </h3>
                 </div>
-                <div class="modal-body show_detail_payment_cycle">
+                <div class="modal-body show_detail_đeuction">
 
                 </div>
                 <div class="modal-footer">
@@ -230,8 +233,8 @@
                 url: url,
                 success: function(response) {
                     if (response) {
-                        $('.show_detail_payment_cycle').html(response.data.view);
-                        $('#modal_show_payment_cycle').modal('show');
+                        $('.show_detail_đeuction').html(response.data.view);
+                        $('#modal_show_đeuction').modal('show');
                     } else {
                         var _html = `<div class="alert alert-warning alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>

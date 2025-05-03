@@ -96,6 +96,10 @@
     "hoc_thu": "Học thử",
     "giu_cho": "Giữ chỗ",
     "percent": "Phần trăm",
-    "fixed_amount": "Số tiền cố định",
+    "fixed_amount": "Số tiền",
+    "extra_amount": "Thu số tiền cố định",
+    "absent_days":"Theo ngày nghỉ",
+    "present_days":"Theo ngày đi học",
+    "start_day_range":"Theo ngày nhập học",
     "Edit form": "Thông tin cập nhật"
 }

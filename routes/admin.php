@@ -106,6 +106,7 @@ Route::group(['namespace' => 'Admin'], function () {
         'education_programs'=>'EducationProgramsController',
         'policies' => 'PoliciesController',
         'payment_cycle' => 'PaymentCycleController',
+        'deductions' => 'DeductionController',
       ]);
       Route::post('data_crms_log_store', 'DataCrmController@storeCRMLOG')->name('data_crms_log_store');
       //thêm ng thân cho bé
