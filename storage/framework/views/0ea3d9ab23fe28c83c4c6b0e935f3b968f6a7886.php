@@ -303,7 +303,7 @@
                                                             <th><?php echo app('translator')->get('Tên biểu phí'); ?></th>
                                                             <th><?php echo app('translator')->get('Chu kỳ'); ?></th>
                                                             <th><?php echo app('translator')->get('Biểu phí trước'); ?></th>
-                                                            <th><?php echo app('translator')->get('Dư nợ (Biểu phí trước)'); ?></th>
+                                                            <th><?php echo app('translator')->get('Dư nợ trước'); ?></th>
                                                             <th><?php echo app('translator')->get('Thành tiền'); ?></th>
                                                             <th><?php echo app('translator')->get('Tổng giảm trừ'); ?></th>
                                                             <th><?php echo app('translator')->get('Tổng tiền truy thu/hoàn trả'); ?></th>
@@ -314,10 +314,47 @@
                                                             <th><?php echo app('translator')->get('Ghi chú'); ?></th>
                                                             <th><?php echo app('translator')->get('Người lập biên lai'); ?></th>
                                                             <th><?php echo app('translator')->get('Ngày lập biên lai'); ?></th>
+                                                            <th><?php echo app('translator')->get('Chức năng'); ?></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                       
+                                                        <?php
+                                                            function format_currency($price) {
+                                                                return (isset($price) && is_numeric($price)) 
+                                                                    ? number_format($price, 0, ',', '.') . ' đ'
+                                                                    : '';
+                                                            }
+                                                        ?>
+                                                        <?php if($detail->studentReceipt->count()): ?>
+                                                            <?php $__currentLoopData = $detail->studentReceipt; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?> 
+                                                            <tr>
+                                                                <td><?php echo e($loop->index + 1); ?></td>  
+                                                                <td><?php echo e($row->receipt_code ?? ""); ?></td>
+                                                                <td><?php echo e($row->receipt_name ?? ""); ?></td>
+                                                                <td><?php echo e($row->payment_cycle->name ?? ""); ?></td>
+                                                                <td><?php echo e($row->prev_receipt->receipt_name  ?? ""); ?></td>
+                                                                <td><?php echo e(format_currency($row->prev_balance)); ?></td>
+                                                                <td><?php echo e(format_currency($row->total_amount)); ?></td>
+                                                                <td><?php echo e(format_currency($row->total_discount)); ?></td>
+                                                                <td><?php echo e(format_currency($row->total_adjustment)); ?></td>
+                                                                <td><?php echo e(format_currency($row->total_final)); ?></td>
+                                                                <td><?php echo e(format_currency($row->total_paid)); ?></td>
+                                                                <td><?php echo e(format_currency($row->total_due)); ?></td>
+                                                                <td><?php echo e(__($row->status)); ?></td>
+                                                                <td><?php echo e($row->note ?? ""); ?></td>
+                                                                <td><?php echo e($row->cashier->name ?? ""); ?></td>
+                                                                <td><?php echo e((isset($row->receipt_date) ? \Illuminate\Support\Carbon::parse($row->receipt_date)->format('d-m-Y') : '')); ?> </td>
+                                                                <td>
+                                                                    <button type="button" class="btn btn-sm btn-danger">
+                                                                        <i class="fa fa-close"></i> Hủy
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#">
+                                                                        <i class="fa fa-money"></i> <?php echo app('translator')->get('Chi tiết'); ?>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                        <?php endif; ?>       
                                                     </tbody>
                                                 </table>
                                             </div>                      

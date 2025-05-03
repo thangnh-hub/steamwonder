@@ -290,7 +290,7 @@
                                                             <th>@lang('Tên biểu phí')</th>
                                                             <th>@lang('Chu kỳ')</th>
                                                             <th>@lang('Biểu phí trước')</th>
-                                                            <th>@lang('Dư nợ (Biểu phí trước)')</th>
+                                                            <th>@lang('Dư nợ trước')</th>
                                                             <th>@lang('Thành tiền')</th>
                                                             <th>@lang('Tổng giảm trừ')</th>
                                                             <th>@lang('Tổng tiền truy thu/hoàn trả')</th>
@@ -301,10 +301,47 @@
                                                             <th>@lang('Ghi chú')</th>
                                                             <th>@lang('Người lập biên lai')</th>
                                                             <th>@lang('Ngày lập biên lai')</th>
+                                                            <th>@lang('Chức năng')</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                       
+                                                        @php
+                                                            function format_currency($price) {
+                                                                return (isset($price) && is_numeric($price)) 
+                                                                    ? number_format($price, 0, ',', '.') . ' đ'
+                                                                    : '';
+                                                            }
+                                                        @endphp
+                                                        @if($detail->studentReceipt->count())
+                                                            @foreach ($detail->studentReceipt as $row) 
+                                                            <tr>
+                                                                <td>{{ $loop->index + 1 }}</td>  
+                                                                <td>{{ $row->receipt_code ?? "" }}</td>
+                                                                <td>{{ $row->receipt_name ?? "" }}</td>
+                                                                <td>{{ $row->payment_cycle->name ?? "" }}</td>
+                                                                <td>{{ $row->prev_receipt->receipt_name  ?? "" }}</td>
+                                                                <td>{{ format_currency($row->prev_balance) }}</td>
+                                                                <td>{{ format_currency($row->total_amount) }}</td>
+                                                                <td>{{ format_currency($row->total_discount) }}</td>
+                                                                <td>{{ format_currency($row->total_adjustment) }}</td>
+                                                                <td>{{ format_currency($row->total_final) }}</td>
+                                                                <td>{{ format_currency($row->total_paid) }}</td>
+                                                                <td>{{ format_currency($row->total_due) }}</td>
+                                                                <td>{{ __($row->status) }}</td>
+                                                                <td>{{ $row->note ?? "" }}</td>
+                                                                <td>{{ $row->cashier->name ?? "" }}</td>
+                                                                <td>{{ (isset($row->receipt_date) ? \Illuminate\Support\Carbon::parse($row->receipt_date)->format('d-m-Y') : '') }} </td>
+                                                                <td>
+                                                                    <button type="button" class="btn btn-sm btn-danger">
+                                                                        <i class="fa fa-close"></i> Hủy
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#">
+                                                                        <i class="fa fa-money"></i> @lang('Chi tiết')
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                            @endforeach
+                                                        @endif       
                                                     </tbody>
                                                 </table>
                                             </div>                      
