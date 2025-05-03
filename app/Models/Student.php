@@ -95,10 +95,12 @@ class Student extends Model
     {
         return $this->hasMany(StudentParent::class, 'student_id', 'id');
     }
+    
     public function studentPolicies()
     {
         return $this->hasMany(StudentPolicie::class, 'student_id', 'id');
     }
+
     public function studentServices()
     {
         return $this->hasMany(StudentService::class, 'student_id', 'id');
@@ -114,6 +116,10 @@ class Student extends Model
         return $this->belongsTo(Admin::class, 'admission_id', 'id');
     }
 
+    public function paymentCycle()
+    {
+        return $this->belongsTo(PaymentCycle::class, 'payment_cycle_id');
+    }
     public function studentReceipt()
     {
         return $this->hasMany(Receipt::class, 'student_id', 'id');

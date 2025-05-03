@@ -49,8 +49,6 @@
             <div class="box box-primary">
                 <div class="box-body">
                     <div class="d-flex-wap">
-
-
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Area'); ?></label>
@@ -90,19 +88,7 @@
                                     value="<?php echo e(old('name')); ?>" required>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Kiểu giảm trừ'); ?><small class="text-red">*</small></label>
-                                <select required name="type" class="form-control select2 w-100">
-                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
-                                    <?php $__currentLoopData = $type; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($key); ?>"
-                                            <?php echo e(old('type') && old('type') == $key ? 'selected' : ''); ?>>
-                                            <?php echo e(__($val)); ?></option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </select>
-                            </div>
-                        </div>
+                        
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Kiểu điều kiện'); ?><small class="text-red">*</small></label>
@@ -116,21 +102,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Từ'); ?></label>
-                                <input type="number" class="form-control" name="json_params[condition][start]"
-                                    value="<?php echo e(old('json_params[condition][start]')); ?>">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Đến'); ?></label>
-                                <input type="number" class="form-control" name="json_params[condition][end]"
-                                    value="<?php echo e(old('json_params[condition][end]')); ?>">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label for="sw_featured"><?php echo app('translator')->get('Cho phép giảm lũy kế'); ?></label>
                                 <div class="sw_featured d-flex-al-center">
@@ -142,6 +114,21 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label><?php echo app('translator')->get('Từ'); ?></label>
+                                <input type="number" class="form-control" name="json_params[condition][start]"
+                                    value="<?php echo e(old('json_params[condition][start]')); ?>">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label><?php echo app('translator')->get('Đến'); ?></label>
+                                <input type="number" class="form-control" name="json_params[condition][end]"
+                                    value="<?php echo e(old('json_params[condition][end]')); ?>">
+                            </div>
+                        </div>
+
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Mô tả'); ?></label>
@@ -162,6 +149,13 @@
                                             style="width:250px;"
                                             name="json_params[services][<?php echo e($item_service->id); ?>][value]" type="number"
                                             value="">
+                                        <select name="json_params[services][<?php echo e($item_service->id); ?>][type]"
+                                            class="form-control select2 mr-10 check_disable" disabled
+                                            style="width: 250px">
+                                            <?php $__currentLoopData = $type; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($item); ?>"><?php echo e(__($item)); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </select>
                                         <span class="fw-bold ml-10"
                                             style="min-width:200px;"><?php echo e($item_service->name ?? ''); ?>
 
