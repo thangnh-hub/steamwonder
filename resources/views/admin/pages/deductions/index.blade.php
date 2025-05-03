@@ -112,8 +112,9 @@
                                 <th>@lang('Mô tả')</th>
                                 <th>@lang('Khu vực')</th>
                                 <th>@lang('Giảm lũy kế')</th>
-                                <th>@lang('Loại giảm trừ')</th>
                                 <th>@lang('Kiểu điều kiện')</th>
+                                <th>@lang('Bắt đầu')</th>
+                                <th>@lang('Kết thúc')</th>
                                 <th>@lang('Trạng thái')</th>
                                 <th>@lang('Cập nhật')</th>
                                 <th>@lang('Ngày cập nhật')</th>
@@ -146,10 +147,13 @@
                                         </div>
                                     </td>
                                     <td>
-                                        {{ __($row->type) ?? '' }}
+                                        {{ __($row->condition_type) ?? '' }}
                                     </td>
                                     <td>
-                                        {{ __($row->condition_type) ?? '' }}
+                                        {{ $row->json_params->condition->start ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $row->json_params->condition->end ?? '' }}
                                     </td>
                                     <td>
                                         {{ __($row->status) ?? '' }}
