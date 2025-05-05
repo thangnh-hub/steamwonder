@@ -8,6 +8,9 @@ use App\Models\Area;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Exception;
+
 
 class ReceiptController extends Controller
 {
@@ -62,7 +65,10 @@ class ReceiptController extends Controller
      */
     public function show(Receipt $receipt)
     {
-        //
+        $detail = $receipt;
+        $this->responseData['detail'] = $detail;
+        $this->responseData['module_name'] = 'Thanh toán hóa đơn';
+        return $this->responseView($this->viewPart . '.show');
     }
 
     /**
@@ -97,5 +103,35 @@ class ReceiptController extends Controller
     public function destroy(Receipt $receipt)
     {
         //
+    }
+
+    public function viewIndex($id)
+    {
+        $detail = Receipt::find($id);
+        $result['view'] = view($this->viewPart . '.view', compact('detail'))->render();
+        return $this->sendResponse($result, __('Lấy thông tin thành công!'));
+    }
+    public function payment(Request $request, $id)
+    {
+        $admin = Auth::guard('admin')->user();
+        DB::beginTransaction();
+        try {
+            $receipt = Receipt::find($id);
+            $receipt->status = Consts::STATUS_RECEIPT['paid'];
+            $receipt->total_paid = $receipt->total_amount;
+            $receipt->cashier_id = $admin->id;
+
+            // Cập nhật trạng thái của prev_receipt nếu tồn tại
+            if ($receipt->prev_receipt) {
+                $receipt->prev_receipt->status = Consts::STATUS_RECEIPT['completed'];
+                $receipt->prev_receipt->save(); // Lưu thay đổi
+            }
+            $receipt->save();
+            DB::commit();
+            return redirect()->back()->with('successMessage', __('Successfully updated!'));
+        } catch (Exception $ex) {
+            DB::rollBack();
+            return redirect()->back()->with('errorMessage', __($ex->getMessage()));
+        }
     }
 }

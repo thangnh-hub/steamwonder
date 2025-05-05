@@ -53,7 +53,23 @@ class Receipt extends Model
     }
     public function student()
     {
-        return $this->belongsTo(Student::class, 'student_id ', 'id');
+        return $this->belongsTo(Student::class, 'student_id', 'id');
+    }
+    public function payment_cycle()
+    {
+        return $this->belongsTo(PaymentCycle::class, 'payment_cycle_id', 'id');
+    }
+    public function receipt_detail()
+    {
+        return $this->hasMany(ReceiptDetail::class, 'receipt_id');
+    }
+    public function prev_receipt()
+    {
+        return $this->belongsTo(Receipt::class, 'prev_receipt_id', 'id');
+    }
+    public function prev_receipt_detail()
+    {
+        return $this->hasMany(ReceiptDetail::class, 'prev_receipt_id', 'receipt_id');
     }
     public function admin_created()
     {

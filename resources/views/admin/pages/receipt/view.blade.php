@@ -1,0 +1,249 @@
+<div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#tab_1" data-toggle="tab">
+                <h5 class="fw-bold">Thông tin hóa đơn</h5>
+            </a>
+        </li>
+        <li class="">
+            <a href="#tab_2" data-toggle="tab">
+                <h5 class="fw-bold">Dịch vụ kèm theo</h5>
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab_1">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                <label class="control-label"><strong>@lang('Mã hóa đơn')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                                <p>{{ $detail->receipt_code ?? '' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                <label class="control-label"><strong>@lang('Tên hóa đơn')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                                <p>{{ $detail->receipt_name ?? '' }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                <label class="control-label"><strong>@lang('Khu vực')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                                <p>{{ $detail->area->name ?? '' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                <label class="control-label"><strong>@lang('Hoc sinh')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                                <p>{{ $detail->student->student_code ?? ('' . ' - ' . $detail->student->first_name ?? ('' . ' ' . $detail->student->last_name ?? '')) }}({{ $detail->student->nickname }})
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                <label class="control-label"><strong>@lang('Chu kỳ thanh toán')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                                <p>{{ $detail->payment_cycle->name ?? '' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                <label class="control-label"><strong>@lang('Số tiên cần thu')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                                <p>{{ number_format($detail->total_amount, 0, ',', '.') ?? '' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                <label class="control-label"><strong>@lang('Tổng giảm trừ')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                                <p>{{ number_format($detail->total_discount, 0, ',', '.') ?? '' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                <label class="control-label"><strong>@lang('Tổng các truy thu')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                                <p>{{ number_format($detail->total_adjustment, 0, ',', '.') ?? '' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                <label class="control-label"><strong>@lang('Tổng tiền thực tế')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                                <p>{{ number_format($detail->total_final, 0, ',', '.') ?? '' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                <label class="control-label"><strong>@lang('Đã thu')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                                <p>{{ number_format($detail->total_paid, 0, ',', '.') ?? '' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                <label class="control-label"><strong>@lang('Số tiền còn phải thu (+) hoặc thừa (-)')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                                <p>{{ number_format($detail->total_due, 0, ',', '.') ?? '' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                <label class="control-label"><strong>@lang('Trạng thái')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                                <p>{{ $detail->status }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                <label class="control-label"><strong>@lang('Ghi chú')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                                <p>{{ $detail->note }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <label class="control-label"><strong>@lang('Ngày tạo')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <p>{{ date('H:i - d/m/Y', strtotime($detail->created_at)) }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <label class="control-label"><strong>@lang('Người tạo')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <p>{{ $detail->admin_created->name ?? '' }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <label class="control-label"><strong>@lang('Ngày cập nhật')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <p>{{ date('H:i - d/m/Y', strtotime($detail->updated_at)) }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <label class="control-label"><strong>@lang('Người cập nhật')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <p>{{ $detail->admin_updated->name ?? '' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane " id="tab_2">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box" style="border-top: 3px solid #d2d6de;">
+                        <div class="box-header">
+                        </div>
+                        <div class="box-body no-padding">
+                            <table class="table table-hover sticky">
+                                <thead>
+                                    <tr>
+                                        <th>@lang('Tên dịch vụ')</th>
+                                        <th>@lang('Loại dịch vụ')</th>
+                                        <th>@lang('Tháng áp dụng')</th>
+                                        <th>@lang('Số lượng dự kiến')</th>
+                                        <th>@lang('Số lượng thực tế')</th>
+                                        <th>@lang('Đơn giá dịch vụ')</th>
+                                        <th>@lang('Số tiền dịch vụ trong tháng')</th>
+                                        <th>@lang('Giảm trừ')</th>
+                                        <th>@lang('Truy thu (+) / Hoàn trả (-)')</th>
+                                        <th>@lang('Tổng số tiền cuối cùng')</th>
+                                        <th>@lang('Trạng thái')</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="box_policies">
+                                    @isset($detail->receipt_detail)
+                                        @foreach ($detail->receipt_detail as $item)
+                                            <tr class="item_policies">
+                                                <td>{{ $item->service->name ?? '' }}</td>
+                                                <td>{{ __($item->service->service_type) ?? '' }}</td>
+                                                <td>{{ date('m-Y', strtotime($item->month)) }}</td>
+                                                <td>{{ $item->by_number ?? 0 }}</td>
+                                                <td>{{ $item->spent_number ?? 0 }}</td>
+                                                <td>{{ number_format($item->unit_price, 0, ',', '.') }}</td>
+                                                <td>{{ number_format($item->amount, 0, ',', '.') }}</td>
+                                                <td>{{ number_format($item->discount_amount, 0, ',', '.') }}</td>
+                                                <td>{{ number_format($item->adjustment_amount, 0, ',', '.') }}</td>
+                                                <td>{{ number_format($item->final_amount, 0, ',', '.') }}</td>
+                                                <td>{{ __($item->status) }}</td>
+                                            </tr>
+                                        @endforeach
+                                    @endisset
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -3,6 +3,14 @@
 @section('title')
     @lang($module_name)
 @endsection
+@section('style')
+    <style>
+        .modal-dialog.modal-custom {
+            max-width: 80%;
+            width: auto;
+        }
+    </style>
+@endsection
 @section('content-header')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -105,16 +113,19 @@
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th>@lang('Mã giảm trừ')</th>
-                                <th>@lang('Tên giảm trừ')</th>
-                                <th>@lang('Mô tả')</th>
+                                <th>@lang('Mã hóa đơn')</th>
+                                <th>@lang('Tên hóa đơn')</th>
+                                <th>@lang('Học sinh')</th>
                                 <th>@lang('Khu vực')</th>
-                                <th>@lang('Giảm lũy kế')</th>
-                                <th>@lang('Loại giảm trừ')</th>
-                                <th>@lang('Kiểu điều kiện')</th>
+                                <th>@lang('Chu kỳ thanh toán')</th>
+                                <th>@lang('Số tiên cần thu')</th>
+                                <th>@lang('Tổng giảm trừ')</th>
+                                <th>@lang('Tổng các truy thu')</th>
+                                <th>@lang('Tổng tiền thực tế')</th>
+                                <th>@lang('Đã thu')</th>
+                                <th>@lang('Số tiền còn phải thu (+) hoặc thừa (-)')</th>
                                 <th>@lang('Trạng thái')</th>
-                                <th>@lang('Cập nhật')</th>
-                                <th>@lang('Ngày cập nhật')</th>
+                                <th>@lang('Ghi chú')</th>
                                 <th>@lang('Action')</th>
                             </tr>
                         </thead>
@@ -122,65 +133,57 @@
                             @foreach ($rows as $row)
                                 <tr class="valign-middle">
                                     <td>
-                                        <strong style="font-size: 14px">{{ $row->code ?? '' }}</strong>
+                                        <strong style="font-size: 14px">{{ $row->receipt_code ?? '' }}</strong>
                                     </td>
                                     <td>
-                                        {{ $row->name }}
+                                        {{ $row->receipt_name }}
                                     </td>
                                     <td>
-                                        {{ $row->description ?? '' }}
+                                        {{ $row->student->student_code ?? ('' . ' - ' . $row->student->first_name ?? ('' . ' ' . $row->student->last_name ?? '')) }}({{ $row->student->nickname }})
                                     </td>
                                     <td>
                                         {{ $row->area->name ?? '' }}
                                     </td>
                                     <td>
-                                        <div class="sw_featured d-flex-al-center">
-                                            <label class="switch ">
-                                                <input id="sw_featured" value="1" type="checkbox" disabled
-                                                    {{ $row->is_cumulative && $row->is_cumulative == '1' ? 'checked' : '' }}>
-                                                <span class="slider round"></span>
-                                            </label>
-
-                                        </div>
+                                        {{ $row->payment_cycle->name ?? '' }}
                                     </td>
                                     <td>
-                                        {{ __($row->type) ?? '' }}
+                                        {{ number_format($row->total_amount, 0, ',', '.') ?? '' }}
                                     </td>
                                     <td>
-                                        {{ __($row->condition_type) ?? '' }}
+                                        {{ number_format($row->total_discount, 0, ',', '.') ?? '' }}
                                     </td>
                                     <td>
-                                        {{ __($row->status) ?? '' }}
+                                        {{ number_format($row->total_adjustment, 0, ',', '.') ?? '' }}
                                     </td>
                                     <td>
-                                        {{ $row->admin_updated->name ?? '' }}
+                                        {{ number_format($row->total_final, 0, ',', '.') ?? '' }}
                                     </td>
                                     <td>
-                                        {{ date('H:i - d/m/Y', strtotime($row->updated_at)) }}
+                                        {{ number_format($row->total_paid, 0, ',', '.') ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ number_format($row->total_due, 0, ',', '.') ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $row->status ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $row->note ?? '' }}
                                     </td>
                                     <td class="d-flex-wap">
+
                                         <button class="btn btn-sm btn-success btn_show_detail mr-10" data-toggle="tooltip"
                                             data-id="{{ $row->id }}"
-                                            data-url="{{ route(Request::segment(2) . '.show', $row->id) }}"
+                                            data-url="{{ route(Request::segment(2) . '.view', $row->id) }}"
                                             title="@lang('Show')" data-original-title="@lang('Show')">
                                             <i class="fa fa-eye"></i>
                                         </button>
-
-                                        <a class="btn btn-sm btn-warning mr-10" data-toggle="tooltip"
-                                            title="@lang('Update')" data-original-title="@lang('Update')"
-                                            href="{{ route(Request::segment(2) . '.edit', $row->id) }}">
-                                            <i class="fa fa-pencil-square-o"></i>
+                                        <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="@lang('Thanh toán')"
+                                            data-original-title="@lang('Thanh toán')" style="min-width: 34px"
+                                            href="{{ route(Request::segment(2) . '.show', $row->id) }}">
+                                            <i class="fa fa-usd"></i>
                                         </a>
-
-                                        <form action="{{ route(Request::segment(2) . '.destroy', $row->id) }}"
-                                            method="POST" onsubmit="return confirm('@lang('confirm_action')')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-sm btn-danger" type="submit" data-toggle="tooltip"
-                                                title="@lang('Delete')" data-original-title="@lang('Delete')">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
@@ -202,14 +205,14 @@
 
         </div>
     </section>
-    <div class="modal fade" id="modal_show_đeuction" data-backdrop="static" tabindex="-1" role="dialog">
-        <div class="modal-dialog " role="document">
+    <div class="modal fade" id="modal_show_deduction" data-backdrop="static" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-custom" role="document">
             <div class="modal-content">
                 <div class="modal-header ">
-                    <h3 class="modal-title text-center col-md-12">@lang('Thông tin chính sách')</h3>
+                    <h3 class="modal-title text-center col-md-12">@lang('Thông tin hóa đơn')</h3>
                     </h3>
                 </div>
-                <div class="modal-body show_detail_đeuction">
+                <div class="modal-body show_detail_deduction">
 
                 </div>
                 <div class="modal-footer">
@@ -231,8 +234,8 @@
                 url: url,
                 success: function(response) {
                     if (response) {
-                        $('.show_detail_đeuction').html(response.data.view);
-                        $('#modal_show_đeuction').modal('show');
+                        $('.show_detail_deduction').html(response.data.view);
+                        $('#modal_show_deduction').modal('show');
                     } else {
                         var _html = `<div class="alert alert-warning alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
