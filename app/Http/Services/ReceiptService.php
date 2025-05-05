@@ -20,9 +20,15 @@ class ReceiptService
             $cycle = $student->paymentCycle;
             $policies = $student->studentPolicies;
             $deductions = $this->getDeductions();
-            $startDate = Carbon::parse($data['enrolled_at']);
+            $startDate = Carbon::parse($student->enrolled_at);
             $includeCurrent = $data['include_current_month'] ?? true;
-
+            $data['period_start'] = $startDate->copy()->format('Y-m-d');
+            if($includeCurrent) {
+                $data['period_end'] = $startDate->copy()->addMonths($cycle->months-1)->endOfMonth()->format('Y-m-d');
+            }else {
+                $data['period_end'] = $startDate->copy()->addMonths($cycle->months)->endOfMonth()->format('Y-m-d');
+            }
+            
             $details = $this->generateReceiptDetails($student, $cycle, $policies, $deductions, $data['services'], $startDate, $includeCurrent);
 
             return $this->saveReceipt($student, $cycle, $policies, $details, $data);
@@ -43,10 +49,10 @@ class ReceiptService
 
                 return $startDate->gte($start) && ($end === null || $startDate->lte($end));
             });
+
             $service_info['id'] = $service->id;
             $service_info['price'] = $matchedDetail['price'] ?? 0;
             $service_info['quantity'] = $matchedDetail['quantity'] ?? 0;
-
             switch ($service->service_type) {
                 case Consts::SERVICE_TYPE['monthly']:
                     $monthCount = $cycle->months;
@@ -55,7 +61,7 @@ class ReceiptService
                     $discount_amount = $this->calculateDiscount($student, $service_info, $cycle, $policies, $deductions, $startDate);
                     $details[] = [
                         'service_id' => $service->id,
-                        'month' => $firstMonth->format('Y-m'),
+                        'month' => $firstMonth->format('Y-m-d'),
                         'by_number' => $service_info['quantity'],
                         'unit_price' => $service_info['price'],
                         'amount' => $service_info['price'] * $service_info['quantity'],
@@ -75,7 +81,8 @@ class ReceiptService
                         $discount_amount = $this->calculateDiscount($student, $service_info, $cycle, $policies, $deductions);
                         $details[] = [
                             'service_id' => $service->id,
-                            'month' => $month->format('Y-m'),
+                            // 'month' => $month->format('Y-m'),
+                            'month' => $month->copy()->startOfMonth()->format('Y-m-d'),
                             'by_number' => $service_info['quantity'],
                             'unit_price' => $service_info['price'],
                             'amount' => $service_info['price'] * $service_info['quantity'],
@@ -89,7 +96,7 @@ class ReceiptService
                     $discount_amount = $this->calculateDiscount($student, $service_info, $cycle, $policies, $deductions, $startDate);
                     $details[] = [
                         'service_id' => $service->id,
-                        'month' => $startDate->format('Y-m'),
+                        'month' => $startDate->format('Y-m-d'),
                         'by_number' => $service_info['quantity'],
                         'unit_price' => $service_info['price'],
                         'amount' => $service_info['price'] * $service_info['quantity'],
@@ -102,7 +109,7 @@ class ReceiptService
                     $discount_amount = $this->calculateDiscount($student, $service_info, $cycle, $policies, $deductions, $startDate);
                     $details[] = [
                         'service_id' => $service->id,
-                        'month' => $startDate->format('Y-m'),
+                        'month' => $startDate->format('Y-m-d'),
                         'by_number' => $service_info['quantity'],
                         'unit_price' => $service_info['price'],
                         'amount' => $service_info['price'] * $service_info['quantity'],
@@ -115,7 +122,7 @@ class ReceiptService
                     $discount_amount = $this->calculateDiscount($student, $service_info, $cycle, $policies, $deductions, $startDate);
                     $details[] = [
                         'service_id' => $service->id,
-                        'month' => $startDate->format('Y-m'),
+                        'month' => $startDate->format('Y-m-d'),
                         'by_number' => $service_info['quantity'],
                         'unit_price' => $service_info['price'],
                         'amount' => $service_info['price'] * $service_info['quantity'],
@@ -123,8 +130,7 @@ class ReceiptService
                         'final_amount' => $service_info['price'] * $service_info['quantity'] - $discount_amount,
                     ];
                     break;
-                default:
-                    continue; // Không xử lý loại dịch vụ không xác định
+                
             }
         }
 
@@ -156,7 +162,7 @@ class ReceiptService
 
         foreach ($details as $detail) {
             $detail['student_id'] = $student->id;
-            $receipt->serviceDetail()->create($detail);
+            $receipt->receiptDetail()->create($detail);
         }
 
         return $receipt;

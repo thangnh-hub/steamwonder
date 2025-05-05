@@ -1,37 +1,36 @@
 <?php
 
 namespace App\Models;
+use App\Consts;
 
 use Illuminate\Database\Eloquent\Model;
 
 class ReceiptDetail extends Model
 {
     /**
-     * The attributes that are mass assignable.
+     * The table associated with the model.
      *
-     * @var array
+     * @var string
      */
     protected $table = 'tb_receipt_detail';
 
-    /**
-     * The attributes that aren't mass assignable.
-     *
-     * @var array
-     */
     protected $guarded = [];
-
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = []; 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
+    protected $with = array('services_receipt');
     protected $casts = [
         'json_params' => 'object',
     ];
+
+    public function adminCreated()
+    {
+        return $this->belongsTo(Admin::class, 'admin_created_id');
+    }
+
+    public function adminUpdated()
+    {
+        return $this->belongsTo(Admin::class, 'admin_updated_id');
+    }
+    public function services_receipt()
+    {
+        return $this->belongsTo(Service::class, 'service_id', 'id');
+    }
 }

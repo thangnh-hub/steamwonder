@@ -120,4 +120,8 @@ class Student extends Model
     {
         return $this->belongsTo(PaymentCycle::class, 'payment_cycle_id');
     }
+    public function studentReceipt()
+    {
+        return $this->hasMany(Receipt::class, 'student_id', 'id');
+    }
 }

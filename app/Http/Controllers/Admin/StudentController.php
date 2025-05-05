@@ -15,8 +15,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Imports\StudentImport;
 use App\Models\PaymentCycle;
+use App\Models\Receipt;
 use App\Models\Service;
 use App\Models\StudentService;
+use App\Http\Services\ReceiptService;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 
@@ -27,7 +29,7 @@ class StudentController extends Controller
         parent::__construct();
         $this->routeDefault  = 'students';
         $this->viewPart = 'admin.pages.students';
-        $this->responseData['module_name'] = __('Students Management');
+        $this->responseData['module_name'] = __('Quản lý học sinh');
     }
     /**
      * Display a listing of the resource.
@@ -101,6 +103,7 @@ class StudentController extends Controller
     public function show(Student $student)
     {
         $this->responseData['detail'] = $student;
+        $this->responseData['module_name'] = "Chi tiết học sinh";
         return $this->responseView($this->viewPart . '.detail');
     }
 
@@ -228,7 +231,9 @@ class StudentController extends Controller
                     'student_id'      => $student->id,
                     'service_id'       => $data['id'],
                     'payment_cycle_id' => $student->payment_cycle_id??"",
-                    'json_params.note' => $data['note'] ?? "",
+                    'json_params'       => [
+                        'note' => $data['note'] ?? "",
+                    ],
                     'status' => Consts::STATUS_ACTIVE,
                     'admin_created_id' => Auth::guard('admin')->user()->id,
                 ]);
@@ -307,6 +312,26 @@ class StudentController extends Controller
             ]
         ]);
     }
+    public function getDetailReceiptInfo(Request $request)
+    {
+        try{
+            $id = $request->id;
+            $receipt = Receipt::find($id);
+
+            if (!$receipt) {
+                return response()->json(['success' => false, 'message' => 'Không tìm thấy dịch vụ']);
+            }
+            if (count($receipt->receiptDetail) > 0) {
+                return $this->sendResponse($receipt->receiptDetail, 'success');
+            }
+            return $this->sendResponse('', __('No records available!'));
+        }
+        catch (Exception $ex) {
+            // throw $ex;
+            abort(422, __($ex->getMessage()));
+        }
+        
+    }
     public function updateServiceNoteAjax(Request $request)
     {
         try {
@@ -325,5 +350,17 @@ class StudentController extends Controller
         } catch (\Exception $ex) {
             abort(422, __($ex->getMessage()));
         }
+    }
+
+    public function calculReceiptStudent(Request $request , ReceiptService $receiptService)
+    {
+        $params = $request->all();
+        $student = Student::findOrFail($params['student_id']);
+        $data['services'] = $student->studentServices()->with('services') ->where('status', 'active')
+        ->get()
+        ->pluck('services'); 
+        $data['include_current_month']=true;
+        $createReceiptForStudent=$receiptService->createReceiptForStudent($student, $data);
+        return redirect()->back()->with('successMessage', __('Tạo hóa đơn thành công!'));
     }
 }
