@@ -313,26 +313,7 @@ class StudentController extends Controller
             ]
         ]);
     }
-    public function getDetailReceiptInfo(Request $request)
-    {
-        try{
-            $id = $request->id;
-            $receipt = Receipt::find($id);
-
-            if (!$receipt) {
-                return response()->json(['success' => false, 'message' => 'Không tìm thấy dịch vụ']);
-            }
-            if (count($receipt->receiptDetail) > 0) {
-                return $this->sendResponse($receipt->receiptDetail, 'success');
-            }
-            return $this->sendResponse('', __('No records available!'));
-        }
-        catch (Exception $ex) {
-            // throw $ex;
-            abort(422, __($ex->getMessage()));
-        }
-        
-    }
+    
     public function updateServiceNoteAjax(Request $request)
     {
         try {

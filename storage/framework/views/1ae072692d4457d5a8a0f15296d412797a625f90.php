@@ -457,14 +457,14 @@
                                                 <?php echo csrf_field(); ?>
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label><?php echo app('translator')->get('Ngày bắt đầu chu kỳ thanh toán'); ?></label>
+                                                        <label><?php echo app('translator')->get('Ngày bắt đầu chu kỳ thanh toán'); ?> <small class="text-danger">*</small></label>
                                                         <input class="form-control" type="date" id="enrolled_at" value="">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label><?php echo app('translator')->get('Chu kỳ thu dịch vụ'); ?></label>
+                                                        <label><?php echo app('translator')->get('Chu kỳ thu dịch vụ'); ?> <small class="text-danger">*</small></label>
                                                         <select  style="width:100%" id="selectpayment_cycle_id" class="form-control select2">
                                                             <option value="">Chọn</option>
                                                             <?php $__currentLoopData = $list_payment_cycle; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $payment_cycle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -517,6 +517,8 @@
                                                         <th><?php echo app('translator')->get('Trạng thái'); ?></th>
                                                         <th><?php echo app('translator')->get('Ghi chú'); ?></th>
                                                         <th><?php echo app('translator')->get('Người lập biên lai'); ?></th>
+                                                        <th><?php echo app('translator')->get('Ngày bắt đầu kỳ thu'); ?></th>
+                                                        <th><?php echo app('translator')->get('Ngày kết thúc kỳ thu'); ?></th>
                                                         <th><?php echo app('translator')->get('Ngày tạo phí'); ?></th>
                                                         <th><?php echo app('translator')->get('Chức năng'); ?></th>
                                                     </tr>
@@ -547,11 +549,17 @@
                                                             <td><?php echo e(__($row->status)); ?></td>
                                                             <td><?php echo e($row->note ?? ""); ?></td>
                                                             <td><?php echo e($row->cashier->name ?? ""); ?></td>
+                                                            <td><?php echo e((isset($row->period_start) ? \Carbon\Carbon::parse($row->period_start)->format('d-m-Y') : '')); ?> </td>
+                                                            <td><?php echo e((isset($row->period_end) ? \Carbon\Carbon::parse($row->period_end)->format('d-m-Y') : '')); ?> </td>
                                                             <td><?php echo e((isset($row->created_at) ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') : '')); ?> </td>
                                                             <td>
                                                                 
-                                                                <button type="button" data-id="<?php echo e($row->id); ?>" class="btn btn-primary btn-sm show_detail_receipt" data-toggle="modal" data-target="#showDetailReceipt">
-                                                                    <i class="fa fa-money"></i> <?php echo app('translator')->get('Chi tiết'); ?>
+                                                                
+                                                                <button type="button" class="btn btn-sm btn-primary btn_show_detail mr-10" data-toggle="tooltip"
+                                                                    data-id="<?php echo e($row->id); ?>"
+                                                                    data-url="<?php echo e(route('receipt.view', $row->id)); ?>"
+                                                                    title="<?php echo app('translator')->get('Show'); ?>" data-original-title="<?php echo app('translator')->get('Show'); ?>">
+                                                                    <i class="fa fa-money"></i> Chi tiết
                                                                 </button>
                                                             </td>
                                                         </tr>
@@ -739,41 +747,20 @@
 
 
     
-    <div class="modal fade" id="showDetailReceipt" tabindex="-1" role="dialog" aria-labelledby="showDetailReceipt" aria-hidden="true">
+    <div class="modal fade" id="modal_show_deduction" data-backdrop="static" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-full" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="showDetailReceipt"><?php echo app('translator')->get('Chi tiết biểu phí'); ?></h5>
+                <div class="modal-header ">
+                    <h3 class="modal-title text-center col-md-12"><?php echo app('translator')->get('Thông tin hóa đơn'); ?></h3>
+                    </h3>
                 </div>
-                <div class="modal-body">
-                    <div class="table-wrapper" >
-                        <table class="table table-hover table-bordered" >
-                            <thead>
-                                <tr>
-                                    <th rowspan="2"><?php echo app('translator')->get('Tên dịch vụ'); ?></th>
-                                    <th rowspan="2"><?php echo app('translator')->get('Tháng áp dụng'); ?></th>
-                                    <th colspan="2"><?php echo app('translator')->get('Số lượng sử dụng'); ?></th>
-                                    <th rowspan="2"><?php echo app('translator')->get('Giá'); ?></th>
-                                    <th rowspan="2"><?php echo app('translator')->get('Giảm trừ'); ?></th>
-                                    <th rowspan="2"><?php echo app('translator')->get('Thành tiền'); ?></th>
-                                    <th rowspan="2"><?php echo app('translator')->get('Truy thu/Hoàn trả'); ?></th>
-                                    <th rowspan="2"><?php echo app('translator')->get('Tổng tiền'); ?></th>
-                                    <th rowspan="2"><?php echo app('translator')->get('Trạng thái'); ?></th>
-                                    <th rowspan="2"><?php echo app('translator')->get('Cập nhật'); ?></th>
-                                </tr>
-                                <tr>
-                                    <th><?php echo app('translator')->get('Dự kiến'); ?></th>
-                                    <th><?php echo app('translator')->get('Thực tế'); ?></th>
-                                </tr>
-                            </thead>
-                            <tbody class="showDetailReceiptBody">
-                                
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="modal-body show_detail_deduction">
+
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo app('translator')->get('Đóng'); ?></button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                        <i class="fa fa-remove"></i> <?php echo app('translator')->get('Close'); ?>
+                    </button>
                 </div>
             </div>
         </div>
@@ -889,56 +876,34 @@
             }
         });
 
-        $('.show_detail_receipt').click(function(e) {
-            e.preventDefault();
-            let _id = $(this).data('id');
-            let url = "<?php echo e(route('get_detail_receipt_info')); ?>";
-
+        $('.btn_show_detail').click(function(e) {
+            var url = $(this).data('url');
+            var id = $(this).data('id');
             $.ajax({
                 type: "GET",
                 url: url,
-                data: {
-                    id: _id,
-                },
                 success: function(response) {
-                    console.log(response);
-                    if (response.message == "success" && response.data.length > 0) {
-                        let data = response.data;
-                        let html = '';
-
-                        // Tạo formatter cho VNĐ
-                        const formatter = new Intl.NumberFormat('vi-VN', {
-                            style: 'currency',
-                            currency: 'VND'
-                        });
-
-                        $.each(data, function(index, item) {
-                            html += '<tr>';
-                            html += '<td>' + item.services_receipt.name + '</td>';
-                            html += '<td>' + item.month + '</td>';
-                            html += '<td>' + item.by_number + '</td>';
-                            html += '<td>' + item.spent_number + '</td>';
-                            html += '<td>' + formatter.format(item.unit_price) + '</td>';
-                            html += '<td>' + formatter.format(item.discount_amount) + '</td>';
-                            html += '<td>' + formatter.format(item.amount) + '</td>';
-                            html += '<td>' + formatter.format(item.adjustment_amount) + '</td>';
-                            html += '<td>' + formatter.format(item.final_amount) + '</td>';
-                            html += '<td>' + item.status + '</td>';
-                            html += '<td>' + item.created_at + '</td>';
-                            html += '</tr>';
-                        });
-
-                        $('.showDetailReceiptBody').html(html);
+                    if (response) {
+                        $('.show_detail_deduction').html(response.data.view);
+                        $('#modal_show_deduction').modal('show');
                     } else {
-                        $('.showDetailReceiptBody').html('<tr><td colspan="12" class="text-center">Không có dữ liệu</td></tr>');
+                        var _html = `<div class="alert alert-warning alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        Bạn không có quyền thao tác chức năng này!
+                        </div>`;
+                        $('.box_alert').prepend(_html);
+                        $('html, body').animate({
+                            scrollTop: $(".alert").offset().top
+                        }, 1000);
+                        setTimeout(function() {
+                            $('.alert').remove();
+                        }, 3000);
                     }
 
-                    if (response.message == "success") {
-                        $('#showDetailReceipt').modal('show');
-                    }
                 },
                 error: function(response) {
-                    alert("Đã có lỗi xảy ra khi tải dữ liệu.");
+                    var errors = response.responseJSON.message;
+                    console.log(errors);
                 }
             });
         });
