@@ -146,7 +146,7 @@
                                 <tbody>
                                     <!-- Du kien thu thang nay -->
 
-                                    @if (isset($detail->receipt_detail) && count($detail->receipt_detail) > 0)
+                                    @if (isset($detail->receiptDetail) && count($detail->receiptDetail) > 0)
                                         <tr>
                                             <th>Tháng</th>
                                             <th>Dịch vụ</th>
@@ -157,7 +157,7 @@
                                             <th>Hoàn trả / phát sinh</th>
                                             <th>Tổng tiền</th>
                                         </tr>
-                                        @foreach ($detail->receipt_detail as $item)
+                                        @foreach ($detail->receiptDetail as $item)
                                             <tr>
                                                 <td>{{ date('d-m-Y', strtotime($item->month)) }}</td>
                                                 <td>{{ $item->services_receipt->name ?? '' }}</td>

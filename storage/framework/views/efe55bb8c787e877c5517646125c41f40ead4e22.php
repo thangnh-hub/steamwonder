@@ -220,8 +220,8 @@
                                     </tr>
                                 </thead>
                                 <tbody class="box_policies">
-                                    <?php if(isset($detail->receipt_detail)): ?>
-                                        <?php $__currentLoopData = $detail->receipt_detail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php if(isset($detail->receiptDetail)): ?>
+                                        <?php $__currentLoopData = $detail->receiptDetail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr class="item_policies">
                                                 <td><?php echo e($item->services_receipt->name ?? ''); ?></td>
                                                 <td><?php echo e(__($item->services_receipt->service_type) ?? ''); ?></td>

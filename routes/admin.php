@@ -108,6 +108,7 @@ Route::group(['namespace' => 'Admin'], function () {
         'payment_cycle' => 'PaymentCycleController',
         'deductions' => 'DeductionController',
         'receipt' => 'ReceiptController',
+        'attendances' => 'AttendancesController',
       ]);
       Route::get('receipt_view/{id}', 'ReceiptController@viewIndex')->name('receipt.view');
       Route::post('receipt_payment/{id}', 'ReceiptController@payment')->name('receipt.payment');
