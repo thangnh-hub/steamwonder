@@ -760,8 +760,8 @@
                                     <th rowspan="2">@lang('Tháng áp dụng')</th>
                                     <th colspan="2">@lang('Số lượng sử dụng')</th>
                                     <th rowspan="2">@lang('Giá')</th>
-                                    <th rowspan="2">@lang('Giảm trừ')</th>
                                     <th rowspan="2">@lang('Thành tiền')</th>
+                                    <th rowspan="2">@lang('Giảm trừ')</th>
                                     <th rowspan="2">@lang('Truy thu/Hoàn trả')</th>
                                     <th rowspan="2">@lang('Tổng tiền')</th>
                                     <th rowspan="2">@lang('Trạng thái')</th>
@@ -925,8 +925,8 @@
                             html += '<td>' + item.by_number + '</td>';
                             html += '<td>' + item.spent_number + '</td>';
                             html += '<td>' + formatter.format(item.unit_price) + '</td>';
-                            html += '<td>' + formatter.format(item.discount_amount) + '</td>';
                             html += '<td>' + formatter.format(item.amount) + '</td>';
+                            html += '<td>' + formatter.format(item.discount_amount) + '</td>';
                             html += '<td>' + formatter.format(item.adjustment_amount) + '</td>';
                             html += '<td>' + formatter.format(item.final_amount) + '</td>';
                             html += '<td>' + item.status + '</td>';
