@@ -550,8 +550,12 @@
                                                                 {{-- <button type="button" class="btn btn-sm btn-danger">
                                                                     <i class="fa fa-close"></i> Hủy
                                                                 </button> --}}
-                                                                <button type="button" data-id="{{ $row->id }}" class="btn btn-primary btn-sm show_detail_receipt" data-toggle="modal" data-target="#showDetailReceipt">
-                                                                    <i class="fa fa-money"></i> @lang('Chi tiết')
+                                                                
+                                                                <button type="button" class="btn btn-sm btn-primary btn_show_detail mr-10" data-toggle="tooltip"
+                                                                    data-id="{{ $row->id }}"
+                                                                    data-url="{{ route('receipt.view', $row->id) }}"
+                                                                    title="@lang('Show')" data-original-title="@lang('Show')">
+                                                                    <i class="fa fa-money"></i> Chi tiết
                                                                 </button>
                                                             </td>
                                                         </tr>
@@ -745,41 +749,20 @@
 
 
     {{-- modal chi tiết biên lai --}}
-    <div class="modal fade" id="showDetailReceipt" tabindex="-1" role="dialog" aria-labelledby="showDetailReceipt" aria-hidden="true">
+    <div class="modal fade" id="modal_show_deduction" data-backdrop="static" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-full" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="showDetailReceipt">@lang('Chi tiết biểu phí')</h5>
+                <div class="modal-header ">
+                    <h3 class="modal-title text-center col-md-12">@lang('Thông tin hóa đơn')</h3>
+                    </h3>
                 </div>
-                <div class="modal-body">
-                    <div class="table-wrapper" >
-                        <table class="table table-hover table-bordered" >
-                            <thead>
-                                <tr>
-                                    <th rowspan="2">@lang('Tên dịch vụ')</th>
-                                    <th rowspan="2">@lang('Tháng áp dụng')</th>
-                                    <th colspan="2">@lang('Số lượng sử dụng')</th>
-                                    <th rowspan="2">@lang('Giá')</th>
-                                    <th rowspan="2">@lang('Thành tiền')</th>
-                                    <th rowspan="2">@lang('Giảm trừ')</th>
-                                    <th rowspan="2">@lang('Truy thu/Hoàn trả')</th>
-                                    <th rowspan="2">@lang('Tổng tiền')</th>
-                                    <th rowspan="2">@lang('Trạng thái')</th>
-                                    <th rowspan="2">@lang('Cập nhật')</th>
-                                </tr>
-                                <tr>
-                                    <th>@lang('Dự kiến')</th>
-                                    <th>@lang('Thực tế')</th>
-                                </tr>
-                            </thead>
-                            <tbody class="showDetailReceiptBody">
-                                
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="modal-body show_detail_deduction">
+
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@lang('Đóng')</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                        <i class="fa fa-remove"></i> @lang('Close')
+                    </button>
                 </div>
             </div>
         </div>
@@ -895,56 +878,34 @@
             }
         });
 
-        $('.show_detail_receipt').click(function(e) {
-            e.preventDefault();
-            let _id = $(this).data('id');
-            let url = "{{ route('get_detail_receipt_info') }}";
-
+        $('.btn_show_detail').click(function(e) {
+            var url = $(this).data('url');
+            var id = $(this).data('id');
             $.ajax({
                 type: "GET",
                 url: url,
-                data: {
-                    id: _id,
-                },
                 success: function(response) {
-                    console.log(response);
-                    if (response.message == "success" && response.data.length > 0) {
-                        let data = response.data;
-                        let html = '';
-
-                        // Tạo formatter cho VNĐ
-                        const formatter = new Intl.NumberFormat('vi-VN', {
-                            style: 'currency',
-                            currency: 'VND'
-                        });
-
-                        $.each(data, function(index, item) {
-                            html += '<tr>';
-                            html += '<td>' + item.services_receipt.name + '</td>';
-                            html += '<td>' + item.month + '</td>';
-                            html += '<td>' + item.by_number + '</td>';
-                            html += '<td>' + item.spent_number + '</td>';
-                            html += '<td>' + formatter.format(item.unit_price) + '</td>';
-                            html += '<td>' + formatter.format(item.amount) + '</td>';
-                            html += '<td>' + formatter.format(item.discount_amount) + '</td>';
-                            html += '<td>' + formatter.format(item.adjustment_amount) + '</td>';
-                            html += '<td>' + formatter.format(item.final_amount) + '</td>';
-                            html += '<td>' + item.status + '</td>';
-                            html += '<td>' + item.created_at + '</td>';
-                            html += '</tr>';
-                        });
-
-                        $('.showDetailReceiptBody').html(html);
+                    if (response) {
+                        $('.show_detail_deduction').html(response.data.view);
+                        $('#modal_show_deduction').modal('show');
                     } else {
-                        $('.showDetailReceiptBody').html('<tr><td colspan="12" class="text-center">Không có dữ liệu</td></tr>');
+                        var _html = `<div class="alert alert-warning alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        Bạn không có quyền thao tác chức năng này!
+                        </div>`;
+                        $('.box_alert').prepend(_html);
+                        $('html, body').animate({
+                            scrollTop: $(".alert").offset().top
+                        }, 1000);
+                        setTimeout(function() {
+                            $('.alert').remove();
+                        }, 3000);
                     }
 
-                    if (response.message == "success") {
-                        $('#showDetailReceipt').modal('show');
-                    }
                 },
                 error: function(response) {
-                    alert("Đã có lỗi xảy ra khi tải dữ liệu.");
+                    var errors = response.responseJSON.message;
+                    console.log(errors);
                 }
             });
         });
