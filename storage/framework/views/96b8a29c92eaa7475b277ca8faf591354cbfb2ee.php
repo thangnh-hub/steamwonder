@@ -168,7 +168,9 @@
 
                                         <td>
                                             <?php if(!empty($row->avatar)): ?>
-                                                <img src="<?php echo e(asset($row->avatar)); ?>" alt="Avatar" width="100" height="100" style="object-fit: cover;">
+                                                <a href="<?php echo e(asset($row->avatar)); ?>" target="_blank" class="image-popup">
+                                                    <img src="<?php echo e(asset($row->avatar)); ?>" alt="Avatar" width="100" height="100" style="object-fit: cover;">
+                                                </a>
                                             <?php else: ?>
                                                 <span class="text-muted">No image</span>
                                             <?php endif; ?>
@@ -183,7 +185,7 @@
                                             </a>
                                         </td>
                                         <td>
-                                            <?php echo e($row->last_name ?? ''); ?> <?php echo e($row->first_name ?? ''); ?>
+                                             <?php echo e($row->first_name ?? ''); ?> <?php echo e($row->last_name ?? ''); ?>
 
                                         </td>
                                         <td>

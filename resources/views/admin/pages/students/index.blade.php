@@ -165,7 +165,9 @@
 
                                         <td>
                                             @if (!empty($row->avatar))
-                                                <img src="{{ asset($row->avatar) }}" alt="Avatar" width="100" height="100" style="object-fit: cover;">
+                                                <a href="{{ asset($row->avatar) }}" target="_blank" class="image-popup">
+                                                    <img src="{{ asset($row->avatar) }}" alt="Avatar" width="100" height="100" style="object-fit: cover;">
+                                                </a>
                                             @else
                                                 <span class="text-muted">No image</span>
                                             @endif
@@ -179,7 +181,7 @@
                                             </a>
                                         </td>
                                         <td>
-                                            {{ $row->last_name ?? '' }} {{ $row->first_name ?? '' }}
+                                             {{ $row->first_name ?? '' }} {{ $row->last_name ?? '' }}
                                         </td>
                                         <td>
                                             {{ $row->nickname ?? '' }} 

@@ -84,7 +84,7 @@ class AdminService
   public static function getPermisionAccess()
   {
     $admin = Auth::guard('admin')->user();
-    $arr_role_extend = $admin->json_params->role_extend ?? [];
+    $arr_role_extend = (array) ($admin->json_params->role_extend ?? []);
     array_push($arr_role_extend, $admin->role);
 
     $role = Role::whereIn('id', $arr_role_extend)->get();

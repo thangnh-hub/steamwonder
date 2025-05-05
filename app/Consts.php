@@ -11,12 +11,13 @@ class Consts
     ];
     const CONDITION_TYPE = [
         'start_day_range' => 'start_day_range',
+        'start_month_range' => 'start_month_range',
         'absent_days' => 'absent_days',
         'present_days' => 'present_days',
     ];
     const TYPE_POLICIES = [
         'percent' => 'percent',
-        'fixed_amount' => 'fixed_amount',
+        'fixed_amount' => 'fixed_amount'
     ];
     const TYPE_CLASS_STUDENT = [
         'hoc_thu' => 'hoc_thu',
@@ -34,11 +35,10 @@ class Consts
         '1' => 'Mặc đinh',
     ];
     const SERVICE_TYPE = [
-        'binh_thuong' => 'binh_thuong',
-        'thang_tuoi' => 'thang_tuoi',
-        'thang_nhap_hoc' => 'thang_nhap_hoc',
-        'dau_nam_hoc' => 'dau_nam_hoc',
-        'tu_huy_sau_khi_su_dung' => 'tu_huy_sau_khi_su_dung',
+        'monthly' => 'monthly',
+        'yearly' => 'yearly',
+        'once' => 'once',
+        'auto_cancel' => 'auto_cancel',
     ];
     const STATUS_DATACRM = [
         'new' => 'new',
