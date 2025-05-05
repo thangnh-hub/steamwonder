@@ -160,7 +160,7 @@
                                         @foreach ($detail->receipt_detail as $item)
                                             <tr>
                                                 <td>{{ date('d-m-Y', strtotime($item->month)) }}</td>
-                                                <td>{{ $item->service->name ?? '' }}</td>
+                                                <td>{{ $item->services_receipt->name ?? '' }}</td>
                                                 <td>{{ number_format($item->unit_price, 0, ',', '.') ?? '' }}</td>
                                                 <td>{{ number_format($item->spent_number, 0, ',', '.') ?? '' }}</td>
                                                 <td>{{ number_format($item->discount_amount, 0, ',', '.') ?? '' }}</td>

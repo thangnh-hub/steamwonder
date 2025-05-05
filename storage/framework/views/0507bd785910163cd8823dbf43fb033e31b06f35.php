@@ -165,7 +165,7 @@
                                         <?php $__currentLoopData = $detail->receipt_detail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr>
                                                 <td><?php echo e(date('d-m-Y', strtotime($item->month))); ?></td>
-                                                <td><?php echo e($item->service->name ?? ''); ?></td>
+                                                <td><?php echo e($item->services_receipt->name ?? ''); ?></td>
                                                 <td><?php echo e(number_format($item->unit_price, 0, ',', '.') ?? ''); ?></td>
                                                 <td><?php echo e(number_format($item->spent_number, 0, ',', '.') ?? ''); ?></td>
                                                 <td><?php echo e(number_format($item->discount_amount, 0, ',', '.') ?? ''); ?></td>
