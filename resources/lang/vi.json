@@ -100,5 +100,7 @@
     "absent_days":"Theo ngày nghỉ",
     "present_days":"Theo ngày đi học",
     "start_day_range":"Theo ngày nhập học",
+    "start_month_range":"Theo tháng nhập học",
+    "Update successfully!":"Cập nhật thông tin thành công!",
     "Edit form": "Thông tin cập nhật"
 }
