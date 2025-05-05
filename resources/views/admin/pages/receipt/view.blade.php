@@ -223,8 +223,8 @@
                                     @isset($detail->receipt_detail)
                                         @foreach ($detail->receipt_detail as $item)
                                             <tr class="item_policies">
-                                                <td>{{ $item->service->name ?? '' }}</td>
-                                                <td>{{ __($item->service->service_type) ?? '' }}</td>
+                                                <td>{{ $item->services_receipt->name ?? '' }}</td>
+                                                <td>{{ __($item->services_receipt->service_type) ?? '' }}</td>
                                                 <td>{{ date('m-Y', strtotime($item->month)) }}</td>
                                                 <td>{{ $item->by_number ?? 0 }}</td>
                                                 <td>{{ $item->spent_number ?? 0 }}</td>
