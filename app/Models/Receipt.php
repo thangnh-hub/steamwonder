@@ -60,7 +60,7 @@ class Receipt extends Model
     }
     public function area()
     {
-        return $this->belongsTo(Area::class, 'area_id ');
+        return $this->belongsTo(Area::class, 'area_id');
     }
     public function student()
     {
