@@ -636,7 +636,7 @@
         $('.update_student_service').click(function(e) {
             e.preventDefault();
             let _id = $(this).data('id');
-            let url = "{{ route('get_student_service_info') }}"; // → bạn cần tạo route này để lấy dữ liệu dịch vụ
+            let url = "{{ route('get_student_service_info') }}"; 
 
             $.ajax({
                 type: "GET",
@@ -649,7 +649,7 @@
                         $('#editServiceModal input[name="note"]').val(response.data.note);
                         // Mở modal
                         $('#editServiceModal').modal('show');
-                        $('#btnUpdateService').attr('data-id', _id); // Lưu ID dịch vụ hiện tại vào nút cập nhật
+                        $('#btnUpdateService').attr('data-id', _id); 
                     } else {
                         alert("Không tìm thấy dữ liệu dịch vụ.");
                     }
