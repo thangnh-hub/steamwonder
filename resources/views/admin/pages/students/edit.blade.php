@@ -6,6 +6,11 @@
 @endsection
 @section('style')
     <style>
+        .flex-inline-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
         th{
             text-align: center;
             vertical-align: middle !important;
@@ -194,10 +199,11 @@
                                                         </select>
                                                     </div>
                                                 </div>
+                                                
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label>@lang('Chu kỳ thu dịch vụ')</label>
-                                                        <select name="payment_cycle_id" class="form-control select2">
+                                                        <select  style="width:100%" name="payment_cycle_id" class="form-control select2">
                                                             <option value="">Chọn</option>
                                                             @foreach($list_payment_cycle as $payment_cycle)
                                                                 <option {{ old('payment_cycle_id', $detail->payment_cycle_id) == $payment_cycle->id ? 'selected' : '' }} value="{{ $payment_cycle->id }}">{{ $payment_cycle->name ?? "" }}</option>
@@ -205,6 +211,7 @@
                                                         </select>
                                                     </div>
                                                 </div>
+
                                                 <div class="col-md-4">
                                                     <div class="form-group box_img_right">
                                                         <label>@lang('Ảnh đại diện')</label>
@@ -425,18 +432,48 @@
                                         <div class="box-body ">
                                             <form id="calculate-receipt-form">
                                                 @csrf
-                                                <input type="hidden" name="student_id" value="{{ $detail->id }}">
-                                            
-                                                <div class="form-check mb-2">
-                                                    <input class="form-check-input" type="checkbox" id="includeCurrentMonth" name="include_current_month" value="1">
-                                                    <label style="font-size: 14px" class="form-check-label" for="includeCurrentMonth">
-                                                        Có tính cả tháng hiện tại ?
-                                                    </label>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>@lang('Ngày bắt đầu chu kỳ thanh toán')</label>
+                                                        <input class="form-control" type="date" id="enrolled_at" value="">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>@lang('Chu kỳ thu dịch vụ')</label>
+                                                        <select  style="width:100%" id="selectpayment_cycle_id" class="form-control select2">
+                                                            <option value="">Chọn</option>
+                                                            @foreach($list_payment_cycle as $payment_cycle)
+                                                                <option {{ old('payment_cycle_id', $detail->payment_cycle_id) == $payment_cycle->id ? 'selected' : '' }} value="{{ $payment_cycle->id }}">{{ $payment_cycle->name ?? "" }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                
+                                              
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="d-block">@lang('Tính tháng hiện tại ở chu kỳ thu?')</label>
+                                                        <div id="receipt-options" class="flex-inline-group">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="includeCurrentMonth" id="includeCurrentMonthYes" value="1">
+                                                                <label class="form-check-label mb-0" for="includeCurrentMonthYes">Có</label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="includeCurrentMonth" id="includeCurrentMonthNo" value="0" checked>
+                                                                <label class="form-check-label mb-0" for="includeCurrentMonthNo">Không</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             
-                                                <button type="button" class="btn btn-success btn-sm mb-15" id="btnCalculateReceipt" data-id="{{ $detail->id }}">
-                                                    <i class="fa fa-money"></i> @lang('Tính toán thu phí')
-                                                </button>
+                                                <div class="col-md-12">
+                                                    <button type="button" class="btn btn-success btn-sm mb-15" id="btnCalculateReceipt" data-id="{{ $detail->id }}">
+                                                        <i class="fa fa-money"></i> @lang('Tính toán thu phí')
+                                                    </button>
+                                                </div>
+                                                
                                             </form>
                                             
                                             <table class="table table-hover table-bordered">
@@ -457,7 +494,7 @@
                                                         <th>@lang('Trạng thái')</th>
                                                         <th>@lang('Ghi chú')</th>
                                                         <th>@lang('Người lập biên lai')</th>
-                                                        <th>@lang('Ngày lập biên lai')</th>
+                                                        <th>@lang('Ngày tạo phí')</th>
                                                         <th>@lang('Chức năng')</th>
                                                     </tr>
                                                 </thead>
@@ -487,7 +524,7 @@
                                                             <td>{{ __($row->status) }}</td>
                                                             <td>{{ $row->note ?? "" }}</td>
                                                             <td>{{ $row->cashier->name ?? "" }}</td>
-                                                            <td>{{ (isset($row->receipt_date) ? \Illuminate\Support\Carbon::parse($row->receipt_date)->format('d-m-Y') : '') }} </td>
+                                                            <td>{{ (isset($row->created_at) ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') : '') }} </td>
                                                             <td>
                                                                 {{-- <button type="button" class="btn btn-sm btn-danger">
                                                                     <i class="fa fa-close"></i> Hủy
@@ -886,13 +923,25 @@
 
         $('#btnCalculateReceipt').click(function () {
             let studentId = $(this).data('id');
-            let includeCurrentMonth = $('#includeCurrentMonth').is(':checked') ? 1 : 0;
-
+            let includeCurrentMonth = $('#receipt-options input[type="radio"]:checked').val();
+            let enrolledAt = $('#enrolled_at').val();
+            let paymentCycleId = $('#selectpayment_cycle_id').val();
+            if(paymentCycleId=="") {
+                alert("Vui lòng chọn chu kỳ thu dịch vụ!");
+                return;
+            }
+            if(enrolledAt=="") {
+                alert("Vui lòng chọn ngày bắt đầu chu kỳ thanh toán!");
+                return;
+            }
             $.ajax({
                 type: "POST",
                 url: "{{ route('receipt.calculStudent') }}",
                 data: {
                     student_id: studentId,
+                    include_current_month: includeCurrentMonth,
+                    enrolled_at: enrolledAt,
+                    payment_cycle_id: paymentCycleId,
                     _token: '{{ csrf_token() }}'
                 },
                 success: function (response) {

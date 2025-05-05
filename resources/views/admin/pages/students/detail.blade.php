@@ -168,7 +168,7 @@
                                                                         <span class="text-muted">No image</span>
                                                                     @endif
                                                                 </td>
-                                                                <td>{{ $relation->parent->last_name ?? '' }} {{ $relation->parent->first_name ?? '' }}</td>
+                                                                <td>{{ $relation->parent->first_name ?? '' }} {{ $relation->parent->last_name ?? '' }} </td>
                                                                 <td>{{ $relation->relationship->title ?? '' }}</td>
                                                                 <td>{{ __($relation->parent->sex ?? '') }}</td>
                                                                 

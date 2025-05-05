@@ -151,7 +151,7 @@
                                 <tbody>
                                     <!-- Du kien thu thang nay -->
 
-                                    <?php if(isset($detail->receipt_detail) && count($detail->receipt_detail) > 0): ?>
+                                    <?php if(isset($detail->receiptDetail) && count($detail->receiptDetail) > 0): ?>
                                         <tr>
                                             <th>Tháng</th>
                                             <th>Dịch vụ</th>
@@ -162,7 +162,7 @@
                                             <th>Hoàn trả / phát sinh</th>
                                             <th>Tổng tiền</th>
                                         </tr>
-                                        <?php $__currentLoopData = $detail->receipt_detail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <?php $__currentLoopData = $detail->receiptDetail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr>
                                                 <td><?php echo e(date('d-m-Y', strtotime($item->month))); ?></td>
                                                 <td><?php echo e($item->services_receipt->name ?? ''); ?></td>

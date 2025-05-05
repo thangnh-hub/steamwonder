@@ -178,7 +178,7 @@
                                                                         <span class="text-muted">No image</span>
                                                                     <?php endif; ?>
                                                                 </td>
-                                                                <td><?php echo e($relation->parent->last_name ?? ''); ?> <?php echo e($relation->parent->first_name ?? ''); ?></td>
+                                                                <td><?php echo e($relation->parent->first_name ?? ''); ?> <?php echo e($relation->parent->last_name ?? ''); ?> </td>
                                                                 <td><?php echo e($relation->relationship->title ?? ''); ?></td>
                                                                 <td><?php echo e(__($relation->parent->sex ?? '')); ?></td>
                                                                 
