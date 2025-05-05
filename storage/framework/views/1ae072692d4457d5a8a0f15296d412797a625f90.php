@@ -330,7 +330,9 @@
                                                         <th><?php echo app('translator')->get('Tính chất dịch vụ'); ?></th>
                                                         <th><?php echo app('translator')->get('Loại dịch vụ'); ?></th>
                                                         <th><?php echo app('translator')->get('Biểu phí'); ?></th>
-                                                        <th><?php echo app('translator')->get('Chu kỳ thu'); ?></th>
+                                                        
+                                                        <th><?php echo app('translator')->get('Ngày bắt đầu'); ?></th>
+                                                        <th><?php echo app('translator')->get('Ngày kết thúc'); ?></th>
                                                         <th><?php echo app('translator')->get('Ghi chú'); ?></th>
                                                         <th><?php echo app('translator')->get('Chức năng'); ?></th>
                                                     </tr>
@@ -363,10 +365,21 @@
                     
                                                             <?php endif; ?>
                                                         </td>
+                                                        
+
                                                         <td>
-                                                            <?php echo e($row->paymentcycle->name ?? ""); ?>
+                                                            <?php echo e(($row->created_at)
+                                                                ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') 
+                                                                : ''); ?>
 
                                                         </td>
+                                                        <td>
+                                                            <?php echo e(($row->cancelled_at) 
+                                                                ? \Carbon\Carbon::parse($row->cancelled_at)->format('d-m-Y') 
+                                                                : ''); ?>
+
+                                                        </td>
+
                                                         <td>
                                                             <?php echo e($row->json_params->note ?? ""); ?>
 
@@ -424,6 +437,7 @@
                                                                     : ''); ?>
 
                                                             </td>
+                                                         
                                                             <td>
                                                                 <?php echo e($row->adminUpdated->name ?? ""); ?> (<?php echo e($row->updated_at ? \Carbon\Carbon::parse($row->updated_at)->format('H:i:s d-m-Y') : ''); ?>)   
                                                             </td>
@@ -503,7 +517,7 @@
                                                         <th><?php echo app('translator')->get('Trạng thái'); ?></th>
                                                         <th><?php echo app('translator')->get('Ghi chú'); ?></th>
                                                         <th><?php echo app('translator')->get('Người lập biên lai'); ?></th>
-                                                        <th><?php echo app('translator')->get('Ngày lập biên lai'); ?></th>
+                                                        <th><?php echo app('translator')->get('Ngày tạo phí'); ?></th>
                                                         <th><?php echo app('translator')->get('Chức năng'); ?></th>
                                                     </tr>
                                                 </thead>
@@ -879,6 +893,7 @@
             e.preventDefault();
             let _id = $(this).data('id');
             let url = "<?php echo e(route('get_detail_receipt_info')); ?>";
+
             $.ajax({
                 type: "GET",
                 url: url,
@@ -891,27 +906,33 @@
                         let data = response.data;
                         let html = '';
 
+                        // Tạo formatter cho VNĐ
+                        const formatter = new Intl.NumberFormat('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND'
+                        });
+
                         $.each(data, function(index, item) {
                             html += '<tr>';
                             html += '<td>' + item.services_receipt.name + '</td>';
                             html += '<td>' + item.month + '</td>';
                             html += '<td>' + item.by_number + '</td>';
                             html += '<td>' + item.spent_number + '</td>';
-                            html += '<td>' + item.unit_price + '</td>';
-                            html += '<td>' + item.discount_amount + '</td>';
-                            html += '<td>' + item.amount + '</td>';
-                            html += '<td>' + item.adjustment_amount + '</td>';
-                            html += '<td>' + item.final_amount + '</td>';
+                            html += '<td>' + formatter.format(item.unit_price) + '</td>';
+                            html += '<td>' + formatter.format(item.discount_amount) + '</td>';
+                            html += '<td>' + formatter.format(item.amount) + '</td>';
+                            html += '<td>' + formatter.format(item.adjustment_amount) + '</td>';
+                            html += '<td>' + formatter.format(item.final_amount) + '</td>';
                             html += '<td>' + item.status + '</td>';
                             html += '<td>' + item.created_at + '</td>';
                             html += '</tr>';
                         });
 
                         $('.showDetailReceiptBody').html(html);
-                    } else  {
+                    } else {
                         $('.showDetailReceiptBody').html('<tr><td colspan="12" class="text-center">Không có dữ liệu</td></tr>');
-                    } 
-                    // Show the modal if the response is successful
+                    }
+
                     if (response.message == "success") {
                         $('#showDetailReceipt').modal('show');
                     }
@@ -921,6 +942,7 @@
                 }
             });
         });
+
 
         $('#btnCalculateReceipt').click(function () {
             let studentId = $(this).data('id');
