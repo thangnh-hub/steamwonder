@@ -6,6 +6,10 @@
 @endsection
 @section('style')
     <style>
+        th{
+            text-align: center;
+            vertical-align: middle !important;
+        }
         .modal-header{
             background-color: #3c8dbc;
             color: white;
@@ -89,6 +93,11 @@
                                             <h5>Dịch vụ đã đăng ký</h5>
                                         </a>
                                     </li>
+                                    <li class="">
+                                        <a href="#tab_4" data-toggle="tab">
+                                            <h5>Biên lai thu phí</h5>
+                                        </a>
+                                    </li>
                                 </ul>
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="tab_1">
@@ -110,17 +119,19 @@
                                                 
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label>@lang('Last Name')<small class="text-red">*</small></label>
+                                                        <label>@lang('Họ')<small class="text-red">*</small></label>
+                                                        <input type="text" class="form-control" name="first_name" value="{{ old('first_name', $detail->first_name) }}" required>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>@lang('Tên')<small class="text-red">*</small></label>
                                                         <input type="text" class="form-control" name="last_name" value="{{ old('last_name', $detail->last_name) }}" required>
                                                     </div>
                                                 </div>
                                                 
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label>@lang('First Name')<small class="text-red">*</small></label>
-                                                        <input type="text" class="form-control" name="first_name" value="{{ old('first_name', $detail->first_name) }}" required>
-                                                    </div>
-                                                </div>
+                                                
                                                 
                                                 <div class="col-md-4">
                                                     <div class="form-group">
@@ -383,17 +394,17 @@
                                                 <tbody>
                                                     @foreach ($cancelledServices as $index => $row)
                                                         <tr>
-                                                            <td>{{ $loop->index + 1 }}</td>
+                                                            <td>{{ $loop->index + 1 }} {{ $row->id }}</td>
                                                             <td>{{ $row->services->name ?? '' }}</td>
                                                             <td>
-                                                                {{ optional($row->services->serviceDetail->first())->start_at 
-                                                                    ? \Carbon\Carbon::parse($row->services->serviceDetail->first()->start_at)->format('d-m-Y') 
+                                                                {{ ($row->created_at)
+                                                                    ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') 
                                                                     : '' 
                                                                 }}
                                                             </td>
                                                             <td>
-                                                                {{ optional($row->services->serviceDetail->first())->end_at 
-                                                                    ? \Carbon\Carbon::parse($row->services->serviceDetail->first()->end_at)->format('d-m-Y') 
+                                                                {{ ($row->cancelled_at) 
+                                                                    ? \Carbon\Carbon::parse($row->cancelled_at)->format('d-m-Y') 
                                                                     : '' 
                                                                 }}
                                                             </td>
@@ -406,6 +417,90 @@
                                                 </tbody>
                                             </table>
                                             @endif
+                                        </div>                      
+                                    </div>
+
+                                    <!-- TAB 4: Biên lai thu phí -->
+                                    <div class="tab-pane" id="tab_4">
+                                        <div class="box-body ">
+                                            <form id="calculate-receipt-form">
+                                                @csrf
+                                                <input type="hidden" name="student_id" value="{{ $detail->id }}">
+                                            
+                                                <div class="form-check mb-2">
+                                                    <input class="form-check-input" type="checkbox" id="includeCurrentMonth" name="include_current_month" value="1">
+                                                    <label style="font-size: 14px" class="form-check-label" for="includeCurrentMonth">
+                                                        Có tính cả tháng hiện tại ?
+                                                    </label>
+                                                </div>
+                                            
+                                                <button type="button" class="btn btn-success btn-sm mb-15" id="btnCalculateReceipt" data-id="{{ $detail->id }}">
+                                                    <i class="fa fa-money"></i> @lang('Tính toán thu phí')
+                                                </button>
+                                            </form>
+                                            
+                                            <table class="table table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>@lang('STT')</th>
+                                                        <th>@lang('Mã biểu phí')</th>
+                                                        <th>@lang('Tên biểu phí')</th>
+                                                        <th>@lang('Chu kỳ')</th>
+                                                        <th>@lang('Biểu phí trước')</th>
+                                                        <th>@lang('Dư nợ trước')</th>
+                                                        <th>@lang('Thành tiền')</th>
+                                                        <th>@lang('Tổng giảm trừ')</th>
+                                                        <th>@lang('Tổng tiền truy thu/hoàn trả')</th>
+                                                        <th>@lang('Tổng tiền')</th>
+                                                        <th>@lang('Đã thanh toán')</th>
+                                                        <th>@lang('Còn lại')</th>
+                                                        <th>@lang('Trạng thái')</th>
+                                                        <th>@lang('Ghi chú')</th>
+                                                        <th>@lang('Người lập biên lai')</th>
+                                                        <th>@lang('Ngày lập biên lai')</th>
+                                                        <th>@lang('Chức năng')</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @php
+                                                        function format_currency($price) {
+                                                            return (isset($price) && is_numeric($price)) 
+                                                                ? number_format($price, 0, ',', '.') . ' đ'
+                                                                : '';
+                                                        }
+                                                    @endphp
+                                                    @if($detail->studentReceipt->count())
+                                                        @foreach ($detail->studentReceipt as $row) 
+                                                        <tr>
+                                                            <td>{{ $loop->index + 1 }} </td>  
+                                                            <td>{{ $row->receipt_code ?? "" }}</td>
+                                                            <td>{{ $row->receipt_name ?? "" }}</td>
+                                                            <td>{{ $row->payment_cycle->name ?? "" }}</td>
+                                                            <td>{{ $row->prev_receipt->receipt_name  ?? "" }}</td>
+                                                            <td>{{ format_currency($row->prev_balance) }}</td>
+                                                            <td>{{ format_currency($row->total_amount) }}</td>
+                                                            <td>{{ format_currency($row->total_discount) }}</td>
+                                                            <td>{{ format_currency($row->total_adjustment) }}</td>
+                                                            <td>{{ format_currency($row->total_final) }}</td>
+                                                            <td>{{ format_currency($row->total_paid) }}</td>
+                                                            <td>{{ format_currency($row->total_due) }}</td>
+                                                            <td>{{ __($row->status) }}</td>
+                                                            <td>{{ $row->note ?? "" }}</td>
+                                                            <td>{{ $row->cashier->name ?? "" }}</td>
+                                                            <td>{{ (isset($row->receipt_date) ? \Illuminate\Support\Carbon::parse($row->receipt_date)->format('d-m-Y') : '') }} </td>
+                                                            <td>
+                                                                {{-- <button type="button" class="btn btn-sm btn-danger">
+                                                                    <i class="fa fa-close"></i> Hủy
+                                                                </button> --}}
+                                                                <button type="button" data-id="{{ $row->id }}" class="btn btn-primary btn-sm show_detail_receipt" data-toggle="modal" data-target="#showDetailReceipt">
+                                                                    <i class="fa fa-money"></i> @lang('Chi tiết')
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        @endforeach
+                                                    @endif       
+                                                </tbody>
+                                            </table>
                                         </div>                      
                                     </div>
                                 </div> 
@@ -590,6 +685,47 @@
         </div>
     </div>
 
+
+    {{-- modal chi tiết biên lai --}}
+    <div class="modal fade" id="showDetailReceipt" tabindex="-1" role="dialog" aria-labelledby="showDetailReceipt" aria-hidden="true">
+        <div class="modal-dialog modal-full" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="showDetailReceipt">@lang('Chi tiết biểu phí')</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="table-wrapper" >
+                        <table class="table table-hover table-bordered" >
+                            <thead>
+                                <tr>
+                                    <th rowspan="2">@lang('Tên dịch vụ')</th>
+                                    <th rowspan="2">@lang('Tháng áp dụng')</th>
+                                    <th colspan="2">@lang('Số lượng sử dụng')</th>
+                                    <th rowspan="2">@lang('Giá')</th>
+                                    <th rowspan="2">@lang('Giảm trừ')</th>
+                                    <th rowspan="2">@lang('Thành tiền')</th>
+                                    <th rowspan="2">@lang('Truy thu/Hoàn trả')</th>
+                                    <th rowspan="2">@lang('Tổng tiền')</th>
+                                    <th rowspan="2">@lang('Trạng thái')</th>
+                                    <th rowspan="2">@lang('Cập nhật')</th>
+                                </tr>
+                                <tr>
+                                    <th>@lang('Dự kiến')</th>
+                                    <th>@lang('Thực tế')</th>
+                                </tr>
+                            </thead>
+                            <tbody class="showDetailReceiptBody">
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@lang('Đóng')</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('script')
@@ -699,6 +835,79 @@
                 // Xoá dữ liệu đã lưu để tránh kích hoạt lại lần sau
                 localStorage.removeItem('activeTab');
             }
+        });
+
+        $('.show_detail_receipt').click(function(e) {
+            e.preventDefault();
+            let _id = $(this).data('id');
+            let url = "{{ route('get_detail_receipt_info') }}";
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {
+                    id: _id,
+                },
+                success: function(response) {
+                    console.log(response);
+                    if (response.message == "success" && response.data.length > 0) {
+                        let data = response.data;
+                        let html = '';
+
+                        $.each(data, function(index, item) {
+                            html += '<tr>';
+                            html += '<td>' + item.services_receipt.name + '</td>';
+                            html += '<td>' + item.month + '</td>';
+                            html += '<td>' + item.by_number + '</td>';
+                            html += '<td>' + item.spent_number + '</td>';
+                            html += '<td>' + item.unit_price + '</td>';
+                            html += '<td>' + item.discount_amount + '</td>';
+                            html += '<td>' + item.amount + '</td>';
+                            html += '<td>' + item.adjustment_amount + '</td>';
+                            html += '<td>' + item.final_amount + '</td>';
+                            html += '<td>' + item.status + '</td>';
+                            html += '<td>' + item.created_at + '</td>';
+                            html += '</tr>';
+                        });
+
+                        $('.showDetailReceiptBody').html(html);
+                    } else  {
+                        $('.showDetailReceiptBody').html('<tr><td colspan="12" class="text-center">Không có dữ liệu</td></tr>');
+                    } 
+                    // Show the modal if the response is successful
+                    if (response.message == "success") {
+                        $('#showDetailReceipt').modal('show');
+                    }
+                },
+                error: function(response) {
+                    alert("Đã có lỗi xảy ra khi tải dữ liệu.");
+                }
+            });
+        });
+
+        $('#btnCalculateReceipt').click(function () {
+            let studentId = $(this).data('id');
+            let includeCurrentMonth = $('#includeCurrentMonth').is(':checked') ? 1 : 0;
+
+            $.ajax({
+                type: "POST",
+                url: "{{ route('receipt.calculStudent') }}",
+                data: {
+                    student_id: studentId,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function (response) {
+                    if (response.message === 'success') {
+                        alert("Tạo hóa đơn thành công!");
+                        localStorage.setItem('activeTab', '#tab_4');
+                        location.reload();
+                    } else {
+                        alert("Không thể tạo hóa đơn.");
+                    }
+                },
+                error: function () {
+                    alert("Đã xảy ra lỗi khi tạo hóa đơn.");
+                }
+            });
         });
     </script>
 @endsection
