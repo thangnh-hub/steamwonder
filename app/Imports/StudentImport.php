@@ -53,8 +53,8 @@ class StudentImport implements ToModel,WithHeadingRow
         //lấy họ , tên, tên đệm
         $fullName = trim($row['ho_ten_hoc_sinh'] ?? '');
         $nameParts = explode(' ', $fullName);
-        $firstName = array_pop($nameParts); // tên riêng
-        $lastName = implode(' ', $nameParts); // họ + đệm
+        $lastName = array_pop($nameParts); // tên riêng
+        $firstName = implode(' ', $nameParts); // họ + đệm
     
         $area_id = $this->getAreaIdFromName($row['co_so']);
 
@@ -90,8 +90,8 @@ class StudentImport implements ToModel,WithHeadingRow
     {
         $fullName = trim($fullName);
         $nameParts = explode(' ', $fullName);
-        $firstName = array_pop($nameParts); // Tên riêng
-        $lastName = implode(' ', $nameParts); // Họ + tên đệm
+        $lastName = array_pop($nameParts); // Tên riêng
+        $firstName = implode(' ', $nameParts); // Họ + tên đệm
        
         // Tìm parent theo phone hoặc email
         $parent = tbParent::where('phone', $phone)

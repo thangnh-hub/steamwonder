@@ -185,7 +185,7 @@
                                             </a>
                                         </td>
                                         <td>
-                                            <?php echo e($row->last_name ?? ''); ?> <?php echo e($row->first_name ?? ''); ?>
+                                             <?php echo e($row->first_name ?? ''); ?> <?php echo e($row->last_name ?? ''); ?>
 
                                         </td>
                                         <td>

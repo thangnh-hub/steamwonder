@@ -1,6 +1,14 @@
 <?php $__env->startSection('title'); ?>
     <?php echo app('translator')->get($module_name); ?>
 <?php $__env->stopSection(); ?>
+<?php $__env->startSection('style'); ?>
+    <style>
+        .modal-dialog.modal-custom {
+            max-width: 80%;
+            width: auto;
+        }
+    </style>
+<?php $__env->stopSection(); ?>
 <?php $__env->startSection('content-header'); ?>
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -105,16 +113,19 @@
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th><?php echo app('translator')->get('Mã giảm trừ'); ?></th>
-                                <th><?php echo app('translator')->get('Tên giảm trừ'); ?></th>
-                                <th><?php echo app('translator')->get('Mô tả'); ?></th>
+                                <th><?php echo app('translator')->get('Mã hóa đơn'); ?></th>
+                                <th><?php echo app('translator')->get('Tên hóa đơn'); ?></th>
+                                <th><?php echo app('translator')->get('Học sinh'); ?></th>
                                 <th><?php echo app('translator')->get('Khu vực'); ?></th>
-                                <th><?php echo app('translator')->get('Giảm lũy kế'); ?></th>
-                                <th><?php echo app('translator')->get('Loại giảm trừ'); ?></th>
-                                <th><?php echo app('translator')->get('Kiểu điều kiện'); ?></th>
+                                <th><?php echo app('translator')->get('Chu kỳ thanh toán'); ?></th>
+                                <th><?php echo app('translator')->get('Số tiên cần thu'); ?></th>
+                                <th><?php echo app('translator')->get('Tổng giảm trừ'); ?></th>
+                                <th><?php echo app('translator')->get('Tổng các truy thu'); ?></th>
+                                <th><?php echo app('translator')->get('Tổng tiền thực tế'); ?></th>
+                                <th><?php echo app('translator')->get('Đã thu'); ?></th>
+                                <th><?php echo app('translator')->get('Số tiền còn phải thu (+) hoặc thừa (-)'); ?></th>
                                 <th><?php echo app('translator')->get('Trạng thái'); ?></th>
-                                <th><?php echo app('translator')->get('Cập nhật'); ?></th>
-                                <th><?php echo app('translator')->get('Ngày cập nhật'); ?></th>
+                                <th><?php echo app('translator')->get('Ghi chú'); ?></th>
                                 <th><?php echo app('translator')->get('Action'); ?></th>
                             </tr>
                         </thead>
@@ -122,73 +133,68 @@
                             <?php $__currentLoopData = $rows; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr class="valign-middle">
                                     <td>
-                                        <strong style="font-size: 14px"><?php echo e($row->code ?? ''); ?></strong>
+                                        <strong style="font-size: 14px"><?php echo e($row->receipt_code ?? ''); ?></strong>
                                     </td>
                                     <td>
-                                        <?php echo e($row->name); ?>
+                                        <?php echo e($row->receipt_name); ?>
 
                                     </td>
                                     <td>
-                                        <?php echo e($row->description ?? ''); ?>
-
+                                        <?php echo e($row->student->student_code ?? ('' . ' - ' . $row->student->first_name ?? ('' . ' ' . $row->student->last_name ?? ''))); ?>(<?php echo e($row->student->nickname); ?>)
                                     </td>
                                     <td>
                                         <?php echo e($row->area->name ?? ''); ?>
 
                                     </td>
                                     <td>
-                                        <div class="sw_featured d-flex-al-center">
-                                            <label class="switch ">
-                                                <input id="sw_featured" value="1" type="checkbox" disabled
-                                                    <?php echo e($row->is_cumulative && $row->is_cumulative == '1' ? 'checked' : ''); ?>>
-                                                <span class="slider round"></span>
-                                            </label>
-
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <?php echo e(__($row->type) ?? ''); ?>
+                                        <?php echo e($row->payment_cycle->name ?? ''); ?>
 
                                     </td>
                                     <td>
-                                        <?php echo e(__($row->condition_type) ?? ''); ?>
+                                        <?php echo e(number_format($row->total_amount, 0, ',', '.') ?? ''); ?>
 
                                     </td>
                                     <td>
-                                        <?php echo e(__($row->status) ?? ''); ?>
+                                        <?php echo e(number_format($row->total_discount, 0, ',', '.') ?? ''); ?>
 
                                     </td>
                                     <td>
-                                        <?php echo e($row->admin_updated->name ?? ''); ?>
+                                        <?php echo e(number_format($row->total_adjustment, 0, ',', '.') ?? ''); ?>
 
                                     </td>
                                     <td>
-                                        <?php echo e(date('H:i - d/m/Y', strtotime($row->updated_at))); ?>
+                                        <?php echo e(number_format($row->total_final, 0, ',', '.') ?? ''); ?>
+
+                                    </td>
+                                    <td>
+                                        <?php echo e(number_format($row->total_paid, 0, ',', '.') ?? ''); ?>
+
+                                    </td>
+                                    <td>
+                                        <?php echo e(number_format($row->total_due, 0, ',', '.') ?? ''); ?>
+
+                                    </td>
+                                    <td>
+                                        <?php echo e($row->status ?? ''); ?>
+
+                                    </td>
+                                    <td>
+                                        <?php echo e($row->note ?? ''); ?>
 
                                     </td>
                                     <td class="d-flex-wap">
+
                                         <button class="btn btn-sm btn-success btn_show_detail mr-10" data-toggle="tooltip"
                                             data-id="<?php echo e($row->id); ?>"
-                                            data-url="<?php echo e(route(Request::segment(2) . '.show', $row->id)); ?>"
+                                            data-url="<?php echo e(route(Request::segment(2) . '.view', $row->id)); ?>"
                                             title="<?php echo app('translator')->get('Show'); ?>" data-original-title="<?php echo app('translator')->get('Show'); ?>">
                                             <i class="fa fa-eye"></i>
                                         </button>
-
-                                        <a class="btn btn-sm btn-warning mr-10" data-toggle="tooltip"
-                                            title="<?php echo app('translator')->get('Update'); ?>" data-original-title="<?php echo app('translator')->get('Update'); ?>"
-                                            href="<?php echo e(route(Request::segment(2) . '.edit', $row->id)); ?>">
-                                            <i class="fa fa-pencil-square-o"></i>
+                                        <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="<?php echo app('translator')->get('Thanh toán'); ?>"
+                                            data-original-title="<?php echo app('translator')->get('Thanh toán'); ?>" style="min-width: 34px"
+                                            href="<?php echo e(route(Request::segment(2) . '.show', $row->id)); ?>">
+                                            <i class="fa fa-usd"></i>
                                         </a>
-
-                                        <form action="<?php echo e(route(Request::segment(2) . '.destroy', $row->id)); ?>"
-                                            method="POST" onsubmit="return confirm('<?php echo app('translator')->get('confirm_action'); ?>')">
-                                            <?php echo csrf_field(); ?>
-                                            <?php echo method_field('DELETE'); ?>
-                                            <button class="btn btn-sm btn-danger" type="submit" data-toggle="tooltip"
-                                                title="<?php echo app('translator')->get('Delete'); ?>" data-original-title="<?php echo app('translator')->get('Delete'); ?>">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        </form>
                                     </td>
                                 </tr>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -211,14 +217,14 @@
 
         </div>
     </section>
-    <div class="modal fade" id="modal_show_đeuction" data-backdrop="static" tabindex="-1" role="dialog">
-        <div class="modal-dialog " role="document">
+    <div class="modal fade" id="modal_show_deduction" data-backdrop="static" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-custom" role="document">
             <div class="modal-content">
                 <div class="modal-header ">
-                    <h3 class="modal-title text-center col-md-12"><?php echo app('translator')->get('Thông tin chính sách'); ?></h3>
+                    <h3 class="modal-title text-center col-md-12"><?php echo app('translator')->get('Thông tin hóa đơn'); ?></h3>
                     </h3>
                 </div>
-                <div class="modal-body show_detail_đeuction">
+                <div class="modal-body show_detail_deduction">
 
                 </div>
                 <div class="modal-footer">
@@ -240,8 +246,8 @@
                 url: url,
                 success: function(response) {
                     if (response) {
-                        $('.show_detail_đeuction').html(response.data.view);
-                        $('#modal_show_đeuction').modal('show');
+                        $('.show_detail_deduction').html(response.data.view);
+                        $('#modal_show_deduction').modal('show');
                     } else {
                         var _html = `<div class="alert alert-warning alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>

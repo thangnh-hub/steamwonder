@@ -181,7 +181,7 @@
                                             </a>
                                         </td>
                                         <td>
-                                            {{ $row->last_name ?? '' }} {{ $row->first_name ?? '' }}
+                                             {{ $row->first_name ?? '' }} {{ $row->last_name ?? '' }}
                                         </td>
                                         <td>
                                             {{ $row->nickname ?? '' }} 
