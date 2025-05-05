@@ -19,9 +19,9 @@
             <a class="btn btn-success pull-right " href="{{ route(Request::segment(2) . '.index') }}">
                 <i class="fa fa-bars"></i> @lang('List')
             </a>
-            <a class="btn btn-warning pull-right mr-10" href="{{ route(Request::segment(2) . '.print', $detail->id) }}">
+            {{-- <a class="btn btn-warning pull-right mr-10" href="{{ route(Request::segment(2) . '.print', $detail->id) }}">
                 <i class="fa fa-print"></i> @lang('In hóa đơn')
-            </a>
+            </a> --}}
         </h1>
 
     </section>
@@ -65,7 +65,6 @@
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                         <div class="custom-scroll table-responsive">
-                            <h3>Thông tin học sinh</h3>
                             <table class="table table-bordered table-hover no-footer no-padding">
                                 <thead>
                                     <tr>
@@ -248,13 +247,9 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            @if ($detail->status == 'pendding')
-                                <button type="submit" class="btn btn-success">
-                                    <i class="fa fa-usd" aria-hidden="true" title="Thanh toán"></i> Xác nhận thanh
-                                    toán</button>
-                            @else
-                                <button type="button" class="btn btn-warning"> Đã thanh toán</button>
-                            @endif
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-usd" aria-hidden="true" title="Thanh toán"></i> Xác nhận thanh
+                                toán</button>
                         </form>
                     </div>
                 </div>
