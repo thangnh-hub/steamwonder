@@ -62,6 +62,7 @@ class Receipt extends Model
     {
         return $this->belongsTo(Area::class, 'area_id');
     }
+
     public function student()
     {
         return $this->belongsTo(Student::class, 'student_id', 'id');
@@ -70,7 +71,7 @@ class Receipt extends Model
     {
         return $this->belongsTo(PaymentCycle::class, 'payment_cycle_id', 'id');
     }
-    public function receipt_detail()
+    public function receiptDetail()
     {
         return $this->hasMany(ReceiptDetail::class, 'receipt_id');
     }
@@ -78,7 +79,6 @@ class Receipt extends Model
     public function prev_receipt_detail()
     {
         return $this->hasMany(ReceiptDetail::class, 'prev_receipt_id', 'receipt_id');
-        return $this->belongsTo(PaymentCycle::class, 'payment_cycle_id');
     }
     public function prev_receipt()
     {
