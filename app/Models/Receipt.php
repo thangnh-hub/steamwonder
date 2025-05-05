@@ -70,7 +70,7 @@ class Receipt extends Model
     {
         return $this->belongsTo(PaymentCycle::class, 'payment_cycle_id', 'id');
     }
-    public function receipt_detail()
+    public function receiptDetail()
     {
         return $this->hasMany(ReceiptDetail::class, 'receipt_id');
     }

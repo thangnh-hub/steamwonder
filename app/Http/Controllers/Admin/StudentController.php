@@ -157,7 +157,7 @@ class StudentController extends Controller
             'last_name'  => 'required',
             'student_code' => 'unique:students,student_code,' . $student->id,
         ]);
-        $params = $request->except(['policies']);
+        $params = $request->except(['includeCurrentMonth', 'policies']);
         $params['admin_updated_id'] = Auth::guard('admin')->user()->id;
 
         $student->update($params);
@@ -383,8 +383,8 @@ class StudentController extends Controller
             
             $data['include_current_month'] = $request->input('include_current_month', 0) == 1 ? true : false;
             $data['enrolled_at'] = $request->input('enrolled_at', null);
+            // dd();
             $calcuReceipt = $receiptService->createReceiptForStudent($student, $data);
-
             if ($calcuReceipt) {
                 $student->studentServices()->update([
                     'payment_cycle_id' => $request->input('payment_cycle_id', null),

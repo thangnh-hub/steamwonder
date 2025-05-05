@@ -207,6 +207,18 @@
                                                 </div>
                                                 
                                                 <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label><?php echo app('translator')->get('Chu kỳ thu dịch vụ'); ?></label>
+                                                        <select  style="width:100%" name="payment_cycle_id" class="form-control select2">
+                                                            <option value="">Chọn</option>
+                                                            <?php $__currentLoopData = $list_payment_cycle; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $payment_cycle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <option <?php echo e(old('payment_cycle_id', $detail->payment_cycle_id) == $payment_cycle->id ? 'selected' : ''); ?> value="<?php echo e($payment_cycle->id); ?>"><?php echo e($payment_cycle->name ?? ""); ?></option>
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
                                                     <div class="form-group box_img_right">
                                                         <label><?php echo app('translator')->get('Ảnh đại diện'); ?></label>
                                                         <div id="image-holder">
@@ -429,19 +441,17 @@
                                         <div class="box-body ">
                                             <form id="calculate-receipt-form">
                                                 <?php echo csrf_field(); ?>
-                                                <input type="hidden" name="student_id" value="<?php echo e($detail->id); ?>">
-
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label><?php echo app('translator')->get('Ngày bắt đầu chu kỳ thanh toán'); ?></label>
-                                                        <input class="form-control" type="date" id="enrolled_at" value="<?php echo e($detail->enrolled_at); ?>">
+                                                        <input class="form-control" type="date" id="enrolled_at" value="">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label><?php echo app('translator')->get('Chu kỳ thu dịch vụ'); ?></label>
-                                                        <select  style="width:100%" name="payment_cycle_id" class="form-control select2">
+                                                        <select  style="width:100%" id="selectpayment_cycle_id" class="form-control select2">
                                                             <option value="">Chọn</option>
                                                             <?php $__currentLoopData = $list_payment_cycle; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $payment_cycle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                                 <option <?php echo e(old('payment_cycle_id', $detail->payment_cycle_id) == $payment_cycle->id ? 'selected' : ''); ?> value="<?php echo e($payment_cycle->id); ?>"><?php echo e($payment_cycle->name ?? ""); ?></option>
@@ -454,13 +464,13 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label class="d-block"><?php echo app('translator')->get('Tính tháng hiện tại ở chu kỳ thu?'); ?></label>
-                                                        <div class="flex-inline-group">
+                                                        <div id="receipt-options" class="flex-inline-group">
                                                             <div class="form-check">
-                                                                <input class="form-check-input" type="radio" name="include_current_month" id="includeCurrentMonthYes" value="1">
+                                                                <input class="form-check-input" type="radio" name="includeCurrentMonth" id="includeCurrentMonthYes" value="1">
                                                                 <label class="form-check-label mb-0" for="includeCurrentMonthYes">Có</label>
                                                             </div>
                                                             <div class="form-check">
-                                                                <input class="form-check-input" type="radio" name="include_current_month" id="includeCurrentMonthNo" value="0" checked>
+                                                                <input class="form-check-input" type="radio" name="includeCurrentMonth" id="includeCurrentMonthNo" value="0" checked>
                                                                 <label class="form-check-label mb-0" for="includeCurrentMonthNo">Không</label>
                                                             </div>
                                                         </div>
@@ -523,7 +533,7 @@
                                                             <td><?php echo e(__($row->status)); ?></td>
                                                             <td><?php echo e($row->note ?? ""); ?></td>
                                                             <td><?php echo e($row->cashier->name ?? ""); ?></td>
-                                                            <td><?php echo e((isset($row->receipt_date) ? \Illuminate\Support\Carbon::parse($row->receipt_date)->format('d-m-Y') : '')); ?> </td>
+                                                            <td><?php echo e((isset($row->created_at) ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') : '')); ?> </td>
                                                             <td>
                                                                 
                                                                 <button type="button" data-id="<?php echo e($row->id); ?>" class="btn btn-primary btn-sm show_detail_receipt" data-toggle="modal" data-target="#showDetailReceipt">
@@ -914,11 +924,15 @@
 
         $('#btnCalculateReceipt').click(function () {
             let studentId = $(this).data('id');
-            let includeCurrentMonth = $('input[name="include_current_month"]:checked').val();
+            let includeCurrentMonth = $('#receipt-options input[type="radio"]:checked').val();
             let enrolledAt = $('#enrolled_at').val();
-            let paymentCycleId = $('select[name="payment_cycle_id"]').val();
+            let paymentCycleId = $('#selectpayment_cycle_id').val();
             if(paymentCycleId=="") {
                 alert("Vui lòng chọn chu kỳ thu dịch vụ!");
+                return;
+            }
+            if(enrolledAt=="") {
+                alert("Vui lòng chọn ngày bắt đầu chu kỳ thanh toán!");
                 return;
             }
             $.ajax({
