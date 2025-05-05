@@ -24,7 +24,6 @@ class ReceiptDetail extends Model
     {
         return $this->belongsTo(Admin::class, 'admin_created_id');
     }
-
     public function adminUpdated()
     {
         return $this->belongsTo(Admin::class, 'admin_updated_id');

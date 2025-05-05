@@ -220,8 +220,8 @@
                                     </tr>
                                 </thead>
                                 <tbody class="box_policies">
-                                    @isset($detail->receipt_detail)
-                                        @foreach ($detail->receipt_detail as $item)
+                                    @isset($detail->receiptDetail)
+                                        @foreach ($detail->receiptDetail as $item)
                                             <tr class="item_policies">
                                                 <td>{{ $item->services_receipt->name ?? '' }}</td>
                                                 <td>{{ __($item->services_receipt->service_type) ?? '' }}</td>
