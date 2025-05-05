@@ -7,7 +7,7 @@
   <style>
         th{
             text-align: center;
-            vertical-align: middle;
+            vertical-align: middle !important;
         }
         .modal-header{
             background-color: #3c8dbc;
@@ -108,7 +108,7 @@
 
                                                     </p>
                                                     <p><strong><?php echo app('translator')->get('Họ và tên'); ?>:</strong>
-                                                        <?php echo e($detail->last_name ?? ''); ?> <?php echo e($detail->first_name ?? ''); ?>
+                                                      <?php echo e($detail->first_name ?? ''); ?>  <?php echo e($detail->last_name ?? ''); ?>
 
                                                     </p>
                                                     <p><strong><?php echo app('translator')->get('Ngày sinh'); ?>:</strong>
@@ -289,14 +289,14 @@
                                                                 <td><?php echo e($loop->index + 1); ?></td>
                                                                 <td><?php echo e($row->services->name ?? ''); ?></td>
                                                                 <td>
-                                                                    <?php echo e(optional($row->services->serviceDetail->first())->start_at 
-                                                                        ? \Carbon\Carbon::parse($row->services->serviceDetail->first()->start_at)->format('d-m-Y') 
+                                                                    <?php echo e(($row->created_at)
+                                                                        ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') 
                                                                         : ''); ?>
 
                                                                 </td>
                                                                 <td>
-                                                                    <?php echo e(optional($row->services->serviceDetail->first())->end_at 
-                                                                        ? \Carbon\Carbon::parse($row->services->serviceDetail->first()->end_at)->format('d-m-Y') 
+                                                                    <?php echo e(($row->cancelled_at) 
+                                                                        ? \Carbon\Carbon::parse($row->cancelled_at)->format('d-m-Y') 
                                                                         : ''); ?>
 
                                                                 </td>
@@ -315,14 +315,6 @@
                                         <!-- TAB 4: Biên lai thu phí -->
                                         <div class="tab-pane active" id="tab_4">
                                             <div class="box-body ">
-                                                <form method="POST" action="<?php echo e(route('receipt.calculStudent')); ?>">
-                                                    <?php echo csrf_field(); ?>
-                                                    <input type="hidden" name="student_id" value="<?php echo e($detail->id); ?>">
-                                                    <button type="submit" class="btn btn-success btn-sm">
-                                                        <i class="fa fa-money"></i> <?php echo app('translator')->get('Tính toán thu phí'); ?>
-                                                    </button>
-                                                </form>
-                                                <br>
                                                 <table class="table table-hover table-bordered">
                                                     <thead>
                                                         <tr>
@@ -444,51 +436,51 @@
 <?php $__env->startSection('script'); ?>
   <script>
     $('.show_detail_receipt').click(function(e) {
-            e.preventDefault();
-            let _id = $(this).data('id');
-            let url = "<?php echo e(route('get_detail_receipt_info')); ?>";
-            $.ajax({
-                type: "GET",
-                url: url,
-                data: {
-                    id: _id,
-                },
-                success: function(response) {
-                    console.log(response);
-                    if (response.message == "success" && response.data.length > 0) {
-                        let data = response.data;
-                        let html = '';
+        e.preventDefault();
+        let _id = $(this).data('id');
+        let url = "<?php echo e(route('get_detail_receipt_info')); ?>";
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: {
+                id: _id,
+            },
+            success: function(response) {
+                console.log(response);
+                if (response.message == "success" && response.data.length > 0) {
+                    let data = response.data;
+                    let html = '';
 
-                        $.each(data, function(index, item) {
-                            html += '<tr>';
-                            html += '<td>' + item.services_receipt.name + '</td>';
-                            html += '<td>' + item.month + '</td>';
-                            html += '<td>' + item.by_number + '</td>';
-                            html += '<td>' + item.spent_number + '</td>';
-                            html += '<td>' + item.unit_price + '</td>';
-                            html += '<td>' + item.discount_amount + '</td>';
-                            html += '<td>' + item.amount + '</td>';
-                            html += '<td>' + item.adjustment_amount + '</td>';
-                            html += '<td>' + item.final_amount + '</td>';
-                            html += '<td>' + item.status + '</td>';
-                            html += '<td>' + item.created_at + '</td>';
-                            html += '</tr>';
-                        });
+                    $.each(data, function(index, item) {
+                        html += '<tr>';
+                        html += '<td>' + item.services_receipt.name + '</td>';
+                        html += '<td>' + item.month + '</td>';
+                        html += '<td>' + item.by_number + '</td>';
+                        html += '<td>' + item.spent_number + '</td>';
+                        html += '<td>' + item.unit_price + '</td>';
+                        html += '<td>' + item.discount_amount + '</td>';
+                        html += '<td>' + item.amount + '</td>';
+                        html += '<td>' + item.adjustment_amount + '</td>';
+                        html += '<td>' + item.final_amount + '</td>';
+                        html += '<td>' + item.status + '</td>';
+                        html += '<td>' + item.created_at + '</td>';
+                        html += '</tr>';
+                    });
 
-                        $('.showDetailReceiptBody').html(html);
-                    } else  {
-                        $('.showDetailReceiptBody').html('<tr><td colspan="12" class="text-center">Không có dữ liệu</td></tr>');
-                    } 
-                    // Show the modal if the response is successful
-                    if (response.message == "success") {
-                        $('#showDetailReceipt').modal('show');
-                    }
-                },
-                error: function(response) {
-                    alert("Đã có lỗi xảy ra khi tải dữ liệu.");
+                    $('.showDetailReceiptBody').html(html);
+                } else  {
+                    $('.showDetailReceiptBody').html('<tr><td colspan="12" class="text-center">Không có dữ liệu</td></tr>');
+                } 
+                // Show the modal if the response is successful
+                if (response.message == "success") {
+                    $('#showDetailReceipt').modal('show');
                 }
-            });
+            },
+            error: function(response) {
+                alert("Đã có lỗi xảy ra khi tải dữ liệu.");
+            }
         });
+    });
   </script>
 <?php $__env->stopSection(); ?>
 

@@ -7,7 +7,7 @@
   <style>
         th{
             text-align: center;
-            vertical-align: middle;
+            vertical-align: middle !important;
         }
         .modal-header{
             background-color: #3c8dbc;
@@ -105,7 +105,7 @@
                                                         {{ $detail->student_code  ?? '' }}
                                                     </p>
                                                     <p><strong>@lang('Họ và tên'):</strong>
-                                                        {{ $detail->last_name ?? '' }} {{ $detail->first_name ?? '' }}
+                                                      {{ $detail->first_name ?? '' }}  {{ $detail->last_name ?? '' }}
                                                     </p>
                                                     <p><strong>@lang('Ngày sinh'):</strong>
                                                         {{ $detail->birthday ? \Carbon\Carbon::parse($detail->birthday)->format('d/m/Y') : '' }}
@@ -276,14 +276,14 @@
                                                                 <td>{{ $loop->index + 1 }}</td>
                                                                 <td>{{ $row->services->name ?? '' }}</td>
                                                                 <td>
-                                                                    {{ optional($row->services->serviceDetail->first())->start_at 
-                                                                        ? \Carbon\Carbon::parse($row->services->serviceDetail->first()->start_at)->format('d-m-Y') 
+                                                                    {{ ($row->created_at)
+                                                                        ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') 
                                                                         : '' 
                                                                     }}
                                                                 </td>
                                                                 <td>
-                                                                    {{ optional($row->services->serviceDetail->first())->end_at 
-                                                                        ? \Carbon\Carbon::parse($row->services->serviceDetail->first()->end_at)->format('d-m-Y') 
+                                                                    {{ ($row->cancelled_at) 
+                                                                        ? \Carbon\Carbon::parse($row->cancelled_at)->format('d-m-Y') 
                                                                         : '' 
                                                                     }}
                                                                 </td>
@@ -302,14 +302,6 @@
                                         <!-- TAB 4: Biên lai thu phí -->
                                         <div class="tab-pane active" id="tab_4">
                                             <div class="box-body ">
-                                                <form method="POST" action="{{ route('receipt.calculStudent') }}">
-                                                    @csrf
-                                                    <input type="hidden" name="student_id" value="{{ $detail->id }}">
-                                                    <button type="submit" class="btn btn-success btn-sm">
-                                                        <i class="fa fa-money"></i> @lang('Tính toán thu phí')
-                                                    </button>
-                                                </form>
-                                                <br>
                                                 <table class="table table-hover table-bordered">
                                                     <thead>
                                                         <tr>
@@ -433,50 +425,50 @@
 @section('script')
   <script>
     $('.show_detail_receipt').click(function(e) {
-            e.preventDefault();
-            let _id = $(this).data('id');
-            let url = "{{ route('get_detail_receipt_info') }}";
-            $.ajax({
-                type: "GET",
-                url: url,
-                data: {
-                    id: _id,
-                },
-                success: function(response) {
-                    console.log(response);
-                    if (response.message == "success" && response.data.length > 0) {
-                        let data = response.data;
-                        let html = '';
+        e.preventDefault();
+        let _id = $(this).data('id');
+        let url = "{{ route('get_detail_receipt_info') }}";
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: {
+                id: _id,
+            },
+            success: function(response) {
+                console.log(response);
+                if (response.message == "success" && response.data.length > 0) {
+                    let data = response.data;
+                    let html = '';
 
-                        $.each(data, function(index, item) {
-                            html += '<tr>';
-                            html += '<td>' + item.services_receipt.name + '</td>';
-                            html += '<td>' + item.month + '</td>';
-                            html += '<td>' + item.by_number + '</td>';
-                            html += '<td>' + item.spent_number + '</td>';
-                            html += '<td>' + item.unit_price + '</td>';
-                            html += '<td>' + item.discount_amount + '</td>';
-                            html += '<td>' + item.amount + '</td>';
-                            html += '<td>' + item.adjustment_amount + '</td>';
-                            html += '<td>' + item.final_amount + '</td>';
-                            html += '<td>' + item.status + '</td>';
-                            html += '<td>' + item.created_at + '</td>';
-                            html += '</tr>';
-                        });
+                    $.each(data, function(index, item) {
+                        html += '<tr>';
+                        html += '<td>' + item.services_receipt.name + '</td>';
+                        html += '<td>' + item.month + '</td>';
+                        html += '<td>' + item.by_number + '</td>';
+                        html += '<td>' + item.spent_number + '</td>';
+                        html += '<td>' + item.unit_price + '</td>';
+                        html += '<td>' + item.discount_amount + '</td>';
+                        html += '<td>' + item.amount + '</td>';
+                        html += '<td>' + item.adjustment_amount + '</td>';
+                        html += '<td>' + item.final_amount + '</td>';
+                        html += '<td>' + item.status + '</td>';
+                        html += '<td>' + item.created_at + '</td>';
+                        html += '</tr>';
+                    });
 
-                        $('.showDetailReceiptBody').html(html);
-                    } else  {
-                        $('.showDetailReceiptBody').html('<tr><td colspan="12" class="text-center">Không có dữ liệu</td></tr>');
-                    } 
-                    // Show the modal if the response is successful
-                    if (response.message == "success") {
-                        $('#showDetailReceipt').modal('show');
-                    }
-                },
-                error: function(response) {
-                    alert("Đã có lỗi xảy ra khi tải dữ liệu.");
+                    $('.showDetailReceiptBody').html(html);
+                } else  {
+                    $('.showDetailReceiptBody').html('<tr><td colspan="12" class="text-center">Không có dữ liệu</td></tr>');
+                } 
+                // Show the modal if the response is successful
+                if (response.message == "success") {
+                    $('#showDetailReceipt').modal('show');
                 }
-            });
+            },
+            error: function(response) {
+                alert("Đã có lỗi xảy ra khi tải dữ liệu.");
+            }
         });
+    });
   </script>
 @endsection

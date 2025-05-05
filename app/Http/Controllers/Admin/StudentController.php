@@ -282,6 +282,7 @@ class StudentController extends Controller
             if (isset($studentService)) {
                     $updateResult =  $studentService->update([
                         'status' => 'cancelled',
+                        'cancelled_at' => now(),
                         'admin_updated_id' => $admin->id,
                     ]);
                 if ($updateResult) {
@@ -352,15 +353,37 @@ class StudentController extends Controller
         }
     }
 
-    public function calculReceiptStudent(Request $request , ReceiptService $receiptService)
+    // public function calculReceiptStudent(Request $request , ReceiptService $receiptService)
+    // {
+    //     $params = $request->all();
+    //     $student = Student::findOrFail($params['student_id']);
+    //     $data['services'] = $student->studentServices()->with('services') ->where('status', 'active')
+    //     ->get()
+    //     ->pluck('services'); 
+    //     $data['include_current_month']=true;
+    //     $createReceiptForStudent=$receiptService->createReceiptForStudent($student, $data);
+    //     return redirect()->back()->with('successMessage', __('Tạo hóa đơn thành công!'));
+    // }
+    public function calculReceiptStudent(Request $request, ReceiptService $receiptService)
     {
-        $params = $request->all();
-        $student = Student::findOrFail($params['student_id']);
-        $data['services'] = $student->studentServices()->with('services') ->where('status', 'active')
-        ->get()
-        ->pluck('services'); 
-        $data['include_current_month']=true;
-        $createReceiptForStudent=$receiptService->createReceiptForStudent($student, $data);
-        return redirect()->back()->with('successMessage', __('Tạo hóa đơn thành công!'));
+        try {
+            $params = $request->all();
+            $student = Student::findOrFail($params['student_id']);
+
+            $data['services'] = $student->studentServices()->with('services')
+                ->where('status', 'active')
+                ->get()
+                ->pluck('services');
+
+            $data['include_current_month'] = $request->input('include_current_month', 0) == 1 ? true : false;
+
+
+            $receiptService->createReceiptForStudent($student, $data);
+
+            return response()->json(['message' => 'success']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'error', 'error' => $e->getMessage()], 422);
+        }
     }
+
 }

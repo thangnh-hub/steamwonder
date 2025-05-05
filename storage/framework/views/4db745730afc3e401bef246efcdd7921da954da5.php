@@ -70,8 +70,6 @@
                                     <a class="btn btn-default btn-sm  mr-10" href="<?php echo e(route(Request::segment(2) . '.index')); ?>">
                                         <?php echo app('translator')->get('Reset'); ?>
                                     </a>
-                                    <button type="button" data-toggle="modal" data-target="#create_crmdata"
-                                    class="btn btn-success btn-sm"><?php echo app('translator')->get('Import Excel'); ?></button>
                                 </div>
                             </div>
                         </div>
@@ -123,8 +121,7 @@
                         <tr>
                             <th><?php echo app('translator')->get('STT'); ?></th>
                             <th><?php echo app('translator')->get('Avatar'); ?></th>
-                            <th><?php echo app('translator')->get('Last Name'); ?></th>
-                            <th><?php echo app('translator')->get('First Name'); ?></th>
+                            <th><?php echo app('translator')->get('Họ và tên'); ?></th>
                             <th><?php echo app('translator')->get('Giới tính'); ?></th>
                             <th><?php echo app('translator')->get('Ngày sinh'); ?></th>
                             <th><?php echo app('translator')->get('Số CMND/CCCD'); ?></th>
@@ -150,8 +147,7 @@
                                         <span class="text-muted">No image</span>
                                     <?php endif; ?>
                                 </td>
-                                <td><?php echo e($row->last_name ?? ''); ?></td>
-                                <td><?php echo e($row->first_name ?? ''); ?></td>
+                                <td><?php echo e($row->first_name ?? ''); ?> <?php echo e($row->last_name ?? ''); ?></td>
                                 <td>
                                     <?php echo app('translator')->get($row->sex ?? ''); ?>
                                 </td>

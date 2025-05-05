@@ -69,8 +69,6 @@
                                     <a class="btn btn-default btn-sm  mr-10" href="{{ route(Request::segment(2) . '.index') }}">
                                         @lang('Reset')
                                     </a>
-                                    <button type="button" data-toggle="modal" data-target="#create_crmdata"
-                                    class="btn btn-success btn-sm">@lang('Import Excel')</button>
                                 </div>
                             </div>
                         </div>
@@ -120,8 +118,7 @@
                         <tr>
                             <th>@lang('STT')</th>
                             <th>@lang('Avatar')</th>
-                            <th>@lang('Last Name')</th>
-                            <th>@lang('First Name')</th>
+                            <th>@lang('Họ và tên')</th>
                             <th>@lang('Giới tính')</th>
                             <th>@lang('Ngày sinh')</th>
                             <th>@lang('Số CMND/CCCD')</th>
@@ -146,8 +143,7 @@
                                         <span class="text-muted">No image</span>
                                     @endif
                                 </td>
-                                <td>{{ $row->last_name ?? '' }}</td>
-                                <td>{{ $row->first_name ?? '' }}</td>
+                                <td>{{ $row->first_name ?? '' }} {{ $row->last_name ?? '' }}</td>
                                 <td>
                                     @lang($row->sex ?? '')
                                 </td>
