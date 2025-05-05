@@ -20,7 +20,8 @@ class ReceiptService
             $cycle = $student->paymentCycle;
             $policies = $student->studentPolicies;
             $deductions = $this->getDeductions();
-            $startDate = Carbon::parse($student->enrolled_at);
+            // $startDate = Carbon::parse($student->enrolled_at);
+            $startDate = Carbon::parse($data['enrolled_at']);
             $includeCurrent = $data['include_current_month'] ?? true;
             $data['period_start'] = $startDate->copy()->format('Y-m-d');
             if($includeCurrent) {
@@ -81,8 +82,7 @@ class ReceiptService
                         $discount_amount = $this->calculateDiscount($student, $service_info, $cycle, $policies, $deductions);
                         $details[] = [
                             'service_id' => $service->id,
-                            // 'month' => $month->format('Y-m'),
-                            'month' => $month->copy()->startOfMonth()->format('Y-m-d'),
+                            'month' => $month->startOfMonth()->format('Y-m-d'),
                             'by_number' => $service_info['quantity'],
                             'unit_price' => $service_info['price'],
                             'amount' => $service_info['price'] * $service_info['quantity'],
@@ -171,12 +171,12 @@ class ReceiptService
     /**
      * Tính giảm trừ trên từng dịch vụ.
      */
-    protected function calculateDiscount(Student $student, $service_info, $cycle, $policies, $deductions, Carbon $startDate = null)
+    protected function calculateDiscount(Student $student, $service_info, $cycle, $policies, $deductions, ?Carbon $startDate = null)
     {
         $discount_cycle_value = $cycle->json_params->services->{$service_info['id']}->value ?? 0;
         $discount_cycle_type = $cycle->json_params->services->{$service_info['id']}->type ?? null;
         $amount = $service_info['price'] * $service_info['quantity'];
-        $amount_after_discount = 0;
+        $amount_after_discount = $amount;
 
         // Ưu đãi theo chu kỳ thanh toán
         if ($discount_cycle_type == Consts::TYPE_POLICIES['percent']) {
@@ -200,17 +200,20 @@ class ReceiptService
         if ($startDate) {
             foreach ($deductions as $deduction) {
                 if ($deduction->condition_type == Consts::CONDITION_TYPE['start_day_range']) {
-                    $start = $deduction->json_params->condition->start ?? null;
-                    $end = $deduction->json_params->condition->end ?? null;
-                    $day = $startDate->day;
-                    if ($day >= $start && ($end === null || $day <= $end)) {
-                        $deduction_value = $deduction->json_params->services->{$service_info['id']}->value ?? 0;
-                        $deduction_type = $deduction->json_params->services->{$service_info['id']}->type ?? null;
-                        if ($deduction_type == Consts::TYPE_POLICIES['percent']) {
-                            $amount_after_discount = $amount_after_discount - $amount_after_discount * ($deduction_value / 100);
-                        } else if ($deduction_type == Consts::TYPE_POLICIES['fixed_amount']) {
-                            $amount_after_discount = $amount_after_discount - $deduction_value;
-                        }
+                    $compare = $startDate->day;
+                }
+                if ($deduction->condition_type == Consts::CONDITION_TYPE['start_month_range']) {
+                    $compare = $startDate->month;
+                }
+                $start = $deduction->json_params->condition->start ?? null;
+                $end = $deduction->json_params->condition->end ?? null;
+                if ($compare >= $start && ($end === null || $compare <= $end)) {
+                    $deduction_value = $deduction->json_params->services->{$service_info['id']}->value ?? 0;
+                    $deduction_type = $deduction->json_params->services->{$service_info['id']}->type ?? null;
+                    if ($deduction_type == Consts::TYPE_POLICIES['percent']) {
+                        $amount_after_discount = $amount_after_discount - $amount_after_discount * ($deduction_value / 100);
+                    } else if ($deduction_type == Consts::TYPE_POLICIES['fixed_amount']) {
+                        $amount_after_discount = $amount_after_discount - $deduction_value;
                     }
                 }
             }

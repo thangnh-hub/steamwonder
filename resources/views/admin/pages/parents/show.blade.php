@@ -62,7 +62,7 @@
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <p class="job"><strong>@lang('Họ và tên'):</strong>
-                                                            {{ $detail->last_name ?? '' }} {{ $detail->first_name ?? '' }}
+                                                            {{ $detail->first_name ?? '' }} {{ $detail->last_name ?? '' }} 
                                                         </p>
                                                     </div>
                                                 
@@ -149,7 +149,7 @@
                                                                                 </a>
                                                                             </td>
                                                                             <td>{{ $student->student_code ?? '' }}</td>
-                                                                            <td>{{ $student->last_name }} {{ $student->first_name }}</td>
+                                                                            <td>{{ $student->first_name }} {{ $student->last_name }} </td>
                                                                             <td>{{ $student->nickname ?? '' }}</td>
                                                                             <td>{{ __($student->sex) }}</td>
                                                                             <td>{{ $student->area->name ?? '' }}</td>

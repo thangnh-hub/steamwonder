@@ -662,6 +662,12 @@
         transform: translateX(26px);
     }
 
+    .switch input:disabled+.slider {
+        cursor: not-allowed;
+    }
+
+
+
     /* Rounded sliders */
     .sw_featured .slider.round {
         border-radius: 34px;

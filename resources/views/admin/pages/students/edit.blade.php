@@ -6,6 +6,11 @@
 @endsection
 @section('style')
     <style>
+        .flex-inline-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
         th{
             text-align: center;
             vertical-align: middle !important;
@@ -194,10 +199,11 @@
                                                         </select>
                                                     </div>
                                                 </div>
+                                                
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label>@lang('Chu kỳ thu dịch vụ')</label>
-                                                        <select name="payment_cycle_id" class="form-control select2">
+                                                        <select  style="width:100%" name="payment_cycle_id" class="form-control select2">
                                                             <option value="">Chọn</option>
                                                             @foreach($list_payment_cycle as $payment_cycle)
                                                                 <option {{ old('payment_cycle_id', $detail->payment_cycle_id) == $payment_cycle->id ? 'selected' : '' }} value="{{ $payment_cycle->id }}">{{ $payment_cycle->name ?? "" }}</option>
@@ -205,6 +211,7 @@
                                                         </select>
                                                     </div>
                                                 </div>
+
                                                 <div class="col-md-4">
                                                     <div class="form-group box_img_right">
                                                         <label>@lang('Ảnh đại diện')</label>
@@ -316,7 +323,9 @@
                                                         <th>@lang('Tính chất dịch vụ')</th>
                                                         <th>@lang('Loại dịch vụ')</th>
                                                         <th>@lang('Biểu phí')</th>
-                                                        <th>@lang('Chu kỳ thu')</th>
+                                                        {{-- <th>@lang('Chu kỳ thu')</th> --}}
+                                                        <th>@lang('Ngày bắt đầu')</th>
+                                                        <th>@lang('Ngày kết thúc')</th>
                                                         <th>@lang('Ghi chú')</th>
                                                         <th>@lang('Chức năng')</th>
                                                     </tr>
@@ -349,9 +358,23 @@
                     
                                                             @endif
                                                         </td>
-                                                        <td>
+                                                        {{-- <td>
                                                             {{ $row->paymentcycle->name ?? "" }}
+                                                        </td> --}}
+
+                                                        <td>
+                                                            {{ ($row->created_at)
+                                                                ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') 
+                                                                : '' 
+                                                            }}
                                                         </td>
+                                                        <td>
+                                                            {{ ($row->cancelled_at) 
+                                                                ? \Carbon\Carbon::parse($row->cancelled_at)->format('d-m-Y') 
+                                                                : '' 
+                                                            }}
+                                                        </td>
+
                                                         <td>
                                                             {{ $row->json_params->note ?? "" }}
                                                         </td>
@@ -408,6 +431,7 @@
                                                                     : '' 
                                                                 }}
                                                             </td>
+                                                         
                                                             <td>
                                                                 {{ $row->adminUpdated->name ?? "" }} ({{ $row->updated_at ? \Carbon\Carbon::parse($row->updated_at)->format('H:i:s d-m-Y') : '' }})   
                                                             </td>
@@ -425,18 +449,48 @@
                                         <div class="box-body ">
                                             <form id="calculate-receipt-form">
                                                 @csrf
-                                                <input type="hidden" name="student_id" value="{{ $detail->id }}">
-                                            
-                                                <div class="form-check mb-2">
-                                                    <input class="form-check-input" type="checkbox" id="includeCurrentMonth" name="include_current_month" value="1">
-                                                    <label style="font-size: 14px" class="form-check-label" for="includeCurrentMonth">
-                                                        Có tính cả tháng hiện tại ?
-                                                    </label>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>@lang('Ngày bắt đầu chu kỳ thanh toán') <small class="text-danger">*</small></label>
+                                                        <input class="form-control" type="date" id="enrolled_at" value="">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>@lang('Chu kỳ thu dịch vụ') <small class="text-danger">*</small></label>
+                                                        <select  style="width:100%" id="selectpayment_cycle_id" class="form-control select2">
+                                                            <option value="">Chọn</option>
+                                                            @foreach($list_payment_cycle as $payment_cycle)
+                                                                <option {{ old('payment_cycle_id', $detail->payment_cycle_id) == $payment_cycle->id ? 'selected' : '' }} value="{{ $payment_cycle->id }}">{{ $payment_cycle->name ?? "" }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                
+                                              
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="d-block">@lang('Tính tháng hiện tại ở chu kỳ thu?')</label>
+                                                        <div id="receipt-options" class="flex-inline-group">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="includeCurrentMonth" id="includeCurrentMonthYes" value="1">
+                                                                <label class="form-check-label mb-0" for="includeCurrentMonthYes">Có</label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="includeCurrentMonth" id="includeCurrentMonthNo" value="0" checked>
+                                                                <label class="form-check-label mb-0" for="includeCurrentMonthNo">Không</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             
-                                                <button type="button" class="btn btn-success btn-sm mb-15" id="btnCalculateReceipt" data-id="{{ $detail->id }}">
-                                                    <i class="fa fa-money"></i> @lang('Tính toán thu phí')
-                                                </button>
+                                                <div class="col-md-12">
+                                                    <button type="button" class="btn btn-success btn-sm mb-15" id="btnCalculateReceipt" data-id="{{ $detail->id }}">
+                                                        <i class="fa fa-money"></i> @lang('Tính toán thu phí')
+                                                    </button>
+                                                </div>
+                                                
                                             </form>
                                             
                                             <table class="table table-hover table-bordered">
@@ -457,7 +511,9 @@
                                                         <th>@lang('Trạng thái')</th>
                                                         <th>@lang('Ghi chú')</th>
                                                         <th>@lang('Người lập biên lai')</th>
-                                                        <th>@lang('Ngày lập biên lai')</th>
+                                                        <th>@lang('Ngày bắt đầu kỳ thu')</th>
+                                                        <th>@lang('Ngày kết thúc kỳ thu')</th>
+                                                        <th>@lang('Ngày tạo phí')</th>
                                                         <th>@lang('Chức năng')</th>
                                                     </tr>
                                                 </thead>
@@ -487,7 +543,9 @@
                                                             <td>{{ __($row->status) }}</td>
                                                             <td>{{ $row->note ?? "" }}</td>
                                                             <td>{{ $row->cashier->name ?? "" }}</td>
-                                                            <td>{{ (isset($row->receipt_date) ? \Illuminate\Support\Carbon::parse($row->receipt_date)->format('d-m-Y') : '') }} </td>
+                                                            <td>{{ (isset($row->period_start) ? \Carbon\Carbon::parse($row->period_start)->format('d-m-Y') : '') }} </td>
+                                                            <td>{{ (isset($row->period_end) ? \Carbon\Carbon::parse($row->period_end)->format('d-m-Y') : '') }} </td>
+                                                            <td>{{ (isset($row->created_at) ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') : '') }} </td>
                                                             <td>
                                                                 {{-- <button type="button" class="btn btn-sm btn-danger">
                                                                     <i class="fa fa-close"></i> Hủy
@@ -702,8 +760,8 @@
                                     <th rowspan="2">@lang('Tháng áp dụng')</th>
                                     <th colspan="2">@lang('Số lượng sử dụng')</th>
                                     <th rowspan="2">@lang('Giá')</th>
-                                    <th rowspan="2">@lang('Giảm trừ')</th>
                                     <th rowspan="2">@lang('Thành tiền')</th>
+                                    <th rowspan="2">@lang('Giảm trừ')</th>
                                     <th rowspan="2">@lang('Truy thu/Hoàn trả')</th>
                                     <th rowspan="2">@lang('Tổng tiền')</th>
                                     <th rowspan="2">@lang('Trạng thái')</th>
@@ -841,6 +899,7 @@
             e.preventDefault();
             let _id = $(this).data('id');
             let url = "{{ route('get_detail_receipt_info') }}";
+
             $.ajax({
                 type: "GET",
                 url: url,
@@ -853,27 +912,33 @@
                         let data = response.data;
                         let html = '';
 
+                        // Tạo formatter cho VNĐ
+                        const formatter = new Intl.NumberFormat('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND'
+                        });
+
                         $.each(data, function(index, item) {
                             html += '<tr>';
                             html += '<td>' + item.services_receipt.name + '</td>';
                             html += '<td>' + item.month + '</td>';
                             html += '<td>' + item.by_number + '</td>';
                             html += '<td>' + item.spent_number + '</td>';
-                            html += '<td>' + item.unit_price + '</td>';
-                            html += '<td>' + item.discount_amount + '</td>';
-                            html += '<td>' + item.amount + '</td>';
-                            html += '<td>' + item.adjustment_amount + '</td>';
-                            html += '<td>' + item.final_amount + '</td>';
+                            html += '<td>' + formatter.format(item.unit_price) + '</td>';
+                            html += '<td>' + formatter.format(item.amount) + '</td>';
+                            html += '<td>' + formatter.format(item.discount_amount) + '</td>';
+                            html += '<td>' + formatter.format(item.adjustment_amount) + '</td>';
+                            html += '<td>' + formatter.format(item.final_amount) + '</td>';
                             html += '<td>' + item.status + '</td>';
                             html += '<td>' + item.created_at + '</td>';
                             html += '</tr>';
                         });
 
                         $('.showDetailReceiptBody').html(html);
-                    } else  {
+                    } else {
                         $('.showDetailReceiptBody').html('<tr><td colspan="12" class="text-center">Không có dữ liệu</td></tr>');
-                    } 
-                    // Show the modal if the response is successful
+                    }
+
                     if (response.message == "success") {
                         $('#showDetailReceipt').modal('show');
                     }
@@ -884,15 +949,28 @@
             });
         });
 
+
         $('#btnCalculateReceipt').click(function () {
             let studentId = $(this).data('id');
-            let includeCurrentMonth = $('#includeCurrentMonth').is(':checked') ? 1 : 0;
-
+            let includeCurrentMonth = $('#receipt-options input[type="radio"]:checked').val();
+            let enrolledAt = $('#enrolled_at').val();
+            let paymentCycleId = $('#selectpayment_cycle_id').val();
+            if(paymentCycleId=="") {
+                alert("Vui lòng chọn chu kỳ thu dịch vụ!");
+                return;
+            }
+            if(enrolledAt=="") {
+                alert("Vui lòng chọn ngày bắt đầu chu kỳ thanh toán!");
+                return;
+            }
             $.ajax({
                 type: "POST",
                 url: "{{ route('receipt.calculStudent') }}",
                 data: {
                     student_id: studentId,
+                    include_current_month: includeCurrentMonth,
+                    enrolled_at: enrolledAt,
+                    payment_cycle_id: paymentCycleId,
                     _token: '{{ csrf_token() }}'
                 },
                 success: function (response) {
