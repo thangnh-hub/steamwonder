@@ -451,14 +451,14 @@
                                                 @csrf
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label>@lang('Ngày bắt đầu chu kỳ thanh toán')</label>
+                                                        <label>@lang('Ngày bắt đầu chu kỳ thanh toán') <small class="text-danger">*</small></label>
                                                         <input class="form-control" type="date" id="enrolled_at" value="">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label>@lang('Chu kỳ thu dịch vụ')</label>
+                                                        <label>@lang('Chu kỳ thu dịch vụ') <small class="text-danger">*</small></label>
                                                         <select  style="width:100%" id="selectpayment_cycle_id" class="form-control select2">
                                                             <option value="">Chọn</option>
                                                             @foreach($list_payment_cycle as $payment_cycle)
