@@ -52,7 +52,7 @@
                                 <label class="control-label"><strong><?php echo app('translator')->get('Hoc sinh'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p><?php echo e($detail->student->student_code ?? ('' . ' - ' . $detail->student->last_name ?? ('' . ' ' . $detail->student->first_name ?? ''))); ?>(<?php echo e($detail->student->nickname); ?>)
+                                <p><?php echo e($detail->student->student_code ?? ('' . ' - ' . $detail->student->first_name ?? ('' . ' ' . $detail->student->last_name ?? ''))); ?>(<?php echo e($detail->student->nickname); ?>)
                                 </p>
                             </div>
                         </div>
@@ -223,16 +223,16 @@
                                     <?php if(isset($detail->receipt_detail)): ?>
                                         <?php $__currentLoopData = $detail->receipt_detail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr class="item_policies">
-                                                <td><?php echo e($item->service->name ?? ''); ?></td>
-                                                <td><?php echo e(__($item->service->service_type) ?? ''); ?></td>
+                                                <td><?php echo e($item->services_receipt->name ?? ''); ?></td>
+                                                <td><?php echo e(__($item->services_receipt->service_type) ?? ''); ?></td>
                                                 <td><?php echo e(date('m-Y', strtotime($item->month))); ?></td>
                                                 <td><?php echo e($item->by_number ?? 0); ?></td>
                                                 <td><?php echo e($item->spent_number ?? 0); ?></td>
-                                                <td><?php echo e(number_format($item->unit_price,0,',','.')); ?></td>
-                                                <td><?php echo e(number_format($item->amount,0,',','.')); ?></td>
-                                                <td><?php echo e(number_format($item->discount_amount,0,',','.')); ?></td>
-                                                <td><?php echo e(number_format($item->adjustment_amount,0,',','.')); ?></td>
-                                                <td><?php echo e(number_format($item->final_amount,0,',','.')); ?></td>
+                                                <td><?php echo e(number_format($item->unit_price, 0, ',', '.')); ?></td>
+                                                <td><?php echo e(number_format($item->amount, 0, ',', '.')); ?></td>
+                                                <td><?php echo e(number_format($item->discount_amount, 0, ',', '.')); ?></td>
+                                                <td><?php echo e(number_format($item->adjustment_amount, 0, ',', '.')); ?></td>
+                                                <td><?php echo e(number_format($item->final_amount, 0, ',', '.')); ?></td>
                                                 <td><?php echo e(__($item->status)); ?></td>
                                             </tr>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
