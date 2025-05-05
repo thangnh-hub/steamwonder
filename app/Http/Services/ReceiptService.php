@@ -81,8 +81,7 @@ class ReceiptService
                         $discount_amount = $this->calculateDiscount($student, $service_info, $cycle, $policies, $deductions);
                         $details[] = [
                             'service_id' => $service->id,
-                            // 'month' => $month->format('Y-m'),
-                            'month' => $month->copy()->startOfMonth()->format('Y-m-d'),
+                            'month' => $month->startOfMonth()->format('Y-m-d'),
                             'by_number' => $service_info['quantity'],
                             'unit_price' => $service_info['price'],
                             'amount' => $service_info['price'] * $service_info['quantity'],
