@@ -32,10 +32,10 @@ class Receipt extends Model
             })
         ->when(!empty($params['area_id']), function ($query) use ($params) {
             return $query->where('tb_receipt.area_id', $params['area_id']);
-        }) 
+        })
         ->when(!empty($params['status']), function ($query) use ($params) {
             return $query->where('tb_receipt.status', $params['status']);
-        });   
+        });
         if (!empty($params['order_by'])) {
             $query->orderBy('tb_receipt.' . $params['order_by'], 'asc');
         } else {
@@ -62,16 +62,27 @@ class Receipt extends Model
     {
         return $this->belongsTo(Area::class, 'area_id ');
     }
+    public function student()
+    {
+        return $this->belongsTo(Student::class, 'student_id', 'id');
+    }
     public function payment_cycle()
     {
+        return $this->belongsTo(PaymentCycle::class, 'payment_cycle_id', 'id');
+    }
+    public function receipt_detail()
+    {
+        return $this->hasMany(ReceiptDetail::class, 'receipt_id');
+    }
+
+    public function prev_receipt_detail()
+    {
+        return $this->hasMany(ReceiptDetail::class, 'prev_receipt_id', 'receipt_id');
         return $this->belongsTo(PaymentCycle::class, 'payment_cycle_id');
     }
     public function prev_receipt()
     {
         return $this->belongsTo(Receipt::class, 'prev_receipt_id');
     }
-    public function receiptDetail()
-    {
-        return $this->hasMany(ReceiptDetail::class, 'receipt_id', 'id');
-    }
+
 }

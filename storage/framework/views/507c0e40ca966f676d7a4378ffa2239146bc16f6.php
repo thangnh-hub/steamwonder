@@ -50,16 +50,6 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                                <label class="control-label"><strong><?php echo app('translator')->get('Loại giảm trừ'); ?></strong></label>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
-                                <p><?php echo e(__($detail->type) ?? ''); ?></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <div class="form-group">
-                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
                                 <label class="control-label"><strong><?php echo app('translator')->get('Kiểu điều kiện'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
