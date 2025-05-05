@@ -201,6 +201,18 @@
                                                 </div>
                                                 
                                                 <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>@lang('Chu kỳ thu dịch vụ')</label>
+                                                        <select  style="width:100%" name="payment_cycle_id" class="form-control select2">
+                                                            <option value="">Chọn</option>
+                                                            @foreach($list_payment_cycle as $payment_cycle)
+                                                                <option {{ old('payment_cycle_id', $detail->payment_cycle_id) == $payment_cycle->id ? 'selected' : '' }} value="{{ $payment_cycle->id }}">{{ $payment_cycle->name ?? "" }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
                                                     <div class="form-group box_img_right">
                                                         <label>@lang('Ảnh đại diện')</label>
                                                         <div id="image-holder">
