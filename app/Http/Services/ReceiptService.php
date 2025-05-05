@@ -20,7 +20,8 @@ class ReceiptService
             $cycle = $student->paymentCycle;
             $policies = $student->studentPolicies;
             $deductions = $this->getDeductions();
-            $startDate = Carbon::parse($student->enrolled_at);
+            // $startDate = Carbon::parse($student->enrolled_at);
+            $startDate = Carbon::parse($data['enrolled_at']);
             $includeCurrent = $data['include_current_month'] ?? true;
             $data['period_start'] = $startDate->copy()->format('Y-m-d');
             if($includeCurrent) {

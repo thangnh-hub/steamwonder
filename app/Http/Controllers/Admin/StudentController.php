@@ -375,11 +375,21 @@ class StudentController extends Controller
                 ->get()
                 ->pluck('services');
 
+            if($request->has('payment_cycle_id')){
+                $student->update([
+                    'payment_cycle_id' => $request->input('payment_cycle_id', null),
+                ]);
+            }
+            
             $data['include_current_month'] = $request->input('include_current_month', 0) == 1 ? true : false;
+            $data['enrolled_at'] = $request->input('enrolled_at', null);
+            $calcuReceipt = $receiptService->createReceiptForStudent($student, $data);
 
-
-            $receiptService->createReceiptForStudent($student, $data);
-
+            if ($calcuReceipt) {
+                $student->studentServices()->update([
+                    'payment_cycle_id' => $request->input('payment_cycle_id', null),
+                ]);
+            } 
             return response()->json(['message' => 'success']);
         } catch (\Exception $e) {
             return response()->json(['message' => 'error', 'error' => $e->getMessage()], 422);
