@@ -175,7 +175,7 @@ class ReceiptService
         $discount_cycle_value = $cycle->json_params->services->{$service_info['id']}->value ?? 0;
         $discount_cycle_type = $cycle->json_params->services->{$service_info['id']}->type ?? null;
         $amount = $service_info['price'] * $service_info['quantity'];
-        $amount_after_discount = 0;
+        $amount_after_discount = $amount;
 
         // Ưu đãi theo chu kỳ thanh toán
         if ($discount_cycle_type == Consts::TYPE_POLICIES['percent']) {
