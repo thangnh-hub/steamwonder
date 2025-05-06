@@ -10,6 +10,14 @@
             @lang($module_name)
             <a class="btn btn-sm btn-warning pull-right" href="{{ route(Request::segment(2) . '.create') }}"><i
                     class="fa fa-plus"></i> @lang('Add')</a>
+
+            {{-- Tạm thời chưa dùng đến --}}
+            {{-- <div class="pull-right" style="display: flex; margin-left:15px ">
+                <input class="form-control" type="file" name="files" id="fileImport" placeholder="@lang('Select File')">
+                <button type="button" class="btn btn-sm btn-success" onclick="importFile()">
+                    <i class="fa fa-file-excel-o"></i>
+                    @lang('Import dữ liệu')</button>
+            </div> --}}
         </h1>
 
     </section>
@@ -19,6 +27,9 @@
 
     <!-- Main content -->
     <section class="content">
+        <div id="loading-notification" class="loading-notification">
+            <p>@lang('Please wait')...</p>
+        </div>
         {{-- Search form --}}
         <div class="box box-default">
 
@@ -282,5 +293,48 @@
                 }
             });
         })
+
+        function importFile() {
+            show_loading_notification();
+            var formData = new FormData();
+            var file = $('#fileImport')[0].files[0];
+            if (file == null) {
+                alert('Cần chọn file để Import!');
+                return;
+            }
+            formData.append('file', file);
+            formData.append('_token', '{{ csrf_token() }}');
+            $.ajax({
+                url: '{{ route('class.import_class') }}',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    hide_loading_notification();
+                    if (response.data != null) {
+                        location.reload();
+                    } else {
+                        var _html = `<div class="alert alert-warning alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            Bạn không có quyền thao tác chức năng này!
+                            </div>`;
+                        $('.table-responsive').prepend(_html);
+                        $('html, body').animate({
+                            scrollTop: $(".alert-warning").offset().top
+                        }, 1000);
+                        setTimeout(function() {
+                            $('.alert-warning').remove();
+                        }, 3000);
+                    }
+                },
+                error: function(response) {
+                    // Get errors
+                    hide_loading_notification();
+                    var errors = response.responseJSON.message;
+                    console.log(errors);
+                }
+            });
+        }
     </script>
 @endsection

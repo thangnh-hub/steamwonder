@@ -168,9 +168,9 @@ class Consts
         'cancel' => 'cancel'
     ];
     const ATTENDANCE_STATUS = [
-        'attendant' => 'attendant',
-        'absent' => 'absent',
-        'late' => 'late'
+        'attended' => 'attended',
+        'absent_unexcused' => 'absent_unexcused',
+        'absent_excused' => 'absent_excused'
     ];
     const CONTACT_PARENTS_METHOD = [
         'zalo' => 'zalo',

@@ -8,6 +8,9 @@
             <?php echo app('translator')->get($module_name); ?>
             <a class="btn btn-sm btn-warning pull-right" href="<?php echo e(route(Request::segment(2) . '.create')); ?>"><i
                     class="fa fa-plus"></i> <?php echo app('translator')->get('Add'); ?></a>
+
+            
+            
         </h1>
 
     </section>
@@ -17,6 +20,9 @@
 
     <!-- Main content -->
     <section class="content">
+        <div id="loading-notification" class="loading-notification">
+            <p><?php echo app('translator')->get('Please wait'); ?>...</p>
+        </div>
         
         <div class="box box-default">
 
@@ -289,6 +295,49 @@
                 }
             });
         })
+
+        function importFile() {
+            show_loading_notification();
+            var formData = new FormData();
+            var file = $('#fileImport')[0].files[0];
+            if (file == null) {
+                alert('Cần chọn file để Import!');
+                return;
+            }
+            formData.append('file', file);
+            formData.append('_token', '<?php echo e(csrf_token()); ?>');
+            $.ajax({
+                url: '<?php echo e(route('class.import_class')); ?>',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    hide_loading_notification();
+                    if (response.data != null) {
+                        location.reload();
+                    } else {
+                        var _html = `<div class="alert alert-warning alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            Bạn không có quyền thao tác chức năng này!
+                            </div>`;
+                        $('.table-responsive').prepend(_html);
+                        $('html, body').animate({
+                            scrollTop: $(".alert-warning").offset().top
+                        }, 1000);
+                        setTimeout(function() {
+                            $('.alert-warning').remove();
+                        }, 3000);
+                    }
+                },
+                error: function(response) {
+                    // Get errors
+                    hide_loading_notification();
+                    var errors = response.responseJSON.message;
+                    console.log(errors);
+                }
+            });
+        }
     </script>
 <?php $__env->stopSection(); ?>
 
