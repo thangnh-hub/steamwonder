@@ -208,10 +208,10 @@
                                             <div class="col-xs-12">
                                                 <div class="box" style="border-top: 3px solid #d2d6de;">
                                                     <div class="box-header">
-                                                        <h3 class="box-title"><?php echo app('translator')->get('Danh sách học viên'); ?></h3>
+                                                        <h3 class="box-title"><?php echo app('translator')->get('Danh sách học sinh'); ?></h3>
                                                         <button type="button"
                                                             class="btn btn-warning btn-sm btn_modal_student pull-right">Thêm
-                                                            học viên</button>
+                                                            học sinh</button>
                                                     </div>
                                                     <div class="box-body no-padding">
                                                         <table class="table table-hover sticky">
@@ -432,7 +432,7 @@
             <div class="modal-dialog " role="document">
                 <div class="modal-content">
                     <div class="modal-header ">
-                        <h3 class="modal-title text-center col-md-12"><?php echo app('translator')->get('Thêm học viên vào lớp'); ?></h3>
+                        <h3 class="modal-title text-center col-md-12"><?php echo app('translator')->get('Thêm học sinh vào lớp'); ?></h3>
                         </h3>
                     </div>
                     <div class="box_alert_modal">
@@ -441,7 +441,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label><?php echo app('translator')->get('Chọn học viên'); ?> <small class="text-red">*</small></label>
+                                    <label><?php echo app('translator')->get('Chọn học sinh'); ?> <small class="text-red">*</small></label>
                                     <select required id="select_student" name="student_id[]" multiple
                                         class="form-control select2  w-100">
                                         <option value=""><?php echo app('translator')->get('Please select'); ?></option>
