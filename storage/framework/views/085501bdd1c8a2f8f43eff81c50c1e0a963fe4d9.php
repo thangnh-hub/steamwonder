@@ -113,11 +113,11 @@
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th><?php echo app('translator')->get('Mã hóa đơn'); ?></th>
-                                <th><?php echo app('translator')->get('Tên hóa đơn'); ?></th>
+                                <th><?php echo app('translator')->get('Mã TBP'); ?></th>
+                                <th><?php echo app('translator')->get('Tên TBP'); ?></th>
                                 <th><?php echo app('translator')->get('Học sinh'); ?></th>
                                 <th><?php echo app('translator')->get('Khu vực'); ?></th>
-                                <th><?php echo app('translator')->get('Chu kỳ thanh toán'); ?></th>
+                                
                                 <th><?php echo app('translator')->get('Số tiên cần thu'); ?></th>
                                 <th><?php echo app('translator')->get('Tổng giảm trừ'); ?></th>
                                 <th><?php echo app('translator')->get('Tổng các truy thu'); ?></th>
@@ -146,10 +146,7 @@
                                         <?php echo e($row->area->name ?? ''); ?>
 
                                     </td>
-                                    <td>
-                                        <?php echo e($row->payment_cycle->name ?? ''); ?>
-
-                                    </td>
+                                    
                                     <td>
                                         <?php echo e(number_format($row->total_amount, 0, ',', '.') ?? ''); ?>
 
@@ -187,13 +184,13 @@
                                         <button class="btn btn-sm btn-success btn_show_detail mr-10" data-toggle="tooltip"
                                             data-id="<?php echo e($row->id); ?>"
                                             data-url="<?php echo e(route(Request::segment(2) . '.view', $row->id)); ?>"
-                                            title="<?php echo app('translator')->get('Show'); ?>" data-original-title="<?php echo app('translator')->get('Show'); ?>">
+                                            title="<?php echo app('translator')->get('Xem nhanh'); ?>" data-original-title="<?php echo app('translator')->get('Xem nhanh'); ?>">
                                             <i class="fa fa-eye"></i>
                                         </button>
-                                        <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="<?php echo app('translator')->get('Thanh toán'); ?>"
-                                            data-original-title="<?php echo app('translator')->get('Thanh toán'); ?>" style="min-width: 34px"
+                                        <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="<?php echo app('translator')->get('Chỉnh sửa'); ?>"
+                                            data-original-title="<?php echo app('translator')->get('Chỉnh sửa'); ?>" style="min-width: 34px"
                                             href="<?php echo e(route(Request::segment(2) . '.show', $row->id)); ?>">
-                                            <i class="fa fa-usd"></i>
+                                            <i class="fa fa-pencil"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -221,7 +218,7 @@
         <div class="modal-dialog modal-custom" role="document">
             <div class="modal-content">
                 <div class="modal-header ">
-                    <h3 class="modal-title text-center col-md-12"><?php echo app('translator')->get('Thông tin hóa đơn'); ?></h3>
+                    <h3 class="modal-title text-center col-md-12"><?php echo app('translator')->get('Thông tin TBP'); ?></h3>
                     </h3>
                 </div>
                 <div class="modal-body show_detail_deduction">
