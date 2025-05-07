@@ -108,8 +108,11 @@ Route::group(['namespace' => 'Admin'], function () {
         'payment_cycle' => 'PaymentCycleController',
         'deductions' => 'DeductionController',
         'receipt' => 'ReceiptController',
-        'attendances' => 'AttendancesController',
+        'attendance' => 'AttendancesController',
+        'promotions' => 'PromotionController',
       ]);
+      // Import Class và StudentClass
+      Route::post('import_class', 'AdminController@importClassStudent')->name('class.import_class');
       Route::get('receipt_view/{id}', 'ReceiptController@viewIndex')->name('receipt.view');
       Route::post('receipt_payment/{id}', 'ReceiptController@payment')->name('receipt.payment');
       Route::get('receipt_print/{id}', 'ReceiptController@print')->name('receipt.print');
@@ -213,7 +216,6 @@ Route::group(['namespace' => 'Admin'], function () {
         Route::post('import_data_student', 'StudentController@importDataStudent')->name('data_student.import');
         //get thông tin dvu ajax
         Route::get('get_student_service_info', 'StudentController@getStudentServiceInfo')->name('get_student_service_info');
-        Route::get('get_detail_receipt_info', 'StudentController@getDetailReceiptInfo')->name('get_detail_receipt_info');
         // In phiếu đề nghị thanh toán
         Route::post('warehouse_order_product_print', 'WareHouseOrderBuyController@printPaymentRequest')->name('warehouse_order_product_buy.print_payment_request');
         // Export Thống kê số lượng tài sản

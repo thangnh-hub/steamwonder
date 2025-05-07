@@ -1,0 +1,177 @@
+<div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#tab_1" data-toggle="tab">
+                <h5 class="fw-bold">Thông tin chính</h5>
+            </a>
+        </li>
+        <li class="">
+            <a href="#tab_2" data-toggle="tab">
+                <h5 class="fw-bold">Danh sách dịch vụ</h5>
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab_1">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                                <label class="control-label"><strong>@lang('Mã CT Kh.Mãi')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                                <p>{{ $detail->promotion_code ?? '' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                                <label class="control-label"><strong>@lang('Tên CT Kh.Mãi')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                                <p>{{ $detail->promotion_name ?? '' }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                                <label class="control-label"><strong>@lang('Khu vực')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                                <p>{{ $detail->area->name ?? '' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                                <label class="control-label"><strong>@lang('Loại')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                                <p>{{ __($detail->promotion_type) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                                <label class="control-label"><strong>@lang('Thời gian áp dụng')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                                <p>{{ \Carbon\Carbon::parse($detail->time_start)->format('d/m/Y') ?? '' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                                <label class="control-label"><strong>@lang('Thời gian kết thúc')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                                <p>{{ \Carbon\Carbon::parse($detail->time_end)->format('d/m/Y') ?? '' }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                                <label class="control-label"><strong>@lang('Trạng thái')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                                <p>{{ __($detail->status) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <label class="control-label"><strong>@lang('Ngày tạo')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <p>{{ date('H:i - d/m/Y', strtotime($detail->created_at)) }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <label class="control-label"><strong>@lang('Người tạo')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <p>{{ $detail->admin_created->name ?? '' }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <label class="control-label"><strong>@lang('Ngày cập nhật')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <p>{{ date('H:i - d/m/Y', strtotime($detail->updated_at)) }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <label class="control-label"><strong>@lang('Người cập nhật')</strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <p>{{ $detail->admin_updated->name ?? '' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane " id="tab_2">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box" style="border-top: 3px solid #d2d6de;">
+                        <div class="box-header">
+                        </div>
+                        <div class="box-body no-padding">
+                            <table class="table table-hover sticky">
+                                <thead>
+                                    <tr>
+                                        <th>@lang('Tên dịch vụ')</th>
+                                        <th>@lang('Loại dịch vụ')</th>
+                                        <th>@lang('Loại giảm trừ')</th>
+                                        <th>@lang('Giảm trừ')</th>
+                                        <th>@lang('Số lần áp dụng')</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="box_policies">
+                                    @isset($data_service)
+                                        @foreach ($data_service as $item)
+                                            <tr class="item_policies">
+                                                <td>{{ $item->detail->name ?? '' }}</td>
+                                                <td>{{ __($item->detail->service_type) ?? '' }}</td>
+                                                <td>{{ __($detail->promotion_type) }}</td>
+                                                <td>{{ $item->value ?? 0 }}</td>
+                                                <td>{{ $item->apply_count ?? 0 }}</td>
+                                            </tr>
+                                        @endforeach
+                                    @endisset
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

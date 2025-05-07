@@ -4,6 +4,11 @@ namespace App;
 
 class Consts
 {
+    const PROMOTION_TYPE = [
+        'percent' =>'percent',
+        'fixed_amout' =>'fixed_amout',
+        'add_month' =>'add_month',
+    ];
     const STATUS_RECEIPT = [
         'pending' => 'pending',
         'paid' => 'paid',
@@ -168,9 +173,9 @@ class Consts
         'cancel' => 'cancel'
     ];
     const ATTENDANCE_STATUS = [
-        'attendant' => 'attendant',
-        'absent' => 'absent',
-        'late' => 'late'
+        'attended' => 'attended',
+        'absent_unexcused' => 'absent_unexcused',
+        'absent_excused' => 'absent_excused'
     ];
     const CONTACT_PARENTS_METHOD = [
         'zalo' => 'zalo',

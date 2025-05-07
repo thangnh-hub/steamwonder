@@ -8,9 +8,6 @@
             <?php echo app('translator')->get($module_name); ?>
             <a class="btn btn-sm btn-warning pull-right" href="<?php echo e(route(Request::segment(2) . '.create')); ?>"><i
                     class="fa fa-plus"></i> <?php echo app('translator')->get('Add'); ?></a>
-
-            
-            
         </h1>
 
     </section>
@@ -20,9 +17,6 @@
 
     <!-- Main content -->
     <section class="content">
-        <div id="loading-notification" class="loading-notification">
-            <p><?php echo app('translator')->get('Please wait'); ?>...</p>
-        </div>
         
         <div class="box box-default">
 
@@ -37,15 +31,15 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label><?php echo app('translator')->get('Tên lớp'); ?> </label>
-                                <input type="text" class="form-control" name="keyword" placeholder="<?php echo app('translator')->get('Nhập tên lớp'); ?>"
+                                <label><?php echo app('translator')->get('Keyword'); ?> </label>
+                                <input type="text" class="form-control" name="keyword" placeholder="<?php echo app('translator')->get('Mã hoặc tên CT Kh.Mãi'); ?>"
                                     value="<?php echo e(isset($params['keyword']) ? $params['keyword'] : ''); ?>">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Area'); ?></label>
-                                <select name="area_id" id="area_id" class="form-control select2" style="width: 100%;">
+                                <select name="area_id" id="area_id" class="form-control select2 w-100">
                                     <option value=""><?php echo app('translator')->get('Please select'); ?></option>
                                     <?php $__currentLoopData = $areas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <option value="<?php echo e($item->id); ?>"
@@ -57,25 +51,12 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label><?php echo app('translator')->get('Room'); ?></label>
-                                <select name="room_id" id="room_id" class="form-control select2" style="width: 100%;">
+                                <label><?php echo app('translator')->get('Loại'); ?></label>
+                                <select name="promotion_type" class="form-control select2 w-100">
                                     <option value=""><?php echo app('translator')->get('Please select'); ?></option>
-                                    <?php $__currentLoopData = $rooms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($item->id); ?>"
-                                            <?php echo e(isset($params['room_id']) && $params['room_id'] == $item->id ? 'selected' : ''); ?>>
-                                            <?php echo e($item->name); ?></option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Trạng thái'); ?></label>
-                                <select name="status" id="status" class="form-control select2" style="width: 100%;">
-                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
-                                    <?php $__currentLoopData = $status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php $__currentLoopData = $type; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <option value="<?php echo e($key); ?>"
-                                            <?php echo e(isset($params['status']) && $params['status'] == $key ? 'selected' : ''); ?>>
+                                            <?php echo e(isset($params['promotion_type']) && $params['promotion_type'] == $key ? 'selected' : ''); ?>>
                                             <?php echo e(__($item)); ?></option>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
@@ -83,28 +64,13 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label><?php echo app('translator')->get('Độ tuổi'); ?></label>
-                                <select name="education_age_id" id="education_age" class="form-control select2"
-                                    style="width: 100%;">
+                                <label><?php echo app('translator')->get('Trạng thái'); ?></label>
+                                <select name="status" class="form-control select2 w-100">
                                     <option value=""><?php echo app('translator')->get('Please select'); ?></option>
-                                    <?php $__currentLoopData = $ages; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($item->id); ?>"
-                                            <?php echo e(isset($params['education_age_id']) && $params['education_age_id'] == $item->id ? 'selected' : ''); ?>>
-                                            <?php echo e($item->name); ?></option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Chương trình'); ?></label>
-                                <select name="education_programs_id" id="education_programs" class="form-control select2"
-                                    style="width: 100%;">
-                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
-                                    <?php $__currentLoopData = $programs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($item->id); ?>"
-                                            <?php echo e(isset($params['education_programs_id']) && $params['education_programs_id'] == $item->id ? 'selected' : ''); ?>>
-                                            <?php echo e($item->name); ?></option>
+                                    <?php $__currentLoopData = $status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($key); ?>"
+                                            <?php echo e(isset($params['status']) && $params['status'] == $key ? 'selected' : ''); ?>>
+                                            <?php echo e(__($item)); ?></option>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
@@ -166,13 +132,16 @@
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th><?php echo app('translator')->get('Mã lớp'); ?></th>
-                                <th><?php echo app('translator')->get('Title'); ?></th>
-                                <th><?php echo app('translator')->get('Area'); ?></th>
-                                <th><?php echo app('translator')->get('Room'); ?></th>
-                                <th><?php echo app('translator')->get('Sĩ số'); ?></th>
-                                <th><?php echo app('translator')->get('Giáo viên chủ nhiệm'); ?></th>
+                                <th><?php echo app('translator')->get('Mã CT Kh.mãi'); ?></th>
+                                <th><?php echo app('translator')->get('Tên CT Kh.mãi'); ?></th>
+                                <th><?php echo app('translator')->get('Mô tả'); ?></th>
+                                <th><?php echo app('translator')->get('Khu vực'); ?></th>
+                                <th><?php echo app('translator')->get('Loại '); ?></th>
+                                <th><?php echo app('translator')->get('Thời gian áp dụng'); ?></th>
+                                <th><?php echo app('translator')->get('Thời gian kết thúc'); ?></th>
                                 <th><?php echo app('translator')->get('Trạng thái'); ?></th>
+                                <th><?php echo app('translator')->get('Cập nhật'); ?></th>
+                                <th><?php echo app('translator')->get('Ngày cập nhật'); ?></th>
                                 <th><?php echo app('translator')->get('Action'); ?></th>
                             </tr>
                         </thead>
@@ -180,11 +149,14 @@
                             <?php $__currentLoopData = $rows; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr class="valign-middle">
                                     <td>
-                                        <strong style="font-size: 14px"><?php echo e($row->code ?? ''); ?></strong>
+                                        <strong style="font-size: 14px"><?php echo e($row->promotion_code ?? ''); ?></strong>
                                     </td>
-
                                     <td>
-                                        <?php echo e($row->name ?? ''); ?>
+                                        <?php echo e($row->promotion_name ?? ''); ?>
+
+                                    </td>
+                                    <td>
+                                        <?php echo e($row->description ?? ''); ?>
 
                                     </td>
 
@@ -193,19 +165,27 @@
 
                                     </td>
                                     <td>
-                                        <?php echo e($row->room->name ?? ''); ?>
+                                        <?php echo e(__($row->promotion_type)); ?>
 
                                     </td>
                                     <td>
-                                        <?php echo e(count($row->students)); ?> / <?php echo e($row->slot); ?>
+                                        <?php echo e(\Carbon\Carbon::parse($row->time_start)->format('d/m/Y') ?? ''); ?>
 
                                     </td>
                                     <td>
-                                        <?php echo e($row->mainTeacher->teacher->name ?? ''); ?>
+                                        <?php echo e(\Carbon\Carbon::parse($row->time_end)->format('d/m/Y') ?? ''); ?>
 
                                     </td>
                                     <td>
                                         <?php echo e(__($row->status)); ?>
+
+                                    </td>
+                                    <td>
+                                        <?php echo e($row->admin_updated->name ?? ''); ?>
+
+                                    </td>
+                                    <td>
+                                        <?php echo e(date('H:i - d/m/Y', strtotime($row->updated_at))); ?>
 
                                     </td>
                                     <td style="width:150px">
@@ -215,8 +195,8 @@
                                             title="<?php echo app('translator')->get('Show'); ?>" data-original-title="<?php echo app('translator')->get('Show'); ?>">
                                             <i class="fa fa-eye"></i>
                                         </button>
-                                        <a class="btn btn-sm btn-warning" data-toggle="tooltip"
-                                            title="<?php echo app('translator')->get('Update'); ?>" data-original-title="<?php echo app('translator')->get('Update'); ?>"
+                                        <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="<?php echo app('translator')->get('Update'); ?>"
+                                            data-original-title="<?php echo app('translator')->get('Update'); ?>"
                                             href="<?php echo e(route(Request::segment(2) . '.edit', $row->id)); ?>">
                                             <i class="fa fa-pencil-square-o"></i>
                                         </a>
@@ -242,14 +222,14 @@
 
         </div>
     </section>
-    <div class="modal fade" id="modal_show_class" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal fade" id="modal_show_policies" data-backdrop="static" tabindex="-1" role="dialog">
         <div class="modal-dialog " role="document">
             <div class="modal-content">
                 <div class="modal-header ">
-                    <h3 class="modal-title text-center col-md-12"><?php echo app('translator')->get('Thông tin lớp học'); ?></h3>
+                    <h3 class="modal-title text-center col-md-12"><?php echo app('translator')->get('Thông tin chính sách'); ?></h3>
                     </h3>
                 </div>
-                <div class="modal-body show_detail_class">
+                <div class="modal-body show_detail_policies">
 
                 </div>
                 <div class="modal-footer">
@@ -272,8 +252,8 @@
                 url: url,
                 success: function(response) {
                     if (response) {
-                        $('.show_detail_class').html(response.data.view);
-                        $('#modal_show_class').modal('show');
+                        $('.show_detail_policies').html(response.data.view);
+                        $('#modal_show_policies').modal('show');
                     } else {
                         var _html = `<div class="alert alert-warning alert-dismissible">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -295,50 +275,7 @@
                 }
             });
         })
-
-        function importFile() {
-            show_loading_notification();
-            var formData = new FormData();
-            var file = $('#fileImport')[0].files[0];
-            if (file == null) {
-                alert('Cần chọn file để Import!');
-                return;
-            }
-            formData.append('file', file);
-            formData.append('_token', '<?php echo e(csrf_token()); ?>');
-            $.ajax({
-                url: '<?php echo e(route('class.import_class')); ?>',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    hide_loading_notification();
-                    if (response.data != null) {
-                        location.reload();
-                    } else {
-                        var _html = `<div class="alert alert-warning alert-dismissible">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            Bạn không có quyền thao tác chức năng này!
-                            </div>`;
-                        $('.table-responsive').prepend(_html);
-                        $('html, body').animate({
-                            scrollTop: $(".alert-warning").offset().top
-                        }, 1000);
-                        setTimeout(function() {
-                            $('.alert-warning').remove();
-                        }, 3000);
-                    }
-                },
-                error: function(response) {
-                    // Get errors
-                    hide_loading_notification();
-                    var errors = response.responseJSON.message;
-                    console.log(errors);
-                }
-            });
-        }
     </script>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\steamwonder\resources\views/admin/pages/classs/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\steamwonder\resources\views/admin/pages/promotion/index.blade.php ENDPATH**/ ?>
