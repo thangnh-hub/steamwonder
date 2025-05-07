@@ -124,6 +124,7 @@ Route::group(['namespace' => 'Admin'], function () {
       //chỉnh sưa dịch vụ của bé
       Route::post('update-service-note', 'StudentController@updateServiceNoteAjax')->name('student.updateService.ajax');
       Route::post('receipts_calculate', 'StudentController@calculReceiptStudent')->name('receipt.calculStudent');
+      Route::post('receipts_calculate_renew', 'StudentController@calculReceiptStudentRenew')->name('receipt.calculStudent.renew');
         // Import nguời dùng
         Route::post('import_user', 'AdminController@importUser')->name('admin.import_user');
         //update kpi teacher

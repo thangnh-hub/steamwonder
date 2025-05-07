@@ -7,6 +7,7 @@ use App\Models\Deduction;
 use App\Models\Student;
 use App\Models\Receipt;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ReceiptService
@@ -14,11 +15,18 @@ class ReceiptService
     /**
      * Tạo phiếu thu mới cho học sinh.
      */
+
+    protected $admin;
+
+    public function __construct()
+    {
+        $this->admin = Auth::guard('admin')->user();
+    }
     public function createReceiptForStudent(Student $student, array $data)
     {
         return DB::transaction(function () use ($student, $data) {
             $cycle = $student->paymentCycle;
-            $policies = $student->studentPolicies;
+            $policies = $student->studentPolicies->pluck('policy');
             $deductions = $this->getDeductions();
             // $startDate = Carbon::parse($student->enrolled_at);
             $startDate = Carbon::parse($data['enrolled_at']);
@@ -157,11 +165,13 @@ class ReceiptService
             'total_paid' => 0,
             'total_due' => $details->sum('final_amount'),
             'status' => 'pending',
+            'admin_created_id' => $this->admin->id,
             'note' => $data['note'] ?? null
         ]);
 
         foreach ($details as $detail) {
             $detail['student_id'] = $student->id;
+            $detail['admin_created_id'] = $this->admin->id;
             $receipt->receiptDetail()->create($detail);
         }
 
@@ -177,6 +187,7 @@ class ReceiptService
         $discount_cycle_type = $cycle->json_params->services->{$service_info['id']}->type ?? null;
         $amount = $service_info['price'] * $service_info['quantity'];
         $amount_after_discount = $amount;
+        
 
         // Ưu đãi theo chu kỳ thanh toán
         if ($discount_cycle_type == Consts::TYPE_POLICIES['percent']) {
@@ -226,4 +237,132 @@ class ReceiptService
     {
         return Deduction::where('status', Consts::STATUS['active'])->get();
     }
+
+    //PHẦN TÁI TỤC
+
+    public function renewReceiptForStudent(Student $student, array $data)
+    {
+        return DB::transaction(function () use ($student, $data) {
+            $cycle = $student->paymentCycle;
+            $policies = $student->studentPolicies->pluck('policy');
+            $startDate = Carbon::parse($data['enrolled_at']);
+            $data['period_start'] = $startDate->copy()->format('Y-m-d');
+            $data['period_end'] = $startDate->copy()->addMonths($cycle->months)->endOfMonth()->format('Y-m-d');
+
+            $details = $this->generateReceiptDetailsRenew($student, $cycle, $policies,  $data['services'], $startDate);
+            return $this->saveReceiptRenew($student, $cycle, $policies, $details, $data);
+        });
+    }
+
+    protected function generateReceiptDetailsRenew(Student $student, $cycle, $policies, $services, Carbon $startDate )
+    {
+        $details = [];
+        foreach ($services as $service) {
+            // Tìm mức chi phí đang áp dụng vào ngày nhập học
+            $matchedDetail = collect($service->serviceDetail)->first(function ($detail) use ($startDate) {
+                $start = Carbon::parse($detail['start_at']);
+                $end = $detail['end_at'] ? Carbon::parse($detail['end_at']) : null;
+
+                return $startDate->gte($start) && ($end === null || $startDate->lte($end));
+            });
+
+            $service_info['id'] = $service->id;
+            $service_info['name'] = $service->name??"";
+            $service_info['price'] = $matchedDetail['price'] ?? 0;
+            $service_info['quantity'] = $matchedDetail['quantity'] ?? 0;
+            switch ($service->service_type) {
+                case Consts::SERVICE_TYPE['monthly']:
+                    $monthCount = $cycle->months;
+                    $firstMonth = $startDate->copy();
+                    // Tính toán các tháng còn lại
+                    for ($i = 0; $i < $monthCount; $i++) {
+                        $month = $firstMonth->copy()->addMonths($i);
+                        $discount_amount = $this->calculateDiscountRenew( $service_info, $cycle, $policies);
+                        $details[] = [
+                            'service_id' => $service->id,
+                            'month' => $month->startOfMonth()->format('Y-m-d'),
+                            'by_number' => $service_info['quantity'],
+                            'unit_price' => $service_info['price'],
+                            'amount' => $service_info['price'] * $service_info['quantity'],
+                            'discount_amount' => $discount_amount['cal_discount_amount'],
+                            'final_amount' => $service_info['price'] * $service_info['quantity'] - $discount_amount['cal_discount_amount'],
+                            'note' => $discount_amount['cal_discount_note'],
+                        ];
+                    }
+                break;
+            }
+        }
+
+        return collect($details);
+    }
+
+    protected function calculateDiscountRenew( $service_info, $cycle, $policies)
+    {
+        $discount_cycle_value = $cycle->json_params->services->{$service_info['id']}->value ?? 0;
+        $discount_cycle_type = $cycle->json_params->services->{$service_info['id']}->type ?? null;
+        $amount = $service_info['price'] * $service_info['quantity'];
+        $amount_after_discount = $amount;
+        $discount_notes = [];
+        $service_name = $service_info['name'];
+
+        // Ưu đãi theo chu kỳ thanh toán
+        if ($discount_cycle_type == Consts::TYPE_POLICIES['percent']) {
+            $discount_notes[] = "Chu kỳ thanh toán {$cycle->name} - {$service_name} giảm: ({$discount_cycle_value}%)";
+            $amount_after_discount = $amount - $amount * ($discount_cycle_value / 100);
+        } else if ($discount_cycle_type == Consts::TYPE_POLICIES['fixed_amount']) {
+            $discount_notes[] = "Chu kỳ thanh toán {$cycle->name} - {$service_name} (giảm:" . number_format($discount_cycle_value) . "đ)";
+            $amount_after_discount = $amount - $discount_cycle_value;
+        }
+
+        // Các ưu đãi theo chính sách (lũy kế)
+        foreach ($policies as $policy) {
+            $discount_policy_value = $policy->json_params->services->{$service_info['id']}->value ?? 0;
+            $discount_policy_type = $policy->json_params->services->{$service_info['id']}->type ?? null;
+            if ($discount_policy_type == Consts::TYPE_POLICIES['percent']) {
+                $discount_notes[] = "Chính sách {$policy->name} giảm ({$discount_policy_value}%)";
+                $amount_after_discount = $amount_after_discount - $amount_after_discount * ($discount_policy_value / 100);
+            } else if ($discount_policy_type == Consts::TYPE_POLICIES['fixed_amount']) {
+                $discount_notes[] = "Chính sách {$policy->name} giảm (" . number_format($discount_policy_value) . "đ)";
+                $amount_after_discount = $amount_after_discount - $discount_policy_value;
+            }
+        }
+
+
+        $discount_amount = $amount - $amount_after_discount;
+        return [
+            'cal_discount_amount' => $discount_amount,
+            'cal_discount_note' => "" . implode('<br>', $discount_notes)
+        ];
+    }
+
+    protected function saveReceiptRenew(Student $student, $cycle, $policies, $details, $data)
+    {
+        $receipt = Receipt::create([
+            'area_id' => $student->area_id,
+            'student_id' => $student->id,
+            'payment_cycle_id' => $cycle->id,
+            'period_start' => $data['period_start'],
+            'period_end' => $data['period_end'],
+            'receipt_code' => "PTTT-{$student->id}-{$cycle->id}-" . now()->format('Ymd'),
+            'receipt_name' => "Phiếu tái tục thu kỳ {$cycle->months} tháng",
+            'total_amount' => $details->sum('amount'),
+            'total_discount' => $details->sum('discount_amount'),
+            'total_adjustment' => 0,
+            'total_final' => $details->sum('final_amount'),
+            'total_paid' => 0,
+            'total_due' => $details->sum('final_amount'),
+            'status' => 'pending',
+            'admin_created_id' => $this->admin->id,
+            'note' => $data['note'] ?? null
+        ]);
+
+        foreach ($details as $detail) {
+            $detail['student_id'] = $student->id;
+            $detail['admin_created_id'] = $this->admin->id;
+            $receipt->receiptDetail()->create($detail);
+        }
+
+        return $receipt;
+    }
+
 }

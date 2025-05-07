@@ -203,47 +203,50 @@
                         <div class="box-header">
                         </div>
                         <div class="box-body no-padding">
-                            <table class="table table-hover sticky">
-                                <thead>
-                                    <tr>
-                                        <th>@lang('Tên dịch vụ')</th>
-                                        <th>@lang('Loại dịch vụ')</th>
-                                        <th>@lang('Tháng áp dụng')</th>
-                                        <th>@lang('Số lượng dự kiến')</th>
-                                        <th>@lang('Số lượng thực tế')</th>
-                                        <th>@lang('Đơn giá dịch vụ')</th>
-                                        <th>@lang('Số tiền dịch vụ trong tháng')</th>
-                                        <th>@lang('Giảm trừ')</th>
-                                        <th>@lang('Truy thu (+) / Hoàn trả (-)')</th>
-                                        <th>@lang('Tổng số tiền cuối cùng')</th>
-                                        <th>@lang('Trạng thái')</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="box_policies">
-                                    @isset($detail->receiptDetail)
-                                        @foreach ($detail->receiptDetail as $item)
-                                            <tr class="item_policies">
-                                                <td>{{ $item->services_receipt->name ?? '' }}</td>
-                                                <td>{{ __($item->services_receipt->service_type) ?? '' }}</td>
-                                                <td>{{ date('m-Y', strtotime($item->month)) }}</td>
-                                                <td>{{ $item->by_number ?? 0 }}</td>
-                                                <td>{{ $item->spent_number ?? 0 }}</td>
-                                                <td>{{ number_format($item->unit_price, 0, ',', '.') }}</td>
-                                                <td>{{ number_format($item->amount, 0, ',', '.') }}</td>
-                                                <td>{{ number_format($item->discount_amount, 0, ',', '.') }}</td>
-                                                <td>{{ number_format($item->adjustment_amount, 0, ',', '.') }}</td>
-                                                <td>{{ number_format($item->final_amount, 0, ',', '.') }}</td>
-                                                <td>{{ __($item->status) }}</td>
-                                            </tr>
-                                        @endforeach
-                                    @endisset
-                                </tbody>
-                            </table>
+                            <div class="table-responsive">
+                                <table class="table table-hover sticky ">
+                                    <thead>
+                                        <tr>
+                                            <th>@lang('Tên dịch vụ')</th>
+                                            <th>@lang('Loại dịch vụ')</th>
+                                            <th>@lang('Tháng áp dụng')</th>
+                                            <th>@lang('Số lượng ')</th>
+                                            {{-- <th>@lang('Số lượng thực tế')</th> --}}
+                                            <th>@lang('Đơn giá')</th>
+                                            <th>@lang('Thành tiền')</th>
+                                            <th>@lang('Giảm trừ')</th>
+                                            <th>@lang('Truy thu (+) / Hoàn trả (-)')</th>
+                                            <th>@lang('Tổng tiền cuối cùng')</th>
+                                            <th>@lang('Trạng thái')</th>
+                                            <th style="width:250px">@lang('Ghi chú')</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="box_policies">
+                                        @isset($detail->receiptDetail)
+                                            @foreach ($detail->receiptDetail as $item)
+                                                <tr class="item_policies">
+                                                    <td>{{ $item->services_receipt->name ?? '' }}</td>
+                                                    <td>{{ __($item->services_receipt->service_type) ?? '' }}</td>
+                                                    <td>{{ date('m-Y', strtotime($item->month)) }}</td>
+                                                    <td>{{ $item->by_number ?? 0 }}</td>
+                                                    {{-- <td>{{ $item->spent_number ?? 0 }}</td> --}}
+                                                    <td>{{ number_format($item->unit_price, 0, ',', '.') }}</td>
+                                                    <td>{{ number_format($item->amount, 0, ',', '.') }}</td>
+                                                    <td>{{ number_format($item->discount_amount, 0, ',', '.') }}</td>
+                                                    <td>{{ number_format($item->adjustment_amount, 0, ',', '.') }}</td>
+                                                    <td>{{ number_format($item->final_amount, 0, ',', '.') }}</td>
+                                                    <td>{{ __($item->status) }}</td>
+                                                    <td>{!!($item->note) !!}</td>
+                                                </tr>
+                                            @endforeach
+                                        @endisset
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
