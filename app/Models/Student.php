@@ -95,7 +95,7 @@ class Student extends Model
     {
         return $this->hasMany(StudentParent::class, 'student_id', 'id');
     }
-    
+
     public function studentPolicies()
     {
         return $this->hasMany(StudentPolicie::class, 'student_id', 'id');
@@ -123,5 +123,9 @@ class Student extends Model
     public function studentReceipt()
     {
         return $this->hasMany(Receipt::class, 'student_id', 'id');
+    }
+    public function studentPromotions()
+    {
+        return $this->hasMany(StudentPromotion::class, 'student_id', 'id');
     }
 }

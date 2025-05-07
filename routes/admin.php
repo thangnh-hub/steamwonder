@@ -108,8 +108,11 @@ Route::group(['namespace' => 'Admin'], function () {
         'payment_cycle' => 'PaymentCycleController',
         'deductions' => 'DeductionController',
         'receipt' => 'ReceiptController',
-        'attendances' => 'AttendancesController',
+        'attendance' => 'AttendancesController',
+        'promotions' => 'PromotionController',
       ]);
+      // Import Class và StudentClass
+      Route::post('import_class', 'AdminController@importClassStudent')->name('class.import_class');
       Route::get('receipt_view/{id}', 'ReceiptController@viewIndex')->name('receipt.view');
       Route::post('receipt_payment/{id}', 'ReceiptController@payment')->name('receipt.payment');
       Route::get('receipt_print/{id}', 'ReceiptController@print')->name('receipt.print');

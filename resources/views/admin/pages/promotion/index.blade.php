@@ -10,14 +10,6 @@
             @lang($module_name)
             <a class="btn btn-sm btn-warning pull-right" href="{{ route(Request::segment(2) . '.create') }}"><i
                     class="fa fa-plus"></i> @lang('Add')</a>
-
-            {{-- Tạm thời chưa dùng đến --}}
-            {{-- <div class="pull-right" style="display: flex; margin-left:15px ">
-                <input class="form-control" type="file" name="files" id="fileImport" placeholder="@lang('Select File')">
-                <button type="button" class="btn btn-sm btn-success" onclick="importFile()">
-                    <i class="fa fa-file-excel-o"></i>
-                    @lang('Import dữ liệu')</button>
-            </div> --}}
         </h1>
 
     </section>
@@ -27,9 +19,6 @@
 
     <!-- Main content -->
     <section class="content">
-        <div id="loading-notification" class="loading-notification">
-            <p>@lang('Please wait')...</p>
-        </div>
         {{-- Search form --}}
         <div class="box box-default">
 
@@ -44,15 +33,15 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label>@lang('Tên lớp') </label>
-                                <input type="text" class="form-control" name="keyword" placeholder="@lang('Nhập tên lớp')"
+                                <label>@lang('Keyword') </label>
+                                <input type="text" class="form-control" name="keyword" placeholder="@lang('Mã hoặc tên CT Kh.Mãi')"
                                     value="{{ isset($params['keyword']) ? $params['keyword'] : '' }}">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>@lang('Area')</label>
-                                <select name="area_id" id="area_id" class="form-control select2" style="width: 100%;">
+                                <select name="area_id" id="area_id" class="form-control select2 w-100">
                                     <option value="">@lang('Please select')</option>
                                     @foreach ($areas as $item)
                                         <option value="{{ $item->id }}"
@@ -64,25 +53,12 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label>@lang('Room')</label>
-                                <select name="room_id" id="room_id" class="form-control select2" style="width: 100%;">
+                                <label>@lang('Loại')</label>
+                                <select name="promotion_type" class="form-control select2 w-100">
                                     <option value="">@lang('Please select')</option>
-                                    @foreach ($rooms as $item)
-                                        <option value="{{ $item->id }}"
-                                            {{ isset($params['room_id']) && $params['room_id'] == $item->id ? 'selected' : '' }}>
-                                            {{ $item->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>@lang('Trạng thái')</label>
-                                <select name="status" id="status" class="form-control select2" style="width: 100%;">
-                                    <option value="">@lang('Please select')</option>
-                                    @foreach ($status as $key => $item)
+                                    @foreach ($type as $key => $item)
                                         <option value="{{ $key }}"
-                                            {{ isset($params['status']) && $params['status'] == $key ? 'selected' : '' }}>
+                                            {{ isset($params['promotion_type']) && $params['promotion_type'] == $key ? 'selected' : '' }}>
                                             {{ __($item) }}</option>
                                     @endforeach
                                 </select>
@@ -90,28 +66,13 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label>@lang('Độ tuổi')</label>
-                                <select name="education_age_id" id="education_age" class="form-control select2"
-                                    style="width: 100%;">
+                                <label>@lang('Trạng thái')</label>
+                                <select name="status" class="form-control select2 w-100">
                                     <option value="">@lang('Please select')</option>
-                                    @foreach ($ages as $key => $item)
-                                        <option value="{{ $item->id }}"
-                                            {{ isset($params['education_age_id']) && $params['education_age_id'] == $item->id ? 'selected' : '' }}>
-                                            {{ $item->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>@lang('Chương trình')</label>
-                                <select name="education_programs_id" id="education_programs" class="form-control select2"
-                                    style="width: 100%;">
-                                    <option value="">@lang('Please select')</option>
-                                    @foreach ($programs as $key => $item)
-                                        <option value="{{ $item->id }}"
-                                            {{ isset($params['education_programs_id']) && $params['education_programs_id'] == $item->id ? 'selected' : '' }}>
-                                            {{ $item->name }}</option>
+                                    @foreach ($status as $key => $item)
+                                        <option value="{{ $key }}"
+                                            {{ isset($params['status']) && $params['status'] == $key ? 'selected' : '' }}>
+                                            {{ __($item) }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -171,13 +132,16 @@
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th>@lang('Mã lớp')</th>
-                                <th>@lang('Title')</th>
-                                <th>@lang('Area')</th>
-                                <th>@lang('Room')</th>
-                                <th>@lang('Sĩ số')</th>
-                                <th>@lang('Giáo viên chủ nhiệm')</th>
+                                <th>@lang('Mã CT Kh.mãi')</th>
+                                <th>@lang('Tên CT Kh.mãi')</th>
+                                <th>@lang('Mô tả')</th>
+                                <th>@lang('Khu vực')</th>
+                                <th>@lang('Loại ')</th>
+                                <th>@lang('Thời gian áp dụng')</th>
+                                <th>@lang('Thời gian kết thúc')</th>
                                 <th>@lang('Trạng thái')</th>
+                                <th>@lang('Cập nhật')</th>
+                                <th>@lang('Ngày cập nhật')</th>
                                 <th>@lang('Action')</th>
                             </tr>
                         </thead>
@@ -185,27 +149,35 @@
                             @foreach ($rows as $row)
                                 <tr class="valign-middle">
                                     <td>
-                                        <strong style="font-size: 14px">{{ $row->code ?? '' }}</strong>
+                                        <strong style="font-size: 14px">{{ $row->promotion_code ?? '' }}</strong>
                                     </td>
-
                                     <td>
-                                        {{ $row->name ?? '' }}
+                                        {{ $row->promotion_name ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $row->description ?? '' }}
                                     </td>
 
                                     <td>
                                         {{ $row->area->name ?? '' }}
                                     </td>
                                     <td>
-                                        {{ $row->room->name ?? '' }}
+                                        {{ __($row->promotion_type) }}
                                     </td>
                                     <td>
-                                        {{ count($row->students) }} / {{ $row->slot }}
+                                        {{ \Carbon\Carbon::parse($row->time_start)->format('d/m/Y') ?? '' }}
                                     </td>
                                     <td>
-                                        {{ $row->mainTeacher->teacher->name ?? '' }}
+                                        {{ \Carbon\Carbon::parse($row->time_end)->format('d/m/Y') ?? '' }}
                                     </td>
                                     <td>
                                         {{ __($row->status) }}
+                                    </td>
+                                    <td>
+                                        {{ $row->admin_updated->name ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ date('H:i - d/m/Y', strtotime($row->updated_at)) }}
                                     </td>
                                     <td style="width:150px">
                                         <button class="btn btn-sm btn-success btn_show_detail" data-toggle="tooltip"
@@ -214,8 +186,8 @@
                                             title="@lang('Show')" data-original-title="@lang('Show')">
                                             <i class="fa fa-eye"></i>
                                         </button>
-                                        <a class="btn btn-sm btn-warning" data-toggle="tooltip"
-                                            title="@lang('Update')" data-original-title="@lang('Update')"
+                                        <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="@lang('Update')"
+                                            data-original-title="@lang('Update')"
                                             href="{{ route(Request::segment(2) . '.edit', $row->id) }}">
                                             <i class="fa fa-pencil-square-o"></i>
                                         </a>
@@ -240,14 +212,14 @@
 
         </div>
     </section>
-    <div class="modal fade" id="modal_show_class" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal fade" id="modal_show_policies" data-backdrop="static" tabindex="-1" role="dialog">
         <div class="modal-dialog " role="document">
             <div class="modal-content">
                 <div class="modal-header ">
-                    <h3 class="modal-title text-center col-md-12">@lang('Thông tin lớp học')</h3>
+                    <h3 class="modal-title text-center col-md-12">@lang('Thông tin chính sách')</h3>
                     </h3>
                 </div>
-                <div class="modal-body show_detail_class">
+                <div class="modal-body show_detail_policies">
 
                 </div>
                 <div class="modal-footer">
@@ -270,8 +242,8 @@
                 url: url,
                 success: function(response) {
                     if (response) {
-                        $('.show_detail_class').html(response.data.view);
-                        $('#modal_show_class').modal('show');
+                        $('.show_detail_policies').html(response.data.view);
+                        $('#modal_show_policies').modal('show');
                     } else {
                         var _html = `<div class="alert alert-warning alert-dismissible">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -293,48 +265,5 @@
                 }
             });
         })
-
-        function importFile() {
-            show_loading_notification();
-            var formData = new FormData();
-            var file = $('#fileImport')[0].files[0];
-            if (file == null) {
-                alert('Cần chọn file để Import!');
-                return;
-            }
-            formData.append('file', file);
-            formData.append('_token', '{{ csrf_token() }}');
-            $.ajax({
-                url: '{{ route('class.import_class') }}',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    hide_loading_notification();
-                    if (response.data != null) {
-                        location.reload();
-                    } else {
-                        var _html = `<div class="alert alert-warning alert-dismissible">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            Bạn không có quyền thao tác chức năng này!
-                            </div>`;
-                        $('.table-responsive').prepend(_html);
-                        $('html, body').animate({
-                            scrollTop: $(".alert-warning").offset().top
-                        }, 1000);
-                        setTimeout(function() {
-                            $('.alert-warning').remove();
-                        }, 3000);
-                    }
-                },
-                error: function(response) {
-                    // Get errors
-                    hide_loading_notification();
-                    var errors = response.responseJSON.message;
-                    console.log(errors);
-                }
-            });
-        }
     </script>
 @endsection

@@ -2,20 +2,37 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Consts;
 use App\Models\Attendances;
+use App\Models\tbClass;
+use App\Models\Area;
+use App\Models\Student;
+use App\Models\StudentClass;
 use Illuminate\Http\Request;
 
 class AttendancesController extends Controller
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->routeDefault  = 'attendance';
+        $this->viewPart = 'admin.pages.attendance';
+        $this->responseData['module_name'] = 'Quản lý điểm danh';
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $params = $request->only(['class_id', 'area_id', 'tracked_at']);
+        $this->responseData['classs'] = tbClass::all();
+        $this->responseData['areas'] = Area::all();
+        $this->responseData['status'] = Consts::ATTENDANCE_STATUS;
+        $this->responseData['params'] = $params;
+        $this->responseData['rows'] = StudentClass::getSqlStudentClass($params)->get();
+        return $this->responseView($this->viewPart . '.index');
     }
 
     /**

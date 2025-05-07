@@ -18,6 +18,8 @@ use App\Models\PaymentCycle;
 use App\Models\Receipt;
 use App\Models\Service;
 use App\Models\StudentService;
+use App\Models\Promotion;
+use App\Models\StudentPromotion;
 use App\Http\Services\ReceiptService;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
@@ -79,21 +81,21 @@ class StudentController extends Controller
             'first_name' => 'required',
             'last_name'  => 'required',
         ]);
-    
+
         $params = $request->all();
         $params['admin_created_id'] = Auth::guard('admin')->user()->id;
         $params['student_code'] = 'TEMP';
-    
+
         // Tạo học sinh
         $student = Student::create($params);
-    
+
         // Gán lại student_code đúng chuẩn
         $student->student_code = 'HS' . str_pad($student->id, 3, '0', STR_PAD_LEFT);
         $student->save();
-    
+
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Add new successfully!'));
     }
-    
+
     /**
      * Display the specified resource.
      *
@@ -122,7 +124,7 @@ class StudentController extends Controller
         $this->responseData['detail'] = $student;
         //lấy ra danh sách tài khoản parent
         $params_active['status'] = Consts::STATUS_ACTIVE;
-        $allParents= tbParent::getSqlParent($params_active)->get();
+        $allParents = tbParent::getSqlParent($params_active)->get();
         $this->responseData['allParents'] = $allParents;
         //lấy ra danh sách mqh của học sinh
         $this->responseData['studentParentIds'] = $student->studentParents->pluck('parent_id')->toArray();
@@ -134,11 +136,15 @@ class StudentController extends Controller
         $this->responseData['unregisteredServices'] =  Service::getSqlService($params_service)->get();
         //danh sách mqh
         $this->responseData['list_relationship'] = Relationship::getSqlRelationship($params_active)->get();
-        //list chu kỳ 
-        $this->responseData['list_payment_cycle'] = PaymentCycle::getSqlPaymentCycle()->get(); 
-
+        //list chu kỳ
+        $this->responseData['list_payment_cycle'] = PaymentCycle::getSqlPaymentCycle()->get();
         //list policies
         $this->responseData['list_policies'] = Policies::getSqlPolicies($params_active)->get();
+        //list promotion
+        $this->responseData['status'] = Consts::STATUS;
+        $this->responseData['services'] = Service::where('status', 'active')->get();
+        $this->responseData['promotion_active'] = StudentPromotion::where('status', 'active')->get();
+        $this->responseData['list_promotion'] = Promotion::getSqlPromotion($params_active)->get();
         return $this->responseView($this->viewPart . '.edit');
     }
 
@@ -157,14 +163,14 @@ class StudentController extends Controller
             'last_name'  => 'required',
             'student_code' => 'unique:students,student_code,' . $student->id,
         ]);
-        $params = $request->except(['includeCurrentMonth', 'policies']);
+        $params = $request->except(['includeCurrentMonth', 'policies', 'promotion_student', 'radio_promotion']);
         $params['admin_updated_id'] = Auth::guard('admin')->user()->id;
 
         $student->update($params);
         try {
             // Xoá các chính sách cũ
             $student->studentPolicies()->delete();
-    
+
             // Thêm mới nếu có chính sách gửi lên
             if ($request->has('policies') && is_array($request->policies)) {
                 foreach ($request->policies as $policyId) {
@@ -176,9 +182,12 @@ class StudentController extends Controller
                     ]);
                 }
             }
-    
+            // CT Khuyến mãi
+            $params_promotion = $request->input('promotion_student');
+            $params_promotion['student_id'] = $student->id;
+            StudentPromotion::create($params_promotion);
+
             return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Update successfully!'));
-    
         } catch (\Exception $e) {
             return back()->with('errorMessage', __('Có lỗi xảy ra: ') . $e->getMessage());
         }
@@ -221,7 +230,7 @@ class StudentController extends Controller
     public function addService(Request $request, $id)
     {
         $student = Student::findOrFail($id);
-        if($student->payment_cycle_id==""){
+        if ($student->payment_cycle_id == "") {
             return redirect()->back()->with('errorMessage', __('Học sinh chưa chọn chu kỳ thanh toán!'));
         }
         $parentsInput = $request->input('services', []);
@@ -280,11 +289,11 @@ class StudentController extends Controller
         try {
             $studentService = StudentService::find($request->id);
             if (isset($studentService)) {
-                    $updateResult =  $studentService->update([
-                        'status' => 'cancelled',
-                        'cancelled_at' => now(),
-                        'admin_updated_id' => $admin->id,
-                    ]);
+                $updateResult =  $studentService->update([
+                    'status' => 'cancelled',
+                    'cancelled_at' => now(),
+                    'admin_updated_id' => $admin->id,
+                ]);
                 if ($updateResult) {
                     session()->flash('successMessage', __('Hủy thành công dịch vụ khỏi học sinh!'));
                     return $this->sendResponse("", 'success');
@@ -309,11 +318,11 @@ class StudentController extends Controller
         return response()->json([
             'success' => true,
             'data' => [
-                'note' => $studentService->json_params->note ??"",
+                'note' => $studentService->json_params->note ?? "",
             ]
         ]);
     }
-    
+
     public function updateServiceNoteAjax(Request $request)
     {
         try {
@@ -321,13 +330,13 @@ class StudentController extends Controller
             if (!$studentService) {
                 session()->flash('errorMessage', __('Không tìm thấy dịch vụ đăng ký!'));
             }
-            $params['json_params']['note'] = $request->note??"";
+            $params['json_params']['note'] = $request->note ?? "";
             $studentService->update($params);
-    
+
             if ($studentService->save()) {
                 session()->flash('successMessage', __('Cập nhật ghi chú thành công!'));
             }
-    
+
             return $this->sendResponse("", 'success');
         } catch (\Exception $ex) {
             abort(422, __($ex->getMessage()));
@@ -340,7 +349,7 @@ class StudentController extends Controller
     //     $student = Student::findOrFail($params['student_id']);
     //     $data['services'] = $student->studentServices()->with('services') ->where('status', 'active')
     //     ->get()
-    //     ->pluck('services'); 
+    //     ->pluck('services');
     //     $data['include_current_month']=true;
     //     $createReceiptForStudent=$receiptService->createReceiptForStudent($student, $data);
     //     return redirect()->back()->with('successMessage', __('Tạo hóa đơn thành công!'));
@@ -356,12 +365,12 @@ class StudentController extends Controller
                 ->get()
                 ->pluck('services');
 
-            if($request->has('payment_cycle_id')){
+            if ($request->has('payment_cycle_id')) {
                 $student->update([
                     'payment_cycle_id' => $request->input('payment_cycle_id', null),
                 ]);
             }
-            
+
             $data['include_current_month'] = $request->input('include_current_month', 0) == 1 ? true : false;
             $data['enrolled_at'] = $request->input('enrolled_at', null);
             $calcuReceipt = $receiptService->createReceiptForStudent($student, $data);

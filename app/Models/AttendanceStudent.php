@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Attendances extends Model
+class AttendanceStudent extends Model
 {
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $table = 'tb_class_attendance';
+    protected $table = 'tb_class_attendance_student';
 
     /**
      * The attributes that aren't mass assignable.
@@ -36,9 +36,9 @@ class Attendances extends Model
         'json_params' => 'object',
     ];
 
-    public function attendanceStudent()
+    public function attendance()
     {
-        return $this->hasMany(AttendanceStudent::class, 'class_attendance_id', 'id');
+        return $this->belongsTo(Attendances::class, 'class_attendance_id', 'id');
     }
     public function adminCreated()
     {

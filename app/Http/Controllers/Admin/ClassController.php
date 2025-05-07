@@ -12,11 +12,6 @@ use App\Models\Attendance;
 use App\Models\UserClass;
 use App\Models\tbClass;
 use App\Models\Area;
-use App\Models\Holiday;
-use App\Models\Period;
-use App\Models\Course;
-use App\Models\History;
-use App\Models\StaffAdmission;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Services\DataPermissionService;
 use App\Models\EducationAges;
@@ -24,6 +19,8 @@ use App\Models\EducationPrograms;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\ClassStudentImport;
 
 class ClassController extends Controller
 {
@@ -283,5 +280,36 @@ class ClassController extends Controller
         // $les = UserClass::where('class_id', $classs->id)->delete();
         // $les = Attendance::where('class_id', $classs->id)->delete();
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Delete record successfully!'));
+    }
+    public function importClassStudent(Request $request)
+    {
+        $params = $request->all();
+        if (isset($params['file'])) {
+            if ($this->checkFileImport($params['file']) == false) {
+                $_datawith = 'errorMessage';
+                $mess = 'File Import không hợp lệ, có chứ Sheet ẩn !';
+                session()->flash($_datawith, $mess);
+                return $this->sendResponse($_datawith, $mess);
+            }
+            $_datawith = 'successMessage';
+            $import = new ClassStudentImport($params);
+            Excel::import($import, request()->file('file'));
+            if ($import->hasError) {
+                session()->flash('errorMessage', $import->errorMessage);
+                return $this->sendResponse('warning', $import->errorMessage);
+            }
+            $data_count = $import->getRowCount();
+            $mess = __('Thêm mới') . ": " . $data_count['insert_row'] . " - " . __('Cập nhật') . ": " . $data_count['update_row'] . " - " . __('Lỗi') . ": " . $data_count['error_row'];
+            foreach ($data_count['error_mess'] as $val) {
+                $mess .= '</br>' . $val;
+            };
+            if (count($data_count['error_mess']) > 0) {
+                $_datawith = 'errorMessage';
+            };
+            session()->flash($_datawith, $mess);
+            return $this->sendResponse($_datawith, $mess);
+        }
+        session()->flash('errorMessage', __('Cần chọn file để Import!'));
+        return $this->sendResponse('warning', __('Cần chọn file để Import!'));
     }
 }

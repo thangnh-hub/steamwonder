@@ -11,16 +11,19 @@
             align-items: center;
             gap: 1rem;
         }
-        th{
+
+        th {
             text-align: center;
             vertical-align: middle !important;
         }
-        .modal-header{
+
+        .modal-header {
             background-color: #3c8dbc;
             color: white;
         }
+
         .table-wrapper {
-            max-height: 450px; 
+            max-height: 450px;
             overflow-y: auto;
             display: block;
         }
@@ -103,6 +106,11 @@
                                             <h5>Biên lai thu phí</h5>
                                         </a>
                                     </li>
+                                    <li class="">
+                                        <a href="#tab_5" data-toggle="tab">
+                                            <h5>CT Kh.Mãi được áo dụng</h5>
+                                        </a>
+                                    </li>
                                 </ul>
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="tab_1">
@@ -114,7 +122,8 @@
                                                         <select name="area_id" class="form-control select2" required>
                                                             <option value="">@lang('Chọn khu vực')</option>
                                                             @foreach ($list_area as $val)
-                                                                <option value="{{ $val->id }}" {{ old('area_id', $detail->area_id) == $val->id ? 'selected' : '' }}>
+                                                                <option value="{{ $val->id }}"
+                                                                    {{ old('area_id', $detail->area_id) == $val->id ? 'selected' : '' }}>
                                                                     {{ $val->name }}
                                                                 </option>
                                                             @endforeach
@@ -125,14 +134,16 @@
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Họ')<small class="text-red">*</small></label>
-                                                        <input type="text" class="form-control" name="first_name" value="{{ old('first_name', $detail->first_name) }}" required>
+                                                        <input type="text" class="form-control" name="first_name"
+                                                            value="{{ old('first_name', $detail->first_name) }}" required>
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Tên')<small class="text-red">*</small></label>
-                                                        <input type="text" class="form-control" name="last_name" value="{{ old('last_name', $detail->last_name) }}" required>
+                                                        <input type="text" class="form-control" name="last_name"
+                                                            value="{{ old('last_name', $detail->last_name) }}" required>
                                                     </div>
                                                 </div>
                                                 
@@ -141,7 +152,8 @@
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Tên thường gọi')</label>
-                                                        <input type="text" class="form-control" name="nickname" value="{{ old('nickname', $detail->nickname) }}">
+                                                        <input type="text" class="form-control" name="nickname"
+                                                            value="{{ old('nickname', $detail->nickname) }}">
                                                     </div>
                                                 </div>
                                                 
@@ -150,7 +162,8 @@
                                                         <label>@lang('Giới tính')</label>
                                                         <select name="sex" class="form-control select2">
                                                             @foreach ($list_sex as $key => $value)
-                                                                <option value="{{ $key }}" {{ old('sex', $detail->sex) == $key ? 'selected' : '' }}>
+                                                                <option value="{{ $key }}"
+                                                                    {{ old('sex', $detail->sex) == $key ? 'selected' : '' }}>
                                                                     {{ __($value) }}
                                                                 </option>
                                                             @endforeach
@@ -161,14 +174,16 @@
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Ngày sinh')</label>
-                                                        <input type="date" class="form-control" name="birthday" value="{{ old('birthday', $detail->birthday) }}">
+                                                        <input type="date" class="form-control" name="birthday"
+                                                            value="{{ old('birthday', $detail->birthday) }}">
                                                     </div>
                                                 </div>
                                                 
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Ngày nhập học')</label>
-                                                        <input type="date" class="form-control" name="enrolled_at" value="{{ old('enrolled_at', $detail->enrolled_at) }}">
+                                                        <input type="date" class="form-control" name="enrolled_at"
+                                                            value="{{ old('enrolled_at', $detail->enrolled_at) }}">
                                                     </div>
                                                 </div>
                                                 
@@ -177,7 +192,8 @@
                                                         <label>@lang('Trạng thái')</label>
                                                         <select name="status" class="form-control select2">
                                                             @foreach ($list_status as $key => $value)
-                                                                <option value="{{ $key }}" {{ old('status', $detail->status) == $key ? 'selected' : '' }}>
+                                                                <option value="{{ $key }}"
+                                                                    {{ old('status', $detail->status) == $key ? 'selected' : '' }}>
                                                                     {{ __($value) }}
                                                                 </option>
                                                             @endforeach
@@ -189,10 +205,13 @@
                                                         <label>@lang('Chính sách được hưởng')</label>
                                                         <select name="policies[]" class="form-control select2" multiple>
                                                             @php
-                                                                $selectedPolicies = $detail->studentPolicies->pluck('policy_id')->toArray();
+                                                                $selectedPolicies = $detail->studentPolicies
+                                                                    ->pluck('policy_id')
+                                                                    ->toArray();
                                                             @endphp
                                                             @foreach ($list_policies as $policy)
-                                                                <option value="{{ $policy->id }}" {{ in_array($policy->id, $detail->studentPolicies->pluck('policy_id')->toArray()) ? 'selected' : '' }}>
+                                                                <option value="{{ $policy->id }}"
+                                                                    {{ in_array($policy->id, $detail->studentPolicies->pluck('policy_id')->toArray()) ? 'selected' : '' }}>
                                                                     {{ $policy->name }}
                                                                 </option>
                                                             @endforeach
@@ -203,10 +222,14 @@
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Chu kỳ thu dịch vụ')</label>
-                                                        <select  style="width:100%" name="payment_cycle_id" class="form-control select2">
+                                                        <select style="width:100%" name="payment_cycle_id"
+                                                            class="form-control select2">
                                                             <option value="">Chọn</option>
-                                                            @foreach($list_payment_cycle as $payment_cycle)
-                                                                <option {{ old('payment_cycle_id', $detail->payment_cycle_id) == $payment_cycle->id ? 'selected' : '' }} value="{{ $payment_cycle->id }}">{{ $payment_cycle->name ?? "" }}</option>
+                                                            @foreach ($list_payment_cycle as $payment_cycle)
+                                                                <option
+                                                                    {{ old('payment_cycle_id', $detail->payment_cycle_id) == $payment_cycle->id ? 'selected' : '' }}
+                                                                    value="{{ $payment_cycle->id }}">
+                                                                    {{ $payment_cycle->name ?? '' }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -216,16 +239,20 @@
                                                     <div class="form-group box_img_right">
                                                         <label>@lang('Ảnh đại diện')</label>
                                                         <div id="image-holder">
-                                                            <img src="{{ !empty($detail->avatar) ? asset($detail->avatar) : url('themes/admin/img/no_image.jpg') }}" style="max-height: 120px;">
+                                                            <img src="{{ !empty($detail->avatar) ? asset($detail->avatar) : url('themes/admin/img/no_image.jpg') }}"
+                                                                style="max-height: 120px;">
                                                         </div>
                                                         <div class="input-group">
                                                             <span class="input-group-btn">
-                                                                <a data-input="image" data-preview="image-holder" class="btn btn-primary lfm" data-type="cms-image">
+                                                                <a data-input="image" data-preview="image-holder"
+                                                                    class="btn btn-primary lfm" data-type="cms-image">
                                                                     <i class="fa fa-picture-o"></i> @lang('Choose')
                                                                 </a>
                                                             </span>
-                                                            <input id="image" class="form-control inp_hidden" type="hidden" name="avatar"
-                                                                placeholder="@lang('Image source')" value="{{ old('avatar', $detail->avatar) }}">
+                                                            <input id="image" class="form-control inp_hidden"
+                                                                type="hidden" name="avatar"
+                                                                placeholder="@lang('Image source')"
+                                                                value="{{ old('avatar', $detail->avatar) }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -237,11 +264,12 @@
                                     <div class="tab-pane " id="tab_2">
                                         <div class="box-body ">
                                             <div>
-                                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addParentModal">
+                                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
+                                                    data-target="#addParentModal">
                                                     <i class="fa fa-plus"></i> @lang('Cập nhật người thân')
-                                                </button>     
+                                                </button>
                                             </div>
-                                            
+
                                             <br>
                                             <div class="table-responsive">
                                                 <table class="table table-hover table-bordered">
@@ -305,7 +333,8 @@
                                     <div class="tab-pane " id="tab_3">
                                         <div class="box-body ">
                                             <div>
-                                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addServiceModal">
+                                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
+                                                    data-target="#addServiceModal">
                                                     <i class="fa fa-plus"></i> @lang('Đăng ký dịch vụ')
                                                 </button>     
                                                 <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#reincarnationModal">
@@ -400,7 +429,10 @@
                                             </div>
                                             <br>
                                             @php
-                                                $cancelledServices = $detail->studentServices->where('status', 'cancelled');
+                                                $cancelledServices = $detail->studentServices->where(
+                                                    'status',
+                                                    'cancelled',
+                                                );
                                             @endphp
                                             @if($cancelledServices->count())
                                             <h4 class="mt-4 ">Danh sách dịch vụ bị huỷ</h4>
@@ -445,7 +477,7 @@
                                                 </table>
                                             </div>
                                             @endif
-                                        </div>                      
+                                        </div>
                                     </div>
 
                                     <!-- TAB 4: Biên lai thu phí -->
@@ -455,46 +487,60 @@
                                                 @csrf
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label>@lang('Ngày bắt đầu chu kỳ thanh toán') <small class="text-danger">*</small></label>
-                                                        <input class="form-control" type="date" id="enrolled_at" value="">
+                                                        <label>@lang('Ngày bắt đầu chu kỳ thanh toán') <small
+                                                                class="text-danger">*</small></label>
+                                                        <input class="form-control" type="date" id="enrolled_at"
+                                                            value="">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label>@lang('Chu kỳ thu dịch vụ') <small class="text-danger">*</small></label>
-                                                        <select  style="width:100%" id="selectpayment_cycle_id" class="form-control select2">
+                                                        <label>@lang('Chu kỳ thu dịch vụ') <small
+                                                                class="text-danger">*</small></label>
+                                                        <select style="width:100%" id="selectpayment_cycle_id"
+                                                            class="form-control select2">
                                                             <option value="">Chọn</option>
-                                                            @foreach($list_payment_cycle as $payment_cycle)
-                                                                <option {{ old('payment_cycle_id', $detail->payment_cycle_id) == $payment_cycle->id ? 'selected' : '' }} value="{{ $payment_cycle->id }}">{{ $payment_cycle->name ?? "" }}</option>
+                                                            @foreach ($list_payment_cycle as $payment_cycle)
+                                                                <option
+                                                                    {{ old('payment_cycle_id', $detail->payment_cycle_id) == $payment_cycle->id ? 'selected' : '' }}
+                                                                    value="{{ $payment_cycle->id }}">
+                                                                    {{ $payment_cycle->name ?? '' }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
                                                 </div>
-                                                
-                                              
+
+
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label class="d-block">@lang('Tính tháng hiện tại ở chu kỳ thu?')</label>
                                                         <div id="receipt-options" class="flex-inline-group">
                                                             <div class="form-check">
-                                                                <input class="form-check-input" type="radio" name="includeCurrentMonth" id="includeCurrentMonthYes" value="1">
-                                                                <label class="form-check-label mb-0" for="includeCurrentMonthYes">Có</label>
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="includeCurrentMonth" id="includeCurrentMonthYes"
+                                                                    value="1">
+                                                                <label class="form-check-label mb-0"
+                                                                    for="includeCurrentMonthYes">Có</label>
                                                             </div>
                                                             <div class="form-check">
-                                                                <input class="form-check-input" type="radio" name="includeCurrentMonth" id="includeCurrentMonthNo" value="0" checked>
-                                                                <label class="form-check-label mb-0" for="includeCurrentMonthNo">Không</label>
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="includeCurrentMonth" id="includeCurrentMonthNo"
+                                                                    value="0" checked>
+                                                                <label class="form-check-label mb-0"
+                                                                    for="includeCurrentMonthNo">Không</label>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            
+
                                                 <div class="col-md-12">
-                                                    <button type="button" class="btn btn-success btn-sm mb-15" id="btnCalculateReceipt" data-id="{{ $detail->id }}">
+                                                    <button type="button" class="btn btn-success btn-sm mb-15"
+                                                        id="btnCalculateReceipt" data-id="{{ $detail->id }}">
                                                         <i class="fa fa-money"></i> @lang('Tính toán thu phí')
                                                     </button>
                                                 </div>
-                                                
+
                                             </form>
                                             <table class="table table-hover table-bordered">
                                                 <thead>
@@ -522,56 +568,191 @@
                                                 </thead>
                                                 <tbody>
                                                     @php
-                                                        function format_currency($price) {
-                                                            return (isset($price) && is_numeric($price)) 
+                                                        function format_currency($price)
+                                                        {
+                                                            return isset($price) && is_numeric($price)
                                                                 ? number_format($price, 0, ',', '.') . ' đ'
                                                                 : '';
                                                         }
                                                     @endphp
-                                                    @if($detail->studentReceipt->count())
-                                                        @foreach ($detail->studentReceipt as $row) 
-                                                        <tr>
-                                                            <td>{{ $loop->index + 1 }} </td>  
-                                                            <td>{{ $row->receipt_code ?? "" }}</td>
-                                                            <td>{{ $row->receipt_name ?? "" }}</td>
-                                                            <td>{{ $row->payment_cycle->name ?? "" }}</td>
-                                                            <td>{{ $row->prev_receipt->receipt_name  ?? "" }}</td>
-                                                            <td>{{ format_currency($row->prev_balance) }}</td>
-                                                            <td>{{ format_currency($row->total_amount) }}</td>
-                                                            <td>{{ format_currency($row->total_discount) }}</td>
-                                                            <td>{{ format_currency($row->total_adjustment) }}</td>
-                                                            <td>{{ format_currency($row->total_final) }}</td>
-                                                            <td>{{ format_currency($row->total_paid) }}</td>
-                                                            <td>{{ format_currency($row->total_due) }}</td>
-                                                            <td>{{ __($row->status) }}</td>
-                                                            <td>{{ $row->note ?? "" }}</td>
-                                                            <td>{{ $row->cashier->name ?? "" }}</td>
-                                                            <td>{{ (isset($row->period_start) ? \Carbon\Carbon::parse($row->period_start)->format('d-m-Y') : '') }} </td>
-                                                            <td>{{ (isset($row->period_end) ? \Carbon\Carbon::parse($row->period_end)->format('d-m-Y') : '') }} </td>
-                                                            <td>{{ (isset($row->created_at) ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') : '') }} </td>
-                                                            <td>
-                                                                {{-- <button type="button" class="btn btn-sm btn-danger">
+                                                    @if ($detail->studentReceipt->count())
+                                                        @foreach ($detail->studentReceipt as $row)
+                                                            <tr>
+                                                                <td>{{ $loop->index + 1 }} </td>
+                                                                <td>{{ $row->receipt_code ?? '' }}</td>
+                                                                <td>{{ $row->receipt_name ?? '' }}</td>
+                                                                <td>{{ $row->payment_cycle->name ?? '' }}</td>
+                                                                <td>{{ $row->prev_receipt->receipt_name ?? '' }}</td>
+                                                                <td>{{ format_currency($row->prev_balance) }}</td>
+                                                                <td>{{ format_currency($row->total_amount) }}</td>
+                                                                <td>{{ format_currency($row->total_discount) }}</td>
+                                                                <td>{{ format_currency($row->total_adjustment) }}</td>
+                                                                <td>{{ format_currency($row->total_final) }}</td>
+                                                                <td>{{ format_currency($row->total_paid) }}</td>
+                                                                <td>{{ format_currency($row->total_due) }}</td>
+                                                                <td>{{ __($row->status) }}</td>
+                                                                <td>{{ $row->note ?? '' }}</td>
+                                                                <td>{{ $row->cashier->name ?? '' }}</td>
+                                                                <td>{{ isset($row->period_start) ? \Carbon\Carbon::parse($row->period_start)->format('d-m-Y') : '' }}
+                                                                </td>
+                                                                <td>{{ isset($row->period_end) ? \Carbon\Carbon::parse($row->period_end)->format('d-m-Y') : '' }}
+                                                                </td>
+                                                                <td>{{ isset($row->created_at) ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') : '' }}
+                                                                </td>
+                                                                <td>
+                                                                    {{-- <button type="button" class="btn btn-sm btn-danger">
                                                                     <i class="fa fa-close"></i> Hủy
                                                                 </button> --}}
-                                                                
-                                                                <button type="button" class="btn btn-sm btn-primary btn_show_detail mr-10" data-toggle="tooltip"
-                                                                    data-id="{{ $row->id }}"
-                                                                    data-url="{{ route('receipt.view', $row->id) }}"
-                                                                    title="@lang('Show')" data-original-title="@lang('Show')">
-                                                                    <i class="fa fa-money"></i> Chi tiết
-                                                                </button>
-                                                            </td>
-                                                        </tr>
+
+                                                                    <button type="button"
+                                                                        class="btn btn-sm btn-primary btn_show_detail mr-10"
+                                                                        data-toggle="tooltip"
+                                                                        data-id="{{ $row->id }}"
+                                                                        data-url="{{ route('receipt.view', $row->id) }}"
+                                                                        title="@lang('Show')"
+                                                                        data-original-title="@lang('Show')">
+                                                                        <i class="fa fa-money"></i> Chi tiết
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
                                                         @endforeach
-                                                    @endif       
+                                                    @endif
                                                 </tbody>
                                             </table>
-                                        </div>                      
+                                        </div>
                                     </div>
-                                </div> 
+
+                                    {{-- CT khuyến mãi được áp dụng --}}
+                                    <div class="tab-pane " id="tab_5">
+                                        <div class="box-body ">
+                                            <p>Danh sách các CT Kh.Mãi</p>
+                                            <table class="table table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>@lang('Chọn')</th>
+                                                        <th>@lang('Mã CT Kh.Mãi')</th>
+                                                        <th>@lang('Tên CT Kh.Mãi')</th>
+                                                        <th>@lang('Mô tả')</th>
+                                                        <th>@lang('Loại')</th>
+                                                        <th>@lang('Thời gian bắt đầu')</th>
+                                                        <th>@lang('Thời gian kết thúc')</th>
+                                                        <th>@lang('Chi tiết Kh.Mãi')</th>
+                                                        <th>@lang('Trạng thái')</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($list_promotion as $row)
+                                                        <tr>
+                                                            <td class="text-center">
+                                                                <input type="radio" class="radio_promotion" {{in_array($row->id,$promotion_active->pluck('promotion_id')->toArray())?'disabled':''}}
+                                                                    name="radio_promotion" value="{{ $row->id}}">
+                                                            </td>
+                                                            <td class="code">{{ $row->promotion_code ?? '' }}</td>
+                                                            <td class="name">{{ $row->promotion_name ?? '' }}</td>
+                                                            <td class="des">{{ $row->description ?? '' }}</td>
+                                                            <td class="type">{{ __($row->promotion_type) }}</td>
+                                                            <td>{{ \Carbon\Carbon::parse($row->time_start)->format('d/m/Y') ?? '' }}
+                                                            </td>
+                                                            <td>{{ \Carbon\Carbon::parse($row->time_end)->format('d/m/Y') ?? '' }}
+                                                            </td>
+                                                            <td class="service">
+                                                                @foreach ($row->json_params->services as $val)
+                                                                    @php
+                                                                        $service_detail = $row
+                                                                            ->getServices()
+                                                                            ->find($val->service_id);
+                                                                    @endphp
+                                                                    <ul>
+                                                                        <li>Dịch vụ:
+                                                                            {{ $service_detail->name ?? '' }}
+                                                                        </li>
+                                                                        <li>Giá trị áp dụng:
+                                                                            {{ number_format($val->value, 0, ',', '.') }}
+                                                                        </li>
+                                                                        <li>Số lần áp dụng:
+                                                                            {{ $val->apply_count ?? '' }}
+                                                                        </li>
+                                                                    </ul>
+                                                                @endforeach
+                                                            </td>
+                                                            <td class="status">
+                                                                {{ __($row->status) }}
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+
+                                            </table>
+                                            <br>
+                                            <p>CT Kh.Mãi được áp dụng</p>
+                                            <table class="table table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+
+                                                        <th>@lang('Chọn')</th>
+                                                        <th>@lang('Mã CT Kh.Mãi')</th>
+                                                        <th>@lang('Tên CT Kh.Mãi')</th>
+                                                        <th>@lang('Mô tả')</th>
+                                                        <th>@lang('Loại')</th>
+                                                        <th>@lang('Ngày bắt đầu được hưởng Kh.Mãi')</th>
+                                                        <th>@lang('Ngày kết thúc được hưởng Kh.Mãi')</th>
+                                                        <th>@lang('Chi tiết Kh.Mãi')</th>
+                                                        <th>@lang('Trạng thái')</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($promotion_active as $row)
+                                                        <tr>
+                                                            <td>
+
+                                                            </td>
+                                                            <td>{{ $row->promotion->promotion_code ?? '' }}</td>
+                                                            <td>{{ $row->promotion->promotion_name ?? '' }}</td>
+                                                            <td>{{ $row->promotion->description ?? '' }}</td>
+                                                            <td>{{ __($row->promotion->promotion_type) }}</td>
+                                                            <td>
+                                                                {{ \Carbon\Carbon::parse($row->time_start)->format('Y-m-d') ?? '' }}
+
+                                                            </td>
+                                                            <td>
+                                                                {{ \Carbon\Carbon::parse($row->time_end)->format('Y-m-d') ?? '' }}
+                                                            </td>
+                                                            <td>
+                                                                @foreach ($row->promotion->json_params->services as $val)
+                                                                    @php
+
+                                                                        $service_detail = $row->promotion
+                                                                            ->getServices()
+                                                                            ->find($val->service_id);
+                                                                    @endphp
+                                                                    <ul>
+                                                                        <li>Dịch vụ:
+                                                                            {{ $service_detail->name ?? '' }}
+                                                                        </li>
+                                                                        <li>Giá trị áp dụng:
+                                                                            {{ number_format($val->value, 0, ',', '.') }}
+                                                                        </li>
+                                                                        <li>Số lần áp dụng:
+                                                                            {{ $val->apply_count ?? '' }}
+                                                                        </li>
+                                                                    </ul>
+                                                                @endforeach
+                                                            </td>
+                                                            <td>
+                                                                {{__($row->status)}}
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                    <tr class="promotion_new"></tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    
+
                         <div class="box-footer">
                             <button type="submit" class="btn btn-info btn-sm pull-right">
                                 <i class="fa fa-save"></i> @lang('Save')
@@ -582,11 +763,12 @@
                         </div>
                     </div>
                 </div>
-            </div>    
+            </div>
         </form>
     </section>
     <!-- Modal Người thân-->
-    <div class="modal fade" id="addParentModal" tabindex="-1" role="dialog" aria-labelledby="addParentModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addParentModal" tabindex="-1" role="dialog" aria-labelledby="addParentModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-full" role="document">
         <form action="{{ route('student.addParent', $detail->id) }}" method="POST">
             @csrf
@@ -648,7 +830,8 @@
     </div>
 
     <!-- Modal dịch vụ-->
-    <div data-backdrop="static" class="modal fade" id="addServiceModal" tabindex="-1" role="dialog" aria-labelledby="addServiceModalLabel" aria-hidden="true">
+    <div data-backdrop="static" class="modal fade" id="addServiceModal" tabindex="-1" role="dialog"
+        aria-labelledby="addServiceModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-full" role="document">
         <form id="submitstudentaddService" action="{{ route('student.addService', $detail->id) }}" method="POST">
             @csrf
@@ -696,7 +879,7 @@
                                         </td>
                                         <td>
                                             <select style="width:100%" name="services[{{ $service->id }}][payment_cycle_id]" class="form-control select2">
-                                                @foreach($list_payment_cycle as $payment_cycle)
+                                                @foreach ($list_payment_cycle as $payment_cycle)
                                                     <option  value="{{ $payment_cycle->id }}">{{ $payment_cycle->name ?? "" }}</option>
                                                 @endforeach
                                             </select>
@@ -749,29 +932,32 @@
     </div>
 
     {{-- modal chỉnh sửa dịch vụ/ --}}
-    <div  class="modal fade" id="editServiceModal" tabindex="-1" role="dialog" aria-labelledby="editServiceModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editServiceModal" tabindex="-1" role="dialog" aria-labelledby="editServiceModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
-        <form id="updateStudentServiceForm" method="POST">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editServiceModalLabel">@lang('Cập nhật dịch vụ')</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="">Ghi chú</label>
-                                <input type="text" class="form-control" name="note" value="" placeholder="@lang('Ghi chú')">
+            <form id="updateStudentServiceForm" method="POST">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editServiceModalLabel">@lang('Cập nhật dịch vụ')</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="">Ghi chú</label>
+                                    <input type="text" class="form-control" name="note" value=""
+                                        placeholder="@lang('Ghi chú')">
+                                </div>
                             </div>
-                        </div>           
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btnUpdateService" type="button" class="btn btn-primary">@lang('Cập nhật')</button>
+                        <button type="button" class="btn btn-secondary"
+                            data-dismiss="modal">@lang('Đóng')</button>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button id="btnUpdateService" type="button" class="btn btn-primary">@lang('Cập nhật')</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@lang('Đóng')</button>
-                </div>
-            </div>
-        </form>
+            </form>
         </div>
     </div>
 
@@ -799,6 +985,51 @@
 
 @section('script')
     <script>
+        $(document).on('change', '.radio_promotion', function() {
+            var id = $(this).val();
+            var code = $(this).parents('tr').find('.code').html();
+            var name = $(this).parents('tr').find('.name').html();
+            var des = $(this).parents('tr').find('.des').html();
+            var type = $(this).parents('tr').find('.type').html();
+            var service = $(this).parents('tr').find('.service').html();
+            $('.promotion_new').html(`
+            <td>
+                <button type="button"
+                    class="btn btn-sm btn-danger delete_student_promotion"
+                    onclick="$(this).closest('tr').html(''); $('.radio_promotion').prop('checked', false);">
+                    <i class="fa fa-close"></i> Hủy
+                </button>
+                <input type="hidden" name="promotion_student[promotion_id]" value="${id}">
+            </td>
+            <td>${code}</td>
+            <td>${name}</td>
+            <td>${des}</td>
+            <td>${type}</td>
+            <td>
+                <input required type="date" name="promotion_student[time_start]"
+                    class="form-control"
+                    value="">
+
+            </td>
+            <td>
+                <input required type="date" name="promotion_student[time_end]"
+                    class="form-control"
+                    value="">
+            </td>
+            <td>${service}</td>
+            <td>
+                <select name="promotion_student[status]" class="form-control select2 w-100">
+                    @foreach ($status as $key => $val)
+                        <option value="{{ $key }}">
+                            {{ __($val) }}</option>
+                    @endforeach
+                </select>
+            </td>
+            `)
+            $('.select2').select2();
+        })
+
+
         $('#search-parent').on('keyup', function() {
             let value = $(this).val().toLowerCase();
             $('#parent-table tbody tr').filter(function() {
@@ -825,8 +1056,8 @@
                     },
                     success: function(response) {
                         if (response.message === 'success') {
-                            localStorage.setItem('activeTab', '#tab_3'); 
-                            location.reload(); 
+                            localStorage.setItem('activeTab', '#tab_3');
+                            location.reload();
                         } else {
                             alert("Bạn không có quyền thao tác dữ liệu");
                         }
@@ -841,7 +1072,7 @@
         $('.update_student_service').click(function(e) {
             e.preventDefault();
             let _id = $(this).data('id');
-            let url = "{{ route('get_student_service_info') }}"; 
+            let url = "{{ route('get_student_service_info') }}";
 
             $.ajax({
                 type: "GET",
@@ -854,7 +1085,7 @@
                         $('#editServiceModal input[name="note"]').val(response.data.note);
                         // Mở modal
                         $('#editServiceModal').modal('show');
-                        $('#btnUpdateService').attr('data-id', _id); 
+                        $('#btnUpdateService').attr('data-id', _id);
                     } else {
                         alert("Không tìm thấy dữ liệu dịch vụ.");
                     }
@@ -865,7 +1096,7 @@
             });
         });
 
-        $('#btnUpdateService').click(function () {
+        $('#btnUpdateService').click(function() {
             let noteValue = $('input[name="note"]').val();
             let currentStudentServiceId = $(this).data('id'); // Lấy ID dịch vụ hiện tại từ nút cập nhật
             $.ajax({
@@ -891,7 +1122,7 @@
             });
         });
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             var activeTab = localStorage.getItem('activeTab');
             if (activeTab) {
                 // Bỏ class active hiện tại
@@ -939,16 +1170,16 @@
         });
 
 
-        $('#btnCalculateReceipt').click(function () {
+        $('#btnCalculateReceipt').click(function() {
             let studentId = $(this).data('id');
             let includeCurrentMonth = $('#receipt-options input[type="radio"]:checked').val();
             let enrolledAt = $('#enrolled_at').val();
             let paymentCycleId = $('#selectpayment_cycle_id').val();
-            if(paymentCycleId=="") {
+            if (paymentCycleId == "") {
                 alert("Vui lòng chọn chu kỳ thu dịch vụ!");
                 return;
             }
-            if(enrolledAt=="") {
+            if (enrolledAt == "") {
                 alert("Vui lòng chọn ngày bắt đầu chu kỳ thanh toán!");
                 return;
             }
@@ -962,7 +1193,7 @@
                     payment_cycle_id: paymentCycleId,
                     _token: '{{ csrf_token() }}'
                 },
-                success: function (response) {
+                success: function(response) {
                     if (response.message === 'success') {
                         alert("Tạo hóa đơn thành công!");
                         localStorage.setItem('activeTab', '#tab_4');
@@ -971,7 +1202,7 @@
                         alert("Không thể tạo hóa đơn.");
                     }
                 },
-                error: function () {
+                error: function() {
                     alert("Đã xảy ra lỗi khi tạo hóa đơn.");
                 }
             });
