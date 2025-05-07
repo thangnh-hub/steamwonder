@@ -109,6 +109,7 @@ Route::group(['namespace' => 'Admin'], function () {
         'deductions' => 'DeductionController',
         'receipt' => 'ReceiptController',
         'attendance' => 'AttendancesController',
+        'promotions' => 'PromotionController',
       ]);
       // Import Class và StudentClass
       Route::post('import_class', 'AdminController@importClassStudent')->name('class.import_class');
