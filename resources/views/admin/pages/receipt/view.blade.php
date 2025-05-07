@@ -2,7 +2,7 @@
     <ul class="nav nav-tabs">
         <li class="active">
             <a href="#tab_thongtin" data-toggle="tab">
-                <h5 class="fw-bold">Thông tin hóa đơn</h5>
+                <h5 class="fw-bold">Thông tin TBP</h5>
             </a>
         </li>
         <li class="">
@@ -18,7 +18,7 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <label class="control-label"><strong>@lang('Mã hóa đơn')</strong></label>
+                                <label class="control-label"><strong>@lang('Mã TBP')</strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                                 <p>{{ $detail->receipt_code ?? '' }}</p>
@@ -28,7 +28,7 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <label class="control-label"><strong>@lang('Tên hóa đơn')</strong></label>
+                                <label class="control-label"><strong>@lang('Tên TBP')</strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                                 <p>{{ $detail->receipt_name ?? '' }}</p>

@@ -113,11 +113,11 @@
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th>@lang('Mã hóa đơn')</th>
-                                <th>@lang('Tên hóa đơn')</th>
+                                <th>@lang('Mã TBP')</th>
+                                <th>@lang('Tên TBP')</th>
                                 <th>@lang('Học sinh')</th>
                                 <th>@lang('Khu vực')</th>
-                                <th>@lang('Chu kỳ thanh toán')</th>
+                                {{-- <th>@lang('Chu kỳ thanh toán')</th> --}}
                                 <th>@lang('Số tiên cần thu')</th>
                                 <th>@lang('Tổng giảm trừ')</th>
                                 <th>@lang('Tổng các truy thu')</th>
@@ -144,9 +144,9 @@
                                     <td>
                                         {{ $row->area->name ?? '' }}
                                     </td>
-                                    <td>
+                                    {{-- <td>
                                         {{ $row->payment_cycle->name ?? '' }}
-                                    </td>
+                                    </td> --}}
                                     <td>
                                         {{ number_format($row->total_amount, 0, ',', '.') ?? '' }}
                                     </td>
@@ -176,13 +176,13 @@
                                         <button class="btn btn-sm btn-success btn_show_detail mr-10" data-toggle="tooltip"
                                             data-id="{{ $row->id }}"
                                             data-url="{{ route(Request::segment(2) . '.view', $row->id) }}"
-                                            title="@lang('Show')" data-original-title="@lang('Show')">
+                                            title="@lang('Xem nhanh')" data-original-title="@lang('Xem nhanh')">
                                             <i class="fa fa-eye"></i>
                                         </button>
-                                        <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="@lang('Thanh toán')"
-                                            data-original-title="@lang('Thanh toán')" style="min-width: 34px"
+                                        <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="@lang('Chỉnh sửa')"
+                                            data-original-title="@lang('Chỉnh sửa')" style="min-width: 34px"
                                             href="{{ route(Request::segment(2) . '.show', $row->id) }}">
-                                            <i class="fa fa-usd"></i>
+                                            <i class="fa fa-pencil"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -209,7 +209,7 @@
         <div class="modal-dialog modal-custom" role="document">
             <div class="modal-content">
                 <div class="modal-header ">
-                    <h3 class="modal-title text-center col-md-12">@lang('Thông tin hóa đơn')</h3>
+                    <h3 class="modal-title text-center col-md-12">@lang('Thông tin TBP')</h3>
                     </h3>
                 </div>
                 <div class="modal-body show_detail_deduction">

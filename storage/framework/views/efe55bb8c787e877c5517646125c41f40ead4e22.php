@@ -1,18 +1,18 @@
 <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
         <li class="active">
-            <a href="#tab_1" data-toggle="tab">
+            <a href="#tab_thongtin" data-toggle="tab">
                 <h5 class="fw-bold">Thông tin hóa đơn</h5>
             </a>
         </li>
         <li class="">
-            <a href="#tab_2" data-toggle="tab">
+            <a href="#tab_dichvu" data-toggle="tab">
                 <h5 class="fw-bold">Dịch vụ kèm theo</h5>
             </a>
         </li>
     </ul>
     <div class="tab-content">
-        <div class="tab-pane active" id="tab_1">
+        <div class="tab-pane active" id="tab_thongtin">
             <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -196,54 +196,57 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane " id="tab_2">
+        <div class="tab-pane " id="tab_dichvu">
             <div class="row">
                 <div class="col-xs-12">
                     <div class="box" style="border-top: 3px solid #d2d6de;">
                         <div class="box-header">
                         </div>
                         <div class="box-body no-padding">
-                            <table class="table table-hover sticky">
-                                <thead>
-                                    <tr>
-                                        <th><?php echo app('translator')->get('Tên dịch vụ'); ?></th>
-                                        <th><?php echo app('translator')->get('Loại dịch vụ'); ?></th>
-                                        <th><?php echo app('translator')->get('Tháng áp dụng'); ?></th>
-                                        <th><?php echo app('translator')->get('Số lượng dự kiến'); ?></th>
-                                        <th><?php echo app('translator')->get('Số lượng thực tế'); ?></th>
-                                        <th><?php echo app('translator')->get('Đơn giá dịch vụ'); ?></th>
-                                        <th><?php echo app('translator')->get('Số tiền dịch vụ trong tháng'); ?></th>
-                                        <th><?php echo app('translator')->get('Giảm trừ'); ?></th>
-                                        <th><?php echo app('translator')->get('Truy thu (+) / Hoàn trả (-)'); ?></th>
-                                        <th><?php echo app('translator')->get('Tổng số tiền cuối cùng'); ?></th>
-                                        <th><?php echo app('translator')->get('Trạng thái'); ?></th>
-                                    </tr>
-                                </thead>
-                                <tbody class="box_policies">
-                                    <?php if(isset($detail->receiptDetail)): ?>
-                                        <?php $__currentLoopData = $detail->receiptDetail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <tr class="item_policies">
-                                                <td><?php echo e($item->services_receipt->name ?? ''); ?></td>
-                                                <td><?php echo e(__($item->services_receipt->service_type) ?? ''); ?></td>
-                                                <td><?php echo e(date('m-Y', strtotime($item->month))); ?></td>
-                                                <td><?php echo e($item->by_number ?? 0); ?></td>
-                                                <td><?php echo e($item->spent_number ?? 0); ?></td>
-                                                <td><?php echo e(number_format($item->unit_price, 0, ',', '.')); ?></td>
-                                                <td><?php echo e(number_format($item->amount, 0, ',', '.')); ?></td>
-                                                <td><?php echo e(number_format($item->discount_amount, 0, ',', '.')); ?></td>
-                                                <td><?php echo e(number_format($item->adjustment_amount, 0, ',', '.')); ?></td>
-                                                <td><?php echo e(number_format($item->final_amount, 0, ',', '.')); ?></td>
-                                                <td><?php echo e(__($item->status)); ?></td>
-                                            </tr>
-                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
+                            <div class="table-responsive">
+                                <table class="table table-hover sticky ">
+                                    <thead>
+                                        <tr>
+                                            <th><?php echo app('translator')->get('Tên dịch vụ'); ?></th>
+                                            <th><?php echo app('translator')->get('Loại dịch vụ'); ?></th>
+                                            <th><?php echo app('translator')->get('Tháng áp dụng'); ?></th>
+                                            <th><?php echo app('translator')->get('Số lượng '); ?></th>
+                                            
+                                            <th><?php echo app('translator')->get('Đơn giá'); ?></th>
+                                            <th><?php echo app('translator')->get('Thành tiền'); ?></th>
+                                            <th><?php echo app('translator')->get('Giảm trừ'); ?></th>
+                                            <th><?php echo app('translator')->get('Truy thu (+) / Hoàn trả (-)'); ?></th>
+                                            <th><?php echo app('translator')->get('Tổng tiền cuối cùng'); ?></th>
+                                            <th><?php echo app('translator')->get('Trạng thái'); ?></th>
+                                            <th style="width:250px"><?php echo app('translator')->get('Ghi chú'); ?></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="box_policies">
+                                        <?php if(isset($detail->receiptDetail)): ?>
+                                            <?php $__currentLoopData = $detail->receiptDetail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <tr class="item_policies">
+                                                    <td><?php echo e($item->services_receipt->name ?? ''); ?></td>
+                                                    <td><?php echo e(__($item->services_receipt->service_type) ?? ''); ?></td>
+                                                    <td><?php echo e(date('m-Y', strtotime($item->month))); ?></td>
+                                                    <td><?php echo e($item->by_number ?? 0); ?></td>
+                                                    
+                                                    <td><?php echo e(number_format($item->unit_price, 0, ',', '.')); ?></td>
+                                                    <td><?php echo e(number_format($item->amount, 0, ',', '.')); ?></td>
+                                                    <td><?php echo e(number_format($item->discount_amount, 0, ',', '.')); ?></td>
+                                                    <td><?php echo e(number_format($item->adjustment_amount, 0, ',', '.')); ?></td>
+                                                    <td><?php echo e(number_format($item->final_amount, 0, ',', '.')); ?></td>
+                                                    <td><?php echo e(__($item->status)); ?></td>
+                                                    <td><?php echo ($item->note); ?></td>
+                                                </tr>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        <?php endif; ?>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
