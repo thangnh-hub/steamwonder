@@ -114,8 +114,9 @@
                                 <th><?php echo app('translator')->get('Mô tả'); ?></th>
                                 <th><?php echo app('translator')->get('Khu vực'); ?></th>
                                 <th><?php echo app('translator')->get('Giảm lũy kế'); ?></th>
-                                <th><?php echo app('translator')->get('Loại giảm trừ'); ?></th>
                                 <th><?php echo app('translator')->get('Kiểu điều kiện'); ?></th>
+                                <th><?php echo app('translator')->get('Bắt đầu'); ?></th>
+                                <th><?php echo app('translator')->get('Kết thúc'); ?></th>
                                 <th><?php echo app('translator')->get('Trạng thái'); ?></th>
                                 <th><?php echo app('translator')->get('Cập nhật'); ?></th>
                                 <th><?php echo app('translator')->get('Ngày cập nhật'); ?></th>
@@ -151,11 +152,15 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <?php echo e(__($row->type) ?? ''); ?>
+                                        <?php echo e(__($row->condition_type) ?? ''); ?>
 
                                     </td>
                                     <td>
-                                        <?php echo e(__($row->condition_type) ?? ''); ?>
+                                        <?php echo e($row->json_params->condition->start ?? ''); ?>
+
+                                    </td>
+                                    <td>
+                                        <?php echo e($row->json_params->condition->end ?? ''); ?>
 
                                     </td>
                                     <td>
