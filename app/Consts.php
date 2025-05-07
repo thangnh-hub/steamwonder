@@ -4,6 +4,11 @@ namespace App;
 
 class Consts
 {
+    const PROMOTION_TYPE = [
+        'percent' =>'percent',
+        'fixed_amout' =>'fixed_amout',
+        'add_month' =>'add_month',
+    ];
     const STATUS_RECEIPT = [
         'pending' => 'pending',
         'paid' => 'paid',
