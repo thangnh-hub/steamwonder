@@ -306,22 +306,22 @@ class ReceiptService
         $discount_notes = [];
         $service_name = $service_info['name'];
 
-
-        // Kiểm tra có chương trình khuyến mãi nào áp dụng không
+        // Kiểm tra có chương trình khuyến mãi nào đc áp dụng không
         $has_valid_promotion = false;
-        $valid_promotions = [];
-
+        
+        // Ưu đãi theo khuyến mãi hợp lệ
         foreach ($promotions as $promotion) {
-            $start = \Carbon\Carbon::parse($promotion->time_start)->startOfMonth();
-            $end = \Carbon\Carbon::parse($promotion->time_end)->endOfMonth();
-            $checkMonth = \Carbon\Carbon::parse($month)->startOfMonth();
-    
-            if ($checkMonth->between($start, $end)) {
-                $has_valid_promotion = true;
-                $valid_promotions[] = $promotion;
-            }
-        }
+            $discount_promotion_value = $promotion->json_params->services->{$service_info['id']}->value ?? 0;
+            $discount_promotion_type = $promotion->promotion_type ?? null;
 
+            if ($discount_promotion_type == Consts::TYPE_POLICIES['percent'] && $discount_promotion_value > 0) {
+                $has_valid_promotion = true;
+                $discount_notes[] = "{$promotion->promotion_name} giảm ({$discount_promotion_value}%)";
+                $amount_after_discount = $amount_after_discount - $amount_after_discount * ($discount_promotion_value / 100);
+            } 
+
+            
+        }
         // Ưu đãi theo chu kỳ thanh toán
         if (!$has_valid_promotion) {
             if ($discount_cycle_type == Consts::TYPE_POLICIES['percent']) {
@@ -346,16 +346,7 @@ class ReceiptService
             }
         }
 
-        // Áp dụng khuyến mãi hợp lệ
-        foreach ($valid_promotions as $promotion) {
-            $discount_promotion_value = $promotion->json_params->services->{$service_info['id']}->value ?? 0;
-            $discount_promotion_type = $promotion->promotion_type ?? null;
-
-            if ($discount_promotion_type == Consts::TYPE_POLICIES['percent']) {
-                $discount_notes[] = "{$promotion->promotion_name} giảm ({$discount_promotion_value}%)";
-                $amount_after_discount = $amount_after_discount - $amount_after_discount * ($discount_promotion_value / 100);
-            } 
-        }
+        
 
         $discount_amount = $amount - $amount_after_discount;
         return [
