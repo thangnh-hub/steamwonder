@@ -108,7 +108,7 @@
                                     </li>
                                     <li class="">
                                         <a href="#tab_5" data-toggle="tab">
-                                            <h5>CT Kh.Mãi được áo dụng</h5>
+                                            <h5>CT Kh.Mãi được áp dụng</h5>
                                         </a>
                                     </li>
                                 </ul>
