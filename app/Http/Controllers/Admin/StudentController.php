@@ -143,7 +143,7 @@ class StudentController extends Controller
         //list promotion
         $this->responseData['status'] = Consts::STATUS;
         $this->responseData['services'] = Service::where('status', 'active')->get();
-        $this->responseData['promotion_active'] = StudentPromotion::where('status', 'active')->get();
+        $this->responseData['promotion_active'] = StudentPromotion::where('student_id',$student->id)->where('status', 'active')->get();
         $this->responseData['list_promotion'] = Promotion::getSqlPromotion($params_active)->get();
         return $this->responseView($this->viewPart . '.edit');
     }
@@ -378,7 +378,7 @@ class StudentController extends Controller
             //     $student->studentServices()->update([
             //         'payment_cycle_id' => $request->input('payment_cycle_id', null),
             //     ]);
-            // } 
+            // }
             return response()->json(['message' => 'success']);
         } catch (\Exception $e) {
             return response()->json(['message' => 'error', 'error' => $e->getMessage()], 422);
@@ -394,7 +394,7 @@ class StudentController extends Controller
                 ->where('status', 'active')
                 ->get()
                 ->pluck('services');
-            
+
             $data['include_current_month'] = false;
             $data['enrolled_at'] = $request->input('enrolled_at', null);
             $calcuReceiptrenew = $receiptService->renewReceiptForStudent($student, $data);
