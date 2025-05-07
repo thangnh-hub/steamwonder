@@ -124,4 +124,8 @@ class Student extends Model
     {
         return $this->hasMany(Receipt::class, 'student_id', 'id');
     }
+    public function studentPromotions()
+    {
+        return $this->hasMany(StudentPromotion::class, 'student_id', 'id');
+    }
 }
