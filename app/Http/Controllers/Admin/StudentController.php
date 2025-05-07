@@ -239,7 +239,7 @@ class StudentController extends Controller
                 StudentService::create([
                     'student_id'      => $student->id,
                     'service_id'       => $data['id'],
-                    'payment_cycle_id' => $student->payment_cycle_id ?? "",
+                    'payment_cycle_id' => $data['payment_cycle_id'] ?? null,
                     'json_params'       => [
                         'note' => $data['note'] ?? "",
                     ],
@@ -373,16 +373,36 @@ class StudentController extends Controller
 
             $data['include_current_month'] = $request->input('include_current_month', 0) == 1 ? true : false;
             $data['enrolled_at'] = $request->input('enrolled_at', null);
-            // dd();
             $calcuReceipt = $receiptService->createReceiptForStudent($student, $data);
-            if ($calcuReceipt) {
-                $student->studentServices()->update([
-                    'payment_cycle_id' => $request->input('payment_cycle_id', null),
-                ]);
-            }
+            // if ($calcuReceipt) {
+            //     $student->studentServices()->update([
+            //         'payment_cycle_id' => $request->input('payment_cycle_id', null),
+            //     ]);
+            // } 
             return response()->json(['message' => 'success']);
         } catch (\Exception $e) {
             return response()->json(['message' => 'error', 'error' => $e->getMessage()], 422);
         }
     }
+    public function calculReceiptStudentRenew(Request $request, ReceiptService $receiptService)
+    {
+        try {
+            $params = $request->all();
+            $student = Student::findOrFail($params['student_id']);
+
+            $data['services'] = $student->studentServices()->with('services')
+                ->where('status', 'active')
+                ->get()
+                ->pluck('services');
+            
+            $data['include_current_month'] = false;
+            $data['enrolled_at'] = $request->input('enrolled_at', null);
+            $calcuReceiptrenew = $receiptService->renewReceiptForStudent($student, $data);
+            return redirect()->back()->with('successMessage', __('Cập nhật tái tục dịch vụ thành công!'));
+        } catch (\Exception $e) {
+            // Bắt lỗi chung khác
+            return redirect()->back()->with('errorMessage', $e->getMessage());
+        }
+    }
+
 }

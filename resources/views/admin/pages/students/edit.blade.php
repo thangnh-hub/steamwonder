@@ -116,7 +116,7 @@
                                     <div class="tab-pane active" id="tab_1">
                                         <div class="box-body">
                                             <div class="d-flex-wap">
-                                                <div class="col-md-4">
+                                                <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Khu vực')<small class="text-red">*</small></label>
                                                         <select name="area_id" class="form-control select2" required>
@@ -130,8 +130,8 @@
                                                         </select>
                                                     </div>
                                                 </div>
-
-                                                <div class="col-md-4">
+                                                
+                                                <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Họ')<small class="text-red">*</small></label>
                                                         <input type="text" class="form-control" name="first_name"
@@ -139,23 +139,25 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-4">
+                                                <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Tên')<small class="text-red">*</small></label>
                                                         <input type="text" class="form-control" name="last_name"
                                                             value="{{ old('last_name', $detail->last_name) }}" required>
                                                     </div>
                                                 </div>
-
-                                                <div class="col-md-4">
+                                                
+                                                
+                                                
+                                                <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Tên thường gọi')</label>
                                                         <input type="text" class="form-control" name="nickname"
                                                             value="{{ old('nickname', $detail->nickname) }}">
                                                     </div>
                                                 </div>
-
-                                                <div class="col-md-4">
+                                                
+                                                <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Giới tính')</label>
                                                         <select name="sex" class="form-control select2">
@@ -168,24 +170,24 @@
                                                         </select>
                                                     </div>
                                                 </div>
-
-                                                <div class="col-md-4">
+                                                
+                                                <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Ngày sinh')</label>
                                                         <input type="date" class="form-control" name="birthday"
                                                             value="{{ old('birthday', $detail->birthday) }}">
                                                     </div>
                                                 </div>
-
-                                                <div class="col-md-4">
+                                                
+                                                <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Ngày nhập học')</label>
                                                         <input type="date" class="form-control" name="enrolled_at"
                                                             value="{{ old('enrolled_at', $detail->enrolled_at) }}">
                                                     </div>
                                                 </div>
-
-                                                <div class="col-md-4">
+                                                
+                                                <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Trạng thái')</label>
                                                         <select name="status" class="form-control select2">
@@ -198,7 +200,7 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Chính sách được hưởng')</label>
                                                         <select name="policies[]" class="form-control select2" multiple>
@@ -216,8 +218,8 @@
                                                         </select>
                                                     </div>
                                                 </div>
-
-                                                <div class="col-md-4">
+                                                
+                                                <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Chu kỳ thu dịch vụ')</label>
                                                         <select style="width:100%" name="payment_cycle_id"
@@ -233,7 +235,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-4">
+                                                <div class="col-md-4 col-xs-12">
                                                     <div class="form-group box_img_right">
                                                         <label>@lang('Ảnh đại diện')</label>
                                                         <div id="image-holder">
@@ -269,25 +271,26 @@
                                             </div>
 
                                             <br>
-                                            <table class="table table-hover table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th>@lang('STT')</th>
-                                                        <th>@lang('Avatar')</th>
-                                                        <th>@lang('Họ và tên')</th>
-                                                        <th>@lang('Giới tính')</th>
-                                                        <th>@lang('Ngày sinh')</th>
-                                                        <th>@lang('Số CMND/CCCD')</th>
-                                                        <th>@lang('Số điện thoại')</th>
-                                                        <th>@lang('Email')</th>
-                                                        <th>@lang('Địa chỉ')</th>
-                                                        <th>@lang('Khu vực')</th>
-                                                        <th>@lang('Trạng thái')</th>
-                                                        <th>@lang('Quan hệ')</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @if ($detail->studentParents->count())
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>@lang('STT')</th>
+                                                            <th>@lang('Avatar')</th>
+                                                            <th>@lang('Họ và tên')</th>
+                                                            <th>@lang('Giới tính')</th>
+                                                            <th>@lang('Ngày sinh')</th>
+                                                            <th>@lang('Số CMND/CCCD')</th>
+                                                            <th>@lang('Số điện thoại')</th>
+                                                            <th>@lang('Email')</th>  
+                                                            <th>@lang('Địa chỉ')</th>
+                                                            <th>@lang('Khu vực')</th>
+                                                            <th>@lang('Trạng thái')</th>
+                                                            <th>@lang('Quan hệ')</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if ($detail->studentParents->count())
                                                         @foreach ($detail->studentParents as $row)
                                                             <tr class="valign-middle">
                                                                 <td>
@@ -295,23 +298,18 @@
                                                                 </td>
                                                                 <td>
                                                                     @if (!empty($row->parent->avatar))
-                                                                        <img src="{{ asset($row->parent->avatar) }}"
-                                                                            alt="Avatar" width="100" height="100"
-                                                                            style="object-fit: cover;">
+                                                                        <img src="{{ asset($row->parent->avatar) }}" alt="Avatar" width="100" height="100" style="object-fit: cover;">
                                                                     @else
                                                                         <span class="text-muted">No image</span>
                                                                     @endif
                                                                 </td>
                                                                 <td>
-                                                                    <a target="_blank"
-                                                                        href="{{ route('parents.show', $row->parent->id) }}">
-                                                                        {{ $row->parent->first_name ?? '' }}
-                                                                        {{ $row->parent->last_name ?? '' }}
+                                                                    <a target="_blank" href="{{ route('parents.show', $row->parent->id) }}">
+                                                                        {{ $row->parent->first_name ?? '' }} {{ $row->parent->last_name ?? '' }}  
                                                                     </a>
                                                                 </td>
                                                                 <td>@lang($row->parent->sex ?? '')</td>
-                                                                <td>{{ $row->parent->birthday ? \Carbon\Carbon::parse($row->parent->birthday)->format('d/m/Y') : '' }}
-                                                                </td>
+                                                                <td>{{ $row->parent->birthday ? \Carbon\Carbon::parse($row->parent->birthday)->format('d/m/Y') : '' }}</td>
                                                                 <td>{{ $row->parent->identity_card ?? '' }}</td>
                                                                 <td>{{ $row->parent->phone ?? '' }}</td>
                                                                 <td>{{ $row->parent->email ?? '' }}</td>
@@ -321,16 +319,15 @@
                                                                 <td>{{ $row->relationship->title ?? '' }}</td>
                                                             </tr>
                                                         @endforeach
-                                                    @else
-                                                        <tr>
-                                                            <td colspan="14" class="text-center">Không có dữ liệu</td>
-                                                        </tr>
-                                                    @endif
-                                                </tbody>
-
-                                            </table>
-
-                                        </div>
+                                                        @else
+                                                            <tr>
+                                                                <td colspan="14" class="text-center">Không có dữ liệu</td>
+                                                            </tr>
+                                                        @endif
+                                                    </tbody>
+                                                </table>    
+                                            </div>
+                                        </div>                      
                                     </div>
                                     {{-- Dịch vụ đã đăng ký --}}
                                     <div class="tab-pane " id="tab_3">
@@ -339,105 +336,97 @@
                                                 <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
                                                     data-target="#addServiceModal">
                                                     <i class="fa fa-plus"></i> @lang('Đăng ký dịch vụ')
-                                                </button>
-
+                                                </button>     
+                                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#reincarnationModal">
+                                                    <i class="fa fa-recycle"></i> @lang('Xử lý tái tục dịch vụ')
+                                                </button>     
                                             </div>
-
                                             <br>
-                                            <table class="table table-hover table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th>@lang('STT')</th>
-                                                        <th>@lang('Tên dịch vụ')</th>
-                                                        <th>@lang('Nhóm dịch vụ')</th>
-                                                        <th>@lang('Hệ đào tạo')</th>
-                                                        <th>@lang('Độ tuổi')</th>
-                                                        <th>@lang('Tính chất dịch vụ')</th>
-                                                        <th>@lang('Loại dịch vụ')</th>
-                                                        <th>@lang('Biểu phí')</th>
-                                                        {{-- <th>@lang('Chu kỳ thu')</th> --}}
-                                                        <th>@lang('Ngày bắt đầu')</th>
-                                                        <th>@lang('Ngày kết thúc')</th>
-                                                        <th>@lang('Ghi chú')</th>
-                                                        <th>@lang('Chức năng')</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @php
-                                                        $activeServices = $detail->studentServices->where(
-                                                            'status',
-                                                            'active',
-                                                        );
-                                                    @endphp
-                                                    @if ($activeServices->count())
-                                                        @foreach ($activeServices as $row)
-                                                            <tr>
-                                                                <td>{{ $loop->index + 1 }}</td>
-                                                                <td>{{ $row->services->name ?? '' }}</td>
-                                                                <td>{{ $row->services->service_category->name ?? '' }}</td>
-                                                                <td>{{ $row->services->education_program->name ?? '' }}
-                                                                </td>
-                                                                <td>{{ $row->services->education_age->name ?? '' }}</td>
-                                                                <td>{{ $row->services->is_attendance == 0 ? 'Không theo điểm danh' : 'Tính theo điểm danh' }}
-                                                                </td>
-                                                                <td>{{ __($row->services->service_type ?? '') }}</td>
-                                                                <td>
-                                                                    @if (isset($row->services->serviceDetail) && $row->services->serviceDetail->count() > 0)
-                                                                        @foreach ($row->services->serviceDetail as $detail_service)
-                                                                            <ul>
-                                                                                <li>Số tiền:
-                                                                                    {{ isset($detail_service->price) && is_numeric($detail_service->price) ? number_format($detail_service->price, 0, ',', '.') . ' đ' : '' }}
-                                                                                </li>
-                                                                                <li>Số lượng:
-                                                                                    {{ $detail_service->quantity ?? '' }}
-                                                                                </li>
-                                                                                <li>Từ:
-                                                                                    {{ isset($detail_service->start_at) ? \Illuminate\Support\Carbon::parse($detail_service->start_at)->format('d-m-Y') : '' }}
-                                                                                </li>
-                                                                                <li>Đến:
-                                                                                    {{ isset($detail_service->end_at) ? \Illuminate\Support\Carbon::parse($detail_service->end_at)->format('d-m-Y') : '' }}
-                                                                                </li>
-                                                                            </ul>
-                                                                        @endforeach
-                                                                    @endif
-                                                                </td>
-                                                                {{-- <td>
-                                                            {{ $row->paymentcycle->name ?? "" }}
-                                                        </td> --}}
-
-                                                                <td>
-                                                                    {{ $row->created_at ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') : '' }}
-                                                                </td>
-                                                                <td>
-                                                                    {{ $row->cancelled_at ? \Carbon\Carbon::parse($row->cancelled_at)->format('d-m-Y') : '' }}
-                                                                </td>
-
-                                                                <td>
-                                                                    {{ $row->json_params->note ?? '' }}
-                                                                </td>
-                                                                <td>
-                                                                    <button type="button"
-                                                                        class="btn btn-sm btn-danger delete_student_service"
-                                                                        data-id="{{ $row->id }}">
-                                                                        <i class="fa fa-close"></i> Hủy
-                                                                    </button>
-                                                                    <button data-id="{{ $row->id }}" type="button"
-                                                                        class="btn btn-primary btn-sm update_student_service"
-                                                                        data-toggle="modal"
-                                                                        data-target="#editServiceModal">
-                                                                        <i class="fa fa-pencil"></i> @lang('Cập nhật')
-                                                                    </button>
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                    @else
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-bordered">
+                                                    <thead>
                                                         <tr>
-                                                            <td colspan="14" class="text-center">Không có dữ liệu</td>
+                                                            <th>@lang('STT')</th>
+                                                            <th>@lang('Tên dịch vụ')</th>
+                                                            <th>@lang('Nhóm dịch vụ')</th>
+                                                            <th>@lang('Hệ đào tạo')</th>
+                                                            <th>@lang('Độ tuổi')</th>
+                                                            <th>@lang('Tính chất dịch vụ')</th>
+                                                            <th>@lang('Loại dịch vụ')</th>
+                                                            <th>@lang('Biểu phí')</th>
+                                                            <th>@lang('Chu kỳ thu')</th>
+                                                            <th>@lang('Ngày bắt đầu')</th>
+                                                            <th>@lang('Ngày kết thúc')</th>
+                                                            <th>@lang('Ghi chú')</th>
+                                                            <th>@lang('Chức năng')</th>
                                                         </tr>
-                                                    @endif
-                                                </tbody>
-
-                                            </table>
+                                                    </thead>
+                                                    <tbody>
+                                                        @php
+                                                            $activeServices = $detail->studentServices->where('status', 'active');
+                                                        @endphp
+                                                        @if($activeServices->count())
+                                                        @foreach ($activeServices as $row)
+                                                        <tr>
+                                                            <td>{{ $loop->index + 1 }}</td>
+                                                            <td>{{ $row->services->name ?? "" }}</td>
+                                                            <td>{{ $row->services->service_category->name ?? "" }}</td>
+                                                            <td>{{ $row->services->education_program->name ?? "" }}</td>
+                                                            <td>{{ $row->services->education_age->name ?? "" }}</td>
+                                                            <td>{{ $row->services->is_attendance== 0 ? "Không theo điểm danh" : "Tính theo điểm danh"}}</td>
+                                                            <td>{{ __($row->services->service_type??"") }}</td>
+                                                            
+                                                            <td>
+                                                                @if(isset($row->services->serviceDetail) && $row->services->serviceDetail->count() > 0)
+                                                                @foreach ($row->services->serviceDetail as $detail_service)
+                                                                <ul>
+                                                                    <li>Số tiền: {{ isset($detail_service->price) && is_numeric($detail_service->price) ? number_format($detail_service->price, 0, ',', '.') . ' đ' : '' }}</li>
+                                                                    <li>Số lượng: {{ $detail_service->quantity ?? '' }}</li>
+                                                                    <li>Từ: {{ (isset($detail_service->start_at) ? \Illuminate\Support\Carbon::parse($detail_service->start_at)->format('d-m-Y') : '') }}</li>
+                                                                    <li>Đến: {{ (isset($detail_service->end_at) ? \Illuminate\Support\Carbon::parse($detail_service->end_at)->format('d-m-Y') : '') }}</li>
+                                                                </ul>
+                                                                @endforeach
+                        
+                                                                @endif
+                                                            </td>
+                                                            <td>
+                                                                {{ $row->paymentcycle->name ?? "" }}
+                                                            </td>
+    
+                                                            <td>
+                                                                {{ ($row->created_at)
+                                                                    ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') 
+                                                                    : '' 
+                                                                }}
+                                                            </td>
+                                                            <td>
+                                                                {{ ($row->cancelled_at) 
+                                                                    ? \Carbon\Carbon::parse($row->cancelled_at)->format('d-m-Y') 
+                                                                    : '' 
+                                                                }}
+                                                            </td>
+    
+                                                            <td>
+                                                                {{ $row->json_params->note ?? "" }}
+                                                            </td>
+                                                            <td>
+                                                                <button type="button" class="btn btn-sm btn-danger delete_student_service" data-id="{{ $row->id }}">
+                                                                    <i class="fa fa-close"></i> Hủy
+                                                                </button>
+                                                                <button data-id="{{ $row->id }}" type="button" class="btn btn-primary btn-sm update_student_service" data-toggle="modal" data-target="#editServiceModal">
+                                                                    <i class="fa fa-pencil"></i> @lang('Cập nhật')
+                                                                </button> 
+                                                            </td>
+                                                        </tr>
+                                                        @endforeach
+                                                        @else
+                                                            <tr>
+                                                                <td colspan="14" class="text-center">Không có dữ liệu</td>
+                                                            </tr>
+                                                        @endif
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                             <br>
                                             @php
                                                 $cancelledServices = $detail->studentServices->where(
@@ -445,9 +434,10 @@
                                                     'cancelled',
                                                 );
                                             @endphp
-                                            @if ($cancelledServices->count())
-                                                <h4 class="mt-4 ">Danh sách dịch vụ bị huỷ</h4>
-                                                <br>
+                                            @if($cancelledServices->count())
+                                            <h4 class="mt-4 ">Danh sách dịch vụ bị huỷ</h4>
+                                            <br>
+                                            <div class="table-responsive">
                                                 <table class="table table-hover table-bordered">
                                                     <thead>
                                                         <tr>
@@ -462,24 +452,30 @@
                                                     <tbody>
                                                         @foreach ($cancelledServices as $index => $row)
                                                             <tr>
-                                                                <td>{{ $loop->index + 1 }} {{ $row->id }}</td>
+                                                                <td>{{ $loop->index + 1 }}</td>
                                                                 <td>{{ $row->services->name ?? '' }}</td>
                                                                 <td>
-                                                                    {{ $row->created_at ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') : '' }}
+                                                                    {{ ($row->created_at)
+                                                                        ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') 
+                                                                        : '' 
+                                                                    }}
                                                                 </td>
                                                                 <td>
-                                                                    {{ $row->cancelled_at ? \Carbon\Carbon::parse($row->cancelled_at)->format('d-m-Y') : '' }}
+                                                                    {{ ($row->cancelled_at) 
+                                                                        ? \Carbon\Carbon::parse($row->cancelled_at)->format('d-m-Y') 
+                                                                        : '' 
+                                                                    }}
                                                                 </td>
-
+                                                             
                                                                 <td>
-                                                                    {{ $row->adminUpdated->name ?? '' }}
-                                                                    ({{ $row->updated_at ? \Carbon\Carbon::parse($row->updated_at)->format('H:i:s d-m-Y') : '' }})
+                                                                    {{ $row->adminUpdated->name ?? "" }} ({{ $row->updated_at ? \Carbon\Carbon::parse($row->updated_at)->format('H:i:s d-m-Y') : '' }})   
                                                                 </td>
                                                                 <td><span class="badge badge-danger">Đã huỷ</span></td>
                                                             </tr>
                                                         @endforeach
                                                     </tbody>
                                                 </table>
+                                            </div>
                                             @endif
                                         </div>
                                     </div>
@@ -546,7 +542,6 @@
                                                 </div>
 
                                             </form>
-
                                             <table class="table table-hover table-bordered">
                                                 <thead>
                                                     <tr>
@@ -775,73 +770,62 @@
     <div class="modal fade" id="addParentModal" tabindex="-1" role="dialog" aria-labelledby="addParentModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-full" role="document">
-            <form action="{{ route('student.addParent', $detail->id) }}" method="POST">
-                @csrf
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addParentModalLabel">@lang('Chọn người thân')</h5>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="search-parent"
-                                placeholder="@lang('Tìm theo tên phụ huynh...')">
-                        </div>
-                        <div class="table-wrapper">
-                            <table class="table table-hover table-bordered" id="parent-table">
-                                <thead>
-                                    <tr>
-                                        <th>Chọn</th>
-                                        <th>@lang('Họ và tên')</th>
-                                        <th>@lang('Giới tính')</th>
-                                        <th>@lang('Số điện thoại')</th>
-                                        <th>@lang('Email')</th>
-                                        <th>@lang('Chọn mối quan hệ')</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($allParents as $parent)
-                                        @php
-                                            $isChecked = in_array($parent->id, $studentParentIds);
-                                            $existingRelation = $detail->studentParents->firstWhere(
-                                                'parent_id',
-                                                $parent->id,
-                                            );
-                                        @endphp
-                                        <tr>
-                                            <td>
-                                                <input type="checkbox" name="parents[{{ $parent->id }}][id]"
-                                                    value="{{ $parent->id }}" {{ $isChecked ? 'checked' : '' }}>
-                                            </td>
-                                            <td class="parent-name">{{ $parent->first_name }} {{ $parent->last_name }}
-                                            </td>
-                                            <td>@lang($parent->sex)</td>
-                                            <td>{{ $parent->phone }}</td>
-                                            <td>{{ $parent->email }}</td>
-                                            <td>
-                                                <select style="width:100%"
-                                                    name="parents[{{ $parent->id }}][relationship_id]"
-                                                    class="form-control select2">
-                                                    @foreach ($list_relationship as $relation)
-                                                        <option
-                                                            {{ $existingRelation && $existingRelation->relationship_id == $relation->id ? 'selected' : '' }}
-                                                            value="{{ $relation->id }}">{{ $relation->title }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">@lang('Lưu người thân đã chọn')</button>
-                        <button type="button" class="btn btn-secondary"
-                            data-dismiss="modal">@lang('Đóng')</button>
-                    </div>
+        <form action="{{ route('student.addParent', $detail->id) }}" method="POST">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addParentModalLabel">@lang('Chọn người thân')</h5>
                 </div>
-            </form>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="search-parent" placeholder="@lang('Tìm theo tên phụ huynh...')">
+                    </div>
+                    <div class="table-wrapper table-responsive">
+                        <table class="table table-hover table-bordered" id="parent-table">
+                            <thead>
+                                <tr>
+                                    <th>Chọn</th>
+                                    <th>@lang('Họ và tên')</th>
+                                    <th>@lang('Giới tính')</th>
+                                    <th>@lang('Số điện thoại')</th>
+                                    <th>@lang('Email')</th>
+                                    <th>@lang('Chọn mối quan hệ')</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($allParents as $parent)
+                                @php
+                                    $isChecked = in_array($parent->id, $studentParentIds);
+                                    $existingRelation = $detail->studentParents->firstWhere('parent_id', $parent->id);
+                                @endphp
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="parents[{{ $parent->id }}][id]" value="{{ $parent->id }}" {{ $isChecked ? 'checked' : '' }}>
+                                        </td>
+                                        <td class="parent-name">{{ $parent->first_name }} {{ $parent->last_name }}</td>
+                                        <td>@lang($parent->sex)</td>
+                                        <td>{{ $parent->phone }}</td>
+                                        <td>{{ $parent->email }}</td>
+                                        <td>
+                                            <select style="width:100%" name="parents[{{ $parent->id }}][relationship_id]" class="form-control select2">
+                                                @foreach($list_relationship as $relation)
+                                                    <option {{ $existingRelation && $existingRelation->relationship_id == $relation->id ? 'selected' : '' }} value="{{ $relation->id }}">{{ $relation->title }}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>    
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">@lang('Lưu người thân đã chọn')</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@lang('Đóng')</button>
+                </div>
+            </div>
+        </form>
         </div>
     </div>
 
@@ -849,87 +833,101 @@
     <div data-backdrop="static" class="modal fade" id="addServiceModal" tabindex="-1" role="dialog"
         aria-labelledby="addServiceModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-full" role="document">
-            <form action="{{ route('student.addService', $detail->id) }}" method="POST">
-                @csrf
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addServiceModalLabel">@lang('Chọn dịch vụ')</h5>
+        <form id="submitstudentaddService" action="{{ route('student.addService', $detail->id) }}" method="POST">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addServiceModalLabel">@lang('Chọn dịch vụ')</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="search-service" placeholder="@lang('Tìm theo tên dịch vụ...')">
                     </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="search-service"
-                                placeholder="@lang('Tìm theo tên dịch vụ...')">
-                        </div>
-                        <div class="table-wrapper">
-                            <table class="table table-hover table-bordered" id="service-table">
-                                <thead>
+                    <div class="table-wrapper table-responsive" >
+                        <table class="table table-hover table-bordered" id="service-table">
+                            <thead>
+                                <tr>
+                                    <th>@lang('Tên dịch vụ')</th>
+                                    <th>@lang('Nhóm dịch vụ')</th>
+                                    <th>@lang('Tính chất dịch vụ')</th>
+                                    <th>@lang('Loại dịch vụ')</th>
+                                    <th>@lang('Biểu phí')</th>
+                                    <th>@lang('Chu kỳ thu')</th>
+                                    <th>@lang('Ghi chú')</th>
+                                    <th>Chọn</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($unregisteredServices as $service)
                                     <tr>
-                                        <th>@lang('Tên dịch vụ')</th>
-                                        <th>@lang('Nhóm dịch vụ')</th>
-                                        <th>@lang('Tính chất dịch vụ')</th>
-                                        <th>@lang('Loại dịch vụ')</th>
-                                        <th>@lang('Biểu phí')</th>
-                                        {{-- <th>@lang('Chu kỳ thu')</th> --}}
-                                        <th>@lang('Ghi chú')</th>
-                                        <th>Chọn</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($unregisteredServices as $service)
-                                        <tr>
-                                            <td class="service-name">{{ $service->name ?? '' }}</td>
-                                            <td>{{ $service->service_category->name ?? '' }}</td>
-                                            <td>{{ $service->is_attendance == 0 ? 'Không theo điểm danh' : 'Tính theo điểm danh' }}
-                                            </td>
-                                            <td>{{ __($service->service_type ?? '') }}</td>
-
-                                            <td>
-                                                @if (isset($service->serviceDetail) && $service->serviceDetail->count() > 0)
-                                                    @foreach ($service->serviceDetail as $detail_service)
-                                                        <ul>
-                                                            <li>Số tiền:
-                                                                {{ isset($detail_service->price) && is_numeric($detail_service->price) ? number_format($detail_service->price, 0, ',', '.') . ' đ' : '' }}
-                                                            </li>
-                                                            <li>Số lượng: {{ $detail_service->quantity ?? '' }}</li>
-                                                            <li>Từ:
-                                                                {{ isset($detail_service->start_at) ? \Illuminate\Support\Carbon::parse($detail_service->start_at)->format('d-m-Y') : '' }}
-                                                            </li>
-                                                            <li>Đến:
-                                                                {{ isset($detail_service->end_at) ? \Illuminate\Support\Carbon::parse($detail_service->end_at)->format('d-m-Y') : '' }}
-                                                            </li>
-                                                        </ul>
-                                                    @endforeach
-                                                @endif
-                                            </td>
-                                            {{-- <td>
+                                        <td class="service-name">{{ $service->name ?? "" }}</td>
+                                        <td>{{ $service->service_category->name ?? "" }}</td>
+                                        <td>{{ $service->is_attendance== 0 ? "Không theo điểm danh" : "Tính theo điểm danh"}}</td>
+                                        <td>{{ __($service->service_type??"") }}</td>
+                                        
+                                        <td>
+                                            @if(isset($service->serviceDetail) && $service->serviceDetail->count() > 0)
+                                                @foreach ($service->serviceDetail as $detail_service)
+                                                <ul>
+                                                    <li>Số tiền: {{ isset($detail_service->price) && is_numeric($detail_service->price) ? number_format($detail_service->price, 0, ',', '.') . ' đ' : '' }}</li>
+                                                    <li>Số lượng: {{ $detail_service->quantity ?? '' }}</li>
+                                                    <li>Từ: {{ (isset($detail_service->start_at) ? \Illuminate\Support\Carbon::parse($detail_service->start_at)->format('d-m-Y') : '') }}</li>
+                                                    <li>Đến: {{ (isset($detail_service->end_at) ? \Illuminate\Support\Carbon::parse($detail_service->end_at)->format('d-m-Y') : '') }}</li>
+                                                </ul>
+                                                @endforeach
+                                            @endif
+                                        </td>
+                                        <td>
                                             <select style="width:100%" name="services[{{ $service->id }}][payment_cycle_id]" class="form-control select2">
                                                 @foreach ($list_payment_cycle as $payment_cycle)
                                                     <option  value="{{ $payment_cycle->id }}">{{ $payment_cycle->name ?? "" }}</option>
                                                 @endforeach
                                             </select>
-                                        </td> --}}
-                                            <td>
-                                                <input type="text" class="form-control"
-                                                    name="services[{{ $service->id }}][note]" value=""
-                                                    placeholder="@lang('Ghi chú')">
-                                            </td>
-                                            <td>
-                                                <input type="checkbox" name="services[{{ $service->id }}][id]"
-                                                    value="{{ $service->id }}">
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">@lang('Lưu dịch vụ đã chọn')</button>
-                        <button type="button" class="btn btn-secondary"
-                            data-dismiss="modal">@lang('Đóng')</button>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" name="services[{{ $service->id }}][note]" value="" placeholder="@lang('Ghi chú')">
+                                        </td>
+                                        <td>
+                                            <input type="checkbox" name="services[{{ $service->id }}][id]" value="{{ $service->id }}" >
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            </form>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">@lang('Lưu dịch vụ đã chọn')</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@lang('Đóng')</button>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+    <!-- Modal tái tục-->
+    <div data-backdrop="static" class="modal fade" id="reincarnationModal" tabindex="-1" role="dialog" aria-labelledby="reincarnationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+        <form id="formRenew" action="{{ route('receipt.calculStudent.renew') }}"  method="POST">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reincarnationModalLabel">@lang('Tái tục dịch vụ cho học sinh')</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>@lang('Ngày bắt đầu chu kỳ thanh toán') <small class="text-danger">*</small></label>
+                            <input class="form-control" type="date" id="enrolled_at" value="" required>
+                            <input type="hidden" name="student_id" value="{{ $detail->id }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">@lang('Tính toán tái tục dịch vụ')</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@lang('Đóng')</button>
+                </div>
+            </div>
+        </form>
         </div>
     </div>
 
@@ -1208,6 +1206,14 @@
                     alert("Đã xảy ra lỗi khi tạo hóa đơn.");
                 }
             });
+        });
+
+        $('#submitstudentaddService').on('submit', function () {
+            localStorage.setItem('activeTab', '#tab_3');
+        });
+        
+        $('#formRenew').on('submit', function () {
+            localStorage.setItem('activeTab', '#tab_4');
         });
     </script>
 @endsection

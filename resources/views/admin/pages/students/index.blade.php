@@ -139,7 +139,8 @@
                         @lang('not_found')
                     </div>
                 @else
-                    <table class="table table-hover table-bordered">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered ">
                         <thead>
                             <tr>
                                 <th>@lang('STT')</th>
@@ -225,6 +226,8 @@
                             @endforeach
                         </tbody>
                     </table>
+                </div>
+                    
                 @endif
             </div>
             <div class="box-footer clearfix">
