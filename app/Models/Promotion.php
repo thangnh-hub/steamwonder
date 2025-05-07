@@ -68,4 +68,12 @@ class Promotion extends Model
     {
         return $this->belongsTo(Admin::class, 'admin_updated_id', 'id');
     }
+    public function services()
+    {
+        return $this->hasMany(Service::class, 'id', 'service_id');
+    }
+    public function getServices()
+    {
+        return Service::whereIn('id', collect($this->json_params->services)->pluck('service_id'))->get();
+    }
 }
