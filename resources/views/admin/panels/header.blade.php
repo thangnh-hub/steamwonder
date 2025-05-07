@@ -23,7 +23,11 @@
                                     $check++;
                                 }
                                 foreach ($accessMenus as $sub) {
-                                    if ($sub->parent_id == $item->id && Request::segment(2) == $sub->url_link && $sub->url_link != '') {
+                                    if (
+                                        $sub->parent_id == $item->id &&
+                                        Request::segment(2) == $sub->url_link &&
+                                        $sub->url_link != ''
+                                    ) {
                                         $check++;
                                     }
                                 }
@@ -40,12 +44,14 @@
                                         @foreach ($accessMenus as $sub)
                                             @if ($sub->parent_id == $item->id)
                                                 @if ($sub->submenu > 0)
-                                                    <li class="dropdown sub {{ Request::segment(2) == $sub->url_link && $sub->url_link != '' ? 'active' : '' }}">
+                                                    <li
+                                                        class="dropdown sub {{ Request::segment(2) == $sub->url_link && $sub->url_link != '' ? 'active' : '' }}">
                                                         <a href="javascript:void(0)">
                                                             <i
                                                                 class="{{ $sub->icon != '' ? $sub->icon : 'fa fa-angle-right' }}"></i>
                                                             <span>{{ __($sub->name) }}</span>
-                                                            <i class="fa fa-angle-right pull-right" style="padding-top: 2px;"></i>
+                                                            <i class="fa fa-angle-right pull-right"
+                                                                style="margin-left: auto; padding-left: 5px; margin-right: 0;"></i>
                                                         </a>
 
                                                         <ul class="dropdown-menu sub_child">

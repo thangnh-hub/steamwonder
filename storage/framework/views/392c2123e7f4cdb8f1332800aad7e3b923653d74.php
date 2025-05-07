@@ -46,7 +46,7 @@
                                                             <i
                                                                 class="<?php echo e($sub->icon != '' ? $sub->icon : 'fa fa-angle-right'); ?>"></i>
                                                             <span><?php echo e(__($sub->name)); ?></span>
-                                                            <i class="fa fa-angle-right pull-right" style="padding-top: 2px;"></i>
+                                                            <i class="fa fa-angle-right pull-right" style="margin-left: auto;"></i>
                                                         </a>
 
                                                         <ul class="dropdown-menu sub_child">
