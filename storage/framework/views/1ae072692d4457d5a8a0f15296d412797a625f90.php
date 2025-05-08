@@ -549,15 +549,17 @@
 
                                                                 </td>
                                                                 <td>
+                                                                    
                                                                     <button type="button"
-                                                                        class="btn btn-sm btn-primary btn_show_detail mr-10"
+                                                                        class="btn btn-sm btn-primary btn_show_detail"
                                                                         data-toggle="tooltip"
                                                                         data-id="<?php echo e($row->id); ?>"
                                                                         data-url="<?php echo e(route('receipt.view', $row->id)); ?>"
                                                                         title="<?php echo app('translator')->get('Show'); ?>"
                                                                         data-original-title="<?php echo app('translator')->get('Show'); ?>">
-                                                                        <i class="fa fa-eye"></i> Chi tiết
+                                                                        <i class="fa fa-eye"></i> Xem
                                                                     </button>
+                                                                    
                                                                     <a href="<?php echo e(route('receipt.show', $row->id)); ?>">
                                                                         <button type="button"
                                                                             class="btn btn-sm btn-warning  mr-10"
@@ -566,6 +568,12 @@
                                                                             <i class="fa fa-money"></i> Cập nhật
                                                                         </button>
                                                                     </a>
+
+                                                                    <button type="button"
+                                                                        class="btn btn-sm btn-danger btn_delete_receipt"
+                                                                        data-id="<?php echo e($row->id); ?>">
+                                                                        <i class="fa fa-trash"></i> Xóa
+                                                                    </button>
                                                                 </td>
                                                             </tr>
                                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -1100,6 +1108,30 @@
                 }
             });
         });
+        $('.btn_delete_receipt').click(function() {
+        let currentStudentReceiptId = $(this).data('id'); // Lấy ID phiếu thu hiện tại từ nút
+            if (confirm("Bạn có chắc chắn muốn xóa phiếu thu này?")) {
+                $.ajax({
+                    type: "GET",
+                    url: "<?php echo e(route('student.deleteReceipt')); ?>",
+                    data: {
+                        id: currentStudentReceiptId, // Đảm bảo đúng biến được gửi đi
+                    },
+                    success: function(response) {
+                        if (response.message === 'success') {
+                            localStorage.setItem('activeTab', '#tab_3');
+                            location.reload();
+                        } else {
+                            alert("Bạn không có quyền thao tác dữ liệu");
+                        }
+                    },
+                    error: function() {
+                        alert("Lỗi cập nhật.");
+                    }
+                });
+            }
+    });
+
 
         $(document).ready(function() {
             var activeTab = localStorage.getItem('activeTab');

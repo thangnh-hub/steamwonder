@@ -124,10 +124,12 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::delete('student-parent/{id}', 'StudentController@removeParentRelation')->name('student.removeParentRelation');
             //xóa dịch vụ của bé
             Route::get('delete_student_service', 'StudentController@deleteStudentService')->name('delete_student_service');
+            //xóa TBP của bé
+            Route::get('delete_student_receipt', 'StudentController@deleteStudentReceipt')->name('student.deleteReceipt');
             //chỉnh sưa dịch vụ của bé
             Route::post('update-service-note', 'StudentController@updateServiceNoteAjax')->name('student.updateService.ajax');
             Route::post('receipts_calculate', 'StudentController@calculReceiptStudent')->name('receipt.calculStudent');
-            Route::post('receipts_calculate_renew', 'StudentController@calculReceiptStudentRenew')->name('receipt.calculStudent.renew');
+            Route::post('receipts_calculate_renew', 'StudentController@calculReceiptStudentRenew')->name('receipt.calculateStudent.renew');
             // Import nguời dùng
             Route::post('import_user', 'AdminController@importUser')->name('admin.import_user');
             //update kpi teacher
