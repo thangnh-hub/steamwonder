@@ -39,6 +39,10 @@
             border-collapse: separate;
             width: 100%;
         }
+        td ul{
+            margin-block-start: 0px !important;
+            padding-inline-start: 10px !important;
+        }
     </style>
 @endsection
 
@@ -548,9 +552,9 @@
                                                         <th>@lang('STT')</th>
                                                         <th>@lang('Mã biểu phí')</th>
                                                         <th>@lang('Tên biểu phí')</th>
-                                                        <th>@lang('Chu kỳ')</th>
-                                                        <th>@lang('Biểu phí trước')</th>
-                                                        <th>@lang('Dư nợ trước')</th>
+                                                        {{-- <th>@lang('Chu kỳ')</th>
+                                                        <th>@lang('Biểu phí trước')</th> --}}
+                                                        <th>@lang('Số dư kỳ trước ')</th>
                                                         <th>@lang('Thành tiền')</th>
                                                         <th>@lang('Tổng giảm trừ')</th>
                                                         <th>@lang('Tổng tiền truy thu/hoàn trả')</th>
@@ -559,9 +563,7 @@
                                                         <th>@lang('Còn lại')</th>
                                                         <th>@lang('Trạng thái')</th>
                                                         <th>@lang('Ghi chú')</th>
-                                                        <th>@lang('Người lập biên lai')</th>
-                                                        <th>@lang('Ngày bắt đầu kỳ thu')</th>
-                                                        <th>@lang('Ngày kết thúc kỳ thu')</th>
+                                                        {{-- <th>@lang('Người lập biên lai')</th> --}}
                                                         <th>@lang('Ngày tạo phí')</th>
                                                         <th>@lang('Chức năng')</th>
                                                     </tr>
@@ -571,7 +573,7 @@
                                                         function format_currency($price)
                                                         {
                                                             return isset($price) && is_numeric($price)
-                                                                ? number_format($price, 0, ',', '.') . ' đ'
+                                                                ? number_format($price, 0, ',', '.') 
                                                                 : '';
                                                         }
                                                     @endphp
@@ -581,8 +583,8 @@
                                                                 <td>{{ $loop->index + 1 }} </td>
                                                                 <td>{{ $row->receipt_code ?? '' }}</td>
                                                                 <td>{{ $row->receipt_name ?? '' }}</td>
-                                                                <td>{{ $row->payment_cycle->name ?? '' }}</td>
-                                                                <td>{{ $row->prev_receipt->receipt_name ?? '' }}</td>
+                                                                {{-- <td>{{ $row->payment_cycle->name ?? '' }}</td>
+                                                                <td>{{ $row->prev_receipt->receipt_name ?? '' }}</td> --}}
                                                                 <td>{{ format_currency($row->prev_balance) }}</td>
                                                                 <td>{{ format_currency($row->total_amount) }}</td>
                                                                 <td>{{ format_currency($row->total_discount) }}</td>
@@ -592,27 +594,21 @@
                                                                 <td>{{ format_currency($row->total_due) }}</td>
                                                                 <td>{{ __($row->status) }}</td>
                                                                 <td>{{ $row->note ?? '' }}</td>
-                                                                <td>{{ $row->cashier->name ?? '' }}</td>
-                                                                <td>{{ isset($row->period_start) ? \Carbon\Carbon::parse($row->period_start)->format('d-m-Y') : '' }}
-                                                                </td>
-                                                                <td>{{ isset($row->period_end) ? \Carbon\Carbon::parse($row->period_end)->format('d-m-Y') : '' }}
-                                                                </td>
+                                                                {{-- <td>{{ $row->cashier->name ?? '' }}</td> --}}
                                                                 <td>{{ isset($row->created_at) ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') : '' }}
                                                                 </td>
                                                                 <td>
-                                                                    {{-- <button type="button" class="btn btn-sm btn-danger">
-                                                                    <i class="fa fa-close"></i> Hủy
-                                                                </button> --}}
-
+                                                                    
                                                                     <button type="button"
-                                                                        class="btn btn-sm btn-primary btn_show_detail mr-10"
+                                                                        class="btn btn-sm btn-primary btn_show_detail"
                                                                         data-toggle="tooltip"
                                                                         data-id="{{ $row->id }}"
                                                                         data-url="{{ route('receipt.view', $row->id) }}"
                                                                         title="@lang('Show')"
                                                                         data-original-title="@lang('Show')">
-                                                                        <i class="fa fa-eye"></i> Chi tiết
+                                                                        <i class="fa fa-eye"></i> Xem
                                                                     </button>
+                                                                    
                                                                     <a href="{{ route('receipt.show', $row->id) }}">
                                                                         <button type="button"
                                                                             class="btn btn-sm btn-warning  mr-10"
@@ -621,6 +617,12 @@
                                                                             <i class="fa fa-money"></i> Cập nhật
                                                                         </button>
                                                                     </a>
+
+                                                                    <button type="button"
+                                                                        class="btn btn-sm btn-danger btn_delete_receipt"
+                                                                        data-id="{{ $row->id }}">
+                                                                        <i class="fa fa-trash"></i> Xóa
+                                                                    </button>
                                                                 </td>
                                                             </tr>
                                                         @endforeach
@@ -915,7 +917,7 @@
     <!-- Modal tái tục-->
     <div data-backdrop="static" class="modal fade" id="reincarnationModal" tabindex="-1" role="dialog" aria-labelledby="reincarnationModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
-        <form id="formRenew" action="{{ route('receipt.calculStudent.renew') }}"  method="POST">
+        <form id="formRenew" action="{{ route('receipt.calculateStudent.renew') }}"  method="POST">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -950,10 +952,20 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Ghi chú</label>
-                                    <input type="text" class="form-control" name="note" value=""
+                                    <select name="payment_cycle_service" style="width:100%" class="form-control select2">
+                                        @foreach ($list_payment_cycle as $payment_cycle)
+                                            <option  value="{{ $payment_cycle->id }}">{{ $payment_cycle->name ?? "" }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="">Ghi chú</label>
+                                    <input type="text" class="form-control" name="note_service" value=""
                                         placeholder="@lang('Ghi chú')">
                                 </div>
                             </div>
@@ -1091,6 +1103,7 @@
                 success: function(response) {
                     if (response.success) {
                         $('#editServiceModal input[name="note"]').val(response.data.note);
+                        $('#editServiceModal select').val(response.data.payment_cycle_id).trigger('change');
                         // Mở modal
                         $('#editServiceModal').modal('show');
                         $('#btnUpdateService').attr('data-id', _id);
@@ -1105,7 +1118,8 @@
         });
 
         $('#btnUpdateService').click(function() {
-            let noteValue = $('input[name="note"]').val();
+            let cycleValue = $('select[name="payment_cycle_service"]').val();
+            let noteValue  = $('input[name="note_service"]').val();
             let currentStudentServiceId = $(this).data('id'); // Lấy ID dịch vụ hiện tại từ nút cập nhật
             $.ajax({
                 type: "POST",
@@ -1113,6 +1127,7 @@
                 data: {
                     id: currentStudentServiceId,
                     note: noteValue,
+                    payment_cycle_id: cycleValue,
                     _token: '{{ csrf_token() }}'
                 },
                 success: function(response) {
@@ -1121,14 +1136,38 @@
                         localStorage.setItem('activeTab', '#tab_3');
                         location.reload();
                     } else {
-                        alert("Không thể cập nhật ghi chú.");
+                        alert("Không có quyền thao tác.");
                     }
                 },
                 error: function() {
-                    alert("Lỗi cập nhật ghi chú.");
+                    alert("Lỗi cập nhật.");
                 }
             });
         });
+        $('.btn_delete_receipt').click(function() {
+        let currentStudentReceiptId = $(this).data('id'); // Lấy ID phiếu thu hiện tại từ nút
+            if (confirm("Bạn có chắc chắn muốn xóa phiếu thu này?")) {
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('student.deleteReceipt') }}",
+                    data: {
+                        id: currentStudentReceiptId, // Đảm bảo đúng biến được gửi đi
+                    },
+                    success: function(response) {
+                        if (response.message === 'success') {
+                            localStorage.setItem('activeTab', '#tab_4');
+                            location.reload();
+                        } else {
+                            alert("Bạn không có quyền thao tác dữ liệu");
+                        }
+                    },
+                    error: function() {
+                        alert("Lỗi cập nhật.");
+                    }
+                });
+            }
+    });
+
 
         $(document).ready(function() {
             var activeTab = localStorage.getItem('activeTab');

@@ -182,10 +182,15 @@ class StudentController extends Controller
                     ]);
                 }
             }
+
             // CT Khuyến mãi
-            $params_promotion = $request->input('promotion_student');
-            $params_promotion['student_id'] = $student->id;
-            StudentPromotion::create($params_promotion);
+            if ($request->has('promotion_student')){
+                $params_promotion = $request->input('promotion_student');
+                $params_promotion['student_id'] = $student->id;
+                $params_promotion['promotion_id'] = $request->input('radio_promotion');
+                StudentPromotion::create($params_promotion);
+            }
+            
 
             return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Update successfully!'));
         } catch (\Exception $e) {
@@ -305,6 +310,22 @@ class StudentController extends Controller
             abort(422, __($ex->getMessage()));
         }
     }
+    public function deleteStudentReceipt(Request $request)
+    {
+        try {
+            $receipt = Receipt::find($request->id);
+            if (isset($receipt)) {
+                $receipt->receiptDetail()->delete();
+                $receipt->delete();
+                session()->flash('successMessage', __('Xóa thành công TBP của học sinh!'));
+                return $this->sendResponse("", 'success');
+            }
+            session()->flash('errorMessage', __('Xóa không thành công! Bạn không có quyền thao tác dữ liệu!'));
+            return $this->sendResponse('', __('No records available!'));
+        } catch (Exception $ex) {
+            abort(422, __($ex->getMessage()));
+        }
+    }
 
     public function getStudentServiceInfo(Request $request)
     {
@@ -319,6 +340,7 @@ class StudentController extends Controller
             'success' => true,
             'data' => [
                 'note' => $studentService->json_params->note ?? "",
+                'payment_cycle_id' => $studentService->payment_cycle_id ?? null, // đảm bảo có cột này
             ]
         ]);
     }
@@ -331,10 +353,11 @@ class StudentController extends Controller
                 session()->flash('errorMessage', __('Không tìm thấy dịch vụ đăng ký!'));
             }
             $params['json_params']['note'] = $request->note ?? "";
+            $params['payment_cycle_id'] = $request->payment_cycle_id ?? "";
             $studentService->update($params);
 
             if ($studentService->save()) {
-                session()->flash('successMessage', __('Cập nhật ghi chú thành công!'));
+                session()->flash('successMessage', __('Cập nhật dịch vụ thành công!'));
             }
 
             return $this->sendResponse("", 'success');
@@ -390,10 +413,9 @@ class StudentController extends Controller
             $params = $request->all();
             $student = Student::findOrFail($params['student_id']);
 
-            $data['services'] = $student->studentServices()->with('services')
+            $data['student_services'] = $student->studentServices()
                 ->where('status', 'active')
-                ->get()
-                ->pluck('services');
+                ->get();
 
             $data['include_current_month'] = false;
             $data['enrolled_at'] = $request->input('enrolled_at', null);
