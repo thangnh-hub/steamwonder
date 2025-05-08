@@ -243,22 +243,21 @@ class ReceiptService
     public function renewReceiptForStudent(Student $student, array $data)
     {
         return DB::transaction(function () use ($student, $data) {
-            $cycle = $student->paymentCycle;
             $policies = $student->studentPolicies->pluck('policy');
             $promotions = $student->studentPromotions;
             $startDate = Carbon::parse($data['enrolled_at']);
-            $data['period_start'] = $startDate->copy()->format('Y-m-d');
-            $data['period_end'] = $startDate->copy()->addMonths($cycle->months)->endOfMonth()->format('Y-m-d');
-
-            $details = $this->generateReceiptDetailsRenew($student, $cycle, $policies,$promotions,  $data['services'], $startDate);
-            return $this->saveReceiptRenew($student, $cycle, $policies, $details, $data);
+            
+            $details = $this->generateReceiptDetailsRenew( $policies,$promotions,  $data['student_services'], $startDate);
+            return $this->saveReceiptRenew($student, $details, $data);
         });
     }
 
-    protected function generateReceiptDetailsRenew(Student $student, $cycle, $policies, $promotions, $services, Carbon $startDate )
+    protected function generateReceiptDetailsRenew( $policies, $promotions, $student_services, Carbon $startDate )
     {
         $details = [];
-        foreach ($services as $service) {
+        foreach ($student_services as $studentservice) {
+            $cycle= $studentservice->paymentcycle;
+            $service = $studentservice->services;
             // Tìm mức chi phí đang áp dụng vào ngày nhập học
             $matchedDetail = collect($service->serviceDetail)->first(function ($detail) use ($startDate) {
                 $start = Carbon::parse($detail['start_at']);
@@ -297,7 +296,7 @@ class ReceiptService
         return collect($details);
     }
 
-    protected function calculateDiscountRenew( $service_info, $cycle, $policies , $promotions, $month)
+    protected function calculateDiscountRenew($service_info, $cycle, $policies , $promotions, $month)
     {
         $discount_cycle_value = $cycle->json_params->services->{$service_info['id']}->value ?? 0;
         $discount_cycle_type = $cycle->json_params->services->{$service_info['id']}->type ?? null;
@@ -351,7 +350,6 @@ class ReceiptService
             }
         }
 
-        
 
         $discount_amount = $amount - $amount_after_discount;
         return [
@@ -360,16 +358,13 @@ class ReceiptService
         ];
     }
 
-    protected function saveReceiptRenew(Student $student, $cycle, $policies, $details, $data)
+    protected function saveReceiptRenew(Student $student, $details, $data)
     {
         $receipt = Receipt::create([
             'area_id' => $student->area_id,
             'student_id' => $student->id,
-            'payment_cycle_id' => $cycle->id,
-            'period_start' => $data['period_start'],
-            'period_end' => $data['period_end'],
-            'receipt_code' => "PTTT-{$student->id}-{$cycle->id}-" . now()->format('Ymd'),
-            'receipt_name' => "Phiếu tái tục thu kỳ {$cycle->months} tháng",
+            'receipt_code' => "PTTT-{$student->id}-" . now()->format('Ymd'),
+            'receipt_name' => "Phiếu tái tục dich vụ của học sinh {$student->first_name} {$student->last_name}",
             'total_amount' => $details->sum('amount'),
             'total_discount' => $details->sum('discount_amount'),
             'total_adjustment' => 0,
