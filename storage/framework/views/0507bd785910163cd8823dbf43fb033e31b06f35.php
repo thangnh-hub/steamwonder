@@ -96,13 +96,14 @@
                                 <table class="table table-bordered table-hover no-footer no-padding">
                                     <thead>
                                         <tr>
-                                            <th colspan="7" class="text-left"><b>1. Số dư kỳ trước <small>(Truy thu (+) /
-                                                        hoàn trả (-) )</small> </b>
+                                            <th colspan="7" class="text-left"><b>1. Số dư kỳ trước - <small>(+) Có /
+                                                        (-) Nợ</small> </b>
                                             </th>
                                             <th class="text-right">
                                                 <input type="number" name="prev_balance"
                                                     class="form-control pull-right prev_balance" style="max-width: 200px;"
-                                                    placeholder="Nhập số dư kỳ trước" value="<?php echo e($detail->prev_balance); ?>">
+                                                    placeholder="Nhập số dư kỳ trước"
+                                                    value="<?php echo e((int) $detail->prev_balance); ?>">
                                             </th>
                                         </tr>
 
@@ -191,7 +192,7 @@
                                             <th>Số lượng</span></th>
                                             <th>Tạm tính</th>
                                             <th>Giảm trừ</th>
-                                            <th>Hoàn trả / phát sinh</th>
+                                            
                                             <th>Tổng tiền</th>
                                         </tr>
                                         <?php $__currentLoopData = $detail->receiptDetail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -199,10 +200,10 @@
                                                 <td><?php echo e(date('m-Y', strtotime($item->month))); ?></td>
                                                 <td><?php echo e($item->services_receipt->name ?? ''); ?></td>
                                                 <td><?php echo e(number_format($item->unit_price, 0, ',', '.') ?? ''); ?></td>
-                                                <td><?php echo e(number_format($item->spent_number, 0, ',', '.') ?? ''); ?></td>
+                                                <td><?php echo e(number_format($item->by_number, 0, ',', '.') ?? ''); ?></td>
                                                 <td><?php echo e(number_format($item->amount, 0, ',', '.') ?? ''); ?></td>
                                                 <td><?php echo e(number_format($item->discount_amount, 0, ',', '.') ?? ''); ?></td>
-                                                <td><?php echo e(number_format($item->adjustment_amount, 0, ',', '.') ?? ''); ?></td>
+                                                
                                                 <td><?php echo e(number_format($item->final_amount, 0, ',', '.') ?? ''); ?></td>
                                             </tr>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -236,7 +237,7 @@
                                         <td>
                                             <?php echo app('translator')->get('Tổng tiền'); ?>
                                         </td>
-                                        <td class="text-right" >
+                                        <td class="text-right">
                                             <?php echo e(number_format($detail->total_amount, 0, ',', '.') ?? ''); ?>
 
                                         </td>
@@ -257,9 +258,9 @@
                                     </tr>
                                     
                                     <tr>
-                                        <td class=""><?php echo app('translator')->get('Tổng tiền thực tế sau đối soát tất cả dịch vụ'); ?></td>
-                                        <td class="text-right">
-                                            <?php echo e(number_format($detail->total_final, 0, ',', '.') ?? ''); ?>
+                                        <td><?php echo app('translator')->get('Tổng tiền thực tế sau đối soát tất cả dịch vụ'); ?></td>
+                                        <td class="text-right total_final" data-final="<?php echo e($detail->total_final); ?>">
+                                            <?php echo e(number_format($detail->total_final + $detail->prev_balance, 0, ',', '.') ?? ''); ?>
 
                                         </td>
                                     </tr>
@@ -267,7 +268,7 @@
                                         <td><?php echo app('translator')->get('Đã thu'); ?></td>
                                         <td class="text-right">
                                             <input type="number" name="total_paid" class="form-control text-right"
-                                                value="<?php echo e($detail->total_paid ?? 0); ?>">
+                                                value="<?php echo e((int) $detail->total_paid ?? 0); ?>">
                                         </td>
                                     </tr>
                                     <tr>
@@ -280,16 +281,15 @@
                                     <tr>
                                         <td><?php echo app('translator')->get('Hạn thanh toán'); ?></td>
                                         <td class="text-right">
-
+                                            <input type="date" name="payment_deadline" class="form-control"
+                                                value="<?php echo e($detail->json_params->payment_deadline ?? ''); ?>">
                                         </td>
                                     </tr>
-
                                 </tbody>
                             </table>
-
-                            <button type="button" class="btn btn-success">
-                                <i class="fa fa-usd" aria-hidden="true" title="Thanh toán"></i> Xác nhận thanh
-                                toán</button>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-usd" aria-hidden="true" title="Thanh toán"></i> <?php echo app('translator')->get('Xác nhận thanh toán'); ?>
+                                </button>
                         </form>
                     </div>
                 </div>
@@ -304,12 +304,12 @@
             if (isNaN(_balance)) {
                 _balance = 0;
             }
+            // var _total_prev_balance = parseInt($('.total_prev_balance').data('total'));
+            var _total_final = parseInt($('.total_final').data('final'), 10);
 
-            var _total_prev_balance = parseInt($('.total_prev_balance').data('total'));
-            var _total = _balance;
-            $('.total_prev_balance').html(new Intl.NumberFormat('vi-VN').format(_total));
-
-
+            var _total = _total_final + _balance;
+            $('.total_prev_balance').html(new Intl.NumberFormat('vi-VN').format(_balance));
+            $('.total_final').html(new Intl.NumberFormat('vi-VN').format(_total));
         })
         $('.btn_explanation').click(function() {
             var currentDateTime = Math.floor(Date.now() / 1000);

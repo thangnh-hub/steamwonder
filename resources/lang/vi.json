@@ -78,7 +78,7 @@
     "other": "Khác",
     "confirm_action": "Bạn có chắc chắn muốn thực hiện hành động này không?",
     "not_found": "Không tìm thấy dữ liệu",
-    "monthly": "Hàng tháng", 
+    "monthly": "Hàng tháng",
     "yearly": "Hàng năm",
     "once": "Dùng 1 lần",
     "auto_cancel": "Tự hủy sau khi sử dụng",
@@ -111,5 +111,6 @@
     "completed":"Đã hoàn thành",
     "expected":"Dự kiến",
     "adjusted":"Đã đối soát",
-    "finalized":"Đã quyết toán"
+    "finalized":"Đã quyết toán",
+    "Close": "Đóng"
 }

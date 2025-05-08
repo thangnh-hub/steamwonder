@@ -213,9 +213,9 @@
                                             <th>@lang('Đơn giá')</th>
                                             <th>@lang('Thành tiền')</th>
                                             <th>@lang('Giảm trừ')</th>
-                                            <th>@lang('Truy thu (+) / Hoàn trả (-)')</th>
+                                            {{-- <th>@lang('Truy thu (+) / Hoàn trả (-)')</th> --}}
                                             <th>@lang('Tổng tiền cuối cùng')</th>
-                                            <th>@lang('Trạng thái')</th>
+                                            {{-- <th>@lang('Trạng thái')</th> --}}
                                             <th style="width:250px">@lang('Ghi chú')</th>
                                         </tr>
                                     </thead>
@@ -231,9 +231,9 @@
                                                     <td>{{ number_format($item->unit_price, 0, ',', '.') }}</td>
                                                     <td>{{ number_format($item->amount, 0, ',', '.') }}</td>
                                                     <td>{{ number_format($item->discount_amount, 0, ',', '.') }}</td>
-                                                    <td>{{ number_format($item->adjustment_amount, 0, ',', '.') }}</td>
+                                                    {{-- <td>{{ number_format($item->adjustment_amount, 0, ',', '.') }}</td> --}}
                                                     <td>{{ number_format($item->final_amount, 0, ',', '.') }}</td>
-                                                    <td>{{ __($item->status) }}</td>
+                                                    {{-- <td>{{ __($item->status) }}</td> --}}
                                                     <td>{!!($item->note) !!}</td>
                                                 </tr>
                                             @endforeach

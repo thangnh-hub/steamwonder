@@ -172,7 +172,7 @@
 
                                     </td>
                                     <td>
-                                        <?php echo e($row->status ?? ''); ?>
+                                        <?php echo e(__($row->status??'')); ?>
 
                                     </td>
                                     <td>
