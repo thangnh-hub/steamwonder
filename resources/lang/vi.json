@@ -78,7 +78,7 @@
     "other": "Khác",
     "confirm_action": "Bạn có chắc chắn muốn thực hiện hành động này không?",
     "not_found": "Không tìm thấy dữ liệu",
-    "monthly": "Hàng tháng", 
+    "monthly": "Hàng tháng",
     "yearly": "Hàng năm",
     "once": "Dùng 1 lần",
     "auto_cancel": "Tự hủy sau khi sử dụng",
@@ -102,5 +102,6 @@
     "start_day_range":"Theo ngày nhập học",
     "start_month_range":"Theo tháng nhập học",
     "Update successfully!":"Cập nhật thông tin thành công!",
-    "Edit form": "Thông tin cập nhật"
+    "Edit form": "Thông tin cập nhật",
+    "Close": "Đóng"
 }
