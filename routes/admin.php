@@ -45,102 +45,102 @@ Route::group(['namespace' => 'Admin'], function () {
         Route::get('account', 'AdminController@changeAccountForm')->name('admin.account.change.get');
         Route::post('change-account', 'AdminController@changeAccount')->name('admin.account.change.post');
 
-    Route::group(['middleware' => ['permission']], function () {
-      Route::resources([
-        'admins' => 'AdminController',
-        'admin_menus' => 'AdminMenuController',
-        'modules' => 'ModuleController',
-        'module_functions' => 'ModuleFunctionController',
-        'roles' => 'RoleController',
-        'blocks' => 'BlockController',
-        'block_contents' => 'BlockContentController',
-        'pages' => 'PageController',
-        'menus' => 'MenuController',
-        'options' => 'OptionController',
-        'widgets' => 'WidgetController',
-        'components' => 'ComponentController',
-        'component_configs' => 'ComponentConfigController',
-        'widget_configs' => 'WidgetConfigController',
-        'cms_taxonomys' => 'CmsTaxonomyController',
-        'cms_posts' => 'CmsPostController',
-        'cms_products' => 'CmsProductController',
-        'product_category' => 'ProductCategoryController',
-        'post_category' => 'PostCategoryController',
-        'settings' => 'SettingController',
-        'languages' => 'LanguageController',
-        'comments' => 'CommentController',
-        'contacts' => 'ContactController',
-        //datdt new module
-        'courses' => 'CourseController',
-        'classs' => 'ClassController',
-        'rooms' => 'RoomController',
-        'periods' => 'PeriodController',
-        'areas' => 'AreaController',
-        'students' => 'StudentController',
-        'staffadmissions' => 'StaffAdmissionController',
-        'holiday' => 'HolidayController',
-        'warehouse' => 'WareHouseController',
-        'warehouse_asset' => 'WarehouseAssetController',
-        'warehouse_department' => 'WarehouseDepartmentController',
-        'warehouse_position' => 'WareHousePositionController',
-        'warehouse_product' => 'WareHouseProductController',
-        'warehouse_category_product' => 'WareHouseCategoryProductController',
-        'warehouse_order_product' => 'WareHouseOrderController',
-        'warehouse_order_product_buy' => 'WareHouseOrderBuyController',
-        'warehouse_transfer' => 'WarehouseTransferController',
-        'warehouse_recall' => 'WareHouseRecallController',
-        'warehouse_inventory' => 'WereHouseInventoryController',
-        // Module test GV
-        'teacher_quizs' => 'TeacherQuizController',
-        //đề nghị thanh toán
-        'payment_request' => 'PaymentRequestController',
-        // For SteamWonder
-        'users' => 'UserController',
-        'data_crms' => 'DataCrmController',
-        'parents' => 'ParentController',
-        'relationships' => 'RelationshipController',
-        'service_categorys' => 'ServiceCategoryController',
-        'services' => 'ServiceController',
-        // End for SteamWonder
-        'education_ages'=>'EducationAgesController',
-        'education_programs'=>'EducationProgramsController',
-        'policies' => 'PoliciesController',
-        'payment_cycle' => 'PaymentCycleController',
-        'deductions' => 'DeductionController',
-        'receipt' => 'ReceiptController',
-        'attendance' => 'AttendancesController',
-        'promotions' => 'PromotionController',
-      ]);
-      // Import Class và StudentClass
-      Route::post('import_class', 'AdminController@importClassStudent')->name('class.import_class');
-      Route::get('receipt_view/{id}', 'ReceiptController@viewIndex')->name('receipt.view');
-      Route::post('receipt_payment/{id}', 'ReceiptController@payment')->name('receipt.payment');
-      Route::get('receipt_print/{id}', 'ReceiptController@print')->name('receipt.print');
-      Route::post('data_crms_log_store', 'DataCrmController@storeCRMLOG')->name('data_crms_log_store');
-      //thêm ng thân cho bé
-      Route::post('student/{id}/add-parent', 'StudentController@addParent')->name('student.addParent');
-      Route::post('student/{id}/add-service', 'StudentController@addService')->name('student.addService');
-      //xóa mqh ng thân
-      Route::delete('student-parent/{id}', 'StudentController@removeParentRelation')->name('student.removeParentRelation');
-      //xóa dịch vụ của bé
-      Route::get('delete_student_service', 'StudentController@deleteStudentService')->name('delete_student_service');
-      //chỉnh sưa dịch vụ của bé
-      Route::post('update-service-note', 'StudentController@updateServiceNoteAjax')->name('student.updateService.ajax');
-      Route::post('receipts_calculate', 'StudentController@calculReceiptStudent')->name('receipt.calculStudent');
-      Route::post('receipts_calculate_renew', 'StudentController@calculReceiptStudentRenew')->name('receipt.calculStudent.renew');
-        // Import nguời dùng
-        Route::post('import_user', 'AdminController@importUser')->name('admin.import_user');
-        //update kpi teacher
-        Route::get('ajax-kpi-teacher-update', 'ReportController@AjaxkpiTeacher')->name('ajax_kpi_teacher_index');
-        //ĐỀ XUẤT TS
-        Route::get('warehouse_order_approve', 'WareHouseOrderController@approve')->name('warehouse_order.approve');
-        Route::get('warehouse_order_buy_approve', 'WareHouseOrderBuyController@approve')->name('warehouse_order_buy.approve');
-        Route::get('payment_approve', 'PaymentRequestController@approve')->name('payment.approve');
-        Route::post('order_detail_store', 'WareHouseOrderController@orderDetailStore')->name('order_detail_store');
-        //tổng hợp phiếu order
-        Route::get('report_order', 'WareHouseOrderController@reportOrder')->name('report_order');
-        //báo cáo xuất nhập tồn
-        Route::get('report_order_entry_deliver', 'WareHouseController@reportOrderEntryDeliver')->name('report_order_entry_deliver');
+        Route::group(['middleware' => ['permission']], function () {
+            Route::resources([
+                'admins' => 'AdminController',
+                'admin_menus' => 'AdminMenuController',
+                'modules' => 'ModuleController',
+                'module_functions' => 'ModuleFunctionController',
+                'roles' => 'RoleController',
+                'blocks' => 'BlockController',
+                'block_contents' => 'BlockContentController',
+                'pages' => 'PageController',
+                'menus' => 'MenuController',
+                'options' => 'OptionController',
+                'widgets' => 'WidgetController',
+                'components' => 'ComponentController',
+                'component_configs' => 'ComponentConfigController',
+                'widget_configs' => 'WidgetConfigController',
+                'cms_taxonomys' => 'CmsTaxonomyController',
+                'cms_posts' => 'CmsPostController',
+                'cms_products' => 'CmsProductController',
+                'product_category' => 'ProductCategoryController',
+                'post_category' => 'PostCategoryController',
+                'settings' => 'SettingController',
+                'languages' => 'LanguageController',
+                'comments' => 'CommentController',
+                'contacts' => 'ContactController',
+                //datdt new module
+                'courses' => 'CourseController',
+                'classs' => 'ClassController',
+                'rooms' => 'RoomController',
+                'periods' => 'PeriodController',
+                'areas' => 'AreaController',
+                'students' => 'StudentController',
+                'staffadmissions' => 'StaffAdmissionController',
+                'holiday' => 'HolidayController',
+                'warehouse' => 'WareHouseController',
+                'warehouse_asset' => 'WarehouseAssetController',
+                'warehouse_department' => 'WarehouseDepartmentController',
+                'warehouse_position' => 'WareHousePositionController',
+                'warehouse_product' => 'WareHouseProductController',
+                'warehouse_category_product' => 'WareHouseCategoryProductController',
+                'warehouse_order_product' => 'WareHouseOrderController',
+                'warehouse_order_product_buy' => 'WareHouseOrderBuyController',
+                'warehouse_transfer' => 'WarehouseTransferController',
+                'warehouse_recall' => 'WareHouseRecallController',
+                'warehouse_inventory' => 'WereHouseInventoryController',
+                // Module test GV
+                'teacher_quizs' => 'TeacherQuizController',
+                //đề nghị thanh toán
+                'payment_request' => 'PaymentRequestController',
+                // For SteamWonder
+                'users' => 'UserController',
+                'data_crms' => 'DataCrmController',
+                'parents' => 'ParentController',
+                'relationships' => 'RelationshipController',
+                'service_categorys' => 'ServiceCategoryController',
+                'services' => 'ServiceController',
+                // End for SteamWonder
+                'education_ages' => 'EducationAgesController',
+                'education_programs' => 'EducationProgramsController',
+                'policies' => 'PoliciesController',
+                'payment_cycle' => 'PaymentCycleController',
+                'deductions' => 'DeductionController',
+                'receipt' => 'ReceiptController',
+                'attendance' => 'AttendancesController',
+                'promotions' => 'PromotionController',
+            ]);
+            // Import Class và StudentClass
+            Route::post('import_class', 'AdminController@importClassStudent')->name('class.import_class');
+            Route::get('receipt_view/{id}', 'ReceiptController@viewIndex')->name('receipt.view');
+            Route::post('receipt_payment/{id}', 'ReceiptController@payment')->name('receipt.payment');
+            Route::get('receipt_print/{id}', 'ReceiptController@print')->name('receipt.print');
+            Route::post('data_crms_log_store', 'DataCrmController@storeCRMLOG')->name('data_crms_log_store');
+            //thêm ng thân cho bé
+            Route::post('student/{id}/add-parent', 'StudentController@addParent')->name('student.addParent');
+            Route::post('student/{id}/add-service', 'StudentController@addService')->name('student.addService');
+            //xóa mqh ng thân
+            Route::delete('student-parent/{id}', 'StudentController@removeParentRelation')->name('student.removeParentRelation');
+            //xóa dịch vụ của bé
+            Route::get('delete_student_service', 'StudentController@deleteStudentService')->name('delete_student_service');
+            //chỉnh sưa dịch vụ của bé
+            Route::post('update-service-note', 'StudentController@updateServiceNoteAjax')->name('student.updateService.ajax');
+            Route::post('receipts_calculate', 'StudentController@calculReceiptStudent')->name('receipt.calculStudent');
+            Route::post('receipts_calculate_renew', 'StudentController@calculReceiptStudentRenew')->name('receipt.calculStudent.renew');
+            // Import nguời dùng
+            Route::post('import_user', 'AdminController@importUser')->name('admin.import_user');
+            //update kpi teacher
+            Route::get('ajax-kpi-teacher-update', 'ReportController@AjaxkpiTeacher')->name('ajax_kpi_teacher_index');
+            //ĐỀ XUẤT TS
+            Route::get('warehouse_order_approve', 'WareHouseOrderController@approve')->name('warehouse_order.approve');
+            Route::get('warehouse_order_buy_approve', 'WareHouseOrderBuyController@approve')->name('warehouse_order_buy.approve');
+            Route::get('payment_approve', 'PaymentRequestController@approve')->name('payment.approve');
+            Route::post('order_detail_store', 'WareHouseOrderController@orderDetailStore')->name('order_detail_store');
+            //tổng hợp phiếu order
+            Route::get('report_order', 'WareHouseOrderController@reportOrder')->name('report_order');
+            //báo cáo xuất nhập tồn
+            Route::get('report_order_entry_deliver', 'WareHouseController@reportOrderEntryDeliver')->name('report_order_entry_deliver');
 
             //Nhập kho
             Route::get('entry_warehouse', 'WareHouseEntryController@entryWarehouse')->name('entry_warehouse');
@@ -211,6 +211,8 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('leave_balances/create', 'LeaveController@createLeaveBalance')->name('leave.balance.create');
             Route::post('leave_balances/store', 'LeaveController@storeLeaveBalance')->name('leave.balance.store');
         });
+        // Cập nhật nội dung truy thu/hoàn trả của kỳ trước trong json
+        Route::post('receipt_update_json_explanation/{id}', 'ReceiptController@updateJsonExplanation')->name('receipt.update_json_explanation');
 
         //import data crm
         Route::post('import_data_crm', 'DataCrmController@importDataCrm')->name('data_crm.import');

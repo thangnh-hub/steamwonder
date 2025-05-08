@@ -103,12 +103,12 @@
                                     </li>
                                     <li class="">
                                         <a href="#tab_4" data-toggle="tab">
-                                            <h5>Biên lai thu phí</h5>
+                                            <h5>Quản lý TBP</h5>
                                         </a>
                                     </li>
                                     <li class="">
                                         <a href="#tab_5" data-toggle="tab">
-                                            <h5>CT Kh.Mãi được áo dụng</h5>
+                                            <h5>CT Kh.Mãi được áp dụng</h5>
                                         </a>
                                     </li>
                                 </ul>
@@ -483,7 +483,7 @@
                                     <!-- TAB 4: Biên lai thu phí -->
                                     <div class="tab-pane" id="tab_4">
                                         <div class="box-body ">
-                                            <form id="calculate-receipt-form">
+                                            {{-- <form id="calculate-receipt-form">
                                                 @csrf
                                                 <div class="col-md-4">
                                                     <div class="form-group">
@@ -541,7 +541,7 @@
                                                     </button>
                                                 </div>
 
-                                            </form>
+                                            </form> --}}
                                             <table class="table table-hover table-bordered">
                                                 <thead>
                                                     <tr>
@@ -611,8 +611,16 @@
                                                                         data-url="{{ route('receipt.view', $row->id) }}"
                                                                         title="@lang('Show')"
                                                                         data-original-title="@lang('Show')">
-                                                                        <i class="fa fa-money"></i> Chi tiết
+                                                                        <i class="fa fa-eye"></i> Chi tiết
                                                                     </button>
+                                                                    <a href="{{ route('receipt.show', $row->id) }}">
+                                                                        <button type="button"
+                                                                            class="btn btn-sm btn-warning  mr-10"
+                                                                            title="@lang('Cập nhật')"
+                                                                            data-original-title="@lang('Cập nhật')">
+                                                                            <i class="fa fa-money"></i> Cập nhật
+                                                                        </button>
+                                                                    </a>
                                                                 </td>
                                                             </tr>
                                                         @endforeach

@@ -19,7 +19,7 @@ class ReceiptController extends Controller
         parent::__construct();
         $this->routeDefault  = 'receipt';
         $this->viewPart = 'admin.pages.receipt';
-        $this->responseData['module_name'] = 'Quản lý hóa đơn';
+        $this->responseData['module_name'] = 'Quản lý TBP';
     }
     /**
      * Display a listing of the resource.
@@ -67,7 +67,7 @@ class ReceiptController extends Controller
     {
         $detail = $receipt;
         $this->responseData['detail'] = $detail;
-        $this->responseData['module_name'] = 'Thanh toán hóa đơn';
+        $this->responseData['module_name'] = 'Thanh toán TBP';
         return $this->responseView($this->viewPart . '.show');
     }
 
@@ -133,5 +133,18 @@ class ReceiptController extends Controller
             DB::rollBack();
             return redirect()->back()->with('errorMessage', __($ex->getMessage()));
         }
+    }
+
+    public function updateJsonExplanation(Request $request, $id)
+    {
+        $receipt = Receipt::find($id);
+        $prev_balance = $request->input('prev_balance') ?? 0;
+        $explanation = $request->input('explanation');
+        $json_params = json_decode(json_encode($receipt->json_params), true);
+        $json_params['explanation'] = $explanation;
+        $receipt->prev_balance = $prev_balance;
+        $receipt->json_params = $json_params;
+        $receipt->save();
+        return $this->sendResponse('success', 'Cập nhật thành công!');
     }
 }

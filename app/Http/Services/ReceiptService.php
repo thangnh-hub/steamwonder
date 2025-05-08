@@ -247,16 +247,17 @@ class ReceiptService
         return DB::transaction(function () use ($student, $data) {
             $cycle = $student->paymentCycle;
             $policies = $student->studentPolicies->pluck('policy');
+            $promotions = $student->studentPromotions;
             $startDate = Carbon::parse($data['enrolled_at']);
             $data['period_start'] = $startDate->copy()->format('Y-m-d');
             $data['period_end'] = $startDate->copy()->addMonths($cycle->months)->endOfMonth()->format('Y-m-d');
 
-            $details = $this->generateReceiptDetailsRenew($student, $cycle, $policies,  $data['services'], $startDate);
+            $details = $this->generateReceiptDetailsRenew($student, $cycle, $policies,$promotions,  $data['services'], $startDate);
             return $this->saveReceiptRenew($student, $cycle, $policies, $details, $data);
         });
     }
 
-    protected function generateReceiptDetailsRenew(Student $student, $cycle, $policies, $services, Carbon $startDate )
+    protected function generateReceiptDetailsRenew(Student $student, $cycle, $policies, $promotions, $services, Carbon $startDate )
     {
         $details = [];
         foreach ($services as $service) {
@@ -279,7 +280,7 @@ class ReceiptService
                     // Tính toán các tháng còn lại
                     for ($i = 0; $i < $monthCount; $i++) {
                         $month = $firstMonth->copy()->addMonths($i);
-                        $discount_amount = $this->calculateDiscountRenew( $service_info, $cycle, $policies);
+                        $discount_amount = $this->calculateDiscountRenew( $service_info, $cycle, $policies, $promotions,$month) ;
                         $details[] = [
                             'service_id' => $service->id,
                             'month' => $month->startOfMonth()->format('Y-m-d'),
@@ -298,7 +299,7 @@ class ReceiptService
         return collect($details);
     }
 
-    protected function calculateDiscountRenew( $service_info, $cycle, $policies)
+    protected function calculateDiscountRenew( $service_info, $cycle, $policies , $promotions, $month)
     {
         $discount_cycle_value = $cycle->json_params->services->{$service_info['id']}->value ?? 0;
         $discount_cycle_type = $cycle->json_params->services->{$service_info['id']}->type ?? null;
@@ -307,13 +308,36 @@ class ReceiptService
         $discount_notes = [];
         $service_name = $service_info['name'];
 
+        // Kiểm tra có chương trình khuyến mãi nào đc áp dụng không
+        $has_valid_promotion = false;
+        
+        // Ưu đãi theo khuyến mãi hợp lệ
+        foreach ($promotions as $pro) {
+            $start = Carbon::parse($pro->time_start)->startOfMonth();
+            $end = Carbon::parse($pro->time_end)->endOfMonth();
+            $checkMonth = Carbon::parse($month)->startOfMonth();
+
+            if ($checkMonth->between($start, $end)) {
+                $discount_promotion_value = $pro->promotion->json_params->services->{$service_info['id']}->value ?? 0;
+                $discount_promotion_type = $pro->promotion->promotion_type ?? null;
+    
+                if ($discount_promotion_type == Consts::TYPE_POLICIES['percent'] && $discount_promotion_value > 0) {
+                    $has_valid_promotion = true;
+                    $discount_notes[] = "{$pro->promotion->promotion_name} giảm ({$discount_promotion_value}%)";
+                    $amount_after_discount = $amount_after_discount - $amount_after_discount * ($discount_promotion_value / 100);
+                }    
+            }
+            
+        }
         // Ưu đãi theo chu kỳ thanh toán
-        if ($discount_cycle_type == Consts::TYPE_POLICIES['percent']) {
-            $discount_notes[] = "Chu kỳ thanh toán {$cycle->name} - {$service_name} giảm: ({$discount_cycle_value}%)";
-            $amount_after_discount = $amount - $amount * ($discount_cycle_value / 100);
-        } else if ($discount_cycle_type == Consts::TYPE_POLICIES['fixed_amount']) {
-            $discount_notes[] = "Chu kỳ thanh toán {$cycle->name} - {$service_name} (giảm:" . number_format($discount_cycle_value) . "đ)";
-            $amount_after_discount = $amount - $discount_cycle_value;
+        if (!$has_valid_promotion) {
+            if ($discount_cycle_type == Consts::TYPE_POLICIES['percent']) {
+                $discount_notes[] = "Chu kỳ thanh toán {$cycle->name} - {$service_name} giảm: ({$discount_cycle_value}%)";
+                $amount_after_discount = $amount - $amount * ($discount_cycle_value / 100);
+            } else if ($discount_cycle_type == Consts::TYPE_POLICIES['fixed_amount']) {
+                $discount_notes[] = "Chu kỳ thanh toán {$cycle->name} - {$service_name} (giảm:" . number_format($discount_cycle_value) . "đ)";
+                $amount_after_discount = $amount - $discount_cycle_value;
+            }
         }
 
         // Các ưu đãi theo chính sách (lũy kế)
@@ -329,6 +353,7 @@ class ReceiptService
             }
         }
 
+        
 
         $discount_amount = $amount - $amount_after_discount;
         return [

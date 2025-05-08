@@ -2,7 +2,7 @@
     <ul class="nav nav-tabs">
         <li class="active">
             <a href="#tab_thongtin" data-toggle="tab">
-                <h5 class="fw-bold">Thông tin hóa đơn</h5>
+                <h5 class="fw-bold">Thông tin TBP</h5>
             </a>
         </li>
         <li class="">
@@ -18,7 +18,7 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <label class="control-label"><strong><?php echo app('translator')->get('Mã hóa đơn'); ?></strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Mã TBP'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                                 <p><?php echo e($detail->receipt_code ?? ''); ?></p>
@@ -28,7 +28,7 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <label class="control-label"><strong><?php echo app('translator')->get('Tên hóa đơn'); ?></strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Tên TBP'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
                                 <p><?php echo e($detail->receipt_name ?? ''); ?></p>
@@ -200,10 +200,8 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="box" style="border-top: 3px solid #d2d6de;">
-                        <div class="box-header">
-                        </div>
                         <div class="box-body no-padding">
-                            <div class="table-responsive">
+                            <div class="table-responsive table-wrapper">
                                 <table class="table table-hover sticky ">
                                     <thead>
                                         <tr>
