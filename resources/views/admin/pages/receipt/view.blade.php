@@ -200,10 +200,8 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="box" style="border-top: 3px solid #d2d6de;">
-                        <div class="box-header">
-                        </div>
                         <div class="box-body no-padding">
-                            <div class="table-responsive">
+                            <div class="table-responsive table-wrapper">
                                 <table class="table table-hover sticky ">
                                     <thead>
                                         <tr>

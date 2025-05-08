@@ -971,9 +971,11 @@
     .dropdown-menu>li>a>.ion {
         margin-right: 10px;
         width: 8px;
+        margin-top: 3px;
     }
 
     .dropdown-menu>li>a {
         padding: 3px 10px;
+        display: flex;
     }
 </style>

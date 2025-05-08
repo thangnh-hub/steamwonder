@@ -11,16 +11,19 @@
             align-items: center;
             gap: 1rem;
         }
-        th{
+
+        th {
             text-align: center;
             vertical-align: middle !important;
         }
-        .modal-header{
+
+        .modal-header {
             background-color: #3c8dbc;
             color: white;
         }
+
         .table-wrapper {
-            max-height: 450px; 
+            max-height: 450px;
             overflow-y: auto;
             display: block;
         }
@@ -35,6 +38,10 @@
         .table-wrapper table {
             border-collapse: separate;
             width: 100%;
+        }
+        td ul{
+            margin-block-start: 0px !important;
+            padding-inline-start: 10px !important;
         }
     </style>
 <?php $__env->stopSection(); ?>
@@ -102,7 +109,12 @@
                                     </li>
                                     <li class="">
                                         <a href="#tab_4" data-toggle="tab">
-                                            <h5>Biên lai thu phí</h5>
+                                            <h5>Quản lý TBP</h5>
+                                        </a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#tab_5" data-toggle="tab">
+                                            <h5>CT Kh.Mãi được áp dụng</h5>
                                         </a>
                                     </li>
                                 </ul>
@@ -116,7 +128,8 @@
                                                         <select name="area_id" class="form-control select2" required>
                                                             <option value=""><?php echo app('translator')->get('Chọn khu vực'); ?></option>
                                                             <?php $__currentLoopData = $list_area; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                <option value="<?php echo e($val->id); ?>" <?php echo e(old('area_id', $detail->area_id) == $val->id ? 'selected' : ''); ?>>
+                                                                <option value="<?php echo e($val->id); ?>"
+                                                                    <?php echo e(old('area_id', $detail->area_id) == $val->id ? 'selected' : ''); ?>>
                                                                     <?php echo e($val->name); ?>
 
                                                                 </option>
@@ -128,14 +141,16 @@
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label><?php echo app('translator')->get('Họ'); ?><small class="text-red">*</small></label>
-                                                        <input type="text" class="form-control" name="first_name" value="<?php echo e(old('first_name', $detail->first_name)); ?>" required>
+                                                        <input type="text" class="form-control" name="first_name"
+                                                            value="<?php echo e(old('first_name', $detail->first_name)); ?>" required>
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label><?php echo app('translator')->get('Tên'); ?><small class="text-red">*</small></label>
-                                                        <input type="text" class="form-control" name="last_name" value="<?php echo e(old('last_name', $detail->last_name)); ?>" required>
+                                                        <input type="text" class="form-control" name="last_name"
+                                                            value="<?php echo e(old('last_name', $detail->last_name)); ?>" required>
                                                     </div>
                                                 </div>
                                                 
@@ -144,7 +159,8 @@
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label><?php echo app('translator')->get('Tên thường gọi'); ?></label>
-                                                        <input type="text" class="form-control" name="nickname" value="<?php echo e(old('nickname', $detail->nickname)); ?>">
+                                                        <input type="text" class="form-control" name="nickname"
+                                                            value="<?php echo e(old('nickname', $detail->nickname)); ?>">
                                                     </div>
                                                 </div>
                                                 
@@ -153,7 +169,8 @@
                                                         <label><?php echo app('translator')->get('Giới tính'); ?></label>
                                                         <select name="sex" class="form-control select2">
                                                             <?php $__currentLoopData = $list_sex; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                <option value="<?php echo e($key); ?>" <?php echo e(old('sex', $detail->sex) == $key ? 'selected' : ''); ?>>
+                                                                <option value="<?php echo e($key); ?>"
+                                                                    <?php echo e(old('sex', $detail->sex) == $key ? 'selected' : ''); ?>>
                                                                     <?php echo e(__($value)); ?>
 
                                                                 </option>
@@ -165,14 +182,16 @@
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label><?php echo app('translator')->get('Ngày sinh'); ?></label>
-                                                        <input type="date" class="form-control" name="birthday" value="<?php echo e(old('birthday', $detail->birthday)); ?>">
+                                                        <input type="date" class="form-control" name="birthday"
+                                                            value="<?php echo e(old('birthday', $detail->birthday)); ?>">
                                                     </div>
                                                 </div>
                                                 
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label><?php echo app('translator')->get('Ngày nhập học'); ?></label>
-                                                        <input type="date" class="form-control" name="enrolled_at" value="<?php echo e(old('enrolled_at', $detail->enrolled_at)); ?>">
+                                                        <input type="date" class="form-control" name="enrolled_at"
+                                                            value="<?php echo e(old('enrolled_at', $detail->enrolled_at)); ?>">
                                                     </div>
                                                 </div>
                                                 
@@ -181,7 +200,8 @@
                                                         <label><?php echo app('translator')->get('Trạng thái'); ?></label>
                                                         <select name="status" class="form-control select2">
                                                             <?php $__currentLoopData = $list_status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                <option value="<?php echo e($key); ?>" <?php echo e(old('status', $detail->status) == $key ? 'selected' : ''); ?>>
+                                                                <option value="<?php echo e($key); ?>"
+                                                                    <?php echo e(old('status', $detail->status) == $key ? 'selected' : ''); ?>>
                                                                     <?php echo e(__($value)); ?>
 
                                                                 </option>
@@ -194,10 +214,13 @@
                                                         <label><?php echo app('translator')->get('Chính sách được hưởng'); ?></label>
                                                         <select name="policies[]" class="form-control select2" multiple>
                                                             <?php
-                                                                $selectedPolicies = $detail->studentPolicies->pluck('policy_id')->toArray();
+                                                                $selectedPolicies = $detail->studentPolicies
+                                                                    ->pluck('policy_id')
+                                                                    ->toArray();
                                                             ?>
                                                             <?php $__currentLoopData = $list_policies; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $policy): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                <option value="<?php echo e($policy->id); ?>" <?php echo e(in_array($policy->id, $detail->studentPolicies->pluck('policy_id')->toArray()) ? 'selected' : ''); ?>>
+                                                                <option value="<?php echo e($policy->id); ?>"
+                                                                    <?php echo e(in_array($policy->id, $detail->studentPolicies->pluck('policy_id')->toArray()) ? 'selected' : ''); ?>>
                                                                     <?php echo e($policy->name); ?>
 
                                                                 </option>
@@ -209,10 +232,15 @@
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label><?php echo app('translator')->get('Chu kỳ thu dịch vụ'); ?></label>
-                                                        <select  style="width:100%" name="payment_cycle_id" class="form-control select2">
+                                                        <select style="width:100%" name="payment_cycle_id"
+                                                            class="form-control select2">
                                                             <option value="">Chọn</option>
                                                             <?php $__currentLoopData = $list_payment_cycle; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $payment_cycle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                <option <?php echo e(old('payment_cycle_id', $detail->payment_cycle_id) == $payment_cycle->id ? 'selected' : ''); ?> value="<?php echo e($payment_cycle->id); ?>"><?php echo e($payment_cycle->name ?? ""); ?></option>
+                                                                <option
+                                                                    <?php echo e(old('payment_cycle_id', $detail->payment_cycle_id) == $payment_cycle->id ? 'selected' : ''); ?>
+
+                                                                    value="<?php echo e($payment_cycle->id); ?>">
+                                                                    <?php echo e($payment_cycle->name ?? ''); ?></option>
                                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                         </select>
                                                     </div>
@@ -222,16 +250,20 @@
                                                     <div class="form-group box_img_right">
                                                         <label><?php echo app('translator')->get('Ảnh đại diện'); ?></label>
                                                         <div id="image-holder">
-                                                            <img src="<?php echo e(!empty($detail->avatar) ? asset($detail->avatar) : url('themes/admin/img/no_image.jpg')); ?>" style="max-height: 120px;">
+                                                            <img src="<?php echo e(!empty($detail->avatar) ? asset($detail->avatar) : url('themes/admin/img/no_image.jpg')); ?>"
+                                                                style="max-height: 120px;">
                                                         </div>
                                                         <div class="input-group">
                                                             <span class="input-group-btn">
-                                                                <a data-input="image" data-preview="image-holder" class="btn btn-primary lfm" data-type="cms-image">
+                                                                <a data-input="image" data-preview="image-holder"
+                                                                    class="btn btn-primary lfm" data-type="cms-image">
                                                                     <i class="fa fa-picture-o"></i> <?php echo app('translator')->get('Choose'); ?>
                                                                 </a>
                                                             </span>
-                                                            <input id="image" class="form-control inp_hidden" type="hidden" name="avatar"
-                                                                placeholder="<?php echo app('translator')->get('Image source'); ?>" value="<?php echo e(old('avatar', $detail->avatar)); ?>">
+                                                            <input id="image" class="form-control inp_hidden"
+                                                                type="hidden" name="avatar"
+                                                                placeholder="<?php echo app('translator')->get('Image source'); ?>"
+                                                                value="<?php echo e(old('avatar', $detail->avatar)); ?>">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -243,11 +275,12 @@
                                     <div class="tab-pane " id="tab_2">
                                         <div class="box-body ">
                                             <div>
-                                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addParentModal">
+                                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
+                                                    data-target="#addParentModal">
                                                     <i class="fa fa-plus"></i> <?php echo app('translator')->get('Cập nhật người thân'); ?>
-                                                </button>     
+                                                </button>
                                             </div>
-                                            
+
                                             <br>
                                             <div class="table-responsive">
                                                 <table class="table table-hover table-bordered">
@@ -312,7 +345,8 @@
                                     <div class="tab-pane " id="tab_3">
                                         <div class="box-body ">
                                             <div>
-                                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addServiceModal">
+                                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
+                                                    data-target="#addServiceModal">
                                                     <i class="fa fa-plus"></i> <?php echo app('translator')->get('Đăng ký dịch vụ'); ?>
                                                 </button>     
                                                 <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#reincarnationModal">
@@ -409,7 +443,10 @@
                                             </div>
                                             <br>
                                             <?php
-                                                $cancelledServices = $detail->studentServices->where('status', 'cancelled');
+                                                $cancelledServices = $detail->studentServices->where(
+                                                    'status',
+                                                    'cancelled',
+                                                );
                                             ?>
                                             <?php if($cancelledServices->count()): ?>
                                             <h4 class="mt-4 ">Danh sách dịch vụ bị huỷ</h4>
@@ -454,66 +491,21 @@
                                                 </table>
                                             </div>
                                             <?php endif; ?>
-                                        </div>                      
+                                        </div>
                                     </div>
 
                                     <!-- TAB 4: Biên lai thu phí -->
                                     <div class="tab-pane" id="tab_4">
                                         <div class="box-body ">
-                                            <form id="calculate-receipt-form">
-                                                <?php echo csrf_field(); ?>
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label><?php echo app('translator')->get('Ngày bắt đầu chu kỳ thanh toán'); ?> <small class="text-danger">*</small></label>
-                                                        <input class="form-control" type="date" id="enrolled_at" value="">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label><?php echo app('translator')->get('Chu kỳ thu dịch vụ'); ?> <small class="text-danger">*</small></label>
-                                                        <select  style="width:100%" id="selectpayment_cycle_id" class="form-control select2">
-                                                            <option value="">Chọn</option>
-                                                            <?php $__currentLoopData = $list_payment_cycle; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $payment_cycle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                <option <?php echo e(old('payment_cycle_id', $detail->payment_cycle_id) == $payment_cycle->id ? 'selected' : ''); ?> value="<?php echo e($payment_cycle->id); ?>"><?php echo e($payment_cycle->name ?? ""); ?></option>
-                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                
-                                              
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label class="d-block"><?php echo app('translator')->get('Tính tháng hiện tại ở chu kỳ thu?'); ?></label>
-                                                        <div id="receipt-options" class="flex-inline-group">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio" name="includeCurrentMonth" id="includeCurrentMonthYes" value="1">
-                                                                <label class="form-check-label mb-0" for="includeCurrentMonthYes">Có</label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio" name="includeCurrentMonth" id="includeCurrentMonthNo" value="0" checked>
-                                                                <label class="form-check-label mb-0" for="includeCurrentMonthNo">Không</label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             
-                                                <div class="col-md-12">
-                                                    <button type="button" class="btn btn-success btn-sm mb-15" id="btnCalculateReceipt" data-id="<?php echo e($detail->id); ?>">
-                                                        <i class="fa fa-money"></i> <?php echo app('translator')->get('Tính toán thu phí'); ?>
-                                                    </button>
-                                                </div>
-                                                
-                                            </form>
                                             <table class="table table-hover table-bordered">
                                                 <thead>
                                                     <tr>
                                                         <th><?php echo app('translator')->get('STT'); ?></th>
                                                         <th><?php echo app('translator')->get('Mã biểu phí'); ?></th>
                                                         <th><?php echo app('translator')->get('Tên biểu phí'); ?></th>
-                                                        <th><?php echo app('translator')->get('Chu kỳ'); ?></th>
-                                                        <th><?php echo app('translator')->get('Biểu phí trước'); ?></th>
-                                                        <th><?php echo app('translator')->get('Dư nợ trước'); ?></th>
+                                                        
+                                                        <th><?php echo app('translator')->get('Số dư kỳ trước '); ?></th>
                                                         <th><?php echo app('translator')->get('Thành tiền'); ?></th>
                                                         <th><?php echo app('translator')->get('Tổng giảm trừ'); ?></th>
                                                         <th><?php echo app('translator')->get('Tổng tiền truy thu/hoàn trả'); ?></th>
@@ -522,63 +514,219 @@
                                                         <th><?php echo app('translator')->get('Còn lại'); ?></th>
                                                         <th><?php echo app('translator')->get('Trạng thái'); ?></th>
                                                         <th><?php echo app('translator')->get('Ghi chú'); ?></th>
-                                                        <th><?php echo app('translator')->get('Người lập biên lai'); ?></th>
-                                                        <th><?php echo app('translator')->get('Ngày bắt đầu kỳ thu'); ?></th>
-                                                        <th><?php echo app('translator')->get('Ngày kết thúc kỳ thu'); ?></th>
+                                                        
                                                         <th><?php echo app('translator')->get('Ngày tạo phí'); ?></th>
                                                         <th><?php echo app('translator')->get('Chức năng'); ?></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <?php
-                                                        function format_currency($price) {
-                                                            return (isset($price) && is_numeric($price)) 
-                                                                ? number_format($price, 0, ',', '.') . ' đ'
+                                                        function format_currency($price)
+                                                        {
+                                                            return isset($price) && is_numeric($price)
+                                                                ? number_format($price, 0, ',', '.') 
                                                                 : '';
                                                         }
                                                     ?>
                                                     <?php if($detail->studentReceipt->count()): ?>
-                                                        <?php $__currentLoopData = $detail->studentReceipt; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?> 
-                                                        <tr>
-                                                            <td><?php echo e($loop->index + 1); ?> </td>  
-                                                            <td><?php echo e($row->receipt_code ?? ""); ?></td>
-                                                            <td><?php echo e($row->receipt_name ?? ""); ?></td>
-                                                            <td><?php echo e($row->payment_cycle->name ?? ""); ?></td>
-                                                            <td><?php echo e($row->prev_receipt->receipt_name  ?? ""); ?></td>
-                                                            <td><?php echo e(format_currency($row->prev_balance)); ?></td>
-                                                            <td><?php echo e(format_currency($row->total_amount)); ?></td>
-                                                            <td><?php echo e(format_currency($row->total_discount)); ?></td>
-                                                            <td><?php echo e(format_currency($row->total_adjustment)); ?></td>
-                                                            <td><?php echo e(format_currency($row->total_final)); ?></td>
-                                                            <td><?php echo e(format_currency($row->total_paid)); ?></td>
-                                                            <td><?php echo e(format_currency($row->total_due)); ?></td>
-                                                            <td><?php echo e(__($row->status)); ?></td>
-                                                            <td><?php echo e($row->note ?? ""); ?></td>
-                                                            <td><?php echo e($row->cashier->name ?? ""); ?></td>
-                                                            <td><?php echo e((isset($row->period_start) ? \Carbon\Carbon::parse($row->period_start)->format('d-m-Y') : '')); ?> </td>
-                                                            <td><?php echo e((isset($row->period_end) ? \Carbon\Carbon::parse($row->period_end)->format('d-m-Y') : '')); ?> </td>
-                                                            <td><?php echo e((isset($row->created_at) ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') : '')); ?> </td>
-                                                            <td>
+                                                        <?php $__currentLoopData = $detail->studentReceipt; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                            <tr>
+                                                                <td><?php echo e($loop->index + 1); ?> </td>
+                                                                <td><?php echo e($row->receipt_code ?? ''); ?></td>
+                                                                <td><?php echo e($row->receipt_name ?? ''); ?></td>
                                                                 
+                                                                <td><?php echo e(format_currency($row->prev_balance)); ?></td>
+                                                                <td><?php echo e(format_currency($row->total_amount)); ?></td>
+                                                                <td><?php echo e(format_currency($row->total_discount)); ?></td>
+                                                                <td><?php echo e(format_currency($row->total_adjustment)); ?></td>
+                                                                <td><?php echo e(format_currency($row->total_final)); ?></td>
+                                                                <td><?php echo e(format_currency($row->total_paid)); ?></td>
+                                                                <td><?php echo e(format_currency($row->total_due)); ?></td>
+                                                                <td><?php echo e(__($row->status)); ?></td>
+                                                                <td><?php echo e($row->note ?? ''); ?></td>
                                                                 
-                                                                <button type="button" class="btn btn-sm btn-primary btn_show_detail mr-10" data-toggle="tooltip"
-                                                                    data-id="<?php echo e($row->id); ?>"
-                                                                    data-url="<?php echo e(route('receipt.view', $row->id)); ?>"
-                                                                    title="<?php echo app('translator')->get('Show'); ?>" data-original-title="<?php echo app('translator')->get('Show'); ?>">
-                                                                    <i class="fa fa-money"></i> Chi tiết
-                                                                </button>
-                                                            </td>
-                                                        </tr>
+                                                                <td><?php echo e(isset($row->created_at) ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') : ''); ?>
+
+                                                                </td>
+                                                                <td>
+                                                                    
+                                                                    <button type="button"
+                                                                        class="btn btn-sm btn-primary btn_show_detail"
+                                                                        data-toggle="tooltip"
+                                                                        data-id="<?php echo e($row->id); ?>"
+                                                                        data-url="<?php echo e(route('receipt.view', $row->id)); ?>"
+                                                                        title="<?php echo app('translator')->get('Show'); ?>"
+                                                                        data-original-title="<?php echo app('translator')->get('Show'); ?>">
+                                                                        <i class="fa fa-eye"></i> Xem
+                                                                    </button>
+                                                                    
+                                                                    <a href="<?php echo e(route('receipt.show', $row->id)); ?>">
+                                                                        <button type="button"
+                                                                            class="btn btn-sm btn-warning  mr-10"
+                                                                            title="<?php echo app('translator')->get('Cập nhật'); ?>"
+                                                                            data-original-title="<?php echo app('translator')->get('Cập nhật'); ?>">
+                                                                            <i class="fa fa-money"></i> Cập nhật
+                                                                        </button>
+                                                                    </a>
+
+                                                                    <button type="button"
+                                                                        class="btn btn-sm btn-danger btn_delete_receipt"
+                                                                        data-id="<?php echo e($row->id); ?>">
+                                                                        <i class="fa fa-trash"></i> Xóa
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
                                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                    <?php endif; ?>       
+                                                    <?php endif; ?>
                                                 </tbody>
                                             </table>
-                                        </div>                      
+                                        </div>
                                     </div>
-                                </div> 
+
+                                    
+                                    <div class="tab-pane " id="tab_5">
+                                        <div class="box-body ">
+                                            <p>Danh sách các CT Kh.Mãi</p>
+                                            <table class="table table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th><?php echo app('translator')->get('Chọn'); ?></th>
+                                                        <th><?php echo app('translator')->get('Mã CT Kh.Mãi'); ?></th>
+                                                        <th><?php echo app('translator')->get('Tên CT Kh.Mãi'); ?></th>
+                                                        <th><?php echo app('translator')->get('Mô tả'); ?></th>
+                                                        <th><?php echo app('translator')->get('Loại'); ?></th>
+                                                        <th><?php echo app('translator')->get('Thời gian bắt đầu'); ?></th>
+                                                        <th><?php echo app('translator')->get('Thời gian kết thúc'); ?></th>
+                                                        <th><?php echo app('translator')->get('Chi tiết Kh.Mãi'); ?></th>
+                                                        <th><?php echo app('translator')->get('Trạng thái'); ?></th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php $__currentLoopData = $list_promotion; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <tr>
+                                                            <td class="text-center">
+                                                                <input type="radio" class="radio_promotion" <?php echo e(in_array($row->id,$promotion_active->pluck('promotion_id')->toArray())?'disabled':''); ?>
+
+                                                                    name="radio_promotion" value="<?php echo e($row->id); ?>">
+                                                            </td>
+                                                            <td class="code"><?php echo e($row->promotion_code ?? ''); ?></td>
+                                                            <td class="name"><?php echo e($row->promotion_name ?? ''); ?></td>
+                                                            <td class="des"><?php echo e($row->description ?? ''); ?></td>
+                                                            <td class="type"><?php echo e(__($row->promotion_type)); ?></td>
+                                                            <td><?php echo e(\Carbon\Carbon::parse($row->time_start)->format('d/m/Y') ?? ''); ?>
+
+                                                            </td>
+                                                            <td><?php echo e(\Carbon\Carbon::parse($row->time_end)->format('d/m/Y') ?? ''); ?>
+
+                                                            </td>
+                                                            <td class="service">
+                                                                <?php $__currentLoopData = $row->json_params->services; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                    <?php
+                                                                        $service_detail = $row
+                                                                            ->getServices()
+                                                                            ->find($val->service_id);
+                                                                    ?>
+                                                                    <ul>
+                                                                        <li>Dịch vụ:
+                                                                            <?php echo e($service_detail->name ?? ''); ?>
+
+                                                                        </li>
+                                                                        <li>Giá trị áp dụng:
+                                                                            <?php echo e(number_format($val->value, 0, ',', '.')); ?>
+
+                                                                        </li>
+                                                                        <li>Số lần áp dụng:
+                                                                            <?php echo e($val->apply_count ?? ''); ?>
+
+                                                                        </li>
+                                                                    </ul>
+                                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                            </td>
+                                                            <td class="status">
+                                                                <?php echo e(__($row->status)); ?>
+
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </tbody>
+
+                                            </table>
+                                            <br>
+                                            <p>CT Kh.Mãi được áp dụng</p>
+                                            <table class="table table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+
+                                                        <th><?php echo app('translator')->get('Chọn'); ?></th>
+                                                        <th><?php echo app('translator')->get('Mã CT Kh.Mãi'); ?></th>
+                                                        <th><?php echo app('translator')->get('Tên CT Kh.Mãi'); ?></th>
+                                                        <th><?php echo app('translator')->get('Mô tả'); ?></th>
+                                                        <th><?php echo app('translator')->get('Loại'); ?></th>
+                                                        <th><?php echo app('translator')->get('Ngày bắt đầu được hưởng Kh.Mãi'); ?></th>
+                                                        <th><?php echo app('translator')->get('Ngày kết thúc được hưởng Kh.Mãi'); ?></th>
+                                                        <th><?php echo app('translator')->get('Chi tiết Kh.Mãi'); ?></th>
+                                                        <th><?php echo app('translator')->get('Trạng thái'); ?></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php $__currentLoopData = $promotion_active; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <tr>
+                                                            <td>
+
+                                                            </td>
+                                                            <td><?php echo e($row->promotion->promotion_code ?? ''); ?></td>
+                                                            <td><?php echo e($row->promotion->promotion_name ?? ''); ?></td>
+                                                            <td><?php echo e($row->promotion->description ?? ''); ?></td>
+                                                            <td><?php echo e(__($row->promotion->promotion_type)); ?></td>
+                                                            <td>
+                                                                <?php echo e(\Carbon\Carbon::parse($row->time_start)->format('Y-m-d') ?? ''); ?>
+
+
+                                                            </td>
+                                                            <td>
+                                                                <?php echo e(\Carbon\Carbon::parse($row->time_end)->format('Y-m-d') ?? ''); ?>
+
+                                                            </td>
+                                                            <td>
+                                                                <?php $__currentLoopData = $row->promotion->json_params->services; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                    <?php
+
+                                                                        $service_detail = $row->promotion
+                                                                            ->getServices()
+                                                                            ->find($val->service_id);
+                                                                    ?>
+                                                                    <ul>
+                                                                        <li>Dịch vụ:
+                                                                            <?php echo e($service_detail->name ?? ''); ?>
+
+                                                                        </li>
+                                                                        <li>Giá trị áp dụng:
+                                                                            <?php echo e(number_format($val->value, 0, ',', '.')); ?>
+
+                                                                        </li>
+                                                                        <li>Số lần áp dụng:
+                                                                            <?php echo e($val->apply_count ?? ''); ?>
+
+                                                                        </li>
+                                                                    </ul>
+                                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                            </td>
+                                                            <td>
+                                                                <?php echo e(__($row->status)); ?>
+
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    <tr class="promotion_new"></tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    
+
                         <div class="box-footer">
                             <button type="submit" class="btn btn-info btn-sm pull-right">
                                 <i class="fa fa-save"></i> <?php echo app('translator')->get('Save'); ?>
@@ -589,11 +737,12 @@
                         </div>
                     </div>
                 </div>
-            </div>    
+            </div>
         </form>
     </section>
     <!-- Modal Người thân-->
-    <div class="modal fade" id="addParentModal" tabindex="-1" role="dialog" aria-labelledby="addParentModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addParentModal" tabindex="-1" role="dialog" aria-labelledby="addParentModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-full" role="document">
         <form action="<?php echo e(route('student.addParent', $detail->id)); ?>" method="POST">
             <?php echo csrf_field(); ?>
@@ -655,7 +804,8 @@
     </div>
 
     <!-- Modal dịch vụ-->
-    <div data-backdrop="static" class="modal fade" id="addServiceModal" tabindex="-1" role="dialog" aria-labelledby="addServiceModalLabel" aria-hidden="true">
+    <div data-backdrop="static" class="modal fade" id="addServiceModal" tabindex="-1" role="dialog"
+        aria-labelledby="addServiceModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-full" role="document">
         <form id="submitstudentaddService" action="<?php echo e(route('student.addService', $detail->id)); ?>" method="POST">
             <?php echo csrf_field(); ?>
@@ -756,29 +906,42 @@
     </div>
 
     
-    <div  class="modal fade" id="editServiceModal" tabindex="-1" role="dialog" aria-labelledby="editServiceModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editServiceModal" tabindex="-1" role="dialog" aria-labelledby="editServiceModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
-        <form id="updateStudentServiceForm" method="POST">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editServiceModalLabel"><?php echo app('translator')->get('Cập nhật dịch vụ'); ?></h5>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="">Ghi chú</label>
-                                <input type="text" class="form-control" name="note" value="" placeholder="<?php echo app('translator')->get('Ghi chú'); ?>">
+            <form id="updateStudentServiceForm" method="POST">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editServiceModalLabel"><?php echo app('translator')->get('Cập nhật dịch vụ'); ?></h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="">Ghi chú</label>
+                                    <select name="payment_cycle_service" style="width:100%" class="form-control select2">
+                                        <?php $__currentLoopData = $list_payment_cycle; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $payment_cycle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option  value="<?php echo e($payment_cycle->id); ?>"><?php echo e($payment_cycle->name ?? ""); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </select>
+                                </div>
                             </div>
-                        </div>           
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="">Ghi chú</label>
+                                    <input type="text" class="form-control" name="note_service" value=""
+                                        placeholder="<?php echo app('translator')->get('Ghi chú'); ?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btnUpdateService" type="button" class="btn btn-primary"><?php echo app('translator')->get('Cập nhật'); ?></button>
+                        <button type="button" class="btn btn-secondary"
+                            data-dismiss="modal"><?php echo app('translator')->get('Đóng'); ?></button>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button id="btnUpdateService" type="button" class="btn btn-primary"><?php echo app('translator')->get('Cập nhật'); ?></button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo app('translator')->get('Đóng'); ?></button>
-                </div>
-            </div>
-        </form>
+            </form>
         </div>
     </div>
 
@@ -806,6 +969,51 @@
 
 <?php $__env->startSection('script'); ?>
     <script>
+        $(document).on('change', '.radio_promotion', function() {
+            var id = $(this).val();
+            var code = $(this).parents('tr').find('.code').html();
+            var name = $(this).parents('tr').find('.name').html();
+            var des = $(this).parents('tr').find('.des').html();
+            var type = $(this).parents('tr').find('.type').html();
+            var service = $(this).parents('tr').find('.service').html();
+            $('.promotion_new').html(`
+            <td>
+                <button type="button"
+                    class="btn btn-sm btn-danger delete_student_promotion"
+                    onclick="$(this).closest('tr').html(''); $('.radio_promotion').prop('checked', false);">
+                    <i class="fa fa-close"></i> Hủy
+                </button>
+                <input type="hidden" name="promotion_student[promotion_id]" value="${id}">
+            </td>
+            <td>${code}</td>
+            <td>${name}</td>
+            <td>${des}</td>
+            <td>${type}</td>
+            <td>
+                <input required type="date" name="promotion_student[time_start]"
+                    class="form-control"
+                    value="">
+
+            </td>
+            <td>
+                <input required type="date" name="promotion_student[time_end]"
+                    class="form-control"
+                    value="">
+            </td>
+            <td>${service}</td>
+            <td>
+                <select name="promotion_student[status]" class="form-control select2 w-100">
+                    <?php $__currentLoopData = $status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($key); ?>">
+                            <?php echo e(__($val)); ?></option>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </select>
+            </td>
+            `)
+            $('.select2').select2();
+        })
+
+
         $('#search-parent').on('keyup', function() {
             let value = $(this).val().toLowerCase();
             $('#parent-table tbody tr').filter(function() {
@@ -832,8 +1040,8 @@
                     },
                     success: function(response) {
                         if (response.message === 'success') {
-                            localStorage.setItem('activeTab', '#tab_3'); 
-                            location.reload(); 
+                            localStorage.setItem('activeTab', '#tab_3');
+                            location.reload();
                         } else {
                             alert("Bạn không có quyền thao tác dữ liệu");
                         }
@@ -848,7 +1056,7 @@
         $('.update_student_service').click(function(e) {
             e.preventDefault();
             let _id = $(this).data('id');
-            let url = "<?php echo e(route('get_student_service_info')); ?>"; 
+            let url = "<?php echo e(route('get_student_service_info')); ?>";
 
             $.ajax({
                 type: "GET",
@@ -859,9 +1067,10 @@
                 success: function(response) {
                     if (response.success) {
                         $('#editServiceModal input[name="note"]').val(response.data.note);
+                        $('#editServiceModal select').val(response.data.payment_cycle_id).trigger('change');
                         // Mở modal
                         $('#editServiceModal').modal('show');
-                        $('#btnUpdateService').attr('data-id', _id); 
+                        $('#btnUpdateService').attr('data-id', _id);
                     } else {
                         alert("Không tìm thấy dữ liệu dịch vụ.");
                     }
@@ -872,8 +1081,9 @@
             });
         });
 
-        $('#btnUpdateService').click(function () {
-            let noteValue = $('input[name="note"]').val();
+        $('#btnUpdateService').click(function() {
+            let cycleValue = $('select[name="payment_cycle_service"]').val();
+            let noteValue  = $('input[name="note_service"]').val();
             let currentStudentServiceId = $(this).data('id'); // Lấy ID dịch vụ hiện tại từ nút cập nhật
             $.ajax({
                 type: "POST",
@@ -881,6 +1091,7 @@
                 data: {
                     id: currentStudentServiceId,
                     note: noteValue,
+                    payment_cycle_id: cycleValue,
                     _token: '<?php echo e(csrf_token()); ?>'
                 },
                 success: function(response) {
@@ -889,16 +1100,40 @@
                         localStorage.setItem('activeTab', '#tab_3');
                         location.reload();
                     } else {
-                        alert("Không thể cập nhật ghi chú.");
+                        alert("Không có quyền thao tác.");
                     }
                 },
                 error: function() {
-                    alert("Lỗi cập nhật ghi chú.");
+                    alert("Lỗi cập nhật.");
                 }
             });
         });
+        $('.btn_delete_receipt').click(function() {
+        let currentStudentReceiptId = $(this).data('id'); // Lấy ID phiếu thu hiện tại từ nút
+            if (confirm("Bạn có chắc chắn muốn xóa phiếu thu này?")) {
+                $.ajax({
+                    type: "GET",
+                    url: "<?php echo e(route('student.deleteReceipt')); ?>",
+                    data: {
+                        id: currentStudentReceiptId, // Đảm bảo đúng biến được gửi đi
+                    },
+                    success: function(response) {
+                        if (response.message === 'success') {
+                            localStorage.setItem('activeTab', '#tab_3');
+                            location.reload();
+                        } else {
+                            alert("Bạn không có quyền thao tác dữ liệu");
+                        }
+                    },
+                    error: function() {
+                        alert("Lỗi cập nhật.");
+                    }
+                });
+            }
+    });
 
-        $(document).ready(function () {
+
+        $(document).ready(function() {
             var activeTab = localStorage.getItem('activeTab');
             if (activeTab) {
                 // Bỏ class active hiện tại
@@ -946,16 +1181,16 @@
         });
 
 
-        $('#btnCalculateReceipt').click(function () {
+        $('#btnCalculateReceipt').click(function() {
             let studentId = $(this).data('id');
             let includeCurrentMonth = $('#receipt-options input[type="radio"]:checked').val();
             let enrolledAt = $('#enrolled_at').val();
             let paymentCycleId = $('#selectpayment_cycle_id').val();
-            if(paymentCycleId=="") {
+            if (paymentCycleId == "") {
                 alert("Vui lòng chọn chu kỳ thu dịch vụ!");
                 return;
             }
-            if(enrolledAt=="") {
+            if (enrolledAt == "") {
                 alert("Vui lòng chọn ngày bắt đầu chu kỳ thanh toán!");
                 return;
             }
@@ -969,7 +1204,7 @@
                     payment_cycle_id: paymentCycleId,
                     _token: '<?php echo e(csrf_token()); ?>'
                 },
-                success: function (response) {
+                success: function(response) {
                     if (response.message === 'success') {
                         alert("Tạo hóa đơn thành công!");
                         localStorage.setItem('activeTab', '#tab_4');
@@ -978,7 +1213,7 @@
                         alert("Không thể tạo hóa đơn.");
                     }
                 },
-                error: function () {
+                error: function() {
                     alert("Đã xảy ra lỗi khi tạo hóa đơn.");
                 }
             });
