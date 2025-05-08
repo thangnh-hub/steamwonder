@@ -102,5 +102,14 @@
     "start_day_range":"Theo ngày nhập học",
     "start_month_range":"Theo tháng nhập học",
     "Update successfully!":"Cập nhật thông tin thành công!",
-    "Edit form": "Thông tin cập nhật"
+    "Edit form": "Thông tin cập nhật",
+    "add_month": "Thêm tháng",
+    "pending":"Chờ duyệt",
+    "accepted":"Đã xác nhận",
+    "approved":"Đã phê duyệt",
+    "paid":"Đã thanh toán",
+    "completed":"Đã hoàn thành",
+    "expected":"Dự kiến",
+    "adjusted":"Đã đối soát",
+    "finalized":"Đã quyết toán"
 }

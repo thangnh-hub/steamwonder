@@ -142,7 +142,8 @@
                         <?php echo app('translator')->get('not_found'); ?>
                     </div>
                 <?php else: ?>
-                    <table class="table table-hover table-bordered">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered ">
                         <thead>
                             <tr>
                                 <th><?php echo app('translator')->get('STT'); ?></th>
@@ -185,7 +186,7 @@
                                             </a>
                                         </td>
                                         <td>
-                                            <?php echo e($row->last_name ?? ''); ?> <?php echo e($row->first_name ?? ''); ?>
+                                             <?php echo e($row->first_name ?? ''); ?> <?php echo e($row->last_name ?? ''); ?>
 
                                         </td>
                                         <td>
@@ -235,6 +236,8 @@
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tbody>
                     </table>
+                </div>
+                    
                 <?php endif; ?>
             </div>
             <div class="box-footer clearfix">

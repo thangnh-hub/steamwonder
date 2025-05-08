@@ -11,8 +11,15 @@ class Consts
     ];
     const STATUS_RECEIPT = [
         'pending' => 'pending',
+        'accepted' => 'accepted',
+        'approved' => 'approved',
         'paid' => 'paid',
         'completed' => 'completed',
+    ];
+    const STATUS_RECEIPT_DETAIL = [
+        'expected' => 'expected',
+        'adjusted' => 'adjusted',
+        'finalized' => 'finalized'
     ];
     const CONDITION_TYPE = [
         'start_day_range' => 'start_day_range',

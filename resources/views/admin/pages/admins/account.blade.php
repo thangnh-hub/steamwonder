@@ -78,13 +78,13 @@
                   class="pull-right">{{ $admin_auth->birthday ? \Carbon\Carbon::parse($admin_auth->birthday)->format('d/m/Y') : 'Chưa cập nhật' }}</a>
               </li>
               <li class="list-group-item">
-                Phòng ban <a class="pull-right">{{ $admin_auth->department->name }}</a>
+                Phòng ban <a class="pull-right">{{ optional($admin_auth->department)->name }}</a>
               </li>
               <li class="list-group-item">
                 Khu vực <a class="pull-right">{{ $admin_auth->area->name }}</a>
               </li>
               <li class="list-group-item">
-                Người quản lý <a class="pull-right">{{ $admin_auth->direct_manager->name }}</a>
+                Người quản lý <a class="pull-right">{{ optional($admin_auth->direct_manager)->name }}</a>
               </li>
               <li class="list-group-item">
                 Cập nhật lúc <a class="pull-right">{{ $admin_auth->updated_at->format('H:i:s d/m/Y') }}</a>
@@ -101,7 +101,7 @@
           <div class="box-body">
             <p>
               <strong><i class="fa fa-book margin-r-5"></i> Quyền hệ thống: </strong>
-              <span class="label label-primary">{{ $admin_auth->getRole->name }}</span>
+              <span class="label label-primary">{{ optional($admin_auth->getRole)->name }}</span>
             </p>
             <p>
               <strong><i class="fa fa-book margin-r-5"></i> Quyền mở rộng: </strong>

@@ -23,7 +23,11 @@
                                     $check++;
                                 }
                                 foreach ($accessMenus as $sub) {
-                                    if ($sub->parent_id == $item->id && Request::segment(2) == $sub->url_link && $sub->url_link != '') {
+                                    if (
+                                        $sub->parent_id == $item->id &&
+                                        Request::segment(2) == $sub->url_link &&
+                                        $sub->url_link != ''
+                                    ) {
                                         $check++;
                                     }
                                 }
@@ -41,12 +45,14 @@
                                         <?php $__currentLoopData = $accessMenus; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sub): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <?php if($sub->parent_id == $item->id): ?>
                                                 <?php if($sub->submenu > 0): ?>
-                                                    <li class="dropdown sub <?php echo e(Request::segment(2) == $sub->url_link && $sub->url_link != '' ? 'active' : ''); ?>">
+                                                    <li
+                                                        class="dropdown sub <?php echo e(Request::segment(2) == $sub->url_link && $sub->url_link != '' ? 'active' : ''); ?>">
                                                         <a href="javascript:void(0)">
                                                             <i
                                                                 class="<?php echo e($sub->icon != '' ? $sub->icon : 'fa fa-angle-right'); ?>"></i>
                                                             <span><?php echo e(__($sub->name)); ?></span>
-                                                            <i class="fa fa-angle-right pull-right" style="margin-left: auto;"></i>
+                                                            <i class="fa fa-angle-right pull-right"
+                                                                style="margin-left: auto; padding-left: 5px; margin-right: 0;"></i>
                                                         </a>
 
                                                         <ul class="dropdown-menu sub_child">
