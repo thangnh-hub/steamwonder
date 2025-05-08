@@ -310,6 +310,22 @@ class StudentController extends Controller
             abort(422, __($ex->getMessage()));
         }
     }
+    public function deleteStudentReceipt(Request $request)
+    {
+        try {
+            $receipt = Receipt::find($request->id);
+            if (isset($receipt)) {
+                $receipt->receiptDetail()->delete();
+                $receipt->delete();
+                session()->flash('successMessage', __('Xóa thành công TBP của học sinh!'));
+                return $this->sendResponse("", 'success');
+            }
+            session()->flash('errorMessage', __('Xóa không thành công! Bạn không có quyền thao tác dữ liệu!'));
+            return $this->sendResponse('', __('No records available!'));
+        } catch (Exception $ex) {
+            abort(422, __($ex->getMessage()));
+        }
+    }
 
     public function getStudentServiceInfo(Request $request)
     {

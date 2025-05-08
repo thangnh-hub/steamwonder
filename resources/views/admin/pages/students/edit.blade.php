@@ -598,15 +598,17 @@
                                                                 <td>{{ isset($row->created_at) ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') : '' }}
                                                                 </td>
                                                                 <td>
+                                                                    
                                                                     <button type="button"
-                                                                        class="btn btn-sm btn-primary btn_show_detail mr-10"
+                                                                        class="btn btn-sm btn-primary btn_show_detail"
                                                                         data-toggle="tooltip"
                                                                         data-id="{{ $row->id }}"
                                                                         data-url="{{ route('receipt.view', $row->id) }}"
                                                                         title="@lang('Show')"
                                                                         data-original-title="@lang('Show')">
-                                                                        <i class="fa fa-eye"></i> Chi tiết
+                                                                        <i class="fa fa-eye"></i> Xem
                                                                     </button>
+                                                                    
                                                                     <a href="{{ route('receipt.show', $row->id) }}">
                                                                         <button type="button"
                                                                             class="btn btn-sm btn-warning  mr-10"
@@ -615,6 +617,12 @@
                                                                             <i class="fa fa-money"></i> Cập nhật
                                                                         </button>
                                                                     </a>
+
+                                                                    <button type="button"
+                                                                        class="btn btn-sm btn-danger btn_delete_receipt"
+                                                                        data-id="{{ $row->id }}">
+                                                                        <i class="fa fa-trash"></i> Xóa
+                                                                    </button>
                                                                 </td>
                                                             </tr>
                                                         @endforeach
@@ -909,7 +917,7 @@
     <!-- Modal tái tục-->
     <div data-backdrop="static" class="modal fade" id="reincarnationModal" tabindex="-1" role="dialog" aria-labelledby="reincarnationModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
-        <form id="formRenew" action="{{ route('receipt.calculStudent.renew') }}"  method="POST">
+        <form id="formRenew" action="{{ route('receipt.calculateStudent.renew') }}"  method="POST">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -1136,6 +1144,30 @@
                 }
             });
         });
+        $('.btn_delete_receipt').click(function() {
+        let currentStudentReceiptId = $(this).data('id'); // Lấy ID phiếu thu hiện tại từ nút
+            if (confirm("Bạn có chắc chắn muốn xóa phiếu thu này?")) {
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('student.deleteReceipt') }}",
+                    data: {
+                        id: currentStudentReceiptId, // Đảm bảo đúng biến được gửi đi
+                    },
+                    success: function(response) {
+                        if (response.message === 'success') {
+                            localStorage.setItem('activeTab', '#tab_4');
+                            location.reload();
+                        } else {
+                            alert("Bạn không có quyền thao tác dữ liệu");
+                        }
+                    },
+                    error: function() {
+                        alert("Lỗi cập nhật.");
+                    }
+                });
+            }
+    });
+
 
         $(document).ready(function() {
             var activeTab = localStorage.getItem('activeTab');
