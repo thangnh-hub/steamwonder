@@ -63,6 +63,7 @@
                                 <label class="control-label"><strong>@lang('Chu kỳ thanh toán')</strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                                @dd($detail->payment_cycle)
                                 <p>{{ $detail->payment_cycle->name ?? '' }}</p>
                             </div>
                         </div>
@@ -90,10 +91,10 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <label class="control-label"><strong>@lang('Tổng các truy thu')</strong></label>
+                                <label class="control-label"><strong>@lang('Số dư kỳ trước')</strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p>{{ number_format($detail->total_adjustment, 0, ',', '.') ?? '' }}</p>
+                                <p>{{ number_format($detail->prev_balance, 0, ',', '.') ?? '' }}</p>
                             </div>
                         </div>
                     </div>
@@ -103,7 +104,8 @@
                                 <label class="control-label"><strong>@lang('Tổng tiền thực tế')</strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p>{{ number_format($detail->total_final, 0, ',', '.') ?? '' }}</p>
+                                <p>{{ number_format($detail->total_final + $detail->prev_balance, 0, ',', '.') ?? '' }}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -123,7 +125,7 @@
                                 <label class="control-label"><strong>@lang('Số tiền còn phải thu (+) hoặc thừa (-)')</strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p>{{ number_format($detail->total_due, 0, ',', '.') ?? '' }}</p>
+                                <p>{{ number_format($detail->total_due + $detail->prev_balance, 0, ',', '.') ?? '' }}</p>
                             </div>
                         </div>
                     </div>
@@ -234,7 +236,7 @@
                                                     {{-- <td>{{ number_format($item->adjustment_amount, 0, ',', '.') }}</td> --}}
                                                     <td>{{ number_format($item->final_amount, 0, ',', '.') }}</td>
                                                     {{-- <td>{{ __($item->status) }}</td> --}}
-                                                    <td>{!!($item->note) !!}</td>
+                                                    <td>{!! $item->note !!}</td>
                                                 </tr>
                                             @endforeach
                                         @endisset

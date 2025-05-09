@@ -96,10 +96,7 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
-
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -109,40 +106,120 @@
                     <th>Ghi chú</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>I</td>
-                    <td>CÁC KHOẢN THU PHÍ ĐẦU NĂM</td>
-                    <td>6,484,000</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>Phí phát triển trường/cơ sở vật chất</td>
-                    <td>2,000,000</td>
-                    <td>Kỳ 2 năm học 2024-2025 từ 01/01/2025 - 31/05/2025</td>
-                </tr>
-                <tr>
-                    <td>IV</td>
-                    <td>@lang('Các khoản giải trình')</td>
-                    <td>{{ number_format($detail->prev_balance ?? 0, 0, ',', '.') }}</td>
-                    <td></td>
-                </tr>
-                @if (isset($detail->json_params->explanation) && count((array)$detail->json_params->explanation) > 0)
-                    @foreach ($detail->json_params->explanation as $item)
-                        <tr>
-                            <td>---IV.{{ $loop->index + 1 }}</td>
-                            <td>{{ $item->content ?? '' }}</td>
-                            <td>{{ number_format($item->value ?? '', 0, ',', '.') }}</td>
-                            <td></td>
-                        </tr>
-                    @endforeach
 
+            @php
+                $i = 1;
+            @endphp
+            <tbody>
+                {{-- Lấy theo năm --}}
+                @if (count($serviceYearly) > 0)
+                    <tr>
+                        <td>{{ \App\Helpers::intToRoman($i) }}</td>
+                        <td>@lang('Các khoản thu đầu năm')</td>
+                        <td>{{ number_format($serviceYearly['total_amount'] ?? 0, 0, ',', '.') }}</td>
+                        <td></td>
+                    </tr>
+                    @if (isset($serviceYearly['services']) && count($serviceYearly['services']) > 0)
+                        @foreach ($serviceYearly['services'] as $item)
+                            <tr>
+                                <td>--- {{ \App\Helpers::intToRoman($i) }}.{{ $loop->index + 1 }}</td>
+                                <td>--- {{ $item['service']->name ?? '' }}</td>
+                                <td>--- {{ number_format($item['total_amount'] ?? '', 0, ',', '.') }}</td>
+                                <td>Từ: {{ \Carbon\Carbon::parse($item['min_month'])->format('m-Y') ?? '' }} -
+                                    Đến: {{ \Carbon\Carbon::parse($item['max_month'])->format('m-Y') ?? '' }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
+                    @php $i++; @endphp
+                @endif
+                {{-- Lấy theo tháng --}}
+                @if (count($serviceMonthly) > 0)
+                    <tr>
+                        <td>{{ \App\Helpers::intToRoman($i) }}</td>
+                        <td>@lang('Các khoản thu theo kỳ')</td>
+                        <td>{{ number_format($serviceMonthly['total_amount'] ?? 0, 0, ',', '.') }}</td>
+                        <td></td>
+                    </tr>
+                    @if (isset($serviceMonthly['services']) && count($serviceMonthly['services']) > 0)
+                        @foreach ($serviceMonthly['services'] as $item)
+                            <tr>
+                                <td>--- {{ \App\Helpers::intToRoman($i) }}.{{ $loop->index + 1 }}</td>
+                                <td>--- {{ $item['service']->name ?? '' }}</td>
+                                <td>--- {{ number_format($item['total_amount'] ?? '', 0, ',', '.') }}</td>
+                                <td>Từ: {{ \Carbon\Carbon::parse($item['min_month'])->format('m-Y') ?? '' }} -
+                                    Đến: {{ \Carbon\Carbon::parse($item['max_month'])->format('m-Y') ?? '' }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
+                    @php $i++; @endphp
+                @endif
+                {{-- Lấy theo tháng --}}
+                @if (count($serviceOther) > 0)
+                    <tr>
+                        <td>{{ \App\Helpers::intToRoman($i) }}</td>
+                        <td>@lang('Các khoản thu phí khác')</td>
+                        <td>{{ number_format($serviceOther['total_amount'] ?? 0, 0, ',', '.') }}</td>
+                        <td></td>
+                    </tr>
+                    @if (isset($serviceOther['services']) && count($serviceOther['services']) > 0)
+                        @foreach ($serviceOther['services'] as $item)
+                            <tr>
+                                <td>--- {{ \App\Helpers::intToRoman($i) }}.{{ $loop->index + 1 }}</td>
+                                <td>--- {{ $item['service']->name ?? '' }}</td>
+                                <td>--- {{ number_format($item['total_amount'] ?? '', 0, ',', '.') }}</td>
+                                <td>Từ: {{ \Carbon\Carbon::parse($item['min_month'])->format('m-Y') ?? '' }} -
+                                    Đến: {{ \Carbon\Carbon::parse($item['max_month'])->format('m-Y') ?? '' }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
+                    @php $i++; @endphp
                 @endif
 
+                @if (count($listtServiceDiscoun) > 0)
+                    <tr>
+                        <td>{{ \App\Helpers::intToRoman($i) }}</td>
+                        <td>@lang('Các khoản giảm trừ')</td>
+                        <td>{{ number_format($listtServiceDiscoun->sum('total_discount_amount') ?? 0, 0, ',', '.') }}
+                        </td>
+                        <td></td>
+                    </tr>
+                    @if (isset($listtServiceDiscoun) && count($listtServiceDiscoun) > 0)
+                        @foreach ($listtServiceDiscoun as $item)
+                            <tr>
+                                <td>---{{ \App\Helpers::intToRoman($i) }}.{{ $loop->index + 1 }}</td>
+                                <td>--- {{ $item['service']->name ?? '' }}</td>
+                                <td>--- {{ number_format($item['total_discount_amount'] ?? '', 0, ',', '.') }}</td>
+                                <td></td>
+                            </tr>
+                        @endforeach
+                    @endif
+                    @php $i++; @endphp
+                @endif
 
+                @if ($detail->prev_balance != 0)
+                    <tr>
+                        <td>{{ \App\Helpers::intToRoman($i) }}</td>
+                        <td>@lang('khoản giải trình')</td>
+                        <td>{{ number_format($detail->prev_balance ?? 0, 0, ',', '.') }}</td>
+                        <td></td>
+                    </tr>
+                    @if (isset($detail->json_params->explanation) && count((array) $detail->json_params->explanation) > 0)
+                        @foreach ($detail->json_params->explanation as $item)
+                            <tr>
+                                <td>---{{ \App\Helpers::intToRoman($i) }}.{{ $loop->index + 1 }}</td>
+                                <td>--- {{ $item->content ?? '' }}</td>
+                                <td>--- {{ number_format($item->value ?? '', 0, ',', '.') }}</td>
+                                <td></td>
+                            </tr>
+                        @endforeach
+                    @endif
+                    @php $i++; @endphp
+                @endif
                 <tr>
-                    <td colspan="2">@lang('TỔNG PHẢI NỘP') (I + II + III - IV)</td>
+                    <td colspan="2">@lang('TỔNG PHẢI NỘP') </td>
                     <td>{{ number_format($detail->total_final + $detail->prev_balance, 0, ',', '.') }}</td>
                     <td></td>
                 </tr>
@@ -153,7 +230,7 @@
                 </tr>
                 <tr>
                     <td colspan="2">@lang('TỔNG SỐ TIỀN CÒN PHẢI NỘP')</td>
-                    <td>{{ number_format($detail->total_due, 0, ',', '.') }}</td>
+                    <td>{{ number_format($detail->total_due + $detail->prev_balance, 0, ',', '.') }}</td>
                     <td></td>
                 </tr>
             </tbody>
@@ -168,7 +245,13 @@
             <p>* Thanh toán tiền mặt: chi trả bằng tiền mặt tại Phòng Tuyển sinh</p>
         </div>
     </div>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Mở hộp thoại in
+            window.print();
+        });
+    </script>
 </body>
 
 </html>

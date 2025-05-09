@@ -63,6 +63,7 @@
                                 <label class="control-label"><strong><?php echo app('translator')->get('Chu kỳ thanh toán'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                                <?php dd($detail->payment_cycle); ?>
                                 <p><?php echo e($detail->payment_cycle->name ?? ''); ?></p>
                             </div>
                         </div>
@@ -90,10 +91,10 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <label class="control-label"><strong><?php echo app('translator')->get('Tổng các truy thu'); ?></strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Số dư kỳ trước'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p><?php echo e(number_format($detail->total_adjustment, 0, ',', '.') ?? ''); ?></p>
+                                <p><?php echo e(number_format($detail->prev_balance, 0, ',', '.') ?? ''); ?></p>
                             </div>
                         </div>
                     </div>
@@ -103,7 +104,9 @@
                                 <label class="control-label"><strong><?php echo app('translator')->get('Tổng tiền thực tế'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p><?php echo e(number_format($detail->total_final, 0, ',', '.') ?? ''); ?></p>
+                                <p><?php echo e(number_format($detail->total_final + $detail->prev_balance, 0, ',', '.') ?? ''); ?>
+
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -123,7 +126,7 @@
                                 <label class="control-label"><strong><?php echo app('translator')->get('Số tiền còn phải thu (+) hoặc thừa (-)'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p><?php echo e(number_format($detail->total_due, 0, ',', '.') ?? ''); ?></p>
+                                <p><?php echo e(number_format($detail->total_due + $detail->prev_balance, 0, ',', '.') ?? ''); ?></p>
                             </div>
                         </div>
                     </div>
@@ -200,10 +203,8 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="box" style="border-top: 3px solid #d2d6de;">
-                        <div class="box-header">
-                        </div>
                         <div class="box-body no-padding">
-                            <div class="table-responsive">
+                            <div class="table-responsive table-wrapper">
                                 <table class="table table-hover sticky ">
                                     <thead>
                                         <tr>
@@ -236,7 +237,7 @@
                                                     
                                                     <td><?php echo e(number_format($item->final_amount, 0, ',', '.')); ?></td>
                                                     
-                                                    <td><?php echo ($item->note); ?></td>
+                                                    <td><?php echo $item->note; ?></td>
                                                 </tr>
                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         <?php endif; ?>
