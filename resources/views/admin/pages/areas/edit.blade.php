@@ -82,7 +82,7 @@
                                                         value="{{ old('code') ?? $detail->code }}" required>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>@lang('Bank BIN')</label>
                                                     <input type="text" class="form-control" name="json_params[bank_bin]"
@@ -90,7 +90,7 @@
                                                         value="{{ old('json_params[bank_bin]') ?? ($detail->json_params->bank_bin ?? '') }}">
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>@lang('Bank STK')</label>
                                                     <input type="text" class="form-control" name="json_params[bank_stk]"
@@ -98,12 +98,20 @@
                                                         value="{{ old('json_params[bank_stk]') ?? ($detail->json_params->bank_stk ?? '') }}">
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>@lang('Bank Name')</label>
                                                     <input type="text" class="form-control" name="json_params[bank_name]"
                                                         placeholder="@lang('Bank Name')"
                                                         value="{{ old('json_params[bank_name]') ?? ($detail->json_params->bank_name ?? '') }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>@lang('Bank Account')</label>
+                                                    <input type="text" class="form-control"
+                                                        name="json_params[bank_account]" placeholder="@lang('Bank Account')"
+                                                        value="{{ old('json_params[bank_account]') ?? ($detail->json_params->bank_account ?? '') }}">
                                                 </div>
                                             </div>
                                         </div>
