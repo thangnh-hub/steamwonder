@@ -180,7 +180,8 @@ class Consts
         'cancel' => 'cancel'
     ];
     const ATTENDANCE_STATUS = [
-        'attended' => 'attended',
+        'checkin' => 'checkin',
+        'checkout' => 'checkout',
         'absent_unexcused' => 'absent_unexcused',
         'absent_excused' => 'absent_excused'
     ];

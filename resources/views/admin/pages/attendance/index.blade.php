@@ -28,7 +28,6 @@
             <a class="btn btn-sm btn-warning pull-right" href="{{ route(Request::segment(2) . '.create') }}"><i
                     class="fa fa-plus"></i> @lang('Add')</a>
         </h1>
-
     </section>
 @endsection
 
@@ -45,9 +44,21 @@
                     <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                 </div>
             </div>
+
+
+
+
+
             <form action="{{ route(Request::segment(2) . '.index') }}" method="GET">
                 <div class="box-body">
                     <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>@lang('Keyword') </label>
+                                <input type="text" class="form-control" name="keyword" placeholder="@lang('Lọc theo mã học viên, họ tên hoặc email')"
+                                    value="{{ isset($params['keyword']) ? $params['keyword'] : '' }}">
+                            </div>
+                        </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>@lang('Area')</label>
@@ -78,7 +89,7 @@
                             <div class="form-group">
                                 <label>@lang('Ngày ') <small class="text-red">*</small></label>
                                 <input type="date" name="tracked_at" class="form-control" required
-                                    value="{{ isset($params['tracked_at']) && $params['tracked_at'] != '' ? $params['tracked_at'] : '' }}">
+                                    value="{{ isset($params['tracked_at']) && $params['tracked_at'] != '' ? $params['tracked_at'] : date('Y-m-d', time()) }}">
                             </div>
                         </div>
 
@@ -141,15 +152,18 @@
                                 <th class="text-center" rowspan="2">@lang('Mã học sinh')</th>
                                 <th class="text-center" rowspan="2">@lang('Tên học sinh')</th>
                                 <th class="text-center" rowspan="2">@lang('Nickname')</th>
-                                <th class="text-center" rowspan="2">@lang('Đi học')</th>
+                                <th class="text-center" colspan="2">@lang('Đi học')</th>
                                 <th class="text-center" colspan="2">@lang('Nghỉ học')</th>
-                                <th class="text-center" rowspan="2">@lang('Người đưa trẻ - Giáo viên đón - Thời gian - Ghi chú')</th>
+                                {{-- <th class="text-center" rowspan="2">@lang('Người đưa trẻ - Giáo viên đón - Thời gian - Ghi chú')</th>
                                 <th class="text-center" rowspan="2">@lang('Dịch vụ')</th>
-                                <th class="text-center" rowspan="2">@lang('Action')</th>
+                                <th class="text-center" rowspan="2">@lang('Action')</th> --}}
                             </tr>
                             <tr>
-                                <th class="text-center">@lang('Có phép')</th>
+
+                                <th class="text-center">@lang('Đến')</th>
+                                <th class="text-center">@lang('về')</th>
                                 <th class="text-center">@lang('Không phép')</th>
+                                <th class="text-center">@lang('Có phép')</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -165,16 +179,16 @@
                                             <label class="box_radio"
                                                 for="student_{{ $item->student_id }}_{{ $k }}">
                                                 <input id="student_{{ $item->student_id }}_{{ $k }}"
-                                                    name="student[{{ $item->student_id }}][status]" class="radiobox"
-                                                    type="radio" value="1">
+                                                    name="student[{{ $item->student_id }}][status]"
+                                                    class="radiobox {{ $k }}" type="radio" value="1">
                                             </label>
                                         </td>
                                     @endforeach
-                                    <td>
+                                    {{-- <td>
                                         <div class="row">
                                             <div class="col-md-6 col-sm-6 col-xs-6" style="padding-top:5px;">
                                                 <select class="form-control w-100"
-                                                    name="student_logtime[20][relative_login]">
+                                                    name="student_logtime[{{ $item->student_id }}][relative_login]">
                                                     <option selected="" value="">-Người đưa-</option>
                                                     @isset($item->student->studentParents)
                                                         @foreach ($item->student->studentParents as $parents)
@@ -190,27 +204,28 @@
                                             <div class="col-md-6 col-sm-6 col-xs-6" style="padding-top:5px;">
                                                 <label class="select" disabled="" style="width: 100%"> <select
                                                         class="form-control" style="width: 100%"
-                                                        name="student_logtime[20][member_login]"
-                                                        id="select_20_member_login">
+                                                        name="student_logtime[{{ $item->student_id }}][member_login]"
+                                                        id="select_{{ $item->student_id }}_member_login">
                                                         <option value="">-Giáo viên đón-</option>
                                                     </select>
                                                 </label>
                                             </div>
                                             <div class="col-md-6 col-sm-6 col-xs-6" style="padding-bottom:5px;">
                                                 <div class="input-group" style="width: 100%">
-                                                    <input name="student_logtime[20][login_at]" class="form-control"
-                                                        type="time" value="14:05">
+                                                    <input name="student_logtime[{{ $item->student_id }}][login_at]"
+                                                        class="form-control" type="time" value="14:05">
                                                 </div>
                                             </div>
                                             <div class="col-md-6 col-sm-6 col-xs-6" style="padding-bottom:5px;">
-                                                <input name="student_logtime[20][note]" type="text"
-                                                    class="form-control" style="width: 100%" id="note_20"
-                                                    placeholder="Nhập ghi chú" value="">
+                                                <input name="student_logtime[{{ $item->student_id }}][note]"
+                                                    type="text" class="form-control" style="width: 100%"
+                                                    id="note_{{ $item->student_id }}" placeholder="Nhập ghi chú"
+                                                    value="">
                                             </div>
                                         </div>
                                     </td>
                                     <td></td>
-                                    <td></td>
+                                    <td></td> --}}
                                 </tr>
                             @endforeach
 
@@ -221,8 +236,84 @@
 
 
         </div>
+
+        <div class="modal fade" id="modal_camera" data-backdrop="static" tabindex="-1" role="dialog">
+            <div class="modal-dialog " role="document">
+                <div class="modal-content">
+                    <div class="modal-header ">
+                        <h3 class="modal-title text-center col-md-12">@lang('Chụp ảnh xác nhận')</h3>
+                        </h3>
+                    </div>
+                    <div class="modal-body show_detail_đeuction">
+                        <video id="video" autoplay style="width: 100%; max-width: 400px;"></video>
+                        <canvas id="canvas" style="display:none;"></canvas>
+                        <img id="photo" alt="Captured Photo" style="display:none; width: 100%; max-width: 400px;">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="capture" class="btn btn-success">
+                            <i class="fa fa-save"></i> @lang('Chụp ảnh và xác nhận')
+                        </button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">
+                            <i class="fa fa-remove"></i> @lang('Close')
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 @endsection
 @section('script')
-    <script></script>
+    <script>
+        $(document).ready(function() {
+
+            $(document).on('change', '.checkin', function() {
+                $('#modal_camera').modal('show');
+            });
+
+            const video = $('#video')[0];
+            const canvas = $('#canvas')[0];
+            const photo = $('#photo')[0];
+
+            // Bật camera
+            navigator.mediaDevices.getUserMedia({
+                    video: true
+                })
+                .then(stream => {
+                    video.srcObject = stream;
+                })
+                .catch(error => {
+                    console.error('Không thể truy cập camera:', error);
+                });
+
+            // Chụp ảnh
+            $('#capture').click(function() {
+                const context = canvas.getContext('2d');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                // Hiển thị ảnh đã chụp
+                $('#photo').attr('src', canvas.toDataURL('image/png')).show();
+            });
+
+            // Lưu ảnh
+            $('#save').click(function() {
+                const imageData = canvas.toDataURL('image/png');
+                $.ajax({
+                    url: '{{ route('save.image') }}',
+                    type: 'POST',
+                    data: {
+                        image: imageData,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        alert(response.message);
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
 @endsection
