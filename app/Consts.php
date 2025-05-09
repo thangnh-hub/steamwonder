@@ -18,6 +18,9 @@ class Consts
     ];
     const STATUS_RECEIPT_DETAIL = [
         'expected' => 'expected',
+        'accepted' => 'accepted',
+        'approved' => 'approved',
+        'paid' => 'paid',
         'adjusted' => 'adjusted',
         'finalized' => 'finalized'
     ];
