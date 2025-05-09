@@ -213,6 +213,8 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('leave_balances/create', 'LeaveController@createLeaveBalance')->name('leave.balance.create');
             Route::post('leave_balances/store', 'LeaveController@storeLeaveBalance')->name('leave.balance.store');
         });
+        Route::get('/camera', 'CameraController@index')->name('camera');
+        Route::post('/save-image', 'CameraController@saveImage')->name('save.image');
         // in hóa đơn thanh toán
         Route::get('receipt_print/{id}', 'ReceiptController@print')->name('receipt.print');
         // Cập nhật nội dung truy thu/hoàn trả của kỳ trước trong json

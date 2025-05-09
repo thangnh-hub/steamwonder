@@ -63,7 +63,6 @@
                                 <label class="control-label"><strong><?php echo app('translator')->get('Chu kỳ thanh toán'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <?php dd($detail->payment_cycle); ?>
                                 <p><?php echo e($detail->payment_cycle->name ?? ''); ?></p>
                             </div>
                         </div>
