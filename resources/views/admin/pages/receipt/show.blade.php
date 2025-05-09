@@ -19,7 +19,7 @@
             <a class="btn btn-success pull-right " href="{{ route(Request::segment(2) . '.index') }}">
                 <i class="fa fa-bars"></i> @lang('List')
             </a>
-            <a class="btn btn-warning pull-right mr-10" href="{{ route(Request::segment(2) . '.print', $detail->id) }}">
+            <a class="btn btn-warning pull-right mr-10" target="_blank" href="{{ route(Request::segment(2) . '.print', $detail->id) }}">
                 <i class="fa fa-print"></i> @lang('In TBP')
             </a>
         </h1>
@@ -269,7 +269,7 @@
                                     <tr>
                                         <td>@lang('Số tiền còn phải thu (+) hoặc thừa (-)')</td>
                                         <td class="text-right">
-                                            {{ number_format($detail->total_due, 0, ',', '.') ?? '' }}
+                                            {{ number_format($detail->total_due + $detail->prev_balance, 0, ',', '.') ?? '' }}
                                         </td>
                                     </tr>
                                     <tr>

@@ -122,7 +122,7 @@ class ReceiptController extends Controller
             $json_params['payment_deadline'] = $request->input('payment_deadline');
             $receipt->status = Consts::STATUS_RECEIPT['paid'];
             $receipt->total_paid = $request->input('total_paid');
-            $receipt->total_due = $receipt->total_final + $receipt->prev_balance - $request->input('total_paid');
+            $receipt->total_due = $receipt->total_final - $request->input('total_paid');
             $receipt->cashier_id = $admin->id;
             $receipt->json_params = $json_params;
 
@@ -161,7 +161,7 @@ class ReceiptController extends Controller
 
         $receiptDetails = $receipt->receiptDetail->load('services_receipt'); // Nạp quan hệ service
 
-        // Gộp các receiptDetail theo service_id và tính tổng amount
+        // Gộp các receiptDetail theo service_id và tính tổng amount và discount_amount
         $groupedDetails = $receiptDetails->groupBy('service_id')->map(function ($details) {
             return [
                 'service' => optional($details->first()->services_receipt),
@@ -172,73 +172,46 @@ class ReceiptController extends Controller
                 'max_month' => $details->max('month'), // Tháng áp dụng lớn nhất
             ];
         });
-
         // Gộp theo service_type và tính tổng total_amount
         $groupedByServiceType = $groupedDetails->groupBy('service_type')->map(function ($details, $serviceType) {
             return [
                 'service_type' => $serviceType, // Loại dịch vụ
                 'total_amount' => $details->sum('total_amount'), // Tổng tiền của loại
-                'total_discount_amount' => $details->sum('total_discount_amount'), // Tổng tiền của loại
                 'services' => $details, // Chi tiết từng nhóm dịch vụ
             ];
         });
+        // Lấy thông tin giảm trừ
+        $listtServiceDiscoun = $groupedDetails
+            ->filter(function ($detail) {
+                return $detail['total_discount_amount'] > 0; // Lọc các dịch vụ có discount_amount > 0
+            });
 
-        $monthlyDetails = $groupedByServiceType->get('monthly', collect()); // Dịch vụ loại monthly
-        $yearlyDetails = $groupedByServiceType->get('yearly', collect()); // Dịch vụ loại monthly
+
+
+        $serviceMonthly = $groupedByServiceType->get('monthly', collect()); // Dịch vụ loại monthly
+        $serviceYearly = $groupedByServiceType->get('yearly', collect()); // Dịch vụ loại monthly
         // Lấy các loại còn lại ngoài monthly và yearly
-        $otherDetails = $groupedByServiceType
+        $serviceOther = $groupedByServiceType
             ->reject(function ($item, $key) {
                 return in_array($key, ['monthly', 'yearly']); // Loại trừ monthly và yearly
             })
             ->reduce(function ($carry, $item) {
                 // Gộp các nhóm khác lại
                 $carry['service_type'] = 'other'; // Đặt tên nhóm
-                $carry['total_final_amount'] = ($carry['total_final_amount'] ?? 0) + $item['total_final_amount']; // Tính tổng
+                $carry['total_amount'] = ($carry['total_amount'] ?? 0) + $item['total_amount']; // Tính tổng
                 $carry['services'] = ($carry['services'] ?? collect())->merge($item['services']); // Gộp chi tiết
                 return $carry;
             }, []);
 
-        dd($otherDetails);
-        // Lấy thông tin giảm trừ
-        $groupedBytServiceDiscoun = $receiptDetails
-            ->filter(function ($detail) {
-                return $detail->discount_amount > 0; // Lọc các dịch vụ có discount_amount > 0
-            })
-            ->groupBy('service_id') // Nhóm theo service_id
-            ->map(function ($details, $serviceId) {
-                return [
-                    'service_id' => $serviceId, // ID của dịch vụ
-                    'service' => optional($details->first()->services_receipt), // Thông tin dịch vụ
-                    'total_discount_amount' => $details->sum('discount_amount'), // Tổng discount_amount của nhóm
-                ];
-            })->first();
 
 
         // Lọc từng nhóm
         $this->responseData['groupedByServiceType'] = $groupedByServiceType;
-        $this->responseData['groupedBytServiceDiscoun'] = $groupedBytServiceDiscoun;
-        return $this->responseView($this->viewPart . '.print');
-    }
+        $this->responseData['listtServiceDiscoun'] = $listtServiceDiscoun;
+        $this->responseData['serviceMonthly'] = $serviceMonthly;
+        $this->responseData['serviceYearly'] = $serviceYearly;
+        $this->responseData['serviceOther'] = $serviceOther;
 
-    // Chuyển số sang số la mã
-    function intToRoman($num)
-    {
-        // Mảng chứa giá trị La Mã tương ứng với số nguyên
-        $map = [
-            'X'  => 10,
-            'IX' => 9,
-            'V'  => 5,
-            'IV' => 4,
-            'I'  => 1,
-        ];
-        $result = '';
-        foreach ($map as $roman => $value) {
-            // Xác định số lần giá trị La Mã có thể lặp lại
-            while ($num >= $value) {
-                $result .= $roman; // Thêm ký tự La Mã vào kết quả
-                $num -= $value;    // Giảm số nguyên đi giá trị tương ứng
-            }
-        }
-        return $result;
+        return $this->responseView($this->viewPart . '.print');
     }
 }

@@ -17,7 +17,7 @@
             <a class="btn btn-success pull-right " href="<?php echo e(route(Request::segment(2) . '.index')); ?>">
                 <i class="fa fa-bars"></i> <?php echo app('translator')->get('List'); ?>
             </a>
-            <a class="btn btn-warning pull-right mr-10" href="<?php echo e(route(Request::segment(2) . '.print', $detail->id)); ?>">
+            <a class="btn btn-warning pull-right mr-10" target="_blank" href="<?php echo e(route(Request::segment(2) . '.print', $detail->id)); ?>">
                 <i class="fa fa-print"></i> <?php echo app('translator')->get('In TBP'); ?>
             </a>
         </h1>
@@ -274,7 +274,7 @@
                                     <tr>
                                         <td><?php echo app('translator')->get('Số tiền còn phải thu (+) hoặc thừa (-)'); ?></td>
                                         <td class="text-right">
-                                            <?php echo e(number_format($detail->total_due, 0, ',', '.') ?? ''); ?>
+                                            <?php echo e(number_format($detail->total_due + $detail->prev_balance, 0, ',', '.') ?? ''); ?>
 
                                         </td>
                                     </tr>
