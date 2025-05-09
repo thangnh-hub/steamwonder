@@ -26,11 +26,13 @@
         .section-title {
             font-weight: bold;
             background-color: #d2e4f5;
+            text-transform: uppercase;
         }
 
         .total {
             font-weight: bold;
             background-color: #7ca7d2;
+            text-transform: uppercase;
         }
 
         .footer {
@@ -70,7 +72,7 @@
                         <label class="control-label">@lang('Lớp học'):</label>
                     </div>
                     <div class="col-xs-8 col-sm-8 ">
-                        <p>@lang('Chưa cập nhật')</p>
+                        <p>{{ $detail->student->currentClass->name ?? '' }}</p>
                     </div>
                 </div>
             </div>
@@ -241,7 +243,7 @@
                 <tr class="total">
                     <td colspan="2">@lang('TỔNG PHẢI NỘP') </td>
                     <td class="text-right">
-                        {{ number_format($detail->total_final , 0, ',', '.') }}</td>
+                        {{ number_format($detail->total_final, 0, ',', '.') }}</td>
                     <td></td>
                 </tr>
                 <tr class="total">
@@ -251,7 +253,7 @@
                 </tr>
                 <tr class="total">
                     <td colspan="2">@lang('TỔNG SỐ TIỀN CÒN PHẢI NỘP')</td>
-                    <td class="text-right">{{ number_format($detail->total_due , 0, ',', '.') }}
+                    <td class="text-right">{{ number_format($detail->total_due, 0, ',', '.') }}
                     </td>
                     <td></td>
                 </tr>
