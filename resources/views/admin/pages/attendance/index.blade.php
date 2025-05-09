@@ -264,27 +264,41 @@
 @endsection
 @section('script')
     <script>
+        let videoStream = null; // Biến lưu trữ stream của camera
         $(document).ready(function() {
+            const video = $('#video')[0];
+            const canvas = $('#canvas')[0];
+            const photo = $('#photo')[0];
 
             $(document).on('change', '.checkin', function() {
                 $('#modal_camera').modal('show');
+
                 // Bật camera
                 navigator.mediaDevices.getUserMedia({
                         video: true
                     })
                     .then(stream => {
+                        videoStream = stream; // Lưu stream để sử dụng sau
+                        const video = document.querySelector('#video');
                         video.srcObject = stream;
                     })
                     .catch(error => {
                         console.error('Không thể truy cập camera:', error);
                     });
             });
+            $('#modal_camera').on('hidden.bs.modal', function() {
+                if (videoStream) {
+                    // Dừng tất cả các track video
+                    videoStream.getTracks().forEach(track => track.stop());
+                    videoStream = null; // Xóa stream để giải phóng bộ nhớ
+                }
 
-            const video = $('#video')[0];
-            const canvas = $('#canvas')[0];
-            const photo = $('#photo')[0];
-
-
+                // Xóa nội dung video nếu cần
+                const video = document.querySelector('#video');
+                if (video) {
+                    video.srcObject = null;
+                }
+            });
 
 
             // Chụp ảnh

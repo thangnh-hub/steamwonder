@@ -103,7 +103,7 @@
                                 <label class="control-label"><strong>@lang('Tổng tiền thực tế')</strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p>{{ number_format($detail->total_final + $detail->prev_balance, 0, ',', '.') ?? '' }}
+                                <p>{{ number_format($detail->total_final , 0, ',', '.') ?? '' }}
                                 </p>
                             </div>
                         </div>
@@ -124,7 +124,7 @@
                                 <label class="control-label"><strong>@lang('Số tiền còn phải thu (+) hoặc thừa (-)')</strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p>{{ number_format($detail->total_due + $detail->prev_balance, 0, ',', '.') ?? '' }}</p>
+                                <p>{{ number_format($detail->total_due, 0, ',', '.') ?? '' }}</p>
                             </div>
                         </div>
                     </div>

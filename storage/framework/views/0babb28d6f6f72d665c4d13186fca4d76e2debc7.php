@@ -84,7 +84,7 @@
                                                         value="<?php echo e(old('code') ?? $detail->code); ?>" required>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label><?php echo app('translator')->get('Bank BIN'); ?></label>
                                                     <input type="text" class="form-control" name="json_params[bank_bin]"
@@ -92,7 +92,7 @@
                                                         value="<?php echo e(old('json_params[bank_bin]') ?? ($detail->json_params->bank_bin ?? '')); ?>">
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label><?php echo app('translator')->get('Bank STK'); ?></label>
                                                     <input type="text" class="form-control" name="json_params[bank_stk]"
@@ -100,12 +100,20 @@
                                                         value="<?php echo e(old('json_params[bank_stk]') ?? ($detail->json_params->bank_stk ?? '')); ?>">
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label><?php echo app('translator')->get('Bank Name'); ?></label>
                                                     <input type="text" class="form-control" name="json_params[bank_name]"
                                                         placeholder="<?php echo app('translator')->get('Bank Name'); ?>"
                                                         value="<?php echo e(old('json_params[bank_name]') ?? ($detail->json_params->bank_name ?? '')); ?>">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label><?php echo app('translator')->get('Bank Account'); ?></label>
+                                                    <input type="text" class="form-control"
+                                                        name="json_params[bank_account]" placeholder="<?php echo app('translator')->get('Bank Account'); ?>"
+                                                        value="<?php echo e(old('json_params[bank_account]') ?? ($detail->json_params->bank_account ?? '')); ?>">
                                                 </div>
                                             </div>
                                         </div>

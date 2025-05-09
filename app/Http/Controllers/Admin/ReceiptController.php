@@ -125,7 +125,6 @@ class ReceiptController extends Controller
             $receipt->total_due = $receipt->total_final - $request->input('total_paid');
             $receipt->cashier_id = $admin->id;
             $receipt->json_params = $json_params;
-
             // Cập nhật trạng thái của prev_receipt nếu tồn tại
             if ($receipt->prev_receipt) {
                 $receipt->prev_receipt->status = Consts::STATUS_RECEIPT['completed'];
@@ -147,11 +146,14 @@ class ReceiptController extends Controller
         $explanation = $request->input('explanation');
         $json_params = json_decode(json_encode($receipt->json_params), true);
         $json_params['explanation'] = $explanation;
+        // Cập nhật lại tổng tiền và số tiền còn phải thu
+        $receipt->total_final = $receipt->total_final + $receipt->prev_balance - $prev_balance;
+        $receipt->total_due = $receipt->total_due + $receipt->prev_balance - $prev_balance;
+        // Cập nhật số dư kỳ trước
         $receipt->prev_balance = $prev_balance;
-
         $receipt->json_params = $json_params;
         $receipt->save();
-        return $this->sendResponse('success', 'Cập nhật thành công!');
+        return $this->sendResponse($receipt, 'Cập nhật thành công!');
     }
 
     public function print(Request $request, $id)
