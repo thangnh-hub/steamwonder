@@ -157,13 +157,13 @@
                                         {{ number_format($row->prev_balance, 0, ',', '.') ?? '' }}
                                     </td>
                                     <td>
-                                        {{ number_format($row->total_final + $row->prev_balance, 0, ',', '.') ?? '' }}
+                                        {{ number_format($row->total_final, 0, ',', '.') ?? '' }}
                                     </td>
                                     <td>
                                         {{ number_format($row->total_paid, 0, ',', '.') ?? '' }}
                                     </td>
                                     <td>
-                                        {{ number_format($row->total_due + $row->prev_balance, 0, ',', '.') ?? '' }}
+                                        {{ number_format($row->total_due, 0, ',', '.') ?? '' }}
                                     </td>
                                     <td>
                                         {{ __($row->status??'') }}

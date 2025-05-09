@@ -241,7 +241,7 @@
                 <tr class="total">
                     <td colspan="2">@lang('TỔNG PHẢI NỘP') </td>
                     <td class="text-right">
-                        {{ number_format($detail->total_final + $detail->prev_balance, 0, ',', '.') }}</td>
+                        {{ number_format($detail->total_final , 0, ',', '.') }}</td>
                     <td></td>
                 </tr>
                 <tr class="total">
@@ -251,7 +251,7 @@
                 </tr>
                 <tr class="total">
                     <td colspan="2">@lang('TỔNG SỐ TIỀN CÒN PHẢI NỘP')</td>
-                    <td class="text-right">{{ number_format($detail->total_due + $detail->prev_balance, 0, ',', '.') }}
+                    <td class="text-right">{{ number_format($detail->total_due , 0, ',', '.') }}
                     </td>
                     <td></td>
                 </tr>

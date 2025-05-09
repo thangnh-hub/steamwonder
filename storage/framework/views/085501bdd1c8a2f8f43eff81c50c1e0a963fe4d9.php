@@ -160,7 +160,7 @@
 
                                     </td>
                                     <td>
-                                        <?php echo e(number_format($row->total_final + $row->prev_balance, 0, ',', '.') ?? ''); ?>
+                                        <?php echo e(number_format($row->total_final, 0, ',', '.') ?? ''); ?>
 
                                     </td>
                                     <td>
@@ -168,7 +168,7 @@
 
                                     </td>
                                     <td>
-                                        <?php echo e(number_format($row->total_due + $row->prev_balance, 0, ',', '.') ?? ''); ?>
+                                        <?php echo e(number_format($row->total_due, 0, ',', '.') ?? ''); ?>
 
                                     </td>
                                     <td>
