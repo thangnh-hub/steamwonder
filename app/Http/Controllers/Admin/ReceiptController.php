@@ -117,9 +117,14 @@ class ReceiptController extends Controller
         DB::beginTransaction();
         try {
             $receipt = Receipt::find($id);
+            $json_params = json_decode(json_encode($receipt->json_params), true);
+            // Cập nhật lại thông tin
+            $json_params['payment_deadline'] = $request->input('payment_deadline');
             $receipt->status = Consts::STATUS_RECEIPT['paid'];
-            $receipt->total_paid = $receipt->total_amount;
+            $receipt->total_paid = $request->input('total_paid');
+            $receipt->total_due = $receipt->total_final - $request->input('total_paid');
             $receipt->cashier_id = $admin->id;
+            $receipt->json_params = $json_params;
 
             // Cập nhật trạng thái của prev_receipt nếu tồn tại
             if ($receipt->prev_receipt) {
@@ -143,8 +148,70 @@ class ReceiptController extends Controller
         $json_params = json_decode(json_encode($receipt->json_params), true);
         $json_params['explanation'] = $explanation;
         $receipt->prev_balance = $prev_balance;
+
         $receipt->json_params = $json_params;
         $receipt->save();
         return $this->sendResponse('success', 'Cập nhật thành công!');
+    }
+
+    public function print(Request $request, $id)
+    {
+        $receipt = Receipt::find($id);
+        $this->responseData['detail'] = $receipt;
+
+        $receiptDetails = $receipt->receiptDetail->load('services_receipt'); // Nạp quan hệ service
+
+        // Gộp các receiptDetail theo service_id và tính tổng amount và discount_amount
+        $groupedDetails = $receiptDetails->groupBy('service_id')->map(function ($details) {
+            return [
+                'service' => optional($details->first()->services_receipt),
+                'service_type' => optional($details->first()->services_receipt)->service_type, // Lấy service_type từ quan hệ service
+                'total_amount' => $details->sum('amount'), // Tính tổng amount
+                'total_discount_amount' => $details->sum('discount_amount'), // Tính tổng discount_amount
+                'min_month' => $details->min('month'), // Tháng áp dụng nhỏ nhất
+                'max_month' => $details->max('month'), // Tháng áp dụng lớn nhất
+            ];
+        });
+        // Gộp theo service_type và tính tổng total_amount
+        $groupedByServiceType = $groupedDetails->groupBy('service_type')->map(function ($details, $serviceType) {
+            return [
+                'service_type' => $serviceType, // Loại dịch vụ
+                'total_amount' => $details->sum('total_amount'), // Tổng tiền của loại
+                'services' => $details, // Chi tiết từng nhóm dịch vụ
+            ];
+        });
+        // Lấy thông tin giảm trừ
+        $listtServiceDiscoun = $groupedDetails
+            ->filter(function ($detail) {
+                return $detail['total_discount_amount'] > 0; // Lọc các dịch vụ có discount_amount > 0
+            });
+
+
+
+        $serviceMonthly = $groupedByServiceType->get('monthly', collect()); // Dịch vụ loại monthly
+        $serviceYearly = $groupedByServiceType->get('yearly', collect()); // Dịch vụ loại monthly
+        // Lấy các loại còn lại ngoài monthly và yearly
+        $serviceOther = $groupedByServiceType
+            ->reject(function ($item, $key) {
+                return in_array($key, ['monthly', 'yearly']); // Loại trừ monthly và yearly
+            })
+            ->reduce(function ($carry, $item) {
+                // Gộp các nhóm khác lại
+                $carry['service_type'] = 'other'; // Đặt tên nhóm
+                $carry['total_amount'] = ($carry['total_amount'] ?? 0) + $item['total_amount']; // Tính tổng
+                $carry['services'] = ($carry['services'] ?? collect())->merge($item['services']); // Gộp chi tiết
+                return $carry;
+            }, []);
+
+
+
+        // Lọc từng nhóm
+        $this->responseData['groupedByServiceType'] = $groupedByServiceType;
+        $this->responseData['listtServiceDiscoun'] = $listtServiceDiscoun;
+        $this->responseData['serviceMonthly'] = $serviceMonthly;
+        $this->responseData['serviceYearly'] = $serviceYearly;
+        $this->responseData['serviceOther'] = $serviceOther;
+
+        return $this->responseView($this->viewPart . '.print');
     }
 }

@@ -118,9 +118,9 @@
                                 <th><?php echo app('translator')->get('Học sinh'); ?></th>
                                 <th><?php echo app('translator')->get('Khu vực'); ?></th>
                                 
-                                <th><?php echo app('translator')->get('Số tiên cần thu'); ?></th>
+                                <th><?php echo app('translator')->get('Thành tiền'); ?></th>
                                 <th><?php echo app('translator')->get('Tổng giảm trừ'); ?></th>
-                                <th><?php echo app('translator')->get('Tổng các truy thu'); ?></th>
+                                <th><?php echo app('translator')->get('Số dư kỳ trước'); ?></th>
                                 <th><?php echo app('translator')->get('Tổng tiền thực tế'); ?></th>
                                 <th><?php echo app('translator')->get('Đã thu'); ?></th>
                                 <th><?php echo app('translator')->get('Số tiền còn phải thu (+) hoặc thừa (-)'); ?></th>
@@ -156,11 +156,11 @@
 
                                     </td>
                                     <td>
-                                        <?php echo e(number_format($row->total_adjustment, 0, ',', '.') ?? ''); ?>
+                                        <?php echo e(number_format($row->prev_balance, 0, ',', '.') ?? ''); ?>
 
                                     </td>
                                     <td>
-                                        <?php echo e(number_format($row->total_final, 0, ',', '.') ?? ''); ?>
+                                        <?php echo e(number_format($row->total_final + $row->prev_balance, 0, ',', '.') ?? ''); ?>
 
                                     </td>
                                     <td>
@@ -168,11 +168,11 @@
 
                                     </td>
                                     <td>
-                                        <?php echo e(number_format($row->total_due, 0, ',', '.') ?? ''); ?>
+                                        <?php echo e(number_format($row->total_due + $row->prev_balance, 0, ',', '.') ?? ''); ?>
 
                                     </td>
                                     <td>
-                                        <?php echo e($row->status ?? ''); ?>
+                                        <?php echo e(__($row->status??'')); ?>
 
                                     </td>
                                     <td>

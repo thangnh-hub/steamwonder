@@ -19,7 +19,7 @@
             <a class="btn btn-success pull-right " href="{{ route(Request::segment(2) . '.index') }}">
                 <i class="fa fa-bars"></i> @lang('List')
             </a>
-            <a class="btn btn-warning pull-right mr-10" href="{{ route(Request::segment(2) . '.print', $detail->id) }}">
+            <a class="btn btn-warning pull-right mr-10" target="_blank" href="{{ route(Request::segment(2) . '.print', $detail->id) }}">
                 <i class="fa fa-print"></i> @lang('In TBP')
             </a>
         </h1>
@@ -94,13 +94,14 @@
                                 <table class="table table-bordered table-hover no-footer no-padding">
                                     <thead>
                                         <tr>
-                                            <th colspan="7" class="text-left"><b>1. Số dư kỳ trước <small>(Truy thu (+) /
-                                                        hoàn trả (-) )</small> </b>
+                                            <th colspan="7" class="text-left"><b>1. Số dư kỳ trước - <small>(+) Có /
+                                                        (-) Nợ</small> </b>
                                             </th>
                                             <th class="text-right">
                                                 <input type="number" name="prev_balance"
                                                     class="form-control pull-right prev_balance" style="max-width: 200px;"
-                                                    placeholder="Nhập số dư kỳ trước" value="{{ $detail->prev_balance }}">
+                                                    placeholder="Nhập số dư kỳ trước"
+                                                    value="{{ (int) $detail->prev_balance }}">
                                             </th>
                                         </tr>
 
@@ -185,7 +186,7 @@
                                             <th>Số lượng</span></th>
                                             <th>Tạm tính</th>
                                             <th>Giảm trừ</th>
-                                            <th>Hoàn trả / phát sinh</th>
+                                            {{-- <th>Hoàn trả / phát sinh</th> --}}
                                             <th>Tổng tiền</th>
                                         </tr>
                                         @foreach ($detail->receiptDetail as $item)
@@ -193,10 +194,10 @@
                                                 <td>{{ date('m-Y', strtotime($item->month)) }}</td>
                                                 <td>{{ $item->services_receipt->name ?? '' }}</td>
                                                 <td>{{ number_format($item->unit_price, 0, ',', '.') ?? '' }}</td>
-                                                <td>{{ number_format($item->spent_number, 0, ',', '.') ?? '' }}</td>
+                                                <td>{{ number_format($item->by_number, 0, ',', '.') ?? '' }}</td>
                                                 <td>{{ number_format($item->amount, 0, ',', '.') ?? '' }}</td>
                                                 <td>{{ number_format($item->discount_amount, 0, ',', '.') ?? '' }}</td>
-                                                <td>{{ number_format($item->adjustment_amount, 0, ',', '.') ?? '' }}</td>
+                                                {{-- <td>{{ number_format($item->adjustment_amount, 0, ',', '.') ?? '' }}</td> --}}
                                                 <td>{{ number_format($item->final_amount, 0, ',', '.') ?? '' }}</td>
                                             </tr>
                                         @endforeach
@@ -230,7 +231,7 @@
                                         <td>
                                             @lang('Tổng tiền')
                                         </td>
-                                        <td class="text-right" >
+                                        <td class="text-right">
                                             {{ number_format($detail->total_amount, 0, ',', '.') ?? '' }}
                                         </td>
                                     </tr>
@@ -253,37 +254,36 @@
                                         </td>
                                     </tr> --}}
                                     <tr>
-                                        <td class="">@lang('Tổng tiền thực tế sau đối soát tất cả dịch vụ')</td>
-                                        <td class="text-right">
-                                            {{ number_format($detail->total_final, 0, ',', '.') ?? '' }}
+                                        <td>@lang('Tổng tiền thực tế sau đối soát tất cả dịch vụ')</td>
+                                        <td class="text-right total_final" data-final="{{ $detail->total_final }}">
+                                            {{ number_format($detail->total_final + $detail->prev_balance, 0, ',', '.') ?? '' }}
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>@lang('Đã thu')</td>
                                         <td class="text-right">
                                             <input type="number" name="total_paid" class="form-control text-right"
-                                                value="{{ $detail->total_paid ?? 0 }}">
+                                                value="{{ (int) $detail->total_paid ?? 0 }}">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>@lang('Số tiền còn phải thu (+) hoặc thừa (-)')</td>
                                         <td class="text-right">
-                                            {{ number_format($detail->total_due, 0, ',', '.') ?? '' }}
+                                            {{ number_format($detail->total_due + $detail->prev_balance, 0, ',', '.') ?? '' }}
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>@lang('Hạn thanh toán')</td>
                                         <td class="text-right">
-
+                                            <input type="date" name="payment_deadline" class="form-control"
+                                                value="{{ $detail->json_params->payment_deadline ?? '' }}">
                                         </td>
                                     </tr>
-
                                 </tbody>
                             </table>
-
-                            <button type="button" class="btn btn-success">
-                                <i class="fa fa-usd" aria-hidden="true" title="Thanh toán"></i> Xác nhận thanh
-                                toán</button>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-usd" aria-hidden="true" title="Thanh toán"></i> @lang('Xác nhận thanh toán')
+                                </button>
                         </form>
                     </div>
                 </div>
@@ -298,12 +298,12 @@
             if (isNaN(_balance)) {
                 _balance = 0;
             }
+            // var _total_prev_balance = parseInt($('.total_prev_balance').data('total'));
+            var _total_final = parseInt($('.total_final').data('final'), 10);
 
-            var _total_prev_balance = parseInt($('.total_prev_balance').data('total'));
-            var _total = _balance;
-            $('.total_prev_balance').html(new Intl.NumberFormat('vi-VN').format(_total));
-
-
+            var _total = _total_final + _balance;
+            $('.total_prev_balance').html(new Intl.NumberFormat('vi-VN').format(_balance));
+            $('.total_final').html(new Intl.NumberFormat('vi-VN').format(_total));
         })
         $('.btn_explanation').click(function() {
             var currentDateTime = Math.floor(Date.now() / 1000);

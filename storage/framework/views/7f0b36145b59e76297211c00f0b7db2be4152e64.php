@@ -1,56 +1,58 @@
-@extends('admin.layouts.app')
+<?php $__env->startSection('title'); ?>
+    <?php echo e($module_name); ?>
 
-@section('title')
-    {{ $module_name }}
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
-            {{ $module_name }}
+            <?php echo e($module_name); ?>
+
         </h1>
     </section>
 
     <!-- Main content -->
     <section class="content">
-        @if (session('errorMessage'))
+        <?php if(session('errorMessage')): ?>
             <div class="alert alert-warning alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                {{ session('errorMessage') }}
+                <?php echo e(session('errorMessage')); ?>
+
             </div>
-        @endif
-        @if (session('successMessage'))
+        <?php endif; ?>
+        <?php if(session('successMessage')): ?>
             <div class="alert alert-success alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                {{ session('successMessage') }}
-            </div>
-        @endif
+                <?php echo e(session('successMessage')); ?>
 
-        @if ($errors->any())
+            </div>
+        <?php endif; ?>
+
+        <?php if($errors->any()): ?>
             <div class="alert alert-danger alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 
-                @foreach ($errors->all() as $error)
-                    <p>{{ $error }}</p>
-                @endforeach
+                <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <p><?php echo e($error); ?></p>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
             </div>
-        @endif
+        <?php endif; ?>
 
-        <form role="form" action="{{ route(Request::segment(2) . '.store') }}" method="POST" id="form_product">
-            @csrf
+        <form role="form" action="<?php echo e(route(Request::segment(2) . '.store')); ?>" method="POST" id="form_product">
+            <?php echo csrf_field(); ?>
             <div class="row">
                 <div class="col-lg-8">
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title">@lang('Create form')</h3>
+                            <h3 class="box-title"><?php echo app('translator')->get('Create form'); ?></h3>
 
                         </div>
                         <!-- /.box-header -->
                         <!-- form start -->
 
-                        @csrf
+                        <?php echo csrf_field(); ?>
                         <div class="box-body">
                             <!-- Custom Tabs -->
                             <div class="nav-tabs-custom">
@@ -62,7 +64,7 @@
                                     </li>
 
                                     <button type="submit" class="btn btn-info btn-sm pull-right">
-                                        <i class="fa fa-save"></i> @lang('Save')
+                                        <i class="fa fa-save"></i> <?php echo app('translator')->get('Save'); ?>
                                     </button>
                                 </ul>
 
@@ -71,50 +73,42 @@
                                         <div class="d-flex-wap">
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>@lang('Title') <small class="text-red">*</small></label>
+                                                    <label><?php echo app('translator')->get('Title'); ?> <small class="text-red">*</small></label>
                                                     <input type="text" class="form-control" name="name"
-                                                        placeholder="@lang('Title')" value="{{ old('title') }}"
+                                                        placeholder="<?php echo app('translator')->get('Title'); ?>" value="<?php echo e(old('title')); ?>"
                                                         required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>@lang('Mã') <small class="text-red">*</small></label>
+                                                    <label><?php echo app('translator')->get('Mã'); ?> <small class="text-red">*</small></label>
                                                     <input type="text" class="form-control" name="code"
-                                                        placeholder="@lang('Mã')" value="{{ old('code') }}"
+                                                        placeholder="<?php echo app('translator')->get('Mã'); ?>" value="<?php echo e(old('code')); ?>"
                                                         required>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label>@lang('Bank BIN')</label>
+                                                    <label><?php echo app('translator')->get('Bank BIN'); ?></label>
                                                     <input type="text" class="form-control" name="json_params[bank_bin]"
-                                                        placeholder="@lang('Bank BIN')"
-                                                        value="{{ old('json_params[bank_bin]') }}">
+                                                        placeholder="<?php echo app('translator')->get('Bank BIN'); ?>"
+                                                        value="<?php echo e(old('json_params[bank_bin]')); ?>">
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label>@lang('Bank STK')</label>
+                                                    <label><?php echo app('translator')->get('Bank STK'); ?></label>
                                                     <input type="text" class="form-control" name="json_params[bank_stk]"
-                                                        placeholder="@lang('Bank STK')"
-                                                        value="{{ old('json_params[bank_stk]') }}">
+                                                        placeholder="<?php echo app('translator')->get('Bank STK'); ?>"
+                                                        value="<?php echo e(old('json_params[bank_stk]')); ?>">
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label>@lang('Bank Name')</label>
+                                                    <label><?php echo app('translator')->get('Bank Name'); ?></label>
                                                     <input type="text" class="form-control" name="json_params[bank_name]"
-                                                        placeholder="@lang('Bank Name')"
-                                                        value="{{ old('json_params[bank_name]') }}">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>@lang('Bank Account')</label>
-                                                    <input type="text" class="form-control"
-                                                        name="json_params[bank_account]" placeholder="@lang('Bank Account')"
-                                                        value="{{ old('json_params[bank_account]') }}">
+                                                        placeholder="<?php echo app('translator')->get('Bank Name'); ?>"
+                                                        value="<?php echo e(old('json_params[bank_name]')); ?>">
                                                 </div>
                                             </div>
                                         </div>
@@ -129,32 +123,32 @@
                 <div class="col-lg-4">
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title">@lang('Publish')</h3>
+                            <h3 class="box-title"><?php echo app('translator')->get('Publish'); ?></h3>
                         </div>
                         <div class="box-body">
                             <div class="btn-set">
                                 <button type="submit" class="btn btn-info">
-                                    <i class="fa fa-save"></i> @lang('Save')
+                                    <i class="fa fa-save"></i> <?php echo app('translator')->get('Save'); ?>
                                 </button>
                                 &nbsp;&nbsp;
-                                <a class="btn btn-success " href="{{ route(Request::segment(2) . '.index') }}">
-                                    <i class="fa fa-bars"></i> @lang('List')
+                                <a class="btn btn-success " href="<?php echo e(route(Request::segment(2) . '.index')); ?>">
+                                    <i class="fa fa-bars"></i> <?php echo app('translator')->get('List'); ?>
                                 </a>
                             </div>
                         </div>
                     </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title">@lang('Status')</h3>
+                            <h3 class="box-title"><?php echo app('translator')->get('Status'); ?></h3>
                         </div>
                         <div class="box-body">
                             <div class="form-group">
                                 <select name="status" class=" form-control select2">
-                                    @foreach ($status as $key => $val)
-                                        <option value="{{ $key }}"
-                                            {{ isset($detail->status) && $detail->status == $val ? 'selected' : '' }}>
-                                            @lang($val)</option>
-                                    @endforeach
+                                    <?php $__currentLoopData = $status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($key); ?>"
+                                            <?php echo e(isset($detail->status) && $detail->status == $val ? 'selected' : ''); ?>>
+                                            <?php echo app('translator')->get($val); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
                         </div>
@@ -164,8 +158,10 @@
         </form>
     </section>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('script')
+<?php $__env->startSection('script'); ?>
     <script></script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\steamwonder\resources\views/admin/pages/areas/create.blade.php ENDPATH**/ ?>

@@ -118,9 +118,9 @@
                                 <th>@lang('Học sinh')</th>
                                 <th>@lang('Khu vực')</th>
                                 {{-- <th>@lang('Chu kỳ thanh toán')</th> --}}
-                                <th>@lang('Số tiên cần thu')</th>
+                                <th>@lang('Thành tiền')</th>
                                 <th>@lang('Tổng giảm trừ')</th>
-                                <th>@lang('Tổng các truy thu')</th>
+                                <th>@lang('Số dư kỳ trước')</th>
                                 <th>@lang('Tổng tiền thực tế')</th>
                                 <th>@lang('Đã thu')</th>
                                 <th>@lang('Số tiền còn phải thu (+) hoặc thừa (-)')</th>
@@ -154,19 +154,19 @@
                                         {{ number_format($row->total_discount, 0, ',', '.') ?? '' }}
                                     </td>
                                     <td>
-                                        {{ number_format($row->total_adjustment, 0, ',', '.') ?? '' }}
+                                        {{ number_format($row->prev_balance, 0, ',', '.') ?? '' }}
                                     </td>
                                     <td>
-                                        {{ number_format($row->total_final, 0, ',', '.') ?? '' }}
+                                        {{ number_format($row->total_final + $row->prev_balance, 0, ',', '.') ?? '' }}
                                     </td>
                                     <td>
                                         {{ number_format($row->total_paid, 0, ',', '.') ?? '' }}
                                     </td>
                                     <td>
-                                        {{ number_format($row->total_due, 0, ',', '.') ?? '' }}
+                                        {{ number_format($row->total_due + $row->prev_balance, 0, ',', '.') ?? '' }}
                                     </td>
                                     <td>
-                                        {{ $row->status ?? '' }}
+                                        {{ __($row->status??'') }}
                                     </td>
                                     <td>
                                         {{ $row->note ?? '' }}
