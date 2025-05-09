@@ -252,7 +252,7 @@
             <p><strong>Hình thức thanh toán:</strong></p>
             <p>Thanh toán bằng chuyển khoản, Quý Phụ huynh vui lòng chuyển tiền vào tài khoản sau:</p>
             <p><strong>Tên TK:</strong> Công ty Cổ phần Mầm Non STEAME GARTEN</p>
-            <p><strong>Số TK:</strong> 2662686868 - Techcombank - Chi nhánh Hà Thành - Hà Nội</p>
+            <p><strong>Số TK:</strong> 26266868 - Techcombank - Chi nhánh Hà Thành - Hà Nội</p>
             <p><strong>Nội dung chuyển khoản:</strong> Mã học sinh_Tên học sinh_Ngày sinh</p>
             <p>* Thanh toán tiền mặt: chi trả bằng tiền mặt tại Phòng Tuyển sinh</p>
         </div>

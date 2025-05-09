@@ -3,7 +3,9 @@
 namespace App\Imports;
 
 use App\Models\Student;
-use App\Models\WareHouseProduct;
+use App\Models\tbClass;
+use App\Models\StudentClass;
+use App\Models\Room;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -50,6 +52,74 @@ class ClassStudentImport implements ToCollection
                 }
                 if ($this->rowCount == 1) {
                     continue;
+                }
+
+                if ($row[7] == null || $row[7] == '') {
+                    $this->rowError++;
+                    array_push($this->arrErrorMessage, 'Vị trí ' . $key . ': Cần nhập lớp học!');
+                    continue;
+                }
+                // Xử lý nếu k nhập ngày sinh hoặc ngày sinh k hợp lệ
+                $start_at = Carbon::now()->format('Y-m-d');
+                if ($row[8] !== null && $row[8] !== '') {
+                    $excelDateCount = $row[8];
+                    if (is_numeric($excelDateCount)) {
+                        $unixTimestamp = ($excelDateCount - 25569) * 86400;
+                        $formattedDate = date('m/d/Y', $unixTimestamp);
+                        $start_at = Carbon::createFromFormat('m/d/Y', $formattedDate);
+                    } else {
+                        try {
+                            $start_atString = trim($row[8]);
+                            $start_at = Carbon::createFromFormat('d/m/Y', $start_atString)->format('Y-m-d');
+                        } catch (Exception $e) {
+                            $this->rowError++;
+                            array_push($this->arrErrorMessage, 'Vị trí ' . $key . ': Sai định dạng ngày nhập học!');
+                            continue;
+                            // return null;
+                        }
+                    }
+                }
+
+                // Kiểm tra phòng học và tạo mới phòng học
+                $room = Room::getSqlRoom(['keyword' => $row[7]])->first();
+                if (empty($room)) {
+                    $room = Room::create([
+                        'name' => trim($row[7]),
+                        'area_id' => '1',
+                        'slot' => '40',
+                        'type' => Consts::ROOM_TYPE['classroom'],
+                        'status' => Consts::STATUS['active'],
+                    ]);
+                }
+                // Kiểm tra lớp học và tạo mới nếu chưa có
+                $class = tbClass::where('name', 'like', '%' . $row[7] . '%')->first();
+                if (empty($class)) {
+                    $class = tbClass::create([
+                        'area_id' => 1,
+                        'code' => trim($row[7]),
+                        'name' => trim($row[7]),
+                        'slot' => '40',
+                        'room_id' => $room->id,
+                        'education_program_id' => trim($row[6]),
+                        'education_age_id' => 2,
+                        'status' => Consts::STATUS['active'],
+                    ]);
+                }
+                // Kiểm tra học sinh, và xem đã có trong lớp hay chưa
+                $student = Student::where('student_code', trim($row[1]))->first();
+                if (!empty($student)) {
+                    $student_class = StudentClass::where('class_id', $class->id)->where('student_id', $student->id)->first();
+                    //Chưa trong lớp thì thêm vào lớp
+                    if (empty($student_class)) {
+                        $student_class = StudentClass::create([
+                            'class_id' => $class->id,
+                            'student_id' => $student->id,
+                            'start_at' => $start_at,
+                            'type' => null,
+                            'status' => Consts::STATUS['active'],
+                            'admin_created_id' => Auth::guard('admin')->user()->id,
+                        ]);
+                    }
                 }
                 $this->rowInsert++;
                 continue;
