@@ -226,22 +226,24 @@
 
             $(document).on('change', '.checkin', function() {
                 $('#modal_camera').modal('show');
+                // Bật camera
+                navigator.mediaDevices.getUserMedia({
+                        video: true
+                    })
+                    .then(stream => {
+                        video.srcObject = stream;
+                    })
+                    .catch(error => {
+                        console.error('Không thể truy cập camera:', error);
+                    });
             });
 
             const video = $('#video')[0];
             const canvas = $('#canvas')[0];
             const photo = $('#photo')[0];
 
-            // Bật camera
-            navigator.mediaDevices.getUserMedia({
-                    video: true
-                })
-                .then(stream => {
-                    video.srcObject = stream;
-                })
-                .catch(error => {
-                    console.error('Không thể truy cập camera:', error);
-                });
+
+
 
             // Chụp ảnh
             $('#capture').click(function() {
