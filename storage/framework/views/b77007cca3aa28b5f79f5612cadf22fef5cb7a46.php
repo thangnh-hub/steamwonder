@@ -10,7 +10,12 @@
                     class="fa fa-plus"></i> <?php echo app('translator')->get('Add'); ?></a>
 
             
-            
+            <div class="pull-right" style="display: flex; margin-left:15px ">
+                <input class="form-control" type="file" name="files" id="fileImport" placeholder="<?php echo app('translator')->get('Select File'); ?>">
+                <button type="button" class="btn btn-sm btn-success" onclick="importFile()">
+                    <i class="fa fa-file-excel-o"></i>
+                    <?php echo app('translator')->get('Import dữ liệu'); ?></button>
+            </div>
         </h1>
 
     </section>
