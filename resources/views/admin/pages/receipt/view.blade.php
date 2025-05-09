@@ -63,7 +63,6 @@
                                 <label class="control-label"><strong>@lang('Chu kỳ thanh toán')</strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                @dd($detail->payment_cycle)
                                 <p>{{ $detail->payment_cycle->name ?? '' }}</p>
                             </div>
                         </div>
