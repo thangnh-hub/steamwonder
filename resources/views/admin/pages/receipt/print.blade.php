@@ -35,6 +35,16 @@
 
         .footer {
             font-size: 14px;
+            display: flex;
+        }
+
+        .bank-info {
+            width: 70%;
+        }
+
+        .qr-code {
+            width: 30%;
+            text-align: center;
         }
     </style>
 </head>
@@ -249,12 +259,21 @@
         </table>
 
         <div class="footer">
-            <p><strong>Hình thức thanh toán:</strong></p>
-            <p>Thanh toán bằng chuyển khoản, Quý Phụ huynh vui lòng chuyển tiền vào tài khoản sau:</p>
-            <p><strong>Tên TK:</strong> Công ty Cổ phần Mầm Non STEAME GARTEN</p>
-            <p><strong>Số TK:</strong> 26266868 - Techcombank - Chi nhánh Hà Thành - Hà Nội</p>
-            <p><strong>Nội dung chuyển khoản:</strong> Mã học sinh_Tên học sinh_Ngày sinh</p>
-            <p>* Thanh toán tiền mặt: chi trả bằng tiền mặt tại Phòng Tuyển sinh</p>
+            <div class="bank-info">
+                <p><strong>Hình thức thanh toán:</strong></p>
+                <p>Thanh toán bằng chuyển khoản, Quý Phụ huynh vui lòng chuyển tiền vào tài khoản sau:</p>
+                <p><strong>Tên TK:</strong> {{ optional($detail->area)->json_params->bank_account ?? '' }}</p>
+                <p><strong>Số TK:</strong> {{ optional($detail->area)->json_params->bank_stk ?? '' }} -
+                    {{ optional($detail->area)->json_params->bank_name ?? '' }}</p>
+                <p><strong>Nội dung chuyển khoản:</strong> Mã học sinh_Tên học sinh_Ngày sinh</p>
+                <p>* Thanh toán tiền mặt: chi trả bằng tiền mặt tại Phòng Tuyển sinh</p>
+            </div>
+            @isset($qrCode)
+                <div class="qr-code">
+                    <p style="text-align: center"><img src="{{ $qrCode }}" alt="QR Ngân hàng" width="250"></p>
+                    <p>@lang('Vui lòng quét mã QR để thanh toán')</p>
+                </div>
+            @endisset
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

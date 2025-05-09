@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Consts;
+use App\Http\Services\VietQrService;
 use App\Models\Receipt;
 use App\Models\Area;
 use App\Models\Service;
@@ -212,6 +213,18 @@ class ReceiptController extends Controller
         $this->responseData['serviceYearly'] = $serviceYearly;
         $this->responseData['serviceOther'] = $serviceOther;
 
+        // For get QR code
+        $bank_amount = $receipt->total_due;
+        $bank_bin = optional($receipt->area)->json_params->bank_bin ?? null;
+        $bank_stk = optional($receipt->area)->json_params->bank_stk ?? null;
+        if ($bank_amount > 0 && $bank_bin && $bank_stk) {
+            $this->responseData['qrCode'] = (new VietQrService())->generateQrImage(
+                $bank_bin,
+                $bank_stk,
+                $bank_amount,
+                $receipt->student->student_code . '_' . $receipt->student->first_name . ' ' . $receipt->student->last_name . '_' . $receipt->receipt_code
+            );
+        }
         return $this->responseView($this->viewPart . '.print');
     }
 }
