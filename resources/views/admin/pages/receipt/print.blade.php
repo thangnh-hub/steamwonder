@@ -12,6 +12,10 @@
             margin: 20px;
         }
 
+        .table-bordered thead th {
+            text-align: center
+        }
+
         .header {
             text-align: center;
             font-size: 18px;
@@ -99,9 +103,9 @@
         </div>
         <table class="table table-bordered">
             <thead>
-                <tr>
-                    <th>TT</th>
-                    <th>CHI TIẾT CÁC KHOẢN PHÍ</th>
+                <tr class="total">
+                    <th class="text-center">STT</th>
+                    <th>Chi tiết các khoản phí</th>
                     <th>Số tiền</th>
                     <th>Ghi chú</th>
                 </tr>
@@ -113,8 +117,8 @@
             <tbody>
                 {{-- Lấy theo năm --}}
                 @if (count($serviceYearly) > 0)
-                    <tr>
-                        <td>{{ \App\Helpers::intToRoman($i) }}</td>
+                    <tr class="section-title">
+                        <td class="text-center">{{ \App\Helpers::intToRoman($i) }}</td>
                         <td>@lang('Các khoản thu đầu năm')</td>
                         <td>{{ number_format($serviceYearly['total_amount'] ?? 0, 0, ',', '.') }}</td>
                         <td></td>
@@ -122,9 +126,9 @@
                     @if (isset($serviceYearly['services']) && count($serviceYearly['services']) > 0)
                         @foreach ($serviceYearly['services'] as $item)
                             <tr>
-                                <td>--- {{ \App\Helpers::intToRoman($i) }}.{{ $loop->index + 1 }}</td>
-                                <td>--- {{ $item['service']->name ?? '' }}</td>
-                                <td>--- {{ number_format($item['total_amount'] ?? '', 0, ',', '.') }}</td>
+                                <td class="text-center">{{ $loop->index + 1 }}</td>
+                                <td>{{ $item['service']->name ?? '' }}</td>
+                                <td>{{ number_format($item['total_amount'] ?? 0, 0, ',', '.') }}</td>
                                 <td>Từ: {{ \Carbon\Carbon::parse($item['min_month'])->format('m-Y') ?? '' }} -
                                     Đến: {{ \Carbon\Carbon::parse($item['max_month'])->format('m-Y') ?? '' }}
                                 </td>
@@ -135,18 +139,20 @@
                 @endif
                 {{-- Lấy theo tháng --}}
                 @if (count($serviceMonthly) > 0)
-                    <tr>
-                        <td>{{ \App\Helpers::intToRoman($i) }}</td>
+                    <tr class="section-title">
+                        <td class="text-center">{{ \App\Helpers::intToRoman($i) }}</td>
                         <td>@lang('Các khoản thu theo kỳ')</td>
-                        <td>{{ number_format($serviceMonthly['total_amount'] ?? 0, 0, ',', '.') }}</td>
+                        <td class="text-right">{{ number_format($serviceMonthly['total_amount'] ?? 0, 0, ',', '.') }}
+                        </td>
                         <td></td>
                     </tr>
                     @if (isset($serviceMonthly['services']) && count($serviceMonthly['services']) > 0)
                         @foreach ($serviceMonthly['services'] as $item)
                             <tr>
-                                <td>--- {{ \App\Helpers::intToRoman($i) }}.{{ $loop->index + 1 }}</td>
-                                <td>--- {{ $item['service']->name ?? '' }}</td>
-                                <td>--- {{ number_format($item['total_amount'] ?? '', 0, ',', '.') }}</td>
+                                <td class="text-center">{{ $loop->index + 1 }}</td>
+                                <td>{{ $item['service']->name ?? '' }}</td>
+                                <td class="text-right">{{ number_format($item['total_amount'] ?? 0, 0, ',', '.') }}
+                                </td>
                                 <td>Từ: {{ \Carbon\Carbon::parse($item['min_month'])->format('m-Y') ?? '' }} -
                                     Đến: {{ \Carbon\Carbon::parse($item['max_month'])->format('m-Y') ?? '' }}
                                 </td>
@@ -157,18 +163,20 @@
                 @endif
                 {{-- Lấy theo tháng --}}
                 @if (count($serviceOther) > 0)
-                    <tr>
-                        <td>{{ \App\Helpers::intToRoman($i) }}</td>
+                    <tr class="section-title">
+                        <td class="text-center">{{ \App\Helpers::intToRoman($i) }}</td>
                         <td>@lang('Các khoản thu phí khác')</td>
-                        <td>{{ number_format($serviceOther['total_amount'] ?? 0, 0, ',', '.') }}</td>
+                        <td class="text-right">{{ number_format($serviceOther['total_amount'] ?? 0, 0, ',', '.') }}
+                        </td>
                         <td></td>
                     </tr>
                     @if (isset($serviceOther['services']) && count($serviceOther['services']) > 0)
                         @foreach ($serviceOther['services'] as $item)
                             <tr>
-                                <td>--- {{ \App\Helpers::intToRoman($i) }}.{{ $loop->index + 1 }}</td>
-                                <td>--- {{ $item['service']->name ?? '' }}</td>
-                                <td>--- {{ number_format($item['total_amount'] ?? '', 0, ',', '.') }}</td>
+                                <td class="text-center">{{ $loop->index + 1 }}</td>
+                                <td>{{ $item['service']->name ?? '' }}</td>
+                                <td class="text-right">{{ number_format($item['total_amount'] ?? 0, 0, ',', '.') }}
+                                </td>
                                 <td>Từ: {{ \Carbon\Carbon::parse($item['min_month'])->format('m-Y') ?? '' }} -
                                     Đến: {{ \Carbon\Carbon::parse($item['max_month'])->format('m-Y') ?? '' }}
                                 </td>
@@ -179,19 +187,21 @@
                 @endif
 
                 @if (count($listtServiceDiscoun) > 0)
-                    <tr>
-                        <td>{{ \App\Helpers::intToRoman($i) }}</td>
+                    <tr class="section-title">
+                        <td class="text-center">{{ \App\Helpers::intToRoman($i) }}</td>
                         <td>@lang('Các khoản giảm trừ')</td>
-                        <td>{{ number_format($listtServiceDiscoun->sum('total_discount_amount') ?? 0, 0, ',', '.') }}
+                        <td class="text-right">
+                            {{ number_format($listtServiceDiscoun->sum('total_discount_amount') ?? 0, 0, ',', '.') }}
                         </td>
                         <td></td>
                     </tr>
                     @if (isset($listtServiceDiscoun) && count($listtServiceDiscoun) > 0)
                         @foreach ($listtServiceDiscoun as $item)
                             <tr>
-                                <td>---{{ \App\Helpers::intToRoman($i) }}.{{ $loop->index + 1 }}</td>
-                                <td>--- {{ $item['service']->name ?? '' }}</td>
-                                <td>--- {{ number_format($item['total_discount_amount'] ?? '', 0, ',', '.') }}</td>
+                                <td class="text-center">{{ $loop->index + 1 }}</td>
+                                <td>{{ $item['service']->name ?? '' }}</td>
+                                <td class="text-right">
+                                    {{ number_format($item['total_discount_amount'] ?? 0, 0, ',', '.') }}</td>
                                 <td></td>
                             </tr>
                         @endforeach
@@ -200,37 +210,39 @@
                 @endif
 
                 @if ($detail->prev_balance != 0)
-                    <tr>
-                        <td>{{ \App\Helpers::intToRoman($i) }}</td>
+                    <tr class="section-title">
+                        <td class="text-center">{{ \App\Helpers::intToRoman($i) }}</td>
                         <td>@lang('khoản giải trình')</td>
-                        <td>{{ number_format($detail->prev_balance ?? 0, 0, ',', '.') }}</td>
+                        <td class="text-right">{{ number_format($detail->prev_balance ?? 0, 0, ',', '.') }}</td>
                         <td></td>
                     </tr>
                     @if (isset($detail->json_params->explanation) && count((array) $detail->json_params->explanation) > 0)
                         @foreach ($detail->json_params->explanation as $item)
                             <tr>
-                                <td>---{{ \App\Helpers::intToRoman($i) }}.{{ $loop->index + 1 }}</td>
-                                <td>--- {{ $item->content ?? '' }}</td>
-                                <td>--- {{ number_format($item->value ?? '', 0, ',', '.') }}</td>
+                                <td class="text-center">{{ $loop->index + 1 }}</td>
+                                <td>{{ $item->content ?? '' }}</td>
+                                <td class="text-right">{{ number_format($item->value ?? 0, 0, ',', '.') }}</td>
                                 <td></td>
                             </tr>
                         @endforeach
                     @endif
                     @php $i++; @endphp
                 @endif
-                <tr>
+                <tr class="total">
                     <td colspan="2">@lang('TỔNG PHẢI NỘP') </td>
-                    <td>{{ number_format($detail->total_final + $detail->prev_balance, 0, ',', '.') }}</td>
+                    <td class="text-right">
+                        {{ number_format($detail->total_final + $detail->prev_balance, 0, ',', '.') }}</td>
                     <td></td>
                 </tr>
-                <tr>
+                <tr class="total">
                     <td colspan="2">@lang('TỔNG SỐ TIỀN ĐÃ NỘP')</td>
-                    <td>{{ number_format($detail->total_paid ?? 0, 0, ',', '.') }}</td>
+                    <td class="text-right">{{ number_format($detail->total_paid ?? 0, 0, ',', '.') }}</td>
                     <td></td>
                 </tr>
-                <tr>
+                <tr class="total">
                     <td colspan="2">@lang('TỔNG SỐ TIỀN CÒN PHẢI NỘP')</td>
-                    <td>{{ number_format($detail->total_due + $detail->prev_balance, 0, ',', '.') }}</td>
+                    <td class="text-right">{{ number_format($detail->total_due + $detail->prev_balance, 0, ',', '.') }}
+                    </td>
                     <td></td>
                 </tr>
             </tbody>
