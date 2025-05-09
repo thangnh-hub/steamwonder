@@ -12,6 +12,10 @@
             margin: 20px;
         }
 
+        .table-bordered thead th {
+            text-align: center
+        }
+
         .header {
             text-align: center;
             font-size: 18px;
@@ -101,9 +105,9 @@
         </div>
         <table class="table table-bordered">
             <thead>
-                <tr>
-                    <th>TT</th>
-                    <th>CHI TIẾT CÁC KHOẢN PHÍ</th>
+                <tr class="total">
+                    <th class="text-center">STT</th>
+                    <th>Chi tiết các khoản phí</th>
                     <th>Số tiền</th>
                     <th>Ghi chú</th>
                 </tr>
@@ -115,8 +119,8 @@
             <tbody>
                 
                 <?php if(count($serviceYearly) > 0): ?>
-                    <tr>
-                        <td><?php echo e(\App\Helpers::intToRoman($i)); ?></td>
+                    <tr class="section-title">
+                        <td class="text-center"><?php echo e(\App\Helpers::intToRoman($i)); ?></td>
                         <td><?php echo app('translator')->get('Các khoản thu đầu năm'); ?></td>
                         <td><?php echo e(number_format($serviceYearly['total_amount'] ?? 0, 0, ',', '.')); ?></td>
                         <td></td>
@@ -124,9 +128,9 @@
                     <?php if(isset($serviceYearly['services']) && count($serviceYearly['services']) > 0): ?>
                         <?php $__currentLoopData = $serviceYearly['services']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr>
-                                <td>--- <?php echo e(\App\Helpers::intToRoman($i)); ?>.<?php echo e($loop->index + 1); ?></td>
-                                <td>--- <?php echo e($item['service']->name ?? ''); ?></td>
-                                <td>--- <?php echo e(number_format($item['total_amount'] ?? '', 0, ',', '.')); ?></td>
+                                <td class="text-center"><?php echo e($loop->index + 1); ?></td>
+                                <td><?php echo e($item['service']->name ?? ''); ?></td>
+                                <td><?php echo e(number_format($item['total_amount'] ?? 0, 0, ',', '.')); ?></td>
                                 <td>Từ: <?php echo e(\Carbon\Carbon::parse($item['min_month'])->format('m-Y') ?? ''); ?> -
                                     Đến: <?php echo e(\Carbon\Carbon::parse($item['max_month'])->format('m-Y') ?? ''); ?>
 
@@ -138,18 +142,22 @@
                 <?php endif; ?>
                 
                 <?php if(count($serviceMonthly) > 0): ?>
-                    <tr>
-                        <td><?php echo e(\App\Helpers::intToRoman($i)); ?></td>
+                    <tr class="section-title">
+                        <td class="text-center"><?php echo e(\App\Helpers::intToRoman($i)); ?></td>
                         <td><?php echo app('translator')->get('Các khoản thu theo kỳ'); ?></td>
-                        <td><?php echo e(number_format($serviceMonthly['total_amount'] ?? 0, 0, ',', '.')); ?></td>
+                        <td class="text-right"><?php echo e(number_format($serviceMonthly['total_amount'] ?? 0, 0, ',', '.')); ?>
+
+                        </td>
                         <td></td>
                     </tr>
                     <?php if(isset($serviceMonthly['services']) && count($serviceMonthly['services']) > 0): ?>
                         <?php $__currentLoopData = $serviceMonthly['services']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr>
-                                <td>--- <?php echo e(\App\Helpers::intToRoman($i)); ?>.<?php echo e($loop->index + 1); ?></td>
-                                <td>--- <?php echo e($item['service']->name ?? ''); ?></td>
-                                <td>--- <?php echo e(number_format($item['total_amount'] ?? '', 0, ',', '.')); ?></td>
+                                <td class="text-center"><?php echo e($loop->index + 1); ?></td>
+                                <td><?php echo e($item['service']->name ?? ''); ?></td>
+                                <td class="text-right"><?php echo e(number_format($item['total_amount'] ?? 0, 0, ',', '.')); ?>
+
+                                </td>
                                 <td>Từ: <?php echo e(\Carbon\Carbon::parse($item['min_month'])->format('m-Y') ?? ''); ?> -
                                     Đến: <?php echo e(\Carbon\Carbon::parse($item['max_month'])->format('m-Y') ?? ''); ?>
 
@@ -161,18 +169,22 @@
                 <?php endif; ?>
                 
                 <?php if(count($serviceOther) > 0): ?>
-                    <tr>
-                        <td><?php echo e(\App\Helpers::intToRoman($i)); ?></td>
+                    <tr class="section-title">
+                        <td class="text-center"><?php echo e(\App\Helpers::intToRoman($i)); ?></td>
                         <td><?php echo app('translator')->get('Các khoản thu phí khác'); ?></td>
-                        <td><?php echo e(number_format($serviceOther['total_amount'] ?? 0, 0, ',', '.')); ?></td>
+                        <td class="text-right"><?php echo e(number_format($serviceOther['total_amount'] ?? 0, 0, ',', '.')); ?>
+
+                        </td>
                         <td></td>
                     </tr>
                     <?php if(isset($serviceOther['services']) && count($serviceOther['services']) > 0): ?>
                         <?php $__currentLoopData = $serviceOther['services']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr>
-                                <td>--- <?php echo e(\App\Helpers::intToRoman($i)); ?>.<?php echo e($loop->index + 1); ?></td>
-                                <td>--- <?php echo e($item['service']->name ?? ''); ?></td>
-                                <td>--- <?php echo e(number_format($item['total_amount'] ?? '', 0, ',', '.')); ?></td>
+                                <td class="text-center"><?php echo e($loop->index + 1); ?></td>
+                                <td><?php echo e($item['service']->name ?? ''); ?></td>
+                                <td class="text-right"><?php echo e(number_format($item['total_amount'] ?? 0, 0, ',', '.')); ?>
+
+                                </td>
                                 <td>Từ: <?php echo e(\Carbon\Carbon::parse($item['min_month'])->format('m-Y') ?? ''); ?> -
                                     Đến: <?php echo e(\Carbon\Carbon::parse($item['max_month'])->format('m-Y') ?? ''); ?>
 
@@ -184,10 +196,11 @@
                 <?php endif; ?>
 
                 <?php if(count($listtServiceDiscoun) > 0): ?>
-                    <tr>
-                        <td><?php echo e(\App\Helpers::intToRoman($i)); ?></td>
+                    <tr class="section-title">
+                        <td class="text-center"><?php echo e(\App\Helpers::intToRoman($i)); ?></td>
                         <td><?php echo app('translator')->get('Các khoản giảm trừ'); ?></td>
-                        <td><?php echo e(number_format($listtServiceDiscoun->sum('total_discount_amount') ?? 0, 0, ',', '.')); ?>
+                        <td class="text-right">
+                            <?php echo e(number_format($listtServiceDiscoun->sum('total_discount_amount') ?? 0, 0, ',', '.')); ?>
 
                         </td>
                         <td></td>
@@ -195,9 +208,10 @@
                     <?php if(isset($listtServiceDiscoun) && count($listtServiceDiscoun) > 0): ?>
                         <?php $__currentLoopData = $listtServiceDiscoun; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr>
-                                <td>---<?php echo e(\App\Helpers::intToRoman($i)); ?>.<?php echo e($loop->index + 1); ?></td>
-                                <td>--- <?php echo e($item['service']->name ?? ''); ?></td>
-                                <td>--- <?php echo e(number_format($item['total_discount_amount'] ?? '', 0, ',', '.')); ?></td>
+                                <td class="text-center"><?php echo e($loop->index + 1); ?></td>
+                                <td><?php echo e($item['service']->name ?? ''); ?></td>
+                                <td class="text-right">
+                                    <?php echo e(number_format($item['total_discount_amount'] ?? 0, 0, ',', '.')); ?></td>
                                 <td></td>
                             </tr>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -206,37 +220,40 @@
                 <?php endif; ?>
 
                 <?php if($detail->prev_balance != 0): ?>
-                    <tr>
-                        <td><?php echo e(\App\Helpers::intToRoman($i)); ?></td>
+                    <tr class="section-title">
+                        <td class="text-center"><?php echo e(\App\Helpers::intToRoman($i)); ?></td>
                         <td><?php echo app('translator')->get('khoản giải trình'); ?></td>
-                        <td><?php echo e(number_format($detail->prev_balance ?? 0, 0, ',', '.')); ?></td>
+                        <td class="text-right"><?php echo e(number_format($detail->prev_balance ?? 0, 0, ',', '.')); ?></td>
                         <td></td>
                     </tr>
                     <?php if(isset($detail->json_params->explanation) && count((array) $detail->json_params->explanation) > 0): ?>
                         <?php $__currentLoopData = $detail->json_params->explanation; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr>
-                                <td>---<?php echo e(\App\Helpers::intToRoman($i)); ?>.<?php echo e($loop->index + 1); ?></td>
-                                <td>--- <?php echo e($item->content ?? ''); ?></td>
-                                <td>--- <?php echo e(number_format($item->value ?? '', 0, ',', '.')); ?></td>
+                                <td class="text-center"><?php echo e($loop->index + 1); ?></td>
+                                <td><?php echo e($item->content ?? ''); ?></td>
+                                <td class="text-right"><?php echo e(number_format($item->value ?? 0, 0, ',', '.')); ?></td>
                                 <td></td>
                             </tr>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     <?php endif; ?>
                     <?php $i++; ?>
                 <?php endif; ?>
-                <tr>
+                <tr class="total">
                     <td colspan="2"><?php echo app('translator')->get('TỔNG PHẢI NỘP'); ?> </td>
-                    <td><?php echo e(number_format($detail->total_final + $detail->prev_balance, 0, ',', '.')); ?></td>
+                    <td class="text-right">
+                        <?php echo e(number_format($detail->total_final + $detail->prev_balance, 0, ',', '.')); ?></td>
                     <td></td>
                 </tr>
-                <tr>
+                <tr class="total">
                     <td colspan="2"><?php echo app('translator')->get('TỔNG SỐ TIỀN ĐÃ NỘP'); ?></td>
-                    <td><?php echo e(number_format($detail->total_paid ?? 0, 0, ',', '.')); ?></td>
+                    <td class="text-right"><?php echo e(number_format($detail->total_paid ?? 0, 0, ',', '.')); ?></td>
                     <td></td>
                 </tr>
-                <tr>
+                <tr class="total">
                     <td colspan="2"><?php echo app('translator')->get('TỔNG SỐ TIỀN CÒN PHẢI NỘP'); ?></td>
-                    <td><?php echo e(number_format($detail->total_due, 0, ',', '.')); ?></td>
+                    <td class="text-right"><?php echo e(number_format($detail->total_due + $detail->prev_balance, 0, ',', '.')); ?>
+
+                    </td>
                     <td></td>
                 </tr>
             </tbody>
