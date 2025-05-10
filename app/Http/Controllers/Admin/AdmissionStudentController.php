@@ -24,13 +24,13 @@ use App\Http\Services\ReceiptService;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
 
-class StudentController extends Controller
+class AdmissionStudentController extends Controller
 {
     public function __construct()
     {
         parent::__construct();
-        $this->routeDefault  = 'students';
-        $this->viewPart = 'admin.pages.students';
+        $this->routeDefault  = 'admission.student';
+        $this->viewPart = 'admin.pages.admissionstudents';
         $this->responseData['module_name'] = __('Quản lý học sinh');
     }
     /**
@@ -42,13 +42,17 @@ class StudentController extends Controller
     {
         $params = $request->all();
         $admin = Auth::guard('admin')->user();
-        // $params['list_id'] = DataPermissionService::getPermissionStudents($admin->id);
+        //Lấy theo khu vực quản lý và theo quyền của cbts và cbts cấp dưới
+        $params['list_id'] = DataPermissionService::getPermissionStudents($admin->id);
         // Get list post with filter params
-        $rows = Student::getSqlStudent($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
+        $rows = Student::getSqlStudent($params)->orderBy('id','desc')->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
 
         $this->responseData['rows'] =  $rows;
         $this->responseData['params'] = $params;
-        $this->responseData['area'] =  Area::where('status', '=', Consts::USER_STATUS['active'])->get();
+
+        $params_area['id'] = DataPermissionService::getPermisisonAreas($admin->id);
+        $params_area['status'] = Consts::STATUS_ACTIVE;
+        $this->responseData['area'] = Area::getsqlArea($params_area)->get();
 
         return $this->responseView($this->viewPart . '.index');
     }
@@ -76,6 +80,7 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
+        $admin = Auth::guard('admin')->user();
         $request->validate([
             'area_id'    => 'required',
             'first_name' => 'required',
@@ -83,7 +88,8 @@ class StudentController extends Controller
         ]);
 
         $params = $request->all();
-        $params['admin_created_id'] = Auth::guard('admin')->user()->id;
+        $params['admin_created_id'] = $admin->id;
+        $params['admission_id'] = $admin->id;
         $params['student_code'] = 'TEMP';
 
         // Tạo học sinh
@@ -102,8 +108,16 @@ class StudentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Student $student)
+    public function show($id)
     {
+        $student = Student::findOrFail($id);
+        $admin = Auth::guard('admin')->user();
+        // Lấy danh sách học sinh thuộc quyền quản lý
+        $permittedStudentIds = DataPermissionService::getPermissionStudents($admin->id);
+        if (!in_array($student->id, $permittedStudentIds)) {
+            return redirect()->route($this->routeDefault . '.index')->with('errorMessage', __('Bạn không có quyền sửa học sinh này!'));
+        }
+
         $this->responseData['detail'] = $student;
         $this->responseData['module_name'] = "Chi tiết học sinh";
         return $this->responseView($this->viewPart . '.detail');
@@ -115,10 +129,22 @@ class StudentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Student $student)
+    public function edit($id)
     {
-        $params_area['id'] = DataPermissionService::getPermisisonAreas(Auth::guard('admin')->user()->id);
+        $student = Student::findOrFail($id);
+        $admin = Auth::guard('admin')->user();
+        // Lấy danh sách học sinh thuộc quyền quản lý
+        $permittedStudentIds = DataPermissionService::getPermissionStudents($admin->id);
+
+        // Kiểm tra xem học sinh có thuộc quyền quản lý không
+        if (!in_array($student->id, $permittedStudentIds)) {
+            return redirect()->route($this->routeDefault . '.index')->with('errorMessage', __('Bạn không có quyền sửa học sinh này!'));
+        }
+
+        $params_area['id'] = DataPermissionService::getPermisisonAreas($admin->id);
+        $params_area['status'] = Consts::STATUS_ACTIVE;
         $this->responseData['list_area'] = Area::getsqlArea($params_area)->get();
+
         $this->responseData['list_status'] = Consts::STATUS_STUDY;
         $this->responseData['list_sex'] = Consts::GENDER;
         $this->responseData['detail'] = $student;
@@ -155,8 +181,16 @@ class StudentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Student $student)
+    public function update(Request $request, $id)
     {
+        $student = Student::findOrFail($id);
+        $admin = Auth::guard('admin')->user();
+        // Lấy danh sách học sinh thuộc quyền quản lý
+        $permittedStudentIds = DataPermissionService::getPermissionStudents($admin->id);
+        if (!in_array($student->id, $permittedStudentIds)) {
+            return redirect()->route($this->routeDefault . '.index')->with('errorMessage', __('Bạn không có quyền sửa học sinh này!'));
+        }
+
         $request->validate([
             'area_id'    => 'required',
             'first_name' => 'required',
@@ -206,8 +240,15 @@ class StudentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Student $student)
+    public function destroy($id)
     {
+        $student = Student::findOrFail($id);
+        $admin = Auth::guard('admin')->user();
+        // Lấy danh sách học sinh thuộc quyền quản lý
+        $permittedStudentIds = DataPermissionService::getPermissionStudents($admin->id);
+        if (!in_array($student->id, $permittedStudentIds)) {
+            return redirect()->route($this->routeDefault . '.index')->with('errorMessage', __('Bạn không có quyền xóa học sinh này!'));
+        }
         $student->studentParents()->delete();
         $student->delete();
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Delete record successfully!'));
@@ -270,7 +311,6 @@ class StudentController extends Controller
 
         try {
             // Import file
-            $params['admin_id'] = Auth::guard('admin')->user()->id;
             $import = new StudentImport($params);
             Excel::import($import, request()->file('file'));
 

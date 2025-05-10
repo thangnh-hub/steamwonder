@@ -67,6 +67,8 @@ class StudentImport implements ToModel,WithHeadingRow
                 'birthday' => $this->excelDateToCarbon($row['ngay_sinh']),
                 'sex' => $gender,
                 'area_id' => $area_id,
+                'admission_id' => $this->params['admin_id'],
+                'admin_created_id' => $this->params['admin_id'],
                 'status' => $status_study,
                 'enrolled_at' =>$this->excelDateToCarbon($row['ngay_bat_dau_hoc_chinh_thuc']) ,
                 'address' => $row['dia_chi_gia_dinh'] ?? '',
@@ -104,6 +106,7 @@ class StudentImport implements ToModel,WithHeadingRow
                 'first_name' => $firstName,
                 'last_name' => $lastName,
                 'area_id' => $area_id,
+                'admin_updated_id' => $this->params['admin_id'],
             ]);
         } else {
             // Nếu chưa có thì tạo mới
@@ -113,6 +116,7 @@ class StudentImport implements ToModel,WithHeadingRow
                 'phone' => $phone,
                 'email' => $email,
                 'area_id' => $area_id,
+                'admin_created_id' => $this->params['admin_id'],
             ]);
         }
 
@@ -125,6 +129,7 @@ class StudentImport implements ToModel,WithHeadingRow
                 'student_id' => $student_id,
                 'parent_id' => $parent->id,
                 'relationship_id' => $relationship->id,
+                'admin_created_id' => $this->params['admin_id'],
             ]
         );
     }

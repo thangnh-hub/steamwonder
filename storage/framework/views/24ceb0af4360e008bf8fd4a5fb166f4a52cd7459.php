@@ -51,7 +51,7 @@
     <section class="content-header">
         <h1>
             <?php echo app('translator')->get($module_name); ?>
-            <a class="btn btn-sm btn-warning pull-right" href="<?php echo e(route(Request::segment(2) . '.create')); ?>"><i
+            <a class="btn btn-sm btn-warning pull-right" href="<?php echo e(route('admission.student.create')); ?>"><i
                     class="fa fa-plus"></i> <?php echo app('translator')->get('Thêm mới học viên'); ?></a>
         </h1>
     </section>
@@ -83,7 +83,7 @@
 
             </div>
         <?php endif; ?>
-        <form role="form" action="<?php echo e(route(Request::segment(2) . '.update', $detail->id)); ?>" method="POST">
+        <form role="form" action="<?php echo e(route('admission.student.update', $detail->id)); ?>" method="POST">
             <?php echo csrf_field(); ?>
             <?php echo method_field('PUT'); ?>
             <div class="row">
@@ -497,7 +497,6 @@
                                     <!-- TAB 4: Biên lai thu phí -->
                                     <div class="tab-pane" id="tab_4">
                                         <div class="box-body ">
-                                            
                                             <table class="table table-hover table-bordered">
                                                 <thead>
                                                     <tr>
@@ -727,7 +726,7 @@
                             <button type="submit" class="btn btn-info btn-sm pull-right">
                                 <i class="fa fa-save"></i> <?php echo app('translator')->get('Save'); ?>
                             </button>
-                            <a href="<?php echo e(route(Request::segment(2) . '.index')); ?>">
+                            <a href="<?php echo e(route('admission.student.index')); ?>">
                                 <button type="button" class="btn btn-sm btn-success"><?php echo app('translator')->get('Danh sách'); ?></button>
                             </a>
                         </div>
@@ -1225,4 +1224,4 @@
     </script>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\steamwonder\resources\views/admin/pages/students/edit.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\steamwonder\resources\views/admin/pages/admissionstudents/edit.blade.php ENDPATH**/ ?>
