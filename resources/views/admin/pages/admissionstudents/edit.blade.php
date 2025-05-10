@@ -51,7 +51,7 @@
     <section class="content-header">
         <h1>
             @lang($module_name)
-            <a class="btn btn-sm btn-warning pull-right" href="{{ route(Request::segment(2) . '.create') }}"><i
+            <a class="btn btn-sm btn-warning pull-right" href="{{ route('admission.student.create') }}"><i
                     class="fa fa-plus"></i> @lang('Thêm mới học viên')</a>
         </h1>
     </section>
@@ -81,7 +81,7 @@
 
             </div>
         @endif
-        <form role="form" action="{{ route(Request::segment(2) . '.update', $detail->id) }}" method="POST">
+        <form role="form" action="{{ route('admission.student.update', $detail->id) }}" method="POST">
             @csrf
             @method('PUT')
             <div class="row">
@@ -487,65 +487,6 @@
                                     <!-- TAB 4: Biên lai thu phí -->
                                     <div class="tab-pane" id="tab_4">
                                         <div class="box-body ">
-                                            {{-- <form id="calculate-receipt-form">
-                                                @csrf
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label>@lang('Ngày bắt đầu chu kỳ thanh toán') <small
-                                                                class="text-danger">*</small></label>
-                                                        <input class="form-control" type="date" id="enrolled_at"
-                                                            value="">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label>@lang('Chu kỳ thu dịch vụ') <small
-                                                                class="text-danger">*</small></label>
-                                                        <select style="width:100%" id="selectpayment_cycle_id"
-                                                            class="form-control select2">
-                                                            <option value="">Chọn</option>
-                                                            @foreach ($list_payment_cycle as $payment_cycle)
-                                                                <option
-                                                                    {{ old('payment_cycle_id', $detail->payment_cycle_id) == $payment_cycle->id ? 'selected' : '' }}
-                                                                    value="{{ $payment_cycle->id }}">
-                                                                    {{ $payment_cycle->name ?? '' }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label class="d-block">@lang('Tính tháng hiện tại ở chu kỳ thu?')</label>
-                                                        <div id="receipt-options" class="flex-inline-group">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="includeCurrentMonth" id="includeCurrentMonthYes"
-                                                                    value="1">
-                                                                <label class="form-check-label mb-0"
-                                                                    for="includeCurrentMonthYes">Có</label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="includeCurrentMonth" id="includeCurrentMonthNo"
-                                                                    value="0" checked>
-                                                                <label class="form-check-label mb-0"
-                                                                    for="includeCurrentMonthNo">Không</label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-12">
-                                                    <button type="button" class="btn btn-success btn-sm mb-15"
-                                                        id="btnCalculateReceipt" data-id="{{ $detail->id }}">
-                                                        <i class="fa fa-money"></i> @lang('Tính toán thu phí')
-                                                    </button>
-                                                </div>
-
-                                            </form> --}}
                                             <table class="table table-hover table-bordered">
                                                 <thead>
                                                     <tr>
@@ -761,7 +702,7 @@
                             <button type="submit" class="btn btn-info btn-sm pull-right">
                                 <i class="fa fa-save"></i> @lang('Save')
                             </button>
-                            <a href="{{ route(Request::segment(2) . '.index') }}">
+                            <a href="{{ route('admission.student.index') }}">
                                 <button type="button" class="btn btn-sm btn-success">@lang('Danh sách')</button>
                             </a>
                         </div>
@@ -1139,28 +1080,28 @@
             });
         });
         $('.btn_delete_receipt').click(function() {
-            let currentStudentReceiptId = $(this).data('id'); // Lấy ID phiếu thu hiện tại từ nút
-                if (confirm("Bạn có chắc chắn muốn xóa phiếu thu này?")) {
-                    $.ajax({
-                        type: "GET",
-                        url: "{{ route('student.deleteReceipt') }}",
-                        data: {
-                            id: currentStudentReceiptId, // Đảm bảo đúng biến được gửi đi
-                        },
-                        success: function(response) {
-                            if (response.message === 'success') {
-                                localStorage.setItem('activeTab', '#tab_4');
-                                location.reload();
-                            } else {
-                                alert("Bạn không có quyền thao tác dữ liệu");
-                            }
-                        },
-                        error: function() {
-                            alert("Lỗi cập nhật.");
+        let currentStudentReceiptId = $(this).data('id'); // Lấy ID phiếu thu hiện tại từ nút
+            if (confirm("Bạn có chắc chắn muốn xóa phiếu thu này?")) {
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('student.deleteReceipt') }}",
+                    data: {
+                        id: currentStudentReceiptId, // Đảm bảo đúng biến được gửi đi
+                    },
+                    success: function(response) {
+                        if (response.message === 'success') {
+                            localStorage.setItem('activeTab', '#tab_4');
+                            location.reload();
+                        } else {
+                            alert("Bạn không có quyền thao tác dữ liệu");
                         }
-                    });
-                }
-        });
+                    },
+                    error: function() {
+                        alert("Lỗi cập nhật.");
+                    }
+                });
+            }
+    });
 
 
         $(document).ready(function() {

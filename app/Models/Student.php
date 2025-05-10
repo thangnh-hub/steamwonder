@@ -56,7 +56,13 @@ class Student extends Model
                         ->orWhere('tb_students.student_code', 'like', '%' . $keyword . '%')
                         ->orWhere('tb_students.nickname', 'like', '%' . $keyword . '%');
                 });
-            });
+            })
+            ->when(!empty($params['admission_id']), function ($query) use ($params) {
+                if (is_array($params['admission_id'])) {
+                  return $query->whereIn('admins.admission_id', $params['admission_id']);
+                }
+                return $query->where('admins.admission_id', '!=', $params['admission_id']);
+              });
         if (isset($params['list_id']) && !empty($params['list_id'])) {
             $query->whereIn('tb_students.id', $params['list_id']);
         }

@@ -111,6 +111,16 @@ Route::group(['namespace' => 'Admin'], function () {
                 'attendance' => 'AttendancesController',
                 'promotions' => 'PromotionController',
             ]);
+
+            //CBTS
+            Route::get('admissions/students', 'AdmissionStudentController@index')->name('admission.student.index');
+            Route::get('admissions/students/create', 'AdmissionStudentController@create')->name('admission.student.create');
+            Route::post('admissions/students/store', 'AdmissionStudentController@store')->name('admission.student.store');
+            Route::get('admissions/students/show/{id}', 'AdmissionStudentController@show')->name('admission.student.show');
+            Route::get('admissions/students/edit/{id}', 'AdmissionStudentController@edit')->name('admission.student.edit');
+            Route::put('admissions/students/update/{id}', 'AdmissionStudentController@update')->name('admission.student.update');
+            Route::delete('admissions/students/delete/{id}', 'AdmissionStudentController@destroy')->name('admission.student.destroy');
+
             // Import Class và StudentClass
             Route::post('import_class', 'AdminController@importClassStudent')->name('class.import_class');
             Route::get('receipt_view/{id}', 'ReceiptController@viewIndex')->name('receipt.view');

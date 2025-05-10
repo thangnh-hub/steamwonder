@@ -5,6 +5,7 @@ namespace App\Http\Services;
 use App\Components\Recusive;
 use App\Consts;
 use App\Models\Admin;
+use App\Models\Student;
 use App\Models\tbClass;
 use App\Models\UserClass;
 use Illuminate\Support\Arr;
@@ -140,8 +141,7 @@ class DataPermissionService
         $user_ids = self::getPermissionUsersAndSelf($id);
 
         // Lấy danh sách học viên theo khu và cán bộ tuyển sinh
-        $student_id_by_area = Admin::selectRaw('GROUP_CONCAT("", id) student_id')
-            ->where('admin_type', 'student')
+        $student_id_by_area = Student::selectRaw('GROUP_CONCAT("", id) student_id')
             ->whereIn('area_id', $area_ids)
             ->orWhere(function ($student_id_by_area) use ($user_ids) {
                 return $student_id_by_area->whereIn('admission_id', $user_ids);
@@ -150,14 +150,14 @@ class DataPermissionService
         $student_ids = explode(",", $student_id_by_area->student_id);
 
         // Lấy danh sách lớp học được thao tác dữ liệu
-        $class_ids = self::getPermissionClasses($id);
+        // $class_ids = self::getPermissionClasses($id);
         // Lấy danh sách học viên theo lớp
-        $student_id_by_class = DB::table('tb_user_class')->selectRaw('GROUP_CONCAT("", user_id) student_id')
-            ->whereIn('class_id', $class_ids)->first();
-        $student_ids_class = explode(",", $student_id_by_class->student_id);
+        // $student_id_by_class = DB::table('tb_user_class')->selectRaw('GROUP_CONCAT("", user_id) student_id')
+        //     ->whereIn('class_id', $class_ids)->first();
+        // $student_ids_class = explode(",", $student_id_by_class->student_id);
 
         // Merge 2 mảng học viên
-        $student_ids = array_merge($student_ids, $student_ids_class);
+        // $student_ids = array_merge($student_ids, $student_ids_class);
 
         return array_unique($student_ids);
     }
