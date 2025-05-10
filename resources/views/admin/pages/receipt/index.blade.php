@@ -210,7 +210,6 @@
                                     <td>
                                         {{ $row->note ?? '' }}
                                     </td>
-<<<<<<< HEAD
                                     <td>
                                         {{ $row->adminCreated->name ?? '' }}
                                     </td>
@@ -220,25 +219,16 @@
                                     <td class="">
 
                                         <button class="btn btn-sm btn-success btn_show_detail" data-toggle="tooltip"
-=======
-                                    <td style="width: 180px" class="d-flex-wap">
-                                        <button class="btn btn-sm btn-success btn_show_detail mr-10" data-toggle="tooltip"
->>>>>>> 60a731e410f26d01b9b5e4f806c106763ab4b5df
                                             data-id="{{ $row->id }}"
                                             data-url="{{ route(Request::segment(2) . '.view', $row->id) }}"
                                             title="@lang('Xem nhanh')" data-original-title="@lang('Xem nhanh')">
                                             <i class="fa fa-eye"></i>
                                         </button>
-                                        <a class="btn btn-sm btn-warning mr-10" data-toggle="tooltip" title="@lang('Chỉnh sửa')"
+                                        <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="@lang('Chỉnh sửa')"
                                             data-original-title="@lang('Chỉnh sửa')" style="min-width: 34px"
                                             href="{{ route(Request::segment(2) . '.show', $row->id) }}">
                                             <i class="fa fa-pencil"></i>
                                         </a>
-                                        <button type="button"
-                                            class="btn btn-sm btn-danger btn_delete_receipt "
-                                            data-id="{{ $row->id }}">
-                                            <i class="fa fa-trash"></i> Xóa
-                                        </button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -312,30 +302,5 @@
                 }
             });
         })
-
-
-        $('.btn_delete_receipt').click(function() {
-            let currentStudentReceiptId = $(this).data('id'); // Lấy ID phiếu thu hiện tại từ nút
-                if (confirm("Bạn có chắc chắn muốn xóa phiếu thu này?")) {
-                    $.ajax({
-                        type: "GET",
-                        url: "{{ route('student.deleteReceipt') }}",
-                        data: {
-                            id: currentStudentReceiptId, // Đảm bảo đúng biến được gửi đi
-                        },
-                        success: function(response) {
-                            if (response.message === 'success') {
-                                localStorage.setItem('activeTab', '#tab_4');
-                                location.reload();
-                            } else {
-                                alert("Bạn không có quyền thao tác dữ liệu");
-                            }
-                        },
-                        error: function() {
-                            alert("Lỗi cập nhật.");
-                        }
-                    });
-                }
-        });
     </script>
 @endsection
