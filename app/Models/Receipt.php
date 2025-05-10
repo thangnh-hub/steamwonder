@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+
 use App\Consts;
 
 use Illuminate\Database\Eloquent\Model;
@@ -27,15 +28,21 @@ class Receipt extends Model
                 $keyword = $params['keyword'];
                 return $query->where(function ($where) use ($keyword) {
                     return $where->where('receipt_name', 'like', '%' . $keyword . '%')
-                                 ->orWhere('receipt_code', 'like', '%' . $keyword . '%');
+                        ->orWhere('receipt_code', 'like', '%' . $keyword . '%');
                 });
             })
-        ->when(!empty($params['area_id']), function ($query) use ($params) {
-            return $query->where('tb_receipt.area_id', $params['area_id']);
-        })
-        ->when(!empty($params['status']), function ($query) use ($params) {
-            return $query->where('tb_receipt.status', $params['status']);
-        });
+            ->when(!empty($params['student_id']), function ($query) use ($params) {
+                return $query->where('tb_receipt.student_id', $params['student_id']);
+            })
+            ->when(!empty($params['area_id']), function ($query) use ($params) {
+                return $query->where('tb_receipt.area_id', $params['area_id']);
+            })
+            ->when(!empty($params['status']), function ($query) use ($params) {
+                return $query->where('tb_receipt.status', $params['status']);
+            })
+            ->when(!empty($params['created_at']), function ($query) use ($params) {
+                return $query->whereDate('tb_receipt.created_at', $params['created_at']);
+            });
         if (!empty($params['order_by'])) {
             $query->orderBy('tb_receipt.' . $params['order_by'], 'asc');
         } else {
@@ -84,5 +91,4 @@ class Receipt extends Model
     {
         return $this->belongsTo(Receipt::class, 'prev_receipt_id');
     }
-
 }

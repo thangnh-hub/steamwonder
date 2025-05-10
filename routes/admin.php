@@ -216,7 +216,7 @@ Route::group(['namespace' => 'Admin'], function () {
         Route::get('/camera', 'CameraController@index')->name('camera');
         Route::post('/save-image', 'CameraController@saveImage')->name('save.image');
         // in hóa đơn thanh toán
-        Route::get('receipt_print/{id}', 'ReceiptController@print')->name('receipt.print');
+        Route::get('receipt/print/{id}', 'ReceiptController@print')->name('receipt.print');
         // Cập nhật nội dung truy thu/hoàn trả của kỳ trước trong json
         Route::post('receipt_update_json_explanation/{id}', 'ReceiptController@updateJsonExplanation')->name('receipt.update_json_explanation');
 

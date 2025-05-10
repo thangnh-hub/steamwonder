@@ -96,7 +96,7 @@
                                                 <h5>Biên lai thu phí</h5>
                                             </a>
                                         </li>
-                                        <li class="active">
+                                        <li class="">
                                             <a href="#tab_5" data-toggle="tab">
                                                 <h5>Chương trình KH.Mãi</h5>
                                             </a>
