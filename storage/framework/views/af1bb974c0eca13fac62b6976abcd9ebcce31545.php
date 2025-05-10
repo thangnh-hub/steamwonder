@@ -1,3 +1,5 @@
+
+
 <?php $__env->startSection('title'); ?>
     <?php echo app('translator')->get($module_name); ?>
 <?php $__env->stopSection(); ?>
@@ -10,12 +12,7 @@
                     class="fa fa-plus"></i> <?php echo app('translator')->get('Add'); ?></a>
 
             
-            <div class="pull-right" style="display: flex; margin-left:15px ">
-                <input class="form-control" type="file" name="files" id="fileImport" placeholder="<?php echo app('translator')->get('Select File'); ?>">
-                <button type="button" class="btn btn-sm btn-success" onclick="importFile()">
-                    <i class="fa fa-file-excel-o"></i>
-                    <?php echo app('translator')->get('Import dữ liệu'); ?></button>
-            </div>
+            
         </h1>
 
     </section>
@@ -346,4 +343,4 @@
     </script>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\steamwonder\resources\views/admin/pages/classs/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\steamwonders\resources\views/admin/pages/classs/index.blade.php ENDPATH**/ ?>

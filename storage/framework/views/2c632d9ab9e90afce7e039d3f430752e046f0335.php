@@ -1,3 +1,5 @@
+
+
 <?php $__env->startSection('title'); ?>
     <?php echo app('translator')->get($module_name); ?>
 <?php $__env->stopSection(); ?>
@@ -160,7 +162,7 @@
 
                                     </td>
                                     <td>
-                                        <?php echo e(number_format($row->total_final, 0, ',', '.') ?? ''); ?>
+                                        <?php echo e(number_format($row->total_final + $row->prev_balance, 0, ',', '.') ?? ''); ?>
 
                                     </td>
                                     <td>
@@ -168,7 +170,7 @@
 
                                     </td>
                                     <td>
-                                        <?php echo e(number_format($row->total_due, 0, ',', '.') ?? ''); ?>
+                                        <?php echo e(number_format($row->total_due + $row->prev_balance, 0, ',', '.') ?? ''); ?>
 
                                     </td>
                                     <td>
@@ -269,4 +271,4 @@
     </script>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\steamwonder\resources\views/admin/pages/receipt/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\steamwonders\resources\views/admin/pages/receipt/index.blade.php ENDPATH**/ ?>

@@ -150,7 +150,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label><?php echo app('translator')->get('Status'); ?> </label>
-                                                    <select required name="status " class="form-control select2">
+                                                    <select required name="status" class="form-control select2">
                                                         <?php $__currentLoopData = $status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                             <option value="<?php echo e($key); ?>"
                                                                 <?php echo e(old('status') && old('status') == $val ? 'selected' : ''); ?>>

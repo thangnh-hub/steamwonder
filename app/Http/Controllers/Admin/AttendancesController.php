@@ -26,7 +26,7 @@ class AttendancesController extends Controller
      */
     public function index(Request $request)
     {
-        $params = $request->only(['class_id', 'area_id', 'tracked_at']);
+        $params = $request->only(['keyword', 'class_id', 'area_id', 'tracked_at']);
         $this->responseData['classs'] = tbClass::all();
         $this->responseData['areas'] = Area::all();
         $this->responseData['status'] = Consts::ATTENDANCE_STATUS;

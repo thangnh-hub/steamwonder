@@ -208,6 +208,8 @@ class ReceiptService
         }
 
         // Nếu tồn tại $startDate sẽ tính toán phí theo ưu đãi giảm trừ với thời điểm học sinh nhập học
+        // Cần bổ sung ở đây để kiểm tra việc học sinh là nhập học mới hay là gia hạn
+        // Nếu là gia hạn thì không cần tính toán lại ưu đãi giảm trừ
         if ($startDate) {
             foreach ($deductions as $deduction) {
                 if ($deduction->condition_type == Consts::CONDITION_TYPE['start_day_range']) {

@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title'); ?>
     <?php echo e($module_name); ?>
 
@@ -41,18 +39,20 @@
 
             </div>
         <?php endif; ?>
-        <form role="form" action="<?php echo e(route(Request::segment(2) . '.update', $detail->id)); ?>" method="POST">
-            <?php echo csrf_field(); ?>
-            <?php echo method_field('PUT'); ?>
 
+        <form role="form" action="<?php echo e(route(Request::segment(2) . '.store')); ?>" method="POST" id="form_product">
+            <?php echo csrf_field(); ?>
             <div class="row">
                 <div class="col-lg-8">
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title"><?php echo app('translator')->get('Update form'); ?></h3>
+                            <h3 class="box-title"><?php echo app('translator')->get('Create form'); ?></h3>
+
                         </div>
                         <!-- /.box-header -->
                         <!-- form start -->
+
+                        <?php echo csrf_field(); ?>
                         <div class="box-body">
                             <!-- Custom Tabs -->
                             <div class="nav-tabs-custom">
@@ -62,6 +62,7 @@
                                             <h5>Thông tin chính <span class="text-danger">*</span></h5>
                                         </a>
                                     </li>
+
                                     <button type="submit" class="btn btn-info btn-sm pull-right">
                                         <i class="fa fa-save"></i> <?php echo app('translator')->get('Save'); ?>
                                     </button>
@@ -74,58 +75,51 @@
                                                 <div class="form-group">
                                                     <label><?php echo app('translator')->get('Title'); ?> <small class="text-red">*</small></label>
                                                     <input type="text" class="form-control" name="name"
-                                                        placeholder="<?php echo app('translator')->get('Title'); ?>"
-                                                        value="<?php echo e(old('name') ?? $detail->name); ?>" required>
+                                                        placeholder="<?php echo app('translator')->get('Title'); ?>" value="<?php echo e(old('title')); ?>"
+                                                        required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label><?php echo app('translator')->get('Mã'); ?> <small class="text-red">*</small></label>
                                                     <input type="text" class="form-control" name="code"
-                                                        placeholder="<?php echo app('translator')->get('Mã'); ?>"
-                                                        value="<?php echo e(old('code') ?? $detail->code); ?>" required>
+                                                        placeholder="<?php echo app('translator')->get('Mã'); ?>" value="<?php echo e(old('code')); ?>"
+                                                        required>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label><?php echo app('translator')->get('Bank BIN'); ?></label>
                                                     <input type="text" class="form-control" name="json_params[bank_bin]"
                                                         placeholder="<?php echo app('translator')->get('Bank BIN'); ?>"
-                                                        value="<?php echo e(old('json_params[bank_bin]') ?? ($detail->json_params->bank_bin ?? '')); ?>">
+                                                        value="<?php echo e(old('json_params[bank_bin]')); ?>">
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label><?php echo app('translator')->get('Bank STK'); ?></label>
                                                     <input type="text" class="form-control" name="json_params[bank_stk]"
                                                         placeholder="<?php echo app('translator')->get('Bank STK'); ?>"
-                                                        value="<?php echo e(old('json_params[bank_stk]') ?? ($detail->json_params->bank_stk ?? '')); ?>">
+                                                        value="<?php echo e(old('json_params[bank_stk]')); ?>">
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label><?php echo app('translator')->get('Bank Name'); ?></label>
                                                     <input type="text" class="form-control" name="json_params[bank_name]"
                                                         placeholder="<?php echo app('translator')->get('Bank Name'); ?>"
-                                                        value="<?php echo e(old('json_params[bank_name]') ?? ($detail->json_params->bank_name ?? '')); ?>">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label><?php echo app('translator')->get('Bank Account'); ?></label>
-                                                    <input type="text" class="form-control"
-                                                        name="json_params[bank_account]" placeholder="<?php echo app('translator')->get('Bank Account'); ?>"
-                                                        value="<?php echo e(old('json_params[bank_account]') ?? ($detail->json_params->bank_account ?? '')); ?>">
+                                                        value="<?php echo e(old('json_params[bank_name]')); ?>">
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div><!-- /.tab-content -->
-                        </div><!-- nav-tabs-custom -->
+                                </div><!-- /.tab-content -->
+                            </div><!-- nav-tabs-custom -->
+
+                        </div>
+                        <!-- /.box-body -->
                     </div>
                 </div>
-
                 <div class="col-lg-4">
                     <div class="box box-primary">
                         <div class="box-header with-border">
@@ -163,10 +157,11 @@
             </div>
         </form>
     </section>
+
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('script'); ?>
     <script></script>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\steamwonders\resources\views/admin/pages/areas/edit.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\steamwonder\resources\views/admin/pages/areas/create.blade.php ENDPATH**/ ?>

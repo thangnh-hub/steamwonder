@@ -26,8 +26,8 @@ class StudentImport implements ToModel,WithHeadingRow
         $this->params = $params;
     }
     public function model(array $row)
-    {   
-    
+    {
+
         $statusSlug = Str::slug($row['trang_thai']);
         if ($statusSlug !== 'dang-hoc') {
             return null;
@@ -39,10 +39,10 @@ class StudentImport implements ToModel,WithHeadingRow
             'nữ' => Consts::GENDER['female'],
             'khác' => Consts::GENDER['other'],
         ];
-        
+
         $genderValue = strtolower(trim($row['gioi_tinh'] ?? ''));
         $gender = $genderMapping[$genderValue] ?? Consts::GENDER['other'];
-        
+
         //mapping trạng thái học sinh
         $statusSlug = Str::slug(trim($row['trang_thai'] ?? ''));
         $statusStudyMapping = array_flip(array_map(fn($item) => Str::slug($item), Consts::STATUS_STUDY));
@@ -55,7 +55,7 @@ class StudentImport implements ToModel,WithHeadingRow
         $nameParts = explode(' ', $fullName);
         $lastName = array_pop($nameParts); // tên riêng
         $firstName = implode(' ', $nameParts); // họ + đệm
-    
+
         $area_id = $this->getAreaIdFromName($row['co_so']);
 
         $student = Student::firstOrCreate(
@@ -85,7 +85,7 @@ class StudentImport implements ToModel,WithHeadingRow
             $this->importParentAndRelation($row['ho_ten_me'], $student->id, 'mẹ',$area_id, $row['so_dien_thoai_me'] , $row['email_me']);
         }
 
-        return null; 
+        return null;
     }
 
     protected function importParentAndRelation($fullName, $student_id, $relationship_title, $area_id, $phone, $email)
@@ -94,7 +94,7 @@ class StudentImport implements ToModel,WithHeadingRow
         $nameParts = explode(' ', $fullName);
         $lastName = array_pop($nameParts); // Tên riêng
         $firstName = implode(' ', $nameParts); // Họ + tên đệm
-       
+
         // Tìm parent theo phone hoặc email
         $parent = tbParent::where('phone', $phone)
         ->orWhere('email', $email)

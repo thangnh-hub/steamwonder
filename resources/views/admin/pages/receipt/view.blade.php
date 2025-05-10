@@ -90,10 +90,10 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <label class="control-label"><strong>@lang('Tổng các truy thu')</strong></label>
+                                <label class="control-label"><strong>@lang('Số dư kỳ trước')</strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p>{{ number_format($detail->total_adjustment, 0, ',', '.') ?? '' }}</p>
+                                <p>{{ number_format($detail->prev_balance, 0, ',', '.') ?? '' }}</p>
                             </div>
                         </div>
                     </div>
@@ -103,7 +103,8 @@
                                 <label class="control-label"><strong>@lang('Tổng tiền thực tế')</strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p>{{ number_format($detail->total_final, 0, ',', '.') ?? '' }}</p>
+                                <p>{{ number_format($detail->total_final , 0, ',', '.') ?? '' }}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -213,9 +214,9 @@
                                             <th>@lang('Đơn giá')</th>
                                             <th>@lang('Thành tiền')</th>
                                             <th>@lang('Giảm trừ')</th>
-                                            <th>@lang('Truy thu (+) / Hoàn trả (-)')</th>
+                                            {{-- <th>@lang('Truy thu (+) / Hoàn trả (-)')</th> --}}
                                             <th>@lang('Tổng tiền cuối cùng')</th>
-                                            <th>@lang('Trạng thái')</th>
+                                            {{-- <th>@lang('Trạng thái')</th> --}}
                                             <th style="width:250px">@lang('Ghi chú')</th>
                                         </tr>
                                     </thead>
@@ -231,10 +232,10 @@
                                                     <td>{{ number_format($item->unit_price, 0, ',', '.') }}</td>
                                                     <td>{{ number_format($item->amount, 0, ',', '.') }}</td>
                                                     <td>{{ number_format($item->discount_amount, 0, ',', '.') }}</td>
-                                                    <td>{{ number_format($item->adjustment_amount, 0, ',', '.') }}</td>
+                                                    {{-- <td>{{ number_format($item->adjustment_amount, 0, ',', '.') }}</td> --}}
                                                     <td>{{ number_format($item->final_amount, 0, ',', '.') }}</td>
-                                                    <td>{{ __($item->status) }}</td>
-                                                    <td>{!!($item->note) !!}</td>
+                                                    {{-- <td>{{ __($item->status) }}</td> --}}
+                                                    <td>{!! $item->note !!}</td>
                                                 </tr>
                                             @endforeach
                                         @endisset

@@ -189,55 +189,63 @@
                                     <div class="tab-pane" id="tab_3">
 
                                         <div class="masonry-container">
-                      @if (count($activeModules) == 0)
-                        <p>
-                          @lang('No record found on the system!')
-                        </p>
-                      @else
-                        @foreach ($activeModules as $module)
-                          <div class="masonry-box-item">
-                            <ul class="checkbox_list">
-                              <li>
-                                <label
-                                  for="json_access_module_code_{{ $module->id }}"><strong>{{ __($module->name) }}</strong></label>
-                              </li>
-                              @foreach ($module->moduleFunctions as $func)
-                                @if (isset($admin->permission_access_by_role->function_code) && in_array($func->function_code, $admin->permission_access_by_role->function_code))
-                                  <li>
-                                    <input type="checkbox" class="mr-15" checked disabled>
-                                    <label style="font-style: italic;" class="text-danger"
-                                      for="json_access_function_code_{{ $func->id }}">{{ __($func->name) }}
-                                      ({{ $func->function_code ?? '' }})
-                                    </label>
-                                  </li>
-                                @else
-                                  @php
-                                    $checked = '';
-                                    if (
-                                        isset($admin->json_params->function_code) &&
-                                        in_array($func->function_code, $admin->json_params->function_code)
-                                    ) {
-                                        $checked = 'checked';
-                                    }
-                                  @endphp
-                                  <li>
-                                    <input name="json_params[function_code][]" type="checkbox"
-                                      value="{{ $func->function_code }}"
-                                      id="json_access_function_code_{{ $func->id }}" class="mr-15"
-                                      {{ $checked }}>
-                                    <label for="json_access_function_code_{{ $func->id }}">{{ __($func->name) }}
-                                      ({{ $func->function_code ?? '' }})
-                                    </label>
-                                  </li>
-                                @endif
-                              @endforeach
+                                            @if (count($activeModules) == 0)
+                                                <p>
+                                                    @lang('No record found on the system!')
+                                                </p>
+                                            @else
+                                                @foreach ($activeModules as $module)
+                                                    <div class="masonry-box-item">
+                                                        <ul class="checkbox_list">
+                                                            <li>
+                                                                <label
+                                                                    for="json_access_module_code_{{ $module->id }}"><strong>{{ __($module->name) }}</strong></label>
+                                                            </li>
+                                                            @foreach ($module->moduleFunctions as $func)
+                                                                @if (isset($admin->permission_access_by_role->function_code) &&
+                                                                        in_array($func->function_code, $admin->permission_access_by_role->function_code))
+                                                                    <li>
+                                                                        <input type="checkbox" class="mr-15" checked
+                                                                            disabled>
+                                                                        <label style="font-style: italic;"
+                                                                            class="text-danger"
+                                                                            for="json_access_function_code_{{ $func->id }}">{{ __($func->name) }}
+                                                                            ({{ $func->function_code ?? '' }})
+                                                                        </label>
+                                                                    </li>
+                                                                @else
+                                                                    @php
+                                                                        $checked = '';
+                                                                        if (
+                                                                            isset($admin->json_params->function_code) &&
+                                                                            in_array(
+                                                                                $func->function_code,
+                                                                                $admin->json_params->function_code,
+                                                                            )
+                                                                        ) {
+                                                                            $checked = 'checked';
+                                                                        }
+                                                                    @endphp
+                                                                    <li>
+                                                                        <input name="json_params[function_code][]"
+                                                                            type="checkbox"
+                                                                            value="{{ $func->function_code }}"
+                                                                            id="json_access_function_code_{{ $func->id }}"
+                                                                            class="mr-15" {{ $checked }}>
+                                                                        <label
+                                                                            for="json_access_function_code_{{ $func->id }}">{{ __($func->name) }}
+                                                                            ({{ $func->function_code ?? '' }})
+                                                                        </label>
+                                                                    </li>
+                                                                @endif
+                                                            @endforeach
 
-                            </ul>
-                          </div>
-                        @endforeach
-                      @endif
+                                                        </ul>
+                                                    </div>
+                                                @endforeach
+                                            @endif
 
-                    </div>
+                                        </div>
 
                                     </div>
 
@@ -325,7 +333,7 @@
                             <div class="form-group">
                                 <label>@lang('Quyền mở rộng')</label>
                                 @php
-                                    $arr_role_extend = (array) $admin->json_params->role_extend ?? [];
+                                    $arr_role_extend = (array) ($admin->json_params->role_extend ?? []);
                                 @endphp
                                 <select name="json_params[role_extend][]" id="role_extend" class="form-control select2"
                                     multiple="multiple" style="width: 100%;">

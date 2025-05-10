@@ -11,8 +11,18 @@ class Consts
     ];
     const STATUS_RECEIPT = [
         'pending' => 'pending',
+        'accepted' => 'accepted',
+        'approved' => 'approved',
         'paid' => 'paid',
         'completed' => 'completed',
+    ];
+    const STATUS_RECEIPT_DETAIL = [
+        'expected' => 'expected',
+        'accepted' => 'accepted',
+        'approved' => 'approved',
+        'paid' => 'paid',
+        'adjusted' => 'adjusted',
+        'finalized' => 'finalized'
     ];
     const CONDITION_TYPE = [
         'start_day_range' => 'start_day_range',
@@ -173,7 +183,8 @@ class Consts
         'cancel' => 'cancel'
     ];
     const ATTENDANCE_STATUS = [
-        'attended' => 'attended',
+        'checkin' => 'checkin',
+        'checkout' => 'checkout',
         'absent_unexcused' => 'absent_unexcused',
         'absent_excused' => 'absent_excused'
     ];

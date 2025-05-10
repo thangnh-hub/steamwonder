@@ -29,10 +29,19 @@ class StudentClass extends Model
     protected $casts = [
         'json_params' => 'object',
     ];
-
     public static function getSqlStudentClass($params = [])
     {
         $query = StudentClass::select('tb_class_student.*')
+            ->when(!empty($params['keyword']), function ($query) use ($params) {
+                $query->leftJoin('tb_students', 'tb_students.id', '=', 'tb_class_student.student_id');
+                $keyword = $params['keyword'];
+                return $query->where(function ($where) use ($keyword) {
+                    return $where->where('tb_students.first_name', 'like', '%' . $keyword . '%')
+                        ->orWhere('tb_students.last_name', 'like', '%' . $keyword . '%')
+                        ->orWhere('tb_students.student_code', 'like', '%' . $keyword . '%')
+                        ->orWhere('tb_students.nickname', 'like', '%' . $keyword . '%');
+                });
+            })
             ->when(!empty($params['class_id']), function ($query) use ($params) {
                 return $query->where('tb_class_student.class_id', $params['class_id']);
             })
