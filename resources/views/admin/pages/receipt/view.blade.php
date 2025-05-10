@@ -134,7 +134,7 @@
                                 <label class="control-label"><strong>@lang('Trạng thái')</strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p>{{ $detail->status }}</p>
+                                <p>{{ __($detail->status) }}</p>
                             </div>
                         </div>
                     </div>

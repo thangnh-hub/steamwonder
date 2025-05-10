@@ -176,7 +176,10 @@
                                 <th><?php echo app('translator')->get('Area'); ?></th>
                                 <th><?php echo app('translator')->get('Room'); ?></th>
                                 <th><?php echo app('translator')->get('Sĩ số'); ?></th>
-                                <th><?php echo app('translator')->get('Giáo viên chủ nhiệm'); ?></th>
+                                <th><?php echo app('translator')->get('Hệ đào tạo'); ?></th>
+                                <th><?php echo app('translator')->get('Nhóm tuổi'); ?></th>
+                                <th><?php echo app('translator')->get('Năm cuối'); ?></th>
+                                <th><?php echo app('translator')->get('Giáo viên'); ?></th>
                                 <th><?php echo app('translator')->get('Trạng thái'); ?></th>
                                 <th><?php echo app('translator')->get('Action'); ?></th>
                             </tr>
@@ -206,8 +209,30 @@
 
                                     </td>
                                     <td>
-                                        <?php echo e($row->mainTeacher->teacher->name ?? ''); ?>
+                                        <?php echo e($row->education_programs->name ?? ''); ?>
 
+                                    </td>
+                                    <td><?php echo e($row->education_ages->name ?? ''); ?></td>
+                                    <td>
+                                        <div class="sw_featured d-flex-al-center">
+                                            <label class="switch">
+                                                <input class="" type="checkbox" value="1" disabled
+                                                    <?php echo e(isset($detail->is_lastyear) && $detail->is_lastyear == '1' ? 'checked' : ''); ?>>
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <?php if(!empty($row->teacher)): ?>
+                                            <ul>
+                                                <?php $__currentLoopData = $row->teacher; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <li
+                                                        class="<?php echo e(optional($item->pivot)->is_teacher_main === 1 ? 'text-success text-bold' : ''); ?>">
+                                                        <?php echo e($item->admin_code ?? ''); ?> -
+                                                        <?php echo e($item->name ?? ''); ?></li>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            </ul>
+                                        <?php endif; ?>
                                     </td>
                                     <td>
                                         <?php echo e(__($row->status)); ?>

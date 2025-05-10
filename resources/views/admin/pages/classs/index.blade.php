@@ -176,7 +176,10 @@
                                 <th>@lang('Area')</th>
                                 <th>@lang('Room')</th>
                                 <th>@lang('Sĩ số')</th>
-                                <th>@lang('Giáo viên chủ nhiệm')</th>
+                                <th>@lang('Hệ đào tạo')</th>
+                                <th>@lang('Nhóm tuổi')</th>
+                                <th>@lang('Năm cuối')</th>
+                                <th>@lang('Giáo viên')</th>
                                 <th>@lang('Trạng thái')</th>
                                 <th>@lang('Action')</th>
                             </tr>
@@ -202,7 +205,29 @@
                                         {{ count($row->students) }} / {{ $row->slot }}
                                     </td>
                                     <td>
-                                        {{ $row->mainTeacher->teacher->name ?? '' }}
+                                        {{ $row->education_programs->name ?? '' }}
+                                    </td>
+                                    <td>{{ $row->education_ages->name ?? '' }}</td>
+                                    <td>
+                                        <div class="sw_featured d-flex-al-center">
+                                            <label class="switch">
+                                                <input class="" type="checkbox" value="1" disabled
+                                                    {{ isset($detail->is_lastyear) && $detail->is_lastyear == '1' ? 'checked' : '' }}>
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if (!empty($row->teacher))
+                                            <ul>
+                                                @foreach ($row->teacher as $item)
+                                                    <li
+                                                        class="{{ optional($item->pivot)->is_teacher_main === 1 ? 'text-success text-bold' : '' }}">
+                                                        {{ $item->admin_code ?? '' }} -
+                                                        {{ $item->name ?? '' }}</li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
                                     </td>
                                     <td>
                                         {{ __($row->status) }}
