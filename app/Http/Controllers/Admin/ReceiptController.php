@@ -7,6 +7,7 @@ use App\Http\Services\VietQrService;
 use App\Models\Receipt;
 use App\Models\Area;
 use App\Models\Service;
+use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -29,11 +30,13 @@ class ReceiptController extends Controller
      */
     public function index(Request $request)
     {
-        $params = $request->only(['keyword', 'status', 'area_id', 'type']);
+        $params = $request->only(['keyword', 'status', 'area_id', 'type','student_id','created_at']);
         $rows = Receipt::getSqlReceipt($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
         $this->responseData['rows'] = $rows;
         $this->responseData['areas'] = Area::all();
-        $this->responseData['status'] = Consts::STATUS;
+        $this->responseData['students'] = Student::getSqlStudent()->get();
+        $this->responseData['status'] = Consts::STATUS_RECEIPT;
+        $this->responseData['params'] = $params;
         return $this->responseView($this->viewPart . '.index');
     }
 
@@ -164,8 +167,8 @@ class ReceiptController extends Controller
 
         $receiptDetails = $receipt->receiptDetail->load('services_receipt'); // Nạp quan hệ service
 
-        // Gộp các receiptDetail theo service_id và tính tổng amount và discount_amount
-        $groupedDetails = $receiptDetails->groupBy('service_id')->map(function ($details) {
+        // Gộp các receiptDetail theo service_id và tính tổng amount và discount_amount, và gộp các ghi chú
+        $groupDetails = $receiptDetails->groupBy('service_id')->map(function ($details) {
             return [
                 'service' => optional($details->first()->services_receipt),
                 'service_type' => optional($details->first()->services_receipt)->service_type, // Lấy service_type từ quan hệ service
@@ -173,10 +176,11 @@ class ReceiptController extends Controller
                 'total_discount_amount' => $details->sum('discount_amount'), // Tính tổng discount_amount
                 'min_month' => $details->min('month'), // Tháng áp dụng nhỏ nhất
                 'max_month' => $details->max('month'), // Tháng áp dụng lớn nhất
+                'note' => $details->pluck('note')->filter()->unique()->implode('</br> '),
             ];
         });
         // Gộp theo service_type và tính tổng total_amount
-        $groupedByServiceType = $groupedDetails->groupBy('service_type')->map(function ($details, $serviceType) {
+        $groupByServiceType = $groupDetails->groupBy('service_type')->map(function ($details, $serviceType) {
             return [
                 'service_type' => $serviceType, // Loại dịch vụ
                 'total_amount' => $details->sum('total_amount'), // Tổng tiền của loại
@@ -184,17 +188,18 @@ class ReceiptController extends Controller
             ];
         });
         // Lấy thông tin giảm trừ
-        $listtServiceDiscoun = $groupedDetails
-            ->filter(function ($detail) {
-                return $detail['total_discount_amount'] > 0; // Lọc các dịch vụ có discount_amount > 0
-            });
+        $listServiceDiscoun = $groupDetails
+        ->filter(function ($detail) {
+            return $detail['total_discount_amount'] > 0; // Lọc các dịch vụ có discount_amount > 0
+        });
+        // dd($listServiceDiscoun);
 
 
 
-        $serviceMonthly = $groupedByServiceType->get('monthly', collect()); // Dịch vụ loại monthly
-        $serviceYearly = $groupedByServiceType->get('yearly', collect()); // Dịch vụ loại monthly
+        $serviceMonthly = $groupByServiceType->get('monthly', collect()); // Dịch vụ loại monthly
+        $serviceYearly = $groupByServiceType->get('yearly', collect()); // Dịch vụ loại monthly
         // Lấy các loại còn lại ngoài monthly và yearly
-        $serviceOther = $groupedByServiceType
+        $serviceOther = $groupByServiceType
             ->reject(function ($item, $key) {
                 return in_array($key, ['monthly', 'yearly']); // Loại trừ monthly và yearly
             })
@@ -208,9 +213,9 @@ class ReceiptController extends Controller
 
 
 
-        // Lọc từng nhóm
-        $this->responseData['groupedByServiceType'] = $groupedByServiceType;
-        $this->responseData['listtServiceDiscoun'] = $listtServiceDiscoun;
+        // Lấy từng từng nhóm
+        $this->responseData['groupByServiceType'] = $groupByServiceType;
+        $this->responseData['listServiceDiscoun'] = $listServiceDiscoun;
         $this->responseData['serviceMonthly'] = $serviceMonthly;
         $this->responseData['serviceYearly'] = $serviceYearly;
         $this->responseData['serviceOther'] = $serviceOther;

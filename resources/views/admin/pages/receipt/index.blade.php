@@ -40,14 +40,30 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>@lang('Keyword') </label>
-                                <input type="text" class="form-control" name="keyword" placeholder="@lang('Mã hoặc tên chu kỳ')"
+                                <input type="text" class="form-control" name="keyword" placeholder="@lang('Mã hoặc tên TBP')"
                                     value="{{ isset($params['keyword']) ? $params['keyword'] : '' }}">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
+                                <label>@lang('Học sinh')</label>
+                                <select name="student_id" class="form-control select2 w-100">
+                                    <option value="">@lang('Please select')</option>
+                                    @foreach ($students as $item)
+                                        <option value="{{ $item->id }}"
+                                            {{ isset($params['student_id']) && $params['student_id'] == $item->id ? 'selected' : '' }}>
+                                            {{ $item->student_code ?? '' }} - {{ $item->first_name ?? '' }}
+                                            {{ $item->last_name ?? '' }}
+                                            ({{ $item->nickname ?? '' }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
                                 <label>@lang('Area')</label>
-                                <select name="area_id" id="area_id" class="form-control select2 w-100">
+                                <select name="area_id" class="form-control select2 w-100">
                                     <option value="">@lang('Please select')</option>
                                     @foreach ($areas as $item)
                                         <option value="{{ $item->id }}"
@@ -55,6 +71,26 @@
                                             {{ $item->name }}</option>
                                     @endforeach
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>@lang('Status')</label>
+                                <select name="status" class="form-control select2 w-100">
+                                    <option value="">@lang('Please select')</option>
+                                    @foreach ($status as $key => $val)
+                                        <option value="{{ $key }}"
+                                            {{ isset($params['status']) && $params['status'] == $key ? 'selected' : '' }}>
+                                            {{ __($val) }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>@lang('Ngày tạo')</label>
+                                <input type="date" name="created_at" class="form-control"
+                                    value="{{ $params['created_at'] ?? '' }}">
                             </div>
                         </div>
 
@@ -126,6 +162,8 @@
                                 <th>@lang('Số tiền còn phải thu (+) hoặc thừa (-)')</th>
                                 <th>@lang('Trạng thái')</th>
                                 <th>@lang('Ghi chú')</th>
+                                <th>@lang('Người tạo')</th>
+                                <th>@lang('Ngày tạo')</th>
                                 <th>@lang('Action')</th>
                             </tr>
                         </thead>
@@ -139,7 +177,8 @@
                                         {{ $row->receipt_name }}
                                     </td>
                                     <td>
-                                        {{ $row->student->student_code ?? ('' . ' - ' . $row->student->first_name ?? ('' . ' ' . $row->student->last_name ?? '')) }}({{ $row->student->nickname }})
+                                        {{ $row->student->student_code ?? '' }} - {{ $row->student->first_name ?? '' }}
+                                        {{ $row->student->last_name ?? '' }}({{ $row->student->nickname ?? '' }})
                                     </td>
                                     <td>
                                         {{ $row->area->name ?? '' }}
@@ -166,13 +205,25 @@
                                         {{ number_format($row->total_due, 0, ',', '.') ?? '' }}
                                     </td>
                                     <td>
-                                        {{ __($row->status??'') }}
+                                        {{ __($row->status ?? '') }}
                                     </td>
                                     <td>
                                         {{ $row->note ?? '' }}
                                     </td>
+<<<<<<< HEAD
+                                    <td>
+                                        {{ $row->adminCreated->name ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ \Carbon\Carbon::parse($row->created_at)->format('d/m/Y') ?? '' }}
+                                    </td>
+                                    <td class="">
+
+                                        <button class="btn btn-sm btn-success btn_show_detail" data-toggle="tooltip"
+=======
                                     <td style="width: 180px" class="d-flex-wap">
                                         <button class="btn btn-sm btn-success btn_show_detail mr-10" data-toggle="tooltip"
+>>>>>>> 60a731e410f26d01b9b5e4f806c106763ab4b5df
                                             data-id="{{ $row->id }}"
                                             data-url="{{ route(Request::segment(2) . '.view', $row->id) }}"
                                             title="@lang('Xem nhanh')" data-original-title="@lang('Xem nhanh')">
