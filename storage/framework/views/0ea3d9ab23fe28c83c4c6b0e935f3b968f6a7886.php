@@ -357,9 +357,7 @@
                                                             <th><?php echo app('translator')->get('STT'); ?></th>
                                                             <th><?php echo app('translator')->get('Mã biểu phí'); ?></th>
                                                             <th><?php echo app('translator')->get('Tên biểu phí'); ?></th>
-                                                            <th><?php echo app('translator')->get('Chu kỳ'); ?></th>
-                                                            <th><?php echo app('translator')->get('Biểu phí trước'); ?></th>
-                                                            <th><?php echo app('translator')->get('Dư nợ trước'); ?></th>
+                                                            <th><?php echo app('translator')->get('Số dư kỳ trước '); ?></th>
                                                             <th><?php echo app('translator')->get('Thành tiền'); ?></th>
                                                             <th><?php echo app('translator')->get('Tổng giảm trừ'); ?></th>
                                                             <th><?php echo app('translator')->get('Tổng tiền truy thu/hoàn trả'); ?></th>
@@ -368,8 +366,7 @@
                                                             <th><?php echo app('translator')->get('Còn lại'); ?></th>
                                                             <th><?php echo app('translator')->get('Trạng thái'); ?></th>
                                                             <th><?php echo app('translator')->get('Ghi chú'); ?></th>
-                                                            <th><?php echo app('translator')->get('Người lập biên lai'); ?></th>
-                                                            <th><?php echo app('translator')->get('Ngày lập biên lai'); ?></th>
+                                                            <th><?php echo app('translator')->get('Ngày tạo phí'); ?></th>
                                                             <th><?php echo app('translator')->get('Chức năng'); ?></th>
                                                         </tr>
                                                     </thead>
@@ -388,8 +385,7 @@
                                                                     <td><?php echo e($loop->index + 1); ?></td>
                                                                     <td><?php echo e($row->receipt_code ?? ''); ?></td>
                                                                     <td><?php echo e($row->receipt_name ?? ''); ?></td>
-                                                                    <td><?php echo e($row->payment_cycle->name ?? ''); ?></td>
-                                                                    <td><?php echo e($row->prev_receipt->receipt_name ?? ''); ?></td>
+                                                                    
                                                                     <td><?php echo e(format_currency($row->prev_balance)); ?></td>
                                                                     <td><?php echo e(format_currency($row->total_amount)); ?></td>
                                                                     <td><?php echo e(format_currency($row->total_discount)); ?></td>
@@ -399,21 +395,29 @@
                                                                     <td><?php echo e(format_currency($row->total_due)); ?></td>
                                                                     <td><?php echo e(__($row->status)); ?></td>
                                                                     <td><?php echo e($row->note ?? ''); ?></td>
-                                                                    <td><?php echo e($row->cashier->name ?? ''); ?></td>
                                                                     <td><?php echo e(isset($row->receipt_date) ? \Illuminate\Support\Carbon::parse($row->receipt_date)->format('d-m-Y') : ''); ?>
 
                                                                     </td>
                                                                     <td>
-                                                                        
                                                                         <button type="button"
-                                                                            class="btn btn-sm btn-primary btn_show_detail mr-10"
+                                                                            class="btn btn-sm btn-primary btn_show_detail"
                                                                             data-toggle="tooltip"
                                                                             data-id="<?php echo e($row->id); ?>"
                                                                             data-url="<?php echo e(route('receipt.view', $row->id)); ?>"
                                                                             title="<?php echo app('translator')->get('Show'); ?>"
                                                                             data-original-title="<?php echo app('translator')->get('Show'); ?>">
-                                                                            <i class="fa fa-money"></i> Chi tiết
+                                                                            <i class="fa fa-eye"></i> Xem
                                                                         </button>
+                                                                        
+                                                                        <a href="<?php echo e(route('receipt.show', $row->id)); ?>">
+                                                                            <button type="button"
+                                                                                class="btn btn-sm btn-warning  mr-10"
+                                                                                title="<?php echo app('translator')->get('Cập nhật'); ?>"
+                                                                                data-original-title="<?php echo app('translator')->get('Cập nhật'); ?>">
+                                                                                <i class="fa fa-money"></i> Cập nhật
+                                                                            </button>
+                                                                        </a>
+                                                                    
                                                                     </td>
                                                                 </tr>
                                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
