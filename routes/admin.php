@@ -113,7 +113,6 @@ Route::group(['namespace' => 'Admin'], function () {
             ]);
             // Import Class và StudentClass
             Route::post('import_class', 'ClassController@importClassStudent')->name('class.import_class');
-            Route::get('receipt_view/{id}', 'ReceiptController@viewIndex')->name('receipt.view');
             Route::post('receipt_payment/{id}', 'ReceiptController@payment')->name('receipt.payment');
             Route::post('data_crms_log_store', 'DataCrmController@storeCRMLOG')->name('data_crms_log_store');
 
@@ -154,7 +153,10 @@ Route::group(['namespace' => 'Admin'], function () {
             //chỉnh sưa dịch vụ của bé
             Route::post('asmission/update-service-note', 'AdmissionStudentController@updateServiceNoteAjax')->name('admission.student.updateService.ajax');
             Route::post('asmission/receipts_calculate', 'AdmissionStudentController@calculateReceiptStudent')->name('admission.receipt.calculateStudent');
+            Route::post('asmission_import_data_student', 'AdmissionStudentController@importDataStudent')->name('admission.data_student.import');
+            // -----
 
+            
             // Import nguời dùng
             Route::post('import_user', 'AdminController@importUser')->name('admin.import_user');
             //update kpi teacher
@@ -238,6 +240,8 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('leave_balances/create', 'LeaveController@createLeaveBalance')->name('leave.balance.create');
             Route::post('leave_balances/store', 'LeaveController@storeLeaveBalance')->name('leave.balance.store');
         });
+
+        Route::get('receipt_view/{id}', 'ReceiptController@viewIndex')->name('receipt.view');
         Route::get('/camera', 'CameraController@index')->name('camera');
         Route::post('/save-image', 'CameraController@saveImage')->name('save.image');
         // in hóa đơn thanh toán

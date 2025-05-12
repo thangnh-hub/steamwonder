@@ -276,9 +276,7 @@ class AdmissionStudentController extends Controller
     public function addService(Request $request, $id)
     {
         $student = Student::findOrFail($id);
-        if ($student->payment_cycle_id == "") {
-            return redirect()->back()->with('errorMessage', __('Học sinh chưa chọn chu kỳ thanh toán!'));
-        }
+     
         $parentsInput = $request->input('services', []);
         foreach ($parentsInput as $data) {
             if (!empty($data['id'])) {

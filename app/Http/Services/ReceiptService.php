@@ -43,14 +43,6 @@ class ReceiptService
             $includeCurrent = $data['include_current_month'] ?? true;
             $details = $this->generateReceiptDetails($policies, $promotions,$deductions, $data['student_services'], $startDate, $includeCurrent);
             
-            $cycle = $student->paymentCycle;
-            $data['period_start'] = $startDate->copy()->format('Y-m-d');
-            if($includeCurrent) {
-                $data['period_end'] = $startDate->copy()->addMonths($cycle->months-1)->endOfMonth()->format('Y-m-d');
-            }else {
-                $data['period_end'] = $startDate->copy()->addMonths($cycle->months)->endOfMonth()->format('Y-m-d');
-            }
-
             return $this->saveReceipt($student,  $details, $data);
         });
     }
@@ -103,7 +95,7 @@ class ReceiptService
                     // Tính toán các tháng còn lại
                     for ($i = 0; $i < $monthCount; $i++) {
                         $month = $firstMonth->copy()->addMonths($i);
-                        $discount_amount = $this->calculateDiscount( $service_info, $cycle, $policies,$promotions, $deductions, $startDate=null,$month);
+                        $discount_amount = $this->calculateDiscount( $service_info, $cycle, $policies,$promotions, $deductions, $startDate,$month);
                         $details[] = [
                             'service_id' => $service->id,
                             'month' => $month->startOfMonth()->format('Y-m-d'),
