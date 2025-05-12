@@ -103,7 +103,7 @@
                                 <label class="control-label"><strong><?php echo app('translator')->get('Tổng tiền thực tế'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p><?php echo e(number_format($detail->total_final + $detail->prev_balance, 0, ',', '.') ?? ''); ?>
+                                <p><?php echo e(number_format($detail->total_final , 0, ',', '.') ?? ''); ?>
 
                                 </p>
                             </div>
@@ -125,7 +125,7 @@
                                 <label class="control-label"><strong><?php echo app('translator')->get('Số tiền còn phải thu (+) hoặc thừa (-)'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p><?php echo e(number_format($detail->total_due + $detail->prev_balance, 0, ',', '.') ?? ''); ?></p>
+                                <p><?php echo e(number_format($detail->total_due, 0, ',', '.') ?? ''); ?></p>
                             </div>
                         </div>
                     </div>

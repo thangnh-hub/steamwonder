@@ -198,33 +198,33 @@
                     @php $i++; @endphp
                 @endif
 
-                @if (count($listtServiceDiscoun) > 0)
+                @if (count($listServiceDiscoun) > 0)
                     <tr class="section-title">
                         <td class="text-center">{{ \App\Helpers::intToRoman($i) }}</td>
-                        <td>@lang('Các khoản giảm trừ')</td>
+                        <td>@lang('Các khoản truy thu/ Hoàn trả (+)Có/(-)Nợ')</td>
                         <td class="text-right">
-                            {{ number_format($listtServiceDiscoun->sum('total_discount_amount') ?? 0, 0, ',', '.') }}
+                            {{ number_format($listServiceDiscoun->sum('total_discount_amount') ?? 0, 0, ',', '.') }}
                         </td>
                         <td></td>
                     </tr>
-                    @if (isset($listtServiceDiscoun) && count($listtServiceDiscoun) > 0)
-                        @foreach ($listtServiceDiscoun as $item)
+                    @if (isset($listServiceDiscoun) && count($listServiceDiscoun) > 0)
+                        @foreach ($listServiceDiscoun as $item)
                             <tr>
                                 <td class="text-center">{{ $loop->index + 1 }}</td>
                                 <td>{{ $item['service']->name ?? '' }}</td>
                                 <td class="text-right">
                                     {{ number_format($item['total_discount_amount'] ?? 0, 0, ',', '.') }}</td>
-                                <td></td>
+                                <td>{!!$item['note']!!}</td>
                             </tr>
                         @endforeach
                     @endif
                     @php $i++; @endphp
                 @endif
 
-                @if ($detail->prev_balance != 0)
+                @if ($detail->prev_balance != 0 || (isset($detail->json_params->explanation) && count((array) $detail->json_params->explanation) > 0))
                     <tr class="section-title">
                         <td class="text-center">{{ \App\Helpers::intToRoman($i) }}</td>
-                        <td>@lang('khoản giải trình')</td>
+                        <td>@lang('Khoản giải trình')</td>
                         <td class="text-right">{{ number_format($detail->prev_balance ?? 0, 0, ',', '.') }}</td>
                         <td></td>
                     </tr>

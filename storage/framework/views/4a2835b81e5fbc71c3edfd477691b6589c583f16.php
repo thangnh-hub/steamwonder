@@ -26,15 +26,27 @@
         .section-title {
             font-weight: bold;
             background-color: #d2e4f5;
+            text-transform: uppercase;
         }
 
         .total {
             font-weight: bold;
             background-color: #7ca7d2;
+            text-transform: uppercase;
         }
 
         .footer {
             font-size: 14px;
+            display: flex;
+        }
+
+        .bank-info {
+            width: 70%;
+        }
+
+        .qr-code {
+            width: 30%;
+            text-align: center;
         }
     </style>
 </head>
@@ -60,7 +72,7 @@
                         <label class="control-label"><?php echo app('translator')->get('Lớp học'); ?>:</label>
                     </div>
                     <div class="col-xs-8 col-sm-8 ">
-                        <p><?php echo app('translator')->get('Chưa cập nhật'); ?></p>
+                        <p><?php echo e($detail->student->currentClass->name ?? ''); ?></p>
                     </div>
                 </div>
             </div>
@@ -195,34 +207,34 @@
                     <?php $i++; ?>
                 <?php endif; ?>
 
-                <?php if(count($listtServiceDiscoun) > 0): ?>
+                <?php if(count($listServiceDiscoun) > 0): ?>
                     <tr class="section-title">
                         <td class="text-center"><?php echo e(\App\Helpers::intToRoman($i)); ?></td>
-                        <td><?php echo app('translator')->get('Các khoản giảm trừ'); ?></td>
+                        <td><?php echo app('translator')->get('Các khoản truy thu/ Hoàn trả (+)Có/(-)Nợ'); ?></td>
                         <td class="text-right">
-                            <?php echo e(number_format($listtServiceDiscoun->sum('total_discount_amount') ?? 0, 0, ',', '.')); ?>
+                            <?php echo e(number_format($listServiceDiscoun->sum('total_discount_amount') ?? 0, 0, ',', '.')); ?>
 
                         </td>
                         <td></td>
                     </tr>
-                    <?php if(isset($listtServiceDiscoun) && count($listtServiceDiscoun) > 0): ?>
-                        <?php $__currentLoopData = $listtServiceDiscoun; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php if(isset($listServiceDiscoun) && count($listServiceDiscoun) > 0): ?>
+                        <?php $__currentLoopData = $listServiceDiscoun; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <tr>
                                 <td class="text-center"><?php echo e($loop->index + 1); ?></td>
                                 <td><?php echo e($item['service']->name ?? ''); ?></td>
                                 <td class="text-right">
                                     <?php echo e(number_format($item['total_discount_amount'] ?? 0, 0, ',', '.')); ?></td>
-                                <td></td>
+                                <td><?php echo $item['note']; ?></td>
                             </tr>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     <?php endif; ?>
                     <?php $i++; ?>
                 <?php endif; ?>
 
-                <?php if($detail->prev_balance != 0): ?>
+                <?php if($detail->prev_balance != 0 || (isset($detail->json_params->explanation) && count((array) $detail->json_params->explanation) > 0)): ?>
                     <tr class="section-title">
                         <td class="text-center"><?php echo e(\App\Helpers::intToRoman($i)); ?></td>
-                        <td><?php echo app('translator')->get('khoản giải trình'); ?></td>
+                        <td><?php echo app('translator')->get('Khoản giải trình'); ?></td>
                         <td class="text-right"><?php echo e(number_format($detail->prev_balance ?? 0, 0, ',', '.')); ?></td>
                         <td></td>
                     </tr>
@@ -241,7 +253,7 @@
                 <tr class="total">
                     <td colspan="2"><?php echo app('translator')->get('TỔNG PHẢI NỘP'); ?> </td>
                     <td class="text-right">
-                        <?php echo e(number_format($detail->total_final + $detail->prev_balance, 0, ',', '.')); ?></td>
+                        <?php echo e(number_format($detail->total_final, 0, ',', '.')); ?></td>
                     <td></td>
                 </tr>
                 <tr class="total">
@@ -251,7 +263,7 @@
                 </tr>
                 <tr class="total">
                     <td colspan="2"><?php echo app('translator')->get('TỔNG SỐ TIỀN CÒN PHẢI NỘP'); ?></td>
-                    <td class="text-right"><?php echo e(number_format($detail->total_due + $detail->prev_balance, 0, ',', '.')); ?>
+                    <td class="text-right"><?php echo e(number_format($detail->total_due, 0, ',', '.')); ?>
 
                     </td>
                     <td></td>
@@ -260,12 +272,21 @@
         </table>
 
         <div class="footer">
-            <p><strong>Hình thức thanh toán:</strong></p>
-            <p>Thanh toán bằng chuyển khoản, Quý Phụ huynh vui lòng chuyển tiền vào tài khoản sau:</p>
-            <p><strong>Tên TK:</strong> Công ty Cổ phần Mầm Non STEAME GARTEN</p>
-            <p><strong>Số TK:</strong> 2662686868 - Techcombank - Chi nhánh Hà Thành - Hà Nội</p>
-            <p><strong>Nội dung chuyển khoản:</strong> Mã học sinh_Tên học sinh_Ngày sinh</p>
-            <p>* Thanh toán tiền mặt: chi trả bằng tiền mặt tại Phòng Tuyển sinh</p>
+            <div class="bank-info">
+                <p><strong>Hình thức thanh toán:</strong></p>
+                <p>Thanh toán bằng chuyển khoản, Quý Phụ huynh vui lòng chuyển tiền vào tài khoản sau:</p>
+                <p><strong>Tên TK:</strong> <?php echo e(optional($detail->area)->json_params->bank_account ?? ''); ?></p>
+                <p><strong>Số TK:</strong> <?php echo e(optional($detail->area)->json_params->bank_stk ?? ''); ?> -
+                    <?php echo e(optional($detail->area)->json_params->bank_name ?? ''); ?></p>
+                <p><strong>Nội dung chuyển khoản:</strong> Mã học sinh_Tên học sinh_Ngày sinh</p>
+                <p>* Thanh toán tiền mặt: chi trả bằng tiền mặt tại Phòng Tuyển sinh</p>
+            </div>
+            <?php if(isset($qrCode)): ?>
+                <div class="qr-code">
+                    <p style="text-align: center"><img src="<?php echo e($qrCode); ?>" alt="QR Ngân hàng" width="250"></p>
+                    <p><?php echo app('translator')->get('Vui lòng quét mã QR để thanh toán'); ?></p>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
