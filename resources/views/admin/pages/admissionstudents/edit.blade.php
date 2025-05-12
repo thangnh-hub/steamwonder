@@ -859,14 +859,14 @@
 
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="reincarnationModalLabel">@lang('Tái tục dịch vụ cho học sinh')</h5>
+                    <h5 class="modal-title" id="reincarnationModalLabel">@lang('Xử lý TBP cho học sinh mới')</h5>
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>@lang('Ngày bắt đầu chu kỳ thanh toán') <small class="text-danger">*</small></label>
-                                <input class="form-control" type="date" id="enrolled_at" value="" required>
+                                <input class="form-control" type="date" name="enrolled_at" value="" required>
                             </div>
                         </div>
 
@@ -1161,45 +1161,6 @@
                 error: function(response) {
                     var errors = response.responseJSON.message;
                     console.log(errors);
-                }
-            });
-        });
-
-
-        $('#btnCalculateReceipt').click(function() {
-            let studentId = $(this).data('id');
-            let includeCurrentMonth = $('#receipt-options input[type="radio"]:checked').val();
-            let enrolledAt = $('#enrolled_at').val();
-            let paymentCycleId = $('#selectpayment_cycle_id').val();
-            if (paymentCycleId == "") {
-                alert("Vui lòng chọn chu kỳ thu dịch vụ!");
-                return;
-            }
-            if (enrolledAt == "") {
-                alert("Vui lòng chọn ngày bắt đầu chu kỳ thanh toán!");
-                return;
-            }
-            $.ajax({
-                type: "POST",
-                url: "{{ route('admission.receipt.calculateStudent') }}",
-                data: {
-                    student_id: studentId,
-                    include_current_month: includeCurrentMonth,
-                    enrolled_at: enrolledAt,
-                    payment_cycle_id: paymentCycleId,
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    if (response.message === 'success') {
-                        alert("Tạo hóa đơn thành công!");
-                        localStorage.setItem('activeTab', '#tab_4');
-                        location.reload();
-                    } else {
-                        alert("Không thể tạo hóa đơn.");
-                    }
-                },
-                error: function() {
-                    alert("Đã xảy ra lỗi khi tạo hóa đơn.");
                 }
             });
         });

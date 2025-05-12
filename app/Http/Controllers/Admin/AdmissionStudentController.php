@@ -417,13 +417,12 @@ class AdmissionStudentController extends Controller
             ->where('status', 'active')
             ->get();
 
-            $serviceIds = $studentServices->pluck('id')->toArray();
+            $serviceIds = $studentServices->pluck('service_id')->toArray();
 
             // Kiểm tra nếu học sinh đã có biên lai cho bất kỳ dịch vụ nào chưa
             if ($receiptService->checkExistingServiceInReceipts($student, $serviceIds)) {
-                return redirect()->back()->with('errorMessage', 'Học sinh đã có biên lai cho một trong các dịch vụ hiện tại. Vui lòng kiểm tra lại.');
+                return redirect()->back()->with('errorMessage', 'Học sinh đã có biên lai cho một trong các dịch vụ hiện tại, không thể xử lý TBP HSM. Vui lòng kiểm tra lại.');
             }
-
             $data['student_services'] = $studentServices;
             $data['include_current_month'] = $request->input('include_current_month', 0) == 1 ? true : false;
             $data['enrolled_at'] = $request->input('enrolled_at', null);
