@@ -201,7 +201,7 @@
                 @if (count($listServiceDiscoun) > 0)
                     <tr class="section-title">
                         <td class="text-center">{{ \App\Helpers::intToRoman($i) }}</td>
-                        <td>@lang('Các khoản truy thu/ Hoàn trả (+)Có/(-)Nợ')</td>
+                        <td>@lang('Ưu đãi/ Giảm trừ')</td>
                         <td class="text-right">
                             {{ number_format($listServiceDiscoun->sum('total_discount_amount') ?? 0, 0, ',', '.') }}
                         </td>
@@ -224,7 +224,7 @@
                 @if ($detail->prev_balance != 0 || (isset($detail->json_params->explanation) && count((array) $detail->json_params->explanation) > 0))
                     <tr class="section-title">
                         <td class="text-center">{{ \App\Helpers::intToRoman($i) }}</td>
-                        <td>@lang('Khoản giải trình')</td>
+                        <td>@lang('Các khoản truy thu/ Hoàn trả (+)Có/(-)Nợ')</td>
                         <td class="text-right">{{ number_format($detail->prev_balance ?? 0, 0, ',', '.') }}</td>
                         <td></td>
                     </tr>
