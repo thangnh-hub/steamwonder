@@ -217,7 +217,6 @@
                                         {{ \Carbon\Carbon::parse($row->created_at)->format('d/m/Y') ?? '' }}
                                     </td>
                                     <td class="">
-
                                         <button class="btn btn-sm btn-success btn_show_detail" data-toggle="tooltip"
                                             data-id="{{ $row->id }}"
                                             data-url="{{ route(Request::segment(2) . '.view', $row->id) }}"
