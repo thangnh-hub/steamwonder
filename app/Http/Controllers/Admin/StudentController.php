@@ -408,7 +408,7 @@ class StudentController extends Controller
             return response()->json(['message' => 'error', 'error' => $e->getMessage()], 422);
         }
     }
-    public function calculReceiptStudentRenew(Request $request, ReceiptService $receiptService)
+    public function calculateReceiptStudentRenew(Request $request, ReceiptService $receiptService)
     {
         try {
             $params = $request->all();

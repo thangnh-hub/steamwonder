@@ -111,24 +111,16 @@ Route::group(['namespace' => 'Admin'], function () {
                 'attendance' => 'AttendancesController',
                 'promotions' => 'PromotionController',
             ]);
-
-            //CBTS
-            Route::get('admissions/students', 'AdmissionStudentController@index')->name('admission.student.index');
-            Route::get('admissions/students/create', 'AdmissionStudentController@create')->name('admission.student.create');
-            Route::post('admissions/students/store', 'AdmissionStudentController@store')->name('admission.student.store');
-            Route::get('admissions/students/show/{id}', 'AdmissionStudentController@show')->name('admission.student.show');
-            Route::get('admissions/students/edit/{id}', 'AdmissionStudentController@edit')->name('admission.student.edit');
-            Route::put('admissions/students/update/{id}', 'AdmissionStudentController@update')->name('admission.student.update');
-            Route::delete('admissions/students/delete/{id}', 'AdmissionStudentController@destroy')->name('admission.student.destroy');
-
             // Import Class và StudentClass
             Route::post('import_class', 'ClassController@importClassStudent')->name('class.import_class');
             Route::get('receipt_view/{id}', 'ReceiptController@viewIndex')->name('receipt.view');
             Route::post('receipt_payment/{id}', 'ReceiptController@payment')->name('receipt.payment');
-
             Route::post('data_crms_log_store', 'DataCrmController@storeCRMLOG')->name('data_crms_log_store');
+
+            // --- PHẦN HỌC SINH---
             //thêm ng thân cho bé
             Route::post('student/{id}/add-parent', 'StudentController@addParent')->name('student.addParent');
+            //thêm dịch vụ cho bé
             Route::post('student/{id}/add-service', 'StudentController@addService')->name('student.addService');
             //xóa mqh ng thân
             Route::delete('student-parent/{id}', 'StudentController@removeParentRelation')->name('student.removeParentRelation');
@@ -138,8 +130,31 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('delete_student_receipt', 'StudentController@deleteStudentReceipt')->name('student.deleteReceipt');
             //chỉnh sưa dịch vụ của bé
             Route::post('update-service-note', 'StudentController@updateServiceNoteAjax')->name('student.updateService.ajax');
-            Route::post('receipts_calculate', 'StudentController@calculReceiptStudent')->name('receipt.calculStudent');
-            Route::post('receipts_calculate_renew', 'StudentController@calculReceiptStudentRenew')->name('receipt.calculateStudent.renew');
+            Route::post('receipts_calculate', 'StudentController@calculateReceiptStudent')->name('receipt.calculStudent');
+            Route::post('receipts_calculate_renew', 'StudentController@calculateReceiptStudentRenew')->name('receipt.calculateStudent.renew');
+           
+            // ---PHẦN ADMISSSION HỌC SINH---
+            Route::get('admissions/students', 'AdmissionStudentController@index')->name('admission.student.index');
+            Route::get('admissions/students/create', 'AdmissionStudentController@create')->name('admission.student.create');
+            Route::post('admissions/students/store', 'AdmissionStudentController@store')->name('admission.student.store');
+            Route::get('admissions/students/show/{id}', 'AdmissionStudentController@show')->name('admission.student.show');
+            Route::get('admissions/students/edit/{id}', 'AdmissionStudentController@edit')->name('admission.student.edit');
+            Route::put('admissions/students/update/{id}', 'AdmissionStudentController@update')->name('admission.student.update');
+            Route::delete('admissions/students/delete/{id}', 'AdmissionStudentController@destroy')->name('admission.student.destroy');
+
+            Route::post('asmission/student/{id}/add-parent', 'AdmissionStudentController@addParent')->name('admission.student.addParent');
+            //thêm dịch vụ cho bé
+            Route::post('asmission/student/{id}/add-service', 'AdmissionStudentController@addService')->name('admission.student.addService');
+            //xóa mqh ng thân
+            Route::delete('asmission/student-parent/{id}', 'AdmissionStudentController@removeParentRelation')->name('admission.student.removeParentRelation');
+            //xóa dịch vụ của bé
+            Route::get('asmission/delete_student_service', 'AdmissionStudentController@deleteStudentService')->name('admission.delete_student_service');
+            //xóa TBP của bé
+            Route::get('asmission/delete_student_receipt', 'AdmissionStudentController@deleteStudentReceipt')->name('admission.student.deleteReceipt');
+            //chỉnh sưa dịch vụ của bé
+            Route::post('asmission/update-service-note', 'AdmissionStudentController@updateServiceNoteAjax')->name('admission.student.updateService.ajax');
+            Route::post('asmission/receipts_calculate', 'AdmissionStudentController@calculateReceiptStudent')->name('admission.receipt.calculateStudent');
+
             // Import nguời dùng
             Route::post('import_user', 'AdminController@importUser')->name('admin.import_user');
             //update kpi teacher

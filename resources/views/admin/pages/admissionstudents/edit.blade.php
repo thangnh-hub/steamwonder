@@ -92,29 +92,30 @@
                                 <ul class="nav nav-tabs">
                                     <li class="active">
                                         <a href="#tab_1" data-toggle="tab">
-                                            <h5>Thông tin học sinh <span class="text-danger">*</span></h5>
+                                            <h5>@lang('Thông tin học sinh') <span class="text-danger">*</span></h5>
                                         </a>
                                     </li>
                                     <li class="">
                                         <a href="#tab_2" data-toggle="tab">
-                                            <h5>Người thân của bé</h5>
+                                            <h5>@lang('Người thân của bé')</h5>
                                         </a>
                                     </li>
                                     <li class="">
                                         <a href="#tab_3" data-toggle="tab">
-                                            <h5>Dịch vụ đã đăng ký</h5>
-                                        </a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#tab_4" data-toggle="tab">
-                                            <h5>Quản lý TBP</h5>
+                                            <h5>@lang('Dịch vụ đã đăng ký')</h5>
                                         </a>
                                     </li>
                                     <li class="">
                                         <a href="#tab_5" data-toggle="tab">
-                                            <h5>CT Kh.Mãi được áp dụng</h5>
+                                            <h5>@lang('CT Kh.Mãi được áp dụng')</h5>
                                         </a>
                                     </li>
+                                    <li class="">
+                                        <a href="#tab_4" data-toggle="tab">
+                                            <h5>@lang('Quản lý TBP HSM')</h5>
+                                        </a>
+                                    </li>
+                                    
                                 </ul>
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="tab_1">
@@ -342,7 +343,7 @@
                                                     <i class="fa fa-plus"></i> @lang('Đăng ký dịch vụ')
                                                 </button>     
                                                 <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#reincarnationModal">
-                                                    <i class="fa fa-recycle"></i> @lang('Xử lý tái tục dịch vụ')
+                                                    <i class="fa fa-recycle"></i> @lang('Xử lý TBP HSM')
                                                 </button>     
                                             </div>
                                             <br>
@@ -715,7 +716,7 @@
     <div class="modal fade" id="addParentModal" tabindex="-1" role="dialog" aria-labelledby="addParentModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-full" role="document">
-        <form action="{{ route('student.addParent', $detail->id) }}" method="POST">
+        <form id="formStudentAddParent" action="{{ route('admission.student.addParent', $detail->id) }}" method="POST">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -778,7 +779,7 @@
     <div data-backdrop="static" class="modal fade" id="addServiceModal" tabindex="-1" role="dialog"
         aria-labelledby="addServiceModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-full" role="document">
-        <form id="submitstudentaddService" action="{{ route('student.addService', $detail->id) }}" method="POST">
+        <form id="submitstudentaddService" action="{{ route('admission.student.addService', $detail->id) }}" method="POST">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -849,23 +850,49 @@
         </form>
         </div>
     </div>
-    <!-- Modal tái tục-->
+    <!-- Modal TBP HSM-->
     <div data-backdrop="static" class="modal fade" id="reincarnationModal" tabindex="-1" role="dialog" aria-labelledby="reincarnationModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
-        <form id="formRenew" action="{{ route('receipt.calculateStudent.renew') }}"  method="POST">
+        <form id="formRenew" action="{{ route('admission.receipt.calculateStudent') }}"  method="POST">
             @csrf
+            <input type="hidden" name="student_id" value="{{ $detail->id }}">
+
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="reincarnationModalLabel">@lang('Tái tục dịch vụ cho học sinh')</h5>
                 </div>
                 <div class="modal-body">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label>@lang('Ngày bắt đầu chu kỳ thanh toán') <small class="text-danger">*</small></label>
-                            <input class="form-control" type="date" id="enrolled_at" value="" required>
-                            <input type="hidden" name="student_id" value="{{ $detail->id }}">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>@lang('Ngày bắt đầu chu kỳ thanh toán') <small class="text-danger">*</small></label>
+                                <input class="form-control" type="date" id="enrolled_at" value="" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="d-block">@lang('Tính tháng hiện tại ở chu kỳ thu?')</label>
+                                <div id="receipt-options" class="flex-inline-group">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                            name="includeCurrentMonth" id="includeCurrentMonthYes"
+                                            value="1">
+                                        <label class="form-check-label mb-0"
+                                            for="includeCurrentMonthYes">Có</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                            name="includeCurrentMonth" id="includeCurrentMonthNo"
+                                            value="0" checked>
+                                        <label class="form-check-label mb-0"
+                                            for="includeCurrentMonthNo">Không</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">@lang('Tính toán tái tục dịch vụ')</button>
@@ -1002,7 +1029,7 @@
         $('.delete_student_service').click(function(e) {
             if (confirm('Bạn có chắc chắn muốn xóa dịch vụ này khỏi học sinh ?')) {
                 let _id = $(this).attr('data-id');
-                let url = "{{ route('delete_student_service') }}/";
+                let url = "{{ route('admission.delete_student_service') }}/";
                 $.ajax({
                     type: "GET",
                     url: url,
@@ -1058,7 +1085,7 @@
             let currentStudentServiceId = $(this).data('id'); // Lấy ID dịch vụ hiện tại từ nút cập nhật
             $.ajax({
                 type: "POST",
-                url: "{{ route('student.updateService.ajax') }}",
+                url: "{{ route('admission.student.updateService.ajax') }}",
                 data: {
                     id: currentStudentServiceId,
                     note: noteValue,
@@ -1080,44 +1107,31 @@
             });
         });
         $('.btn_delete_receipt').click(function() {
-        let currentStudentReceiptId = $(this).data('id'); // Lấy ID phiếu thu hiện tại từ nút
-            if (confirm("Bạn có chắc chắn muốn xóa phiếu thu này?")) {
-                $.ajax({
-                    type: "GET",
-                    url: "{{ route('student.deleteReceipt') }}",
-                    data: {
-                        id: currentStudentReceiptId, // Đảm bảo đúng biến được gửi đi
-                    },
-                    success: function(response) {
-                        if (response.message === 'success') {
-                            localStorage.setItem('activeTab', '#tab_4');
-                            location.reload();
-                        } else {
-                            alert("Bạn không có quyền thao tác dữ liệu");
+            let currentStudentReceiptId = $(this).data('id'); // Lấy ID phiếu thu hiện tại từ nút
+                if (confirm("Bạn có chắc chắn muốn xóa phiếu thu này?")) {
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ route('admission.student.deleteReceipt') }}",
+                        data: {
+                            id: currentStudentReceiptId, // Đảm bảo đúng biến được gửi đi
+                        },
+                        success: function(response) {
+                            if (response.message === 'success') {
+                                localStorage.setItem('activeTab', '#tab_4');
+                                location.reload();
+                            } else {
+                                alert("Bạn không có quyền thao tác dữ liệu");
+                            }
+                        },
+                        error: function() {
+                            alert("Lỗi cập nhật.");
                         }
-                    },
-                    error: function() {
-                        alert("Lỗi cập nhật.");
-                    }
-                });
-            }
-    });
-
-
-        $(document).ready(function() {
-            var activeTab = localStorage.getItem('activeTab');
-            if (activeTab) {
-                // Bỏ class active hiện tại
-                $('.nav-tabs li, .tab-content .tab-pane').removeClass('active');
-
-                // Thêm active cho tab tương ứng
-                $('.nav-tabs li a[href="' + activeTab + '"]').parent().addClass('active');
-                $(activeTab).addClass('active');
-
-                // Xoá dữ liệu đã lưu để tránh kích hoạt lại lần sau
-                localStorage.removeItem('activeTab');
-            }
+                    });
+                }
         });
+
+
+        
 
         $('.btn_show_detail').click(function(e) {
             var url = $(this).data('url');
@@ -1167,7 +1181,7 @@
             }
             $.ajax({
                 type: "POST",
-                url: "{{ route('receipt.calculStudent') }}",
+                url: "{{ route('admission.receipt.calculateStudent') }}",
                 data: {
                     student_id: studentId,
                     include_current_month: includeCurrentMonth,
@@ -1190,12 +1204,30 @@
             });
         });
 
+        $(document).ready(function() {
+            var activeTab = localStorage.getItem('activeTab');
+            if (activeTab) {
+                // Bỏ class active hiện tại
+                $('.nav-tabs li, .tab-content .tab-pane').removeClass('active');
+
+                // Thêm active cho tab tương ứng
+                $('.nav-tabs li a[href="' + activeTab + '"]').parent().addClass('active');
+                $(activeTab).addClass('active');
+
+                // Xoá dữ liệu đã lưu để tránh kích hoạt lại lần sau
+                localStorage.removeItem('activeTab');
+            }
+        });
+        
         $('#submitstudentaddService').on('submit', function () {
             localStorage.setItem('activeTab', '#tab_3');
         });
         
         $('#formRenew').on('submit', function () {
             localStorage.setItem('activeTab', '#tab_4');
+        });
+        $('#formStudentAddParent').on('submit', function () {
+            localStorage.setItem('activeTab', '#tab_2');
         });
     </script>
 @endsection
