@@ -188,14 +188,10 @@ class ReceiptController extends Controller
             ];
         });
         // Lấy thông tin giảm trừ
-        $listServiceDiscoun = $groupDetails
+        $listServiceDiscount = $groupDetails
         ->filter(function ($detail) {
             return $detail['total_discount_amount'] > 0; // Lọc các dịch vụ có discount_amount > 0
         });
-        // dd($listServiceDiscoun);
-
-
-
         $serviceMonthly = $groupByServiceType->get('monthly', collect()); // Dịch vụ loại monthly
         $serviceYearly = $groupByServiceType->get('yearly', collect()); // Dịch vụ loại monthly
         // Lấy các loại còn lại ngoài monthly và yearly
@@ -215,7 +211,7 @@ class ReceiptController extends Controller
 
         // Lấy từng từng nhóm
         $this->responseData['groupByServiceType'] = $groupByServiceType;
-        $this->responseData['listServiceDiscoun'] = $listServiceDiscoun;
+        $this->responseData['listServiceDiscount'] = $listServiceDiscount;
         $this->responseData['serviceMonthly'] = $serviceMonthly;
         $this->responseData['serviceYearly'] = $serviceYearly;
         $this->responseData['serviceOther'] = $serviceOther;
