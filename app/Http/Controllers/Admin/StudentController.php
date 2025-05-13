@@ -144,7 +144,7 @@ class StudentController extends Controller
         //list promotion
         $this->responseData['status'] = Consts::STATUS;
         $this->responseData['services'] = Service::where('status', 'active')->get();
-        $this->responseData['promotion_active'] = StudentPromotion::where('student_id',$student->id)->where('status', 'active')->get();
+        $this->responseData['promotion_active'] = StudentPromotion::where('student_id', $student->id)->where('status', 'active')->get();
         $this->responseData['list_promotion'] = Promotion::getSqlPromotion($params_active)->get();
         return $this->responseView($this->viewPart . '.edit');
     }
@@ -185,13 +185,13 @@ class StudentController extends Controller
             }
 
             // CT Khuyến mãi
-            if ($request->has('promotion_student')){
+            if ($request->has('promotion_student')) {
                 $params_promotion = $request->input('promotion_student');
                 $params_promotion['student_id'] = $student->id;
                 $params_promotion['promotion_id'] = $request->input('radio_promotion');
                 StudentPromotion::create($params_promotion);
             }
-            
+
 
             return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Update successfully!'));
         } catch (\Exception $e) {
@@ -411,6 +411,9 @@ class StudentController extends Controller
     }
     public function calculateReceiptStudentRenew(Request $request, ReceiptService $receiptService)
     {
+        $request->validate([
+            'enrolled_at' => 'required|date',
+        ]);
         try {
             $params = $request->all();
             $student = Student::findOrFail($params['student_id']);

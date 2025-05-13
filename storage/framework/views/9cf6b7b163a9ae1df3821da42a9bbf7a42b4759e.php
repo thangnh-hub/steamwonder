@@ -39,6 +39,10 @@
             border-collapse: separate;
             width: 100%;
         }
+        td ul{
+            margin-block-start: 0px !important;
+            padding-inline-start: 10px !important;
+        }
     </style>
 <?php $__env->stopSection(); ?>
 
@@ -500,9 +504,7 @@
                                                         <th><?php echo app('translator')->get('STT'); ?></th>
                                                         <th><?php echo app('translator')->get('Mã biểu phí'); ?></th>
                                                         <th><?php echo app('translator')->get('Tên biểu phí'); ?></th>
-                                                        <th><?php echo app('translator')->get('Chu kỳ'); ?></th>
-                                                        <th><?php echo app('translator')->get('Biểu phí trước'); ?></th>
-                                                        <th><?php echo app('translator')->get('Dư nợ trước'); ?></th>
+                                                        <th><?php echo app('translator')->get('Số dư kỳ trước '); ?></th>
                                                         <th><?php echo app('translator')->get('Thành tiền'); ?></th>
                                                         <th><?php echo app('translator')->get('Tổng giảm trừ'); ?></th>
                                                         <th><?php echo app('translator')->get('Tổng tiền truy thu/hoàn trả'); ?></th>
@@ -511,9 +513,6 @@
                                                         <th><?php echo app('translator')->get('Còn lại'); ?></th>
                                                         <th><?php echo app('translator')->get('Trạng thái'); ?></th>
                                                         <th><?php echo app('translator')->get('Ghi chú'); ?></th>
-                                                        <th><?php echo app('translator')->get('Người lập biên lai'); ?></th>
-                                                        <th><?php echo app('translator')->get('Ngày bắt đầu kỳ thu'); ?></th>
-                                                        <th><?php echo app('translator')->get('Ngày kết thúc kỳ thu'); ?></th>
                                                         <th><?php echo app('translator')->get('Ngày tạo phí'); ?></th>
                                                         <th><?php echo app('translator')->get('Chức năng'); ?></th>
                                                     </tr>
@@ -523,7 +522,7 @@
                                                         function format_currency($price)
                                                         {
                                                             return isset($price) && is_numeric($price)
-                                                                ? number_format($price, 0, ',', '.') . ' đ'
+                                                                ? number_format($price, 0, ',', '.') 
                                                                 : '';
                                                         }
                                                     ?>
@@ -533,8 +532,6 @@
                                                                 <td><?php echo e($loop->index + 1); ?> </td>
                                                                 <td><?php echo e($row->receipt_code ?? ''); ?></td>
                                                                 <td><?php echo e($row->receipt_name ?? ''); ?></td>
-                                                                <td><?php echo e($row->payment_cycle->name ?? ''); ?></td>
-                                                                <td><?php echo e($row->prev_receipt->receipt_name ?? ''); ?></td>
                                                                 <td><?php echo e(format_currency($row->prev_balance)); ?></td>
                                                                 <td><?php echo e(format_currency($row->total_amount)); ?></td>
                                                                 <td><?php echo e(format_currency($row->total_discount)); ?></td>
@@ -544,28 +541,21 @@
                                                                 <td><?php echo e(format_currency($row->total_due)); ?></td>
                                                                 <td><?php echo e(__($row->status)); ?></td>
                                                                 <td><?php echo e($row->note ?? ''); ?></td>
-                                                                <td><?php echo e($row->cashier->name ?? ''); ?></td>
-                                                                <td><?php echo e(isset($row->period_start) ? \Carbon\Carbon::parse($row->period_start)->format('d-m-Y') : ''); ?>
-
-                                                                </td>
-                                                                <td><?php echo e(isset($row->period_end) ? \Carbon\Carbon::parse($row->period_end)->format('d-m-Y') : ''); ?>
-
-                                                                </td>
                                                                 <td><?php echo e(isset($row->created_at) ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') : ''); ?>
 
                                                                 </td>
                                                                 <td>
                                                                     
-
                                                                     <button type="button"
-                                                                        class="btn btn-sm btn-primary btn_show_detail mr-10"
+                                                                        class="btn btn-sm btn-primary btn_show_detail"
                                                                         data-toggle="tooltip"
                                                                         data-id="<?php echo e($row->id); ?>"
                                                                         data-url="<?php echo e(route('receipt.view', $row->id)); ?>"
                                                                         title="<?php echo app('translator')->get('Show'); ?>"
                                                                         data-original-title="<?php echo app('translator')->get('Show'); ?>">
-                                                                        <i class="fa fa-eye"></i> Chi tiết
+                                                                        <i class="fa fa-eye"></i> Xem
                                                                     </button>
+                                                                    
                                                                     <a href="<?php echo e(route('receipt.show', $row->id)); ?>">
                                                                         <button type="button"
                                                                             class="btn btn-sm btn-warning  mr-10"
@@ -574,6 +564,12 @@
                                                                             <i class="fa fa-money"></i> Cập nhật
                                                                         </button>
                                                                     </a>
+
+                                                                    <button type="button"
+                                                                        class="btn btn-sm btn-danger btn_delete_receipt"
+                                                                        data-id="<?php echo e($row->id); ?>">
+                                                                        <i class="fa fa-trash"></i> Xóa
+                                                                    </button>
                                                                 </td>
                                                             </tr>
                                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -881,7 +877,7 @@
     <!-- Modal tái tục-->
     <div data-backdrop="static" class="modal fade" id="reincarnationModal" tabindex="-1" role="dialog" aria-labelledby="reincarnationModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
-        <form id="formRenew" action="<?php echo e(route('receipt.calculStudent.renew')); ?>"  method="POST">
+        <form id="formRenew" action="<?php echo e(route('receipt.calculateStudent.renew')); ?>"  method="POST">
             <?php echo csrf_field(); ?>
             <div class="modal-content">
                 <div class="modal-header">
@@ -891,7 +887,7 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label><?php echo app('translator')->get('Ngày bắt đầu chu kỳ thanh toán'); ?> <small class="text-danger">*</small></label>
-                            <input class="form-control" type="date" id="enrolled_at" value="" required>
+                            <input class="form-control" type="date" name="enrolled_at" value="" required>
                             <input type="hidden" name="student_id" value="<?php echo e($detail->id); ?>">
                         </div>
                     </div>
@@ -916,10 +912,20 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Ghi chú</label>
-                                    <input type="text" class="form-control" name="note" value=""
+                                    <select name="payment_cycle_service" style="width:100%" class="form-control select2">
+                                        <?php $__currentLoopData = $list_payment_cycle; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $payment_cycle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option  value="<?php echo e($payment_cycle->id); ?>"><?php echo e($payment_cycle->name ?? ""); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="">Ghi chú</label>
+                                    <input type="text" class="form-control" name="note_service" value=""
                                         placeholder="<?php echo app('translator')->get('Ghi chú'); ?>">
                                 </div>
                             </div>
@@ -1057,6 +1063,7 @@
                 success: function(response) {
                     if (response.success) {
                         $('#editServiceModal input[name="note"]').val(response.data.note);
+                        $('#editServiceModal select').val(response.data.payment_cycle_id).trigger('change');
                         // Mở modal
                         $('#editServiceModal').modal('show');
                         $('#btnUpdateService').attr('data-id', _id);
@@ -1071,7 +1078,8 @@
         });
 
         $('#btnUpdateService').click(function() {
-            let noteValue = $('input[name="note"]').val();
+            let cycleValue = $('select[name="payment_cycle_service"]').val();
+            let noteValue  = $('input[name="note_service"]').val();
             let currentStudentServiceId = $(this).data('id'); // Lấy ID dịch vụ hiện tại từ nút cập nhật
             $.ajax({
                 type: "POST",
@@ -1079,6 +1087,7 @@
                 data: {
                     id: currentStudentServiceId,
                     note: noteValue,
+                    payment_cycle_id: cycleValue,
                     _token: '<?php echo e(csrf_token()); ?>'
                 },
                 success: function(response) {
@@ -1087,14 +1096,38 @@
                         localStorage.setItem('activeTab', '#tab_3');
                         location.reload();
                     } else {
-                        alert("Không thể cập nhật ghi chú.");
+                        alert("Không có quyền thao tác.");
                     }
                 },
                 error: function() {
-                    alert("Lỗi cập nhật ghi chú.");
+                    alert("Lỗi cập nhật.");
                 }
             });
         });
+        $('.btn_delete_receipt').click(function() {
+            let currentStudentReceiptId = $(this).data('id'); // Lấy ID phiếu thu hiện tại từ nút
+                if (confirm("Bạn có chắc chắn muốn xóa phiếu thu này?")) {
+                    $.ajax({
+                        type: "GET",
+                        url: "<?php echo e(route('student.deleteReceipt')); ?>",
+                        data: {
+                            id: currentStudentReceiptId, // Đảm bảo đúng biến được gửi đi
+                        },
+                        success: function(response) {
+                            if (response.message === 'success') {
+                                localStorage.setItem('activeTab', '#tab_4');
+                                location.reload();
+                            } else {
+                                alert("Bạn không có quyền thao tác dữ liệu");
+                            }
+                        },
+                        error: function() {
+                            alert("Lỗi cập nhật.");
+                        }
+                    });
+                }
+        });
+
 
         $(document).ready(function() {
             var activeTab = localStorage.getItem('activeTab');
@@ -1139,45 +1172,6 @@
                 error: function(response) {
                     var errors = response.responseJSON.message;
                     console.log(errors);
-                }
-            });
-        });
-
-
-        $('#btnCalculateReceipt').click(function() {
-            let studentId = $(this).data('id');
-            let includeCurrentMonth = $('#receipt-options input[type="radio"]:checked').val();
-            let enrolledAt = $('#enrolled_at').val();
-            let paymentCycleId = $('#selectpayment_cycle_id').val();
-            if (paymentCycleId == "") {
-                alert("Vui lòng chọn chu kỳ thu dịch vụ!");
-                return;
-            }
-            if (enrolledAt == "") {
-                alert("Vui lòng chọn ngày bắt đầu chu kỳ thanh toán!");
-                return;
-            }
-            $.ajax({
-                type: "POST",
-                url: "<?php echo e(route('receipt.calculStudent')); ?>",
-                data: {
-                    student_id: studentId,
-                    include_current_month: includeCurrentMonth,
-                    enrolled_at: enrolledAt,
-                    payment_cycle_id: paymentCycleId,
-                    _token: '<?php echo e(csrf_token()); ?>'
-                },
-                success: function(response) {
-                    if (response.message === 'success') {
-                        alert("Tạo hóa đơn thành công!");
-                        localStorage.setItem('activeTab', '#tab_4');
-                        location.reload();
-                    } else {
-                        alert("Không thể tạo hóa đơn.");
-                    }
-                },
-                error: function() {
-                    alert("Đã xảy ra lỗi khi tạo hóa đơn.");
                 }
             });
         });

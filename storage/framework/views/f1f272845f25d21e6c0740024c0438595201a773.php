@@ -19,7 +19,8 @@
             <a class="btn btn-success pull-right " href="<?php echo e(route(Request::segment(2) . '.index')); ?>">
                 <i class="fa fa-bars"></i> <?php echo app('translator')->get('List'); ?>
             </a>
-            <a class="btn btn-warning pull-right mr-10" target="_blank" href="<?php echo e(route(Request::segment(2) . '.print', $detail->id)); ?>">
+            <a class="btn btn-warning pull-right mr-10" target="_blank"
+                href="<?php echo e(route(Request::segment(2) . '.print', $detail->id)); ?>">
                 <i class="fa fa-print"></i> <?php echo app('translator')->get('In TBP'); ?>
             </a>
         </h1>
@@ -253,7 +254,8 @@
                                     </tr>
                                     <tr>
                                         <td><?php echo app('translator')->get('Số dư kỳ trước'); ?></td>
-                                        <td class="text-right total_prev_balance" data-total="<?php echo e($detail->prev_balance); ?>">
+                                        <td class="text-right total_prev_balance"
+                                            data-balance="<?php echo e($detail->prev_balance); ?>">
                                             <?php echo e(number_format($detail->prev_balance, 0, ',', '.') ?? ''); ?>
 
                                         </td>
@@ -262,7 +264,7 @@
                                     <tr>
                                         <td><?php echo app('translator')->get('Tổng tiền thực tế sau đối soát tất cả dịch vụ'); ?></td>
                                         <td class="text-right total_final" data-final="<?php echo e($detail->total_final); ?>">
-                                            <?php echo e(number_format($detail->total_final + $detail->prev_balance, 0, ',', '.') ?? ''); ?>
+                                            <?php echo e(number_format($detail->total_final, 0, ',', '.') ?? ''); ?>
 
                                         </td>
                                     </tr>
@@ -275,8 +277,8 @@
                                     </tr>
                                     <tr>
                                         <td><?php echo app('translator')->get('Số tiền còn phải thu (+) hoặc thừa (-)'); ?></td>
-                                        <td class="text-right">
-                                            <?php echo e(number_format($detail->total_due + $detail->prev_balance, 0, ',', '.') ?? ''); ?>
+                                        <td class="text-right total_due" data-due="<?php echo e($detail->total_due); ?>">
+                                            <?php echo e(number_format($detail->total_due, 0, ',', '.') ?? ''); ?>
 
                                         </td>
                                     </tr>
@@ -291,7 +293,7 @@
                             </table>
                             <button type="submit" class="btn btn-success">
                                 <i class="fa fa-usd" aria-hidden="true" title="Thanh toán"></i> <?php echo app('translator')->get('Xác nhận thanh toán'); ?>
-                                </button>
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -306,13 +308,17 @@
             if (isNaN(_balance)) {
                 _balance = 0;
             }
-            // var _total_prev_balance = parseInt($('.total_prev_balance').data('total'));
+            var _total_prev_balance = parseInt($('.total_prev_balance').data('balance'));
             var _total_final = parseInt($('.total_final').data('final'), 10);
+            var _total_due = parseInt($('.total_due').data('due'), 10);
 
-            var _total = _total_final + _balance;
             $('.total_prev_balance').html(new Intl.NumberFormat('vi-VN').format(_balance));
-            $('.total_final').html(new Intl.NumberFormat('vi-VN').format(_total));
+            $('.total_final').html(new Intl.NumberFormat('vi-VN').format(_total_final + _total_prev_balance -
+                _balance));
+            $('.total_due').html(new Intl.NumberFormat('vi-VN').format(_total_due + _total_prev_balance -
+            _balance));
         })
+
         $('.btn_explanation').click(function() {
             var currentDateTime = Math.floor(Date.now() / 1000);
 
