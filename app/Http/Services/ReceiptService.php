@@ -362,10 +362,11 @@ class ReceiptService
 
     protected function saveReceiptRenew(Student $student, $details, $data)
     {
+        $startDate = Carbon::parse($data['enrolled_at']);
         $receipt = Receipt::create([
             'area_id' => $student->area_id,
             'student_id' => $student->id,
-            'receipt_code' => "PTTT-{$student->id}-" . now()->format('Ymd'),
+            'receipt_code' => "PTTT-{$student->student_code}-" . $startDate->copy()->format('Ymd'),
             'receipt_name' => "Phiếu tái tục dich vụ của học sinh {$student->first_name} {$student->last_name}",
             'total_amount' => $details->sum('amount'),
             'total_discount' => $details->sum('discount_amount'),
