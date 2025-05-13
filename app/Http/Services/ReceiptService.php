@@ -33,6 +33,7 @@ class ReceiptService
         return $existing;
     }
 
+    //Check xem trong năm thằng đó với dịch vụ là loại yearly đã có biên lai nào từ tháng 6 chưa
     public function checkExistingServiceInReceiptsOfYear(Student $student, array $serviceIds, $year)
     {
         $existing = ReceiptDetail::where('student_id', $student->id)
