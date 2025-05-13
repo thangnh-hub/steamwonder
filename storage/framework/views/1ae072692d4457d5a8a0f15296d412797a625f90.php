@@ -850,7 +850,7 @@
                                         <td>
                                             <select style="width:100%" name="services[<?php echo e($service->id); ?>][payment_cycle_id]" class="form-control select2">
                                                 <?php $__currentLoopData = $list_payment_cycle; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $payment_cycle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                    <option  value="<?php echo e($payment_cycle->id); ?>"><?php echo e($payment_cycle->name ?? ""); ?></option>
+                                                    <option <?php echo e($payment_cycle->is_default==1 ? 'selected' :""); ?> value="<?php echo e($payment_cycle->id); ?>"><?php echo e($payment_cycle->name ?? ""); ?></option>
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </select>
                                         </td>
