@@ -131,7 +131,14 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::post('update-service-note', 'StudentController@updateServiceNoteAjax')->name('student.updateService.ajax');
             Route::post('receipts_calculate', 'StudentController@calculateReceiptStudent')->name('receipt.calculStudent');
             Route::post('receipts_calculate_renew', 'StudentController@calculateReceiptStudentRenew')->name('receipt.calculateStudent.renew');
-           
+            //TÍnh toán phí đầu năm
+            Route::get('view_calculate_receipt_first_year', 'StudentController@viewCalculateReceiptStudentFirstYear')->name('view_calculate_receipt_first_year');
+            Route::post('calculate_receipt_first_year', 'StudentController@calculateReceiptStudentFirstYear')->name('calculate_receipt_first_year');
+            
+            
+            // ------
+            
+            
             // ---PHẦN ADMISSSION HỌC SINH---
             Route::get('admissions/students', 'AdmissionStudentController@index')->name('admission.student.index');
             Route::get('admissions/students/create', 'AdmissionStudentController@create')->name('admission.student.create');
@@ -140,7 +147,6 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('admissions/students/edit/{id}', 'AdmissionStudentController@edit')->name('admission.student.edit');
             Route::put('admissions/students/update/{id}', 'AdmissionStudentController@update')->name('admission.student.update');
             Route::delete('admissions/students/delete/{id}', 'AdmissionStudentController@destroy')->name('admission.student.destroy');
-
             Route::post('asmission/student/{id}/add-parent', 'AdmissionStudentController@addParent')->name('admission.student.addParent');
             //thêm dịch vụ cho bé
             Route::post('asmission/student/{id}/add-service', 'AdmissionStudentController@addService')->name('admission.student.addService');
@@ -156,7 +162,6 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::post('asmission_import_data_student', 'AdmissionStudentController@importDataStudent')->name('admission.data_student.import');
             // -----
 
-            
             // Import nguời dùng
             Route::post('import_user', 'AdminController@importUser')->name('admin.import_user');
             //update kpi teacher

@@ -99,7 +99,7 @@ class AdmissionStudentController extends Controller
         $student->student_code = 'HS' . str_pad($student->id, 3, '0', STR_PAD_LEFT);
         $student->save();
 
-        return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Add new successfully!'));
+        return redirect()->route($this->routeDefault . '.edit',$student->id)->with('successMessage', __('Add new successfully!'));
     }
 
     /**
@@ -226,12 +226,12 @@ class AdmissionStudentController extends Controller
             }
             
 
-            return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Update successfully!'));
+            return redirect()->route($this->routeDefault . '.edit',$student->id)->with('successMessage', __('Update successfully!'));
         } catch (\Exception $e) {
             return back()->with('errorMessage', __('Có lỗi xảy ra: ') . $e->getMessage());
         }
 
-        return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Update successfully!'));
+        return redirect()->route($this->routeDefault . '.edit', $id)->with('successMessage', __('Update successfully!'));
     }
 
     /**

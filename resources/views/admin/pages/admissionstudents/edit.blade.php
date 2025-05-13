@@ -826,7 +826,7 @@
                                         <td>
                                             <select style="width:100%" name="services[{{ $service->id }}][payment_cycle_id]" class="form-control select2">
                                                 @foreach ($list_payment_cycle as $payment_cycle)
-                                                    <option  value="{{ $payment_cycle->id }}">{{ $payment_cycle->name ?? "" }}</option>
+                                                    <option {{ $payment_cycle->is_default==1 ? 'selected' :"" }} value="{{ $payment_cycle->id }}">{{ $payment_cycle->name ?? "" }}</option>
                                                 @endforeach
                                             </select>
                                         </td>
