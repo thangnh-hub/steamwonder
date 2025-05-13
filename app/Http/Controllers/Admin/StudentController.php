@@ -10,6 +10,7 @@ use App\Models\StudentPolicie;
 use App\Models\Relationship;
 use App\Models\StudentParent;
 use App\Models\Area;
+use App\Models\tbClass;
 use App\Http\Services\DataPermissionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -427,5 +428,43 @@ class StudentController extends Controller
             return redirect()->back()->with('errorMessage', $e->getMessage());
         }
     }
+    // Tính toán phí đầu năm
+    public function viewCalculateReceiptStudentFirstYear(Request $request,ReceiptService $receiptService)
+    {
+        $params = $request->all();
+        $rows = Student::getSqlStudent($params)->get();
+        $year = now()->year;
+        foreach ($rows as $row) {
+            $serviceIds = $row->studentServices->pluck('service_id')->toArray();
+            $row->is_calculate_year = $receiptService->checkExistingServiceInReceiptsOfYear($row, $serviceIds, $year) ? 1 : 0;
+        }
+        $this->responseData['rows'] = $rows;
+        $this->responseData['params'] = $params;
+        $this->responseData['list_class'] =  tbClass::orderBy('id', 'desc')->get();
+        $this->responseData['list_area'] =  Area::where('status', '=', Consts::USER_STATUS['active'])->get();
+        $this->responseData['module_name'] = __('Tính phí đầu năm');
 
+        return $this->responseView($this->viewPart . '.calculate_receipt_year');
+    }
+    public function calculateReceiptStudentFirstYear(Request $request,ReceiptService $receiptService)
+    {
+        $list_student_ids = $request->input('student', []);
+        $students = Student::whereIn('id', $list_student_ids)
+            ->whereHas('studentServices', function ($query) {
+                $query->where('status', 'active');
+            })
+            ->get();
+
+        foreach ($students as $student) {
+            $data['student_services'] = $student->studentServices()
+                ->where('status', 'active')
+                ->get();
+
+            $data['include_current_month'] = false;
+            $data['enrolled_at'] = $request->input('enrolled_at', null);
+
+            $receiptService->ReceiptForStudentYearly($student, $data);
+        }
+        return redirect()->back()->with('successMessage', __('Tạo hóa đơn thành công!'));
+    }
 }
