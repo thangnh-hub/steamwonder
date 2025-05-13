@@ -887,7 +887,7 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label><?php echo app('translator')->get('Ngày bắt đầu chu kỳ thanh toán'); ?> <small class="text-danger">*</small></label>
-                            <input class="form-control" type="date" id="enrolled_at" value="" required>
+                            <input class="form-control" type="date" name="enrolled_at" value="" required>
                             <input type="hidden" name="student_id" value="<?php echo e($detail->id); ?>">
                         </div>
                     </div>
@@ -1105,28 +1105,28 @@
             });
         });
         $('.btn_delete_receipt').click(function() {
-        let currentStudentReceiptId = $(this).data('id'); // Lấy ID phiếu thu hiện tại từ nút
-            if (confirm("Bạn có chắc chắn muốn xóa phiếu thu này?")) {
-                $.ajax({
-                    type: "GET",
-                    url: "<?php echo e(route('student.deleteReceipt')); ?>",
-                    data: {
-                        id: currentStudentReceiptId, // Đảm bảo đúng biến được gửi đi
-                    },
-                    success: function(response) {
-                        if (response.message === 'success') {
-                            localStorage.setItem('activeTab', '#tab_4');
-                            location.reload();
-                        } else {
-                            alert("Bạn không có quyền thao tác dữ liệu");
+            let currentStudentReceiptId = $(this).data('id'); // Lấy ID phiếu thu hiện tại từ nút
+                if (confirm("Bạn có chắc chắn muốn xóa phiếu thu này?")) {
+                    $.ajax({
+                        type: "GET",
+                        url: "<?php echo e(route('student.deleteReceipt')); ?>",
+                        data: {
+                            id: currentStudentReceiptId, // Đảm bảo đúng biến được gửi đi
+                        },
+                        success: function(response) {
+                            if (response.message === 'success') {
+                                localStorage.setItem('activeTab', '#tab_4');
+                                location.reload();
+                            } else {
+                                alert("Bạn không có quyền thao tác dữ liệu");
+                            }
+                        },
+                        error: function() {
+                            alert("Lỗi cập nhật.");
                         }
-                    },
-                    error: function() {
-                        alert("Lỗi cập nhật.");
-                    }
-                });
-            }
-    });
+                    });
+                }
+        });
 
 
         $(document).ready(function() {
@@ -1172,45 +1172,6 @@
                 error: function(response) {
                     var errors = response.responseJSON.message;
                     console.log(errors);
-                }
-            });
-        });
-
-
-        $('#btnCalculateReceipt').click(function() {
-            let studentId = $(this).data('id');
-            let includeCurrentMonth = $('#receipt-options input[type="radio"]:checked').val();
-            let enrolledAt = $('#enrolled_at').val();
-            let paymentCycleId = $('#selectpayment_cycle_id').val();
-            if (paymentCycleId == "") {
-                alert("Vui lòng chọn chu kỳ thu dịch vụ!");
-                return;
-            }
-            if (enrolledAt == "") {
-                alert("Vui lòng chọn ngày bắt đầu chu kỳ thanh toán!");
-                return;
-            }
-            $.ajax({
-                type: "POST",
-                url: "<?php echo e(route('receipt.calculStudent')); ?>",
-                data: {
-                    student_id: studentId,
-                    include_current_month: includeCurrentMonth,
-                    enrolled_at: enrolledAt,
-                    payment_cycle_id: paymentCycleId,
-                    _token: '<?php echo e(csrf_token()); ?>'
-                },
-                success: function(response) {
-                    if (response.message === 'success') {
-                        alert("Tạo hóa đơn thành công!");
-                        localStorage.setItem('activeTab', '#tab_4');
-                        location.reload();
-                    } else {
-                        alert("Không thể tạo hóa đơn.");
-                    }
-                },
-                error: function() {
-                    alert("Đã xảy ra lỗi khi tạo hóa đơn.");
                 }
             });
         });

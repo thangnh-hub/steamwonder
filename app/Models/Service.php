@@ -103,4 +103,9 @@ class Service extends Model
         return $this->hasMany(ServiceDetail::class, 'service_id');
     }
 
+    public function studentWithServices()
+    {
+        return $this->hasMany(StudentService::class, 'service_id');
+    }
+
 }

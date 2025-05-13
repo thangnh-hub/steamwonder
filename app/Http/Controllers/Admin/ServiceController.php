@@ -13,6 +13,7 @@ use App\Consts;
 use App\Http\Services\DataPermissionService;
 use App\Models\Area;
 use Illuminate\Support\Facades\DB;
+use Exception;
 
 class ServiceController extends Controller
 {
@@ -172,11 +173,24 @@ class ServiceController extends Controller
         }
     }
  
-     public function destroy(Service $service)
-     {
-        $service->serviceDetail()->delete();
-        $service->delete();
-        return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Delete record successfully!'));
-     }
+    public function destroy(Service $service)
+    {
+        DB::beginTransaction();
+        try {
+            if ($service->studentWithServices()->exists()) {
+                return redirect()->route($this->routeDefault . '.index')
+                    ->with('errorMessage', __('Dịch vụ này không thể xóa vì đã có sinh viên sử dụng!'));
+            }
+            $service->serviceDetail()->delete();
+            $service->delete();
+            DB::commit();
+            return redirect()->route($this->routeDefault . '.index')
+            ->with('successMessage', __('Delete record successfully!'));
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->route($this->routeDefault . '.index')
+                ->with('errorMessage', __('An error occurred while deleting: ') . $e->getMessage());
+        }
+    }
  
 }

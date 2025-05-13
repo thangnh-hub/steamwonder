@@ -84,7 +84,7 @@
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                         <h4 class="modal-title">Import học sinh</h4>
                     </div>
-                    <form action="{{ route('data_student.import') }}" method="post" enctype="multipart/form-data">
+                    <form action="{{ route('admission.data_student.import') }}" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class="modal-body row">
                             <div class="col-md-12">

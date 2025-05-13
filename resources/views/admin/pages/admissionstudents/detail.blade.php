@@ -469,7 +469,7 @@
                 </div>
             </div>
             <div class="box-footer ">
-                <a href="{{ route(Request::segment(2) . '.index') }}">
+                <a href="{{ route('admission.student.index') }}">
                     <button type="button" class="btn btn-sm btn-success">Danh sách</button>
                 </a>
             </div>
