@@ -1,3 +1,5 @@
+
+
 <?php $__env->startSection('title'); ?>
     <?php echo app('translator')->get($module_name); ?>
 <?php $__env->stopSection(); ?>
@@ -18,7 +20,7 @@
                 <i class="fa fa-bars"></i> <?php echo app('translator')->get('List'); ?>
             </a>
             <a class="btn btn-warning pull-right mr-10" target="_blank"
-                href="<?php echo e(route(Request::segment(2) . '.print', $detail->id)); ?>">
+                href="<?php echo e(route(Request::segment(2) . '.print', $detail->id)); ?>" onclick="return openCenteredPopup(this.href)">
                 <i class="fa fa-print"></i> <?php echo app('translator')->get('In TBP'); ?>
             </a>
         </h1>
