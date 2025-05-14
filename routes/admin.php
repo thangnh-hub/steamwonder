@@ -111,6 +111,27 @@ Route::group(['namespace' => 'Admin'], function () {
                 'attendance' => 'AttendancesController',
                 'promotions' => 'PromotionController',
             ]);
+            // Import Student Promotion
+            Route::post('import_student_promotion', 'StudentController@importStudentPromotion')->name('student.import_promotion');
+            // Import Student policy
+            Route::post('import_student_policy', 'StudentController@importStudentPolicy')->name('student.import_policy');
+            // Import Student service
+            Route::post('import_student_service', 'StudentController@importStudentService')->name('student.import_service');
+            // Import Student Receipt
+            Route::post('import_student_receipt', 'StudentController@importStudentReceipt')->name('student.import_receipt');
+            // Import Update Balance Receipt
+            Route::post('import_student_balance_receipt', 'StudentController@importStudentBalanceReceipt')->name('student.import_balance_receipt');
+
+
+            //CBTS
+            Route::get('admissions/students', 'AdmissionStudentController@index')->name('admission.student.index');
+            Route::get('admissions/students/create', 'AdmissionStudentController@create')->name('admission.student.create');
+            Route::post('admissions/students/store', 'AdmissionStudentController@store')->name('admission.student.store');
+            Route::get('admissions/students/show/{id}', 'AdmissionStudentController@show')->name('admission.student.show');
+            Route::get('admissions/students/edit/{id}', 'AdmissionStudentController@edit')->name('admission.student.edit');
+            Route::put('admissions/students/update/{id}', 'AdmissionStudentController@update')->name('admission.student.update');
+            Route::delete('admissions/students/delete/{id}', 'AdmissionStudentController@destroy')->name('admission.student.destroy');
+
             // Import Class và StudentClass
             Route::post('import_class', 'ClassController@importClassStudent')->name('class.import_class');
             Route::post('receipt_payment/{id}', 'ReceiptController@payment')->name('receipt.payment');
@@ -134,11 +155,11 @@ Route::group(['namespace' => 'Admin'], function () {
             //TÍnh toán phí đầu năm
             Route::get('view_calculate_receipt_first_year', 'StudentController@viewCalculateReceiptStudentFirstYear')->name('view_calculate_receipt_first_year');
             Route::post('calculate_receipt_first_year', 'StudentController@calculateReceiptStudentFirstYear')->name('calculate_receipt_first_year');
-            
-            
+
+
             // ------
-            
-            
+
+
             // ---PHẦN ADMISSSION HỌC SINH---
             Route::get('admissions/students', 'AdmissionStudentController@index')->name('admission.student.index');
             Route::get('admissions/students/create', 'AdmissionStudentController@create')->name('admission.student.create');

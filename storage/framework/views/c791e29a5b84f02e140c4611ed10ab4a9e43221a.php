@@ -108,7 +108,7 @@
                                     value="<?php echo e(\Carbon\Carbon::parse($detail->time_end)->format('Y-m-d') ?? old('time_end')); ?>">
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-xs-12 col-md-4">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Status'); ?> </label>
                                 <select required name="status" class="form-control select2">

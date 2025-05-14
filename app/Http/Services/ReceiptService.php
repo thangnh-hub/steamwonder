@@ -45,7 +45,7 @@ class ReceiptService
             ->exists();
 
         return $existing;
-    } 
+    }
 
     public function createReceiptForStudent(Student $student, array $data)
     {
@@ -56,7 +56,7 @@ class ReceiptService
             $startDate = Carbon::parse($data['enrolled_at']);
             $includeCurrent = $data['include_current_month'] ?? true;
             $details = $this->generateReceiptDetails($policies, $promotions,$deductions, $data['student_services'], $startDate, $includeCurrent);
-            
+
             return $this->saveReceipt($student,  $details, $data);
         });
     }
@@ -164,6 +164,7 @@ class ReceiptService
                         'note' => $discount_amount['cal_discount_note'],
                     ];
                     break;
+
             }
         }
         return collect($details);
@@ -174,7 +175,7 @@ class ReceiptService
      */
     protected function saveReceipt(Student $student, $details, $data)
     {
-        
+
         $receipt = Receipt::create([
             'area_id' => $student->area_id,
             'student_id' => $student->id,
@@ -213,24 +214,24 @@ class ReceiptService
         $service_name = $service_info['name'];
         // Kiểm tra có chương trình khuyến mãi nào đc áp dụng không
         $has_valid_promotion = false;
-        
+
         // Ưu đãi theo khuyến mãi hợp lệ
         foreach ($promotions as $pro) {
             $start = Carbon::parse($pro->time_start)->startOfMonth();
             $end = Carbon::parse($pro->time_end)->endOfMonth();
             $checkMonth = Carbon::parse($month)->startOfMonth();
-          
+
             if ($checkMonth->between($start, $end)) {
                 $discount_promotion_value = $pro->promotion->json_params->services->{$service_info['id']}->value ?? 0;
                 $discount_promotion_type = $pro->promotion->promotion_type ?? null;
-    
+
                 if ($discount_promotion_type == Consts::TYPE_POLICIES['percent'] && $discount_promotion_value > 0) {
                     $has_valid_promotion = true;
                     $discount_notes[] = "{$pro->promotion->promotion_name} giảm ({$discount_promotion_value}%)";
                     $amount_after_discount = $amount_after_discount - $amount_after_discount * ($discount_promotion_value / 100);
-                }    
+                }
             }
-            
+
         }
 
         // Ưu đãi theo chu kỳ thanh toán
@@ -284,7 +285,7 @@ class ReceiptService
             }
         }
         $discount_amount = $amount - $amount_after_discount;
-        
+
         return [
             'cal_discount_amount' => $discount_amount,
             'cal_discount_note' => "" . implode('<br>', $discount_notes)
@@ -304,7 +305,7 @@ class ReceiptService
             $policies = $student->studentPolicies->pluck('policy');
             $promotions = $student->studentPromotions;
             $startDate = Carbon::parse($data['enrolled_at']);
-            
+
             $details = $this->generateReceiptDetailsRenew( $policies,$promotions,  $data['student_services'], $startDate);
             return $this->saveReceiptRenew($student, $details, $data);
         });
@@ -365,7 +366,7 @@ class ReceiptService
 
         // Kiểm tra có chương trình khuyến mãi nào đc áp dụng không
         $has_valid_promotion = false;
-        
+
         // Ưu đãi theo khuyến mãi hợp lệ
         foreach ($promotions as $pro) {
             $start = Carbon::parse($pro->time_start)->startOfMonth();
@@ -375,14 +376,14 @@ class ReceiptService
             if ($checkMonth->between($start, $end)) {
                 $discount_promotion_value = $pro->promotion->json_params->services->{$service_info['id']}->value ?? 0;
                 $discount_promotion_type = $pro->promotion->promotion_type ?? null;
-    
+
                 if ($discount_promotion_type == Consts::TYPE_POLICIES['percent'] && $discount_promotion_value > 0) {
                     $has_valid_promotion = true;
                     $discount_notes[] = "{$pro->promotion->promotion_name} giảm ({$discount_promotion_value}%)";
                     $amount_after_discount = $amount_after_discount - $amount_after_discount * ($discount_promotion_value / 100);
-                }    
+                }
             }
-            
+
         }
         // Ưu đãi theo chu kỳ thanh toán
         if (!$has_valid_promotion) {
@@ -458,7 +459,7 @@ class ReceiptService
             $deductions = $this->getDeductions();
             $startDate = Carbon::parse($data['enrolled_at']);
             $details = $this->generateReceiptDetailsYearly($policies, $promotions,$deductions, $data['student_services'], $startDate);
-            
+
             return $this->saveReceiptYearly($student,  $details, $data);
         });
     }
@@ -509,7 +510,7 @@ class ReceiptService
      */
     protected function saveReceiptYearly(Student $student, $details, $data)
     {
-        
+
         $receipt = Receipt::create([
             'area_id' => $student->area_id,
             'student_id' => $student->id,
@@ -548,24 +549,24 @@ class ReceiptService
         $service_name = $service_info['name'];
         // Kiểm tra có chương trình khuyến mãi nào đc áp dụng không
         $has_valid_promotion = false;
-        
+
         // Ưu đãi theo khuyến mãi hợp lệ
         foreach ($promotions as $pro) {
             $start = Carbon::parse($pro->time_start)->startOfMonth();
             $end = Carbon::parse($pro->time_end)->endOfMonth();
             $checkMonth = Carbon::parse($month)->startOfMonth();
-          
+
             if ($checkMonth->between($start, $end)) {
                 $discount_promotion_value = $pro->promotion->json_params->services->{$service_info['id']}->value ?? 0;
                 $discount_promotion_type = $pro->promotion->promotion_type ?? null;
-    
+
                 if ($discount_promotion_type == Consts::TYPE_POLICIES['percent'] && $discount_promotion_value > 0) {
                     $has_valid_promotion = true;
                     $discount_notes[] = "{$pro->promotion->promotion_name} giảm ({$discount_promotion_value}%)";
                     $amount_after_discount = $amount_after_discount - $amount_after_discount * ($discount_promotion_value / 100);
-                }    
+                }
             }
-            
+
         }
 
         // Ưu đãi theo chu kỳ thanh toán
