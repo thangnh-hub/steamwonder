@@ -189,6 +189,7 @@
                                             <th>Giảm trừ</th>
                                             {{-- <th>Hoàn trả / phát sinh</th> --}}
                                             <th>Tổng tiền</th>
+                                            <th>Ghi chú</th>
                                         </tr>
                                         @foreach ($detail->receiptDetail as $item)
                                             <tr>
@@ -200,6 +201,7 @@
                                                 <td>{{ number_format($item->discount_amount, 0, ',', '.') ?? '' }}</td>
                                                 {{-- <td>{{ number_format($item->adjustment_amount, 0, ',', '.') ?? '' }}</td> --}}
                                                 <td>{{ number_format($item->final_amount, 0, ',', '.') ?? '' }}</td>
+                                                <td>{{ $item->note ?? '' }}</td>
                                             </tr>
                                         @endforeach
                                     @endif
@@ -283,6 +285,10 @@
                                     </tr>
                                 </tbody>
                             </table>
+
+                            {{-- <button type="submit" class="btn btn-success">
+                                @lang('Duyệt TBP')
+                            </button> --}}
                             <button type="submit" class="btn btn-success">
                                 <i class="fa fa-usd" aria-hidden="true" title="Thanh toán"></i> @lang('Xác nhận thanh toán')
                             </button>

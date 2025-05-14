@@ -37,6 +37,9 @@ class Receipt extends Model
             ->when(!empty($params['area_id']), function ($query) use ($params) {
                 return $query->where('tb_receipt.area_id', $params['area_id']);
             })
+            ->when(!empty($params['permission_area']), function ($query) use ($params) {
+                return $query->whereIn('tb_receipt.area_id', $params['permission_area']);
+            })
             ->when(!empty($params['status']), function ($query) use ($params) {
                 return $query->where('tb_receipt.status', $params['status']);
             })
