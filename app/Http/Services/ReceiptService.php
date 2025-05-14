@@ -68,6 +68,7 @@ class ReceiptService
             $promotions = $student->studentPromotions;
             $startDate = Carbon::parse($data['enrolled_at']);
             if ($receipt->type_receipt == Consts::TYPE_RECEIPT['renew']) {
+
                 $details = $this->generateReceiptDetailsRenew($policies, $promotions, $data['student_services'], $startDate);
             }
             return $this->updateReceipt($receipt, $student, $details, $data);

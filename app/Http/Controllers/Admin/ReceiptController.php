@@ -278,21 +278,22 @@ class ReceiptController extends Controller
             // Lấy thông tin học sinh và TBP
             $student = Student::find($student_id);
             $receipt = Receipt::find($receipt_id);
-            // cập nhật lại service cho học sinh
+            // Cập nhật lại thông tin dịch vụ cho học sinh
             foreach ($student_services as $student_services_id => $item) {
                 $studentService = StudentService::find($student_services_id);
                 $studentService->payment_cycle_id = $item['payment_cycle_id'];
                 $studentService->save();
+
             }
             // Lấy thông tin dịch vụ của học sinh
-            $data['student_services'] = $student->studentServices()->with('services')
+            $data['student_services'] = $student->studentServices()
                 ->where('status', 'active')
-                ->get()
-                ->pluck('services');
-
+                ->get();
             $data['enrolled_at'] = $receipt->period_start;
+            // Xóa các TBP detail cũ
+            $receipt->receiptDetail()->delete();
             // Tính lại phí cho học sinh
-            $calcuReceipt = $receiptService->createReceiptForStudent($receipt, $student, $data);
+            $calcuReceipt = $receiptService->updateReceiptForStudent($receipt, $student, $data);
             DB::commit();
             return redirect()->back()->with('successMessage', __('Lưu thông tin thành công!'));
         } catch (\Exception $ex) {
