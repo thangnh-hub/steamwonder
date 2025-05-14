@@ -504,7 +504,6 @@
                                                         <th><?php echo app('translator')->get('STT'); ?></th>
                                                         <th><?php echo app('translator')->get('Mã biểu phí'); ?></th>
                                                         <th><?php echo app('translator')->get('Tên biểu phí'); ?></th>
-                                                        
                                                         <th><?php echo app('translator')->get('Số dư kỳ trước '); ?></th>
                                                         <th><?php echo app('translator')->get('Thành tiền'); ?></th>
                                                         <th><?php echo app('translator')->get('Tổng giảm trừ'); ?></th>
@@ -514,7 +513,6 @@
                                                         <th><?php echo app('translator')->get('Còn lại'); ?></th>
                                                         <th><?php echo app('translator')->get('Trạng thái'); ?></th>
                                                         <th><?php echo app('translator')->get('Ghi chú'); ?></th>
-                                                        
                                                         <th><?php echo app('translator')->get('Ngày tạo phí'); ?></th>
                                                         <th><?php echo app('translator')->get('Chức năng'); ?></th>
                                                     </tr>
@@ -534,7 +532,6 @@
                                                                 <td><?php echo e($loop->index + 1); ?> </td>
                                                                 <td><?php echo e($row->receipt_code ?? ''); ?></td>
                                                                 <td><?php echo e($row->receipt_name ?? ''); ?></td>
-                                                                
                                                                 <td><?php echo e(format_currency($row->prev_balance)); ?></td>
                                                                 <td><?php echo e(format_currency($row->total_amount)); ?></td>
                                                                 <td><?php echo e(format_currency($row->total_discount)); ?></td>
@@ -544,7 +541,6 @@
                                                                 <td><?php echo e(format_currency($row->total_due)); ?></td>
                                                                 <td><?php echo e(__($row->status)); ?></td>
                                                                 <td><?php echo e($row->note ?? ''); ?></td>
-                                                                
                                                                 <td><?php echo e(isset($row->created_at) ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') : ''); ?>
 
                                                                 </td>
@@ -1109,28 +1105,28 @@
             });
         });
         $('.btn_delete_receipt').click(function() {
-        let currentStudentReceiptId = $(this).data('id'); // Lấy ID phiếu thu hiện tại từ nút
-            if (confirm("Bạn có chắc chắn muốn xóa phiếu thu này?")) {
-                $.ajax({
-                    type: "GET",
-                    url: "<?php echo e(route('student.deleteReceipt')); ?>",
-                    data: {
-                        id: currentStudentReceiptId, // Đảm bảo đúng biến được gửi đi
-                    },
-                    success: function(response) {
-                        if (response.message === 'success') {
-                            localStorage.setItem('activeTab', '#tab_4');
-                            location.reload();
-                        } else {
-                            alert("Bạn không có quyền thao tác dữ liệu");
+            let currentStudentReceiptId = $(this).data('id'); // Lấy ID phiếu thu hiện tại từ nút
+                if (confirm("Bạn có chắc chắn muốn xóa phiếu thu này?")) {
+                    $.ajax({
+                        type: "GET",
+                        url: "<?php echo e(route('student.deleteReceipt')); ?>",
+                        data: {
+                            id: currentStudentReceiptId, // Đảm bảo đúng biến được gửi đi
+                        },
+                        success: function(response) {
+                            if (response.message === 'success') {
+                                localStorage.setItem('activeTab', '#tab_4');
+                                location.reload();
+                            } else {
+                                alert("Bạn không có quyền thao tác dữ liệu");
+                            }
+                        },
+                        error: function() {
+                            alert("Lỗi cập nhật.");
                         }
-                    },
-                    error: function() {
-                        alert("Lỗi cập nhật.");
-                    }
-                });
-            }
-    });
+                    });
+                }
+        });
 
 
         $(document).ready(function() {

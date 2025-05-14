@@ -7,6 +7,7 @@ use App\Models\Attendances;
 use App\Models\tbClass;
 use App\Models\Area;
 use App\Models\Student;
+use App\Models\Teacher;
 use App\Models\StudentClass;
 use Illuminate\Http\Request;
 
@@ -26,12 +27,18 @@ class AttendancesController extends Controller
      */
     public function index(Request $request)
     {
+        $rows = [];
         $params = $request->only(['keyword', 'class_id', 'area_id', 'tracked_at']);
+        $params['tracked_at'] = $params['tracked_at'] ?? date('Y-m-d', time());
         $this->responseData['classs'] = tbClass::all();
         $this->responseData['areas'] = Area::all();
+        $this->responseData['list_teacher'] = Teacher::all();
         $this->responseData['status'] = Consts::ATTENDANCE_STATUS;
         $this->responseData['params'] = $params;
-        $this->responseData['rows'] = StudentClass::getSqlStudentClass($params)->get();
+        if (isset($params['class_id']) && $params['class_id'] != "") {
+            $rows = StudentClass::getSqlStudentClass($params)->with(['student', 'student.studentParents', 'student.studentParents.relationship', 'student.studentParents.parent'])->get();
+        }
+        $this->responseData['rows'] = $rows;
         return $this->responseView($this->viewPart . '.index');
     }
 
