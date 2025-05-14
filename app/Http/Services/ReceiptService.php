@@ -33,6 +33,7 @@ class ReceiptService
         return $existing;
     }
 
+    //Check xem trong năm thằng đó với dịch vụ là loại yearly đã có biên lai nào từ tháng 6 chưa
     public function checkExistingServiceInReceiptsOfYear(Student $student, array $serviceIds, $year)
     {
         $existing = ReceiptDetail::where('student_id', $student->id)
@@ -175,12 +176,12 @@ class ReceiptService
      */
     protected function saveReceipt(Student $student, $details, $data)
     {
-
+        $startDate = Carbon::parse($data['enrolled_at']);
         $receipt = Receipt::create([
             'area_id' => $student->area_id,
             'student_id' => $student->id,
-            'receipt_code' => "PT-{$student->id}-" . now()->format('Ymd'),
-            'receipt_name' => "Phiếu thu HSM {$student->first_name} {$student->last_name}",
+            'receipt_code' => "PT-{$student->student_code}-" . $startDate->copy()->format('Ymd'),
+            'receipt_name' => "Phiếu TBP HSM: {$student->first_name} {$student->last_name} ({$student->student_code})",
             'total_amount' => $details->sum('amount'),
             'total_discount' => $details->sum('discount_amount'),
             'total_adjustment' => 0,
@@ -197,6 +198,8 @@ class ReceiptService
             $detail['admin_created_id'] = $this->admin->id;
             $receipt->receiptDetail()->create($detail);
         }
+        $receipt->receipt_code = "PT-{$receipt->id}-" . $startDate->copy()->format('Ymd');
+        $receipt->save();
 
         return $receipt;
     }
@@ -510,12 +513,12 @@ class ReceiptService
      */
     protected function saveReceiptYearly(Student $student, $details, $data)
     {
-
+        $startDate = Carbon::parse($data['enrolled_at']);
         $receipt = Receipt::create([
             'area_id' => $student->area_id,
             'student_id' => $student->id,
-            'receipt_code' => "PT-{$student->id}-" . now()->format('Ymd'),
-            'receipt_name' => "Phiếu thu đầu năm {$student->first_name} {$student->last_name}",
+            'receipt_code' => "PT-{$student->student_code}-" . $startDate->copy()->format('Ymd'),
+            'receipt_name' => "Phiếu đầu năm: {$student->first_name} {$student->last_name} ({$student->student_code})",
             'total_amount' => $details->sum('amount'),
             'total_discount' => $details->sum('discount_amount'),
             'total_adjustment' => 0,
@@ -532,7 +535,8 @@ class ReceiptService
             $detail['admin_created_id'] = $this->admin->id;
             $receipt->receiptDetail()->create($detail);
         }
-
+        $receipt->receipt_code = "PT-{$receipt->id}-" . $startDate->copy()->format('Ymd');
+        $receipt->save();
         return $receipt;
     }
 
