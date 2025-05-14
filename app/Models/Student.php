@@ -59,19 +59,24 @@ class Student extends Model
             })
             ->when(!empty($params['admission_id']), function ($query) use ($params) {
                 if (is_array($params['admission_id'])) {
-                  return $query->whereIn('admins.admission_id', $params['admission_id']);
+                  return $query->whereIn('tb_students.admission_id', $params['admission_id']);
                 }
-                return $query->where('admins.admission_id', '!=', $params['admission_id']);
+                return $query->where('tb_students.admission_id',$params['admission_id']);
+              })
+            ->when(!empty($params['permisson_area_id']), function ($query) use ($params) {
+                if (is_array($params['permisson_area_id'])) {
+                  return $query->whereIn('tb_students.area_id', $params['permisson_area_id']);
+                }
+                return $query->where('tb_students.area_id',  $params['permisson_area_id']);
               });
+        if (isset($params['area_id']) && !empty($params['area_id'])) {
+            $query->where('tb_students.area_id', $params['area_id']);
+        }
         if (isset($params['list_id']) && !empty($params['list_id'])) {
             $query->whereIn('tb_students.id', $params['list_id']);
         }
-
         if (!empty($params['status'])) {
             $query->where('tb_students.status', $params['status']);
-        }
-        if (!empty($params['area_id'])) {
-            $query->where('tb_students.area_id', $params['area_id']);
         }
         if (!empty($params['current_class_id'])) {
             $query->where('tb_students.current_class_id', $params['current_class_id']);
