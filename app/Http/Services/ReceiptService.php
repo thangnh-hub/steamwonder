@@ -182,6 +182,7 @@ class ReceiptService
             'student_id' => $student->id,
             'receipt_code' => "PT-{$student->student_code}-" . $startDate->copy()->format('Ymd'),
             'receipt_name' => "Phiếu TBP HSM: {$student->first_name} {$student->last_name} ({$student->student_code})",
+            'period_start' => $startDate->copy()->format('Ymd'),
             'total_amount' => $details->sum('amount'),
             'total_discount' => $details->sum('discount_amount'),
             'total_adjustment' => 0,
@@ -190,7 +191,8 @@ class ReceiptService
             'total_due' => $details->sum('final_amount'),
             'status' => 'pending',
             'admin_created_id' => $this->admin->id,
-            'note' => $data['note'] ?? null
+            'note' => $data['note'] ?? null,
+            'type_receipt' => Consts::TYPE_RECEIPT['new_student'],
         ]);
 
         foreach ($details as $detail) {
@@ -428,6 +430,7 @@ class ReceiptService
             'student_id' => $student->id,
             'receipt_code' => "PT-{$student->student_code}-" . $startDate->copy()->format('Ymd'),
             'receipt_name' => "Phiếu tái tục: {$student->first_name} {$student->last_name} ({$student->student_code})",
+            'period_start' => $startDate->copy()->format('Ymd'),
             'total_amount' => $details->sum('amount'),
             'total_discount' => $details->sum('discount_amount'),
             'total_adjustment' => 0,
@@ -436,6 +439,7 @@ class ReceiptService
             'total_due' => $details->sum('final_amount'),
             'status' => 'pending',
             'admin_created_id' => $this->admin->id,
+            'type_receipt' => Consts::TYPE_RECEIPT['renew'],
             'note' => $data['note'] ?? null
         ]);
 
@@ -508,17 +512,18 @@ class ReceiptService
         return collect($details);
     }
 
-    /**
-     * Lưu phiếu thu và chi tiết.
-     */
-    protected function saveReceiptYearly(Student $student, $details, $data)
-    {
+        /**
+         * Lưu phiếu thu và chi tiết.
+         */
+        protected function saveReceiptYearly(Student $student, $details, $data)
+        {
         $startDate = Carbon::parse($data['enrolled_at']);
         $receipt = Receipt::create([
             'area_id' => $student->area_id,
             'student_id' => $student->id,
             'receipt_code' => "PT-{$student->student_code}-" . $startDate->copy()->format('Ymd'),
             'receipt_name' => "Phiếu đầu năm: {$student->first_name} {$student->last_name} ({$student->student_code})",
+            'period_start' => $startDate->copy()->format('Ymd'),
             'total_amount' => $details->sum('amount'),
             'total_discount' => $details->sum('discount_amount'),
             'total_adjustment' => 0,
@@ -527,6 +532,7 @@ class ReceiptService
             'total_due' => $details->sum('final_amount'),
             'status' => 'pending',
             'admin_created_id' => $this->admin->id,
+            'type_receipt' => Consts::TYPE_RECEIPT['yearly'],
             'note' => $data['note'] ?? null
         ]);
 
