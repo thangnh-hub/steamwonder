@@ -9,6 +9,11 @@ class Consts
         'fixed_amount' =>'fixed_amount',
         'add_month' =>'add_month',
     ];
+    const TYPE_RECEIPT = [
+        'new_student' =>'new_student',
+        'renew' =>'renew',
+        'yearly' =>'yearly',
+    ];
     const STATUS_RECEIPT = [
         'pending' => 'pending',
         'accepted' => 'accepted',
