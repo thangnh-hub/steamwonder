@@ -18,7 +18,7 @@
                 <i class="fa fa-bars"></i> <?php echo app('translator')->get('List'); ?>
             </a>
             <a class="btn btn-warning pull-right mr-10" target="_blank"
-                href="<?php echo e(route(Request::segment(2) . '.print', $detail->id)); ?>">
+                href="<?php echo e(route(Request::segment(2) . '.print', $detail->id)); ?>" onclick="return openCenteredPopup(this.href)">
                 <i class="fa fa-print"></i> <?php echo app('translator')->get('In TBP'); ?>
             </a>
         </h1>
@@ -195,6 +195,7 @@
                                             <th>Giảm trừ</th>
                                             
                                             <th>Tổng tiền</th>
+                                            <th>Ghi chú</th>
                                         </tr>
                                         <?php $__currentLoopData = $detail->receiptDetail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr>
@@ -206,6 +207,7 @@
                                                 <td><?php echo e(number_format($item->discount_amount, 0, ',', '.') ?? ''); ?></td>
                                                 
                                                 <td><?php echo e(number_format($item->final_amount, 0, ',', '.') ?? ''); ?></td>
+                                                <td><?php echo e($item->note ?? ''); ?></td>
                                             </tr>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     <?php endif; ?>
@@ -289,6 +291,10 @@
                                     </tr>
                                 </tbody>
                             </table>
+
+                            <button type="submit" class="btn btn-success">
+                                <?php echo app('translator')->get('Duyệt TBP'); ?>
+                            </button>
                             <button type="submit" class="btn btn-success">
                                 <i class="fa fa-usd" aria-hidden="true" title="Thanh toán"></i> <?php echo app('translator')->get('Xác nhận thanh toán'); ?>
                             </button>

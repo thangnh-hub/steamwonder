@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Consts;
 use App\Http\Services\VietQrService;
+use App\Http\Services\DataPermissionService;
 use App\Models\Receipt;
 use App\Models\Area;
 use App\Models\Service;
@@ -30,7 +31,9 @@ class ReceiptController extends Controller
      */
     public function index(Request $request)
     {
+        $auth = Auth::guard('admin')->user();
         $params = $request->only(['keyword', 'status', 'area_id', 'type','student_id','created_at']);
+        $params['permission_area'] = DataPermissionService::getPermisisonAreas($auth ->id);
         $rows = Receipt::getSqlReceipt($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
         $this->responseData['rows'] = $rows;
         $this->responseData['areas'] = Area::all();
