@@ -232,6 +232,12 @@
 
                                     </td>
                                     <td class="">
+                                        <a class="btn btn-sm btn-primary" href="<?php echo e(route('receipt.print', $row->id)); ?>"
+                                            data-toggle="tooltip" title="<?php echo app('translator')->get('In phiếu'); ?>"
+                                            data-original-title="<?php echo app('translator')->get('In phiếu'); ?>"
+                                            onclick="return openCenteredPopup(this.href)">
+                                            <i class="fa fa-print"></i>
+                                        </a>
                                         <button class="btn btn-sm btn-success btn_show_detail" data-toggle="tooltip"
                                             data-id="<?php echo e($row->id); ?>"
                                             data-url="<?php echo e(route(Request::segment(2) . '.view', $row->id)); ?>"
@@ -243,9 +249,9 @@
                                             href="<?php echo e(route(Request::segment(2) . '.show', $row->id)); ?>">
                                             <i class="fa fa-pencil"></i>
                                         </a>
-                                        <button type="button"
-                                            class="btn btn-sm btn-danger btn_delete_receipt "
-                                            data-id="<?php echo e($row->id); ?>">
+                                        <button type="button" class="btn btn-sm btn-danger btn_delete_receipt "
+                                            data-id="<?php echo e($row->id); ?>" data-toggle="tooltip" title="<?php echo app('translator')->get('Xóa phiếu'); ?>"
+                                            data-original-title="<?php echo app('translator')->get('Xóa phiếu'); ?>">
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </td>
@@ -324,26 +330,26 @@
         })
         $('.btn_delete_receipt').click(function() {
             let currentStudentReceiptId = $(this).data('id'); // Lấy ID phiếu thu hiện tại từ nút
-                if (confirm("Bạn có chắc chắn muốn xóa phiếu thu này?")) {
-                    $.ajax({
-                        type: "GET",
-                        url: "<?php echo e(route('student.deleteReceipt')); ?>",
-                        data: {
-                            id: currentStudentReceiptId, // Đảm bảo đúng biến được gửi đi
-                        },
-                        success: function(response) {
-                            if (response.message === 'success') {
-                                localStorage.setItem('activeTab', '#tab_4');
-                                location.reload();
-                            } else {
-                                alert("Bạn không có quyền thao tác dữ liệu");
-                            }
-                        },
-                        error: function() {
-                            alert("Lỗi cập nhật.");
+            if (confirm("Bạn có chắc chắn muốn xóa phiếu thu này?")) {
+                $.ajax({
+                    type: "GET",
+                    url: "<?php echo e(route('student.deleteReceipt')); ?>",
+                    data: {
+                        id: currentStudentReceiptId, // Đảm bảo đúng biến được gửi đi
+                    },
+                    success: function(response) {
+                        if (response.message === 'success') {
+                            localStorage.setItem('activeTab', '#tab_4');
+                            location.reload();
+                        } else {
+                            alert("Bạn không có quyền thao tác dữ liệu");
                         }
-                    });
-                }
+                    },
+                    error: function() {
+                        alert("Lỗi cập nhật.");
+                    }
+                });
+            }
         });
     </script>
 <?php $__env->stopSection(); ?>

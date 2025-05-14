@@ -235,18 +235,14 @@
 <?php $__env->startSection('script'); ?>
     <script>
         $(document).ready(function () {
-            // Khi click vào checkbox "check_all"
             $('#check_all').on('change', function () {
                 $('.form-check-input:not(#check_all)').prop('checked', $(this).is(':checked'));
             });
 
-            // Khi click vào bất kỳ checkbox con nào
             $('.form-check-input:not(#check_all)').on('change', function () {
-                // Nếu có bất kỳ checkbox nào KHÔNG được check thì bỏ check "check_all"
                 if (!$(this).is(':checked')) {
                     $('#check_all').prop('checked', false);
                 } else {
-                    // Nếu tất cả checkbox con đều được check thì đánh dấu "check_all"
                     const allChecked = $('.form-check-input:not(#check_all)').length === $('.form-check-input:not(#check_all):checked').length;
                     $('#check_all').prop('checked', allChecked);
                 }

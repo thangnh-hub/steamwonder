@@ -461,11 +461,15 @@ class StudentController extends Controller
     public function calculateReceiptStudentFirstYear(Request $request,ReceiptService $receiptService)
     {
         $list_student_ids = $request->input('student', []);
+        //Lọc danh sách id học sinh gửi lên chỉ lấy thằng có ít nhất 1 dịch vụ là active và là laoij yearly thì mới tính hóa đơn
         $students = Student::whereIn('id', $list_student_ids)
-            ->whereHas('studentServices', function ($query) {
-                $query->where('status', 'active');
-            })
-            ->get();
+        ->whereHas('studentServices', function ($query) {
+            $query->where('status', 'active')
+                ->whereHas('services', function ($q) {
+                    $q->where('service_type', 'yearly');
+                });
+        })
+        ->get();
 
         foreach ($students as $student) {
             $data['student_services'] = $student->studentServices()
