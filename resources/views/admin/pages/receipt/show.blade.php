@@ -9,7 +9,8 @@
             max-width: 80%;
             width: auto;
         }
-        ..select2-container{
+
+        ..select2-container {
             width: 100% !important;
         }
     </style>
@@ -187,8 +188,10 @@
                                         <tr>
                                             <th colspan="7" class="text-left"><b>2. Phí dự kiến</b></th>
                                             <th class="text-right">
-                                                <button data-toggle="modal" data-target="#modal_show_service"
-                                                    class="btn btn-warning">@lang('Thay đổi kỳ tính phí cho HS')</button>
+                                                @if ($detail->status == 'pending')
+                                                    <button data-toggle="modal" data-target="#modal_show_service"
+                                                        class="btn btn-warning">@lang('Thay đổi kỳ tính phí cho HS')</button>
+                                                @endif
                                             </th>
                                         </tr>
                                     </thead>
@@ -373,7 +376,8 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <select class="form-control select2 w-100" name="student_services[{{ $item->id }}][payment_cycle_id]">
+                                                    <select class="form-control select2 w-100"
+                                                        name="student_services[{{ $item->id }}][payment_cycle_id]">
                                                         @if (isset($payment_cycle) && count($payment_cycle) > 0)
                                                             @foreach ($payment_cycle as $val)
                                                                 <option value="{{ $val->id }}"
