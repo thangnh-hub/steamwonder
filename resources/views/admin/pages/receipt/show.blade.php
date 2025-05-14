@@ -100,6 +100,7 @@
                                             </th>
                                             <th class="text-right">
                                                 <input type="number" name="prev_balance"
+                                                    {{ $detail->status == 'pending' ? '' : 'disabled' }}
                                                     class="form-control pull-right prev_balance" style="max-width: 200px;"
                                                     placeholder="Nhập số dư kỳ trước"
                                                     value="{{ (int) $detail->prev_balance }}">
@@ -143,23 +144,28 @@
                                                 <tr class="item_explanation">
                                                     <td colspan="6">
                                                         <input type="text"
+                                                            {{ $detail->status == 'pending' ? '' : 'disabled' }}
                                                             name="explanation[{{ $key }}][content]"
                                                             class="form-control action_change" value="{{ $item->content }}"
                                                             placeholder="Nội dung Truy thu/Hoàn trả">
                                                     </td>
                                                     <td>
                                                         <input type="number"
+                                                            {{ $detail->status == 'pending' ? '' : 'disabled' }}
                                                             name="explanation[{{ $key }}][value]"
                                                             class="form-control action_change" value="{{ $item->value }}"
                                                             placeholder="Giá trị tương ứng">
                                                     </td>
                                                     <td>
-                                                        <button class="btn btn-sm btn-danger" type="button"
-                                                            data-toggle="tooltip" onclick="$(this).closest('tr').remove()"
-                                                            title="@lang('Delete')"
-                                                            data-original-title="@lang('Delete')">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
+                                                        @if ($detail->status == 'pending')
+                                                            <button class="btn btn-sm btn-danger" type="button"
+                                                                data-toggle="tooltip"
+                                                                onclick="$(this).closest('tr').remove()"
+                                                                title="@lang('Delete')"
+                                                                data-original-title="@lang('Delete')">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -167,7 +173,9 @@
                                     </tbody>
                                 </table>
                             </form>
-                            <button class="btn btn-warning btn_explanation mt-10">@lang('Thêm giải trình')</button>
+                            @if ($detail->status == 'pending')
+                                <button class="btn btn-danger btn_explanation mt-10">@lang('Xóa giải trình')</button>
+                            @endif
                         </div>
                         <div class="custom-scroll table-responsive mt-15">
                             <table class="table table-bordered table-hover no-footer no-padding">
@@ -201,7 +209,7 @@
                                                 <td>{{ number_format($item->discount_amount, 0, ',', '.') ?? '' }}</td>
                                                 {{-- <td>{{ number_format($item->adjustment_amount, 0, ',', '.') ?? '' }}</td> --}}
                                                 <td>{{ number_format($item->final_amount, 0, ',', '.') ?? '' }}</td>
-                                                <td>{{ $item->note ?? '' }}</td>
+                                                <td>{!! $item->note ?? '' !!}</td>
                                             </tr>
                                         @endforeach
                                     @endif
@@ -267,6 +275,7 @@
                                         <td>@lang('Đã thu')</td>
                                         <td class="text-right">
                                             <input type="number" name="total_paid" class="form-control text-right"
+                                                {{ $detail->status == 'approved' ? '' : 'disabled' }}
                                                 value="{{ (int) $detail->total_paid ?? 0 }}">
                                         </td>
                                     </tr>
@@ -279,19 +288,25 @@
                                     <tr>
                                         <td>@lang('Hạn thanh toán')</td>
                                         <td class="text-right">
-                                            <input type="date" name="payment_deadline" class="form-control"
-                                                value="{{ $detail->json_params->payment_deadline ?? '' }}">
+                                            <input type="date" name="due_date" class="form-control"
+                                                {{ $detail->status == 'approved' ? '' : 'disabled' }}
+                                                value="{{ $detail->json_params->due_date ?? '' }}">
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
 
-                            {{-- <button type="submit" class="btn btn-success">
-                                @lang('Duyệt TBP')
-                            </button> --}}
-                            <button type="submit" class="btn btn-success">
-                                <i class="fa fa-usd" aria-hidden="true" title="Thanh toán"></i> @lang('Xác nhận thanh toán')
-                            </button>
+                            @if ($detail->status == 'pending')
+                                <button type="button" class="btn btn-success btn_approved">
+                                    @lang('Duyệt TBP')
+                                </button>
+                            @endif
+                            @if ($detail->status == 'approved')
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fa fa-usd" aria-hidden="true" title="Thanh toán"></i> @lang('Xác nhận thanh toán')
+                                </button>
+                            @endif
+
                         </form>
                     </div>
                 </div>
@@ -354,6 +369,40 @@
         $('#form_update_explanation').on('submit', function(event) {
             event.preventDefault();
             updateJsonExplanation();
+        });
+
+        $('.btn_approved').click(function() {
+            if (confirm('{{ __('confirm_action') }}')) {
+                var _url = "{{ route(Request::segment(2) . '.approved', $detail->id) }}";
+                var formData = $('#form_update_explanation').serialize();
+                $.ajax({
+                    type: "POST",
+                    url: _url,
+                    data: formData,
+                    success: function(response) {
+                        if (response) {
+                            window.location.reload();
+                        } else {
+                            var _html = `<div class="alert alert-warning alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            Bạn không có quyền thao tác chức năng này!
+                            </div>`;
+                            $('.box_alert').prepend(_html);
+                            $('html, body').animate({
+                                scrollTop: $(".alert").offset().top
+                            }, 1000);
+                            setTimeout(function() {
+                                $(".alert-danger").fadeOut(3000, function() {});
+                            }, 800);
+                        }
+                    },
+                    error: function(data) {
+                        var errors = data.responseJSON.message;
+                        alert(data);
+                    }
+                });
+            }
+
         });
 
         function updateJsonExplanation() {

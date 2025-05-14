@@ -32,8 +32,8 @@ class ReceiptController extends Controller
     public function index(Request $request)
     {
         $auth = Auth::guard('admin')->user();
-        $params = $request->only(['keyword', 'status', 'area_id', 'type','student_id','created_at']);
-        $params['permission_area'] = DataPermissionService::getPermisisonAreas($auth ->id);
+        $params = $request->only(['keyword', 'status', 'area_id', 'type', 'student_id', 'created_at']);
+        $params['permission_area'] = DataPermissionService::getPermisisonAreas($auth->id);
         $rows = Receipt::getSqlReceipt($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
         $this->responseData['rows'] = $rows;
         $this->responseData['areas'] = Area::all();
@@ -126,16 +126,41 @@ class ReceiptController extends Controller
             $receipt = Receipt::find($id);
             $json_params = json_decode(json_encode($receipt->json_params), true);
             // Cập nhật lại thông tin
-            $json_params['payment_deadline'] = $request->input('payment_deadline');
+            $json_params['due_date'] = $request->input('due_date');
             $receipt->status = Consts::STATUS_RECEIPT['paid'];
             $receipt->total_paid = $request->input('total_paid');
             $receipt->total_due = $receipt->total_final - $request->input('total_paid');
             $receipt->cashier_id = $admin->id;
+            $receipt->admin_updated_id = $admin->id;
             $receipt->json_params = $json_params;
             // Cập nhật trạng thái của prev_receipt nếu tồn tại
             if ($receipt->prev_receipt) {
                 $receipt->prev_receipt->status = Consts::STATUS_RECEIPT['completed'];
                 $receipt->prev_receipt->save(); // Lưu thay đổi
+            }
+            $receipt->save();
+            DB::commit();
+            return redirect()->back()->with('successMessage', __('Successfully updated!'));
+        } catch (Exception $ex) {
+            DB::rollBack();
+            return redirect()->back()->with('errorMessage', __($ex->getMessage()));
+        }
+    }
+    public function approved(Request $request, $id)
+    {
+        $admin = Auth::guard('admin')->user();
+        DB::beginTransaction();
+        try {
+            $receipt = Receipt::find($id);
+            $receipt->status = Consts::STATUS_RECEIPT['approved'];
+            $receipt->admin_updated_id = $admin->id;
+            // Cập nhật trạng thái của receiptDetail nếu tồn tại
+            if ($receipt->receiptDetail->count() > 0) {
+                foreach ($receipt->receiptDetail as $item) {
+                    $item->status = Consts::STATUS_RECEIPT['approved'];
+                    $item->admin_updated_id = $admin->id;
+                    $item->save();
+                }
             }
             $receipt->save();
             DB::commit();
@@ -192,9 +217,9 @@ class ReceiptController extends Controller
         });
         // Lấy thông tin giảm trừ
         $listServiceDiscount = $groupDetails
-        ->filter(function ($detail) {
-            return $detail['total_discount_amount'] > 0; // Lọc các dịch vụ có discount_amount > 0
-        });
+            ->filter(function ($detail) {
+                return $detail['total_discount_amount'] > 0; // Lọc các dịch vụ có discount_amount > 0
+            });
         $serviceMonthly = $groupByServiceType->get('monthly', collect()); // Dịch vụ loại monthly
         $serviceYearly = $groupByServiceType->get('yearly', collect()); // Dịch vụ loại monthly
         // Lấy các loại còn lại ngoài monthly và yearly
