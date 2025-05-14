@@ -134,7 +134,8 @@ Route::group(['namespace' => 'Admin'], function () {
 
             // Import Class và StudentClass
             Route::post('import_class', 'ClassController@importClassStudent')->name('class.import_class');
-            Route::post('receipt_payment/{id}', 'ReceiptController@payment')->name('receipt.payment');
+            Route::post('receipt/payment/{id}', 'ReceiptController@payment')->name('receipt.payment');
+            Route::post('receipt/approved/{id}', 'ReceiptController@approved')->name('receipt.approved');
             Route::post('data_crms_log_store', 'DataCrmController@storeCRMLOG')->name('data_crms_log_store');
 
             // --- PHẦN HỌC SINH---
