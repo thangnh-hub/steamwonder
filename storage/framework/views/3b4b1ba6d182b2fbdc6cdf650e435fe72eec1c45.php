@@ -16,6 +16,10 @@
         input[type="radio"] {
             transform: scale(1.5);
         }
+
+        .select2-container {
+            width: 100% !important;
+        }
     </style>
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content-header'); ?>
@@ -42,11 +46,6 @@
                     <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                 </div>
             </div>
-
-
-
-
-
             <form action="<?php echo e(route(Request::segment(2) . '.index')); ?>" method="GET">
                 <div class="box-body">
                     <div class="row">
@@ -152,14 +151,12 @@
                                 <th class="text-center" rowspan="2"><?php echo app('translator')->get('Mã học sinh'); ?></th>
                                 <th class="text-center" rowspan="2"><?php echo app('translator')->get('Tên học sinh'); ?></th>
                                 <th class="text-center" rowspan="2"><?php echo app('translator')->get('Nickname'); ?></th>
-                                <th class="text-center" colspan="2"><?php echo app('translator')->get('Đi học'); ?></th>
+                                <th class="text-center" rowspan="2"><?php echo app('translator')->get('Đi học'); ?></th>
                                 <th class="text-center" colspan="2"><?php echo app('translator')->get('Nghỉ học'); ?></th>
-                                
+                                <th class="text-center" rowspan="2"><?php echo app('translator')->get('Nội dung Đưa/Đón'); ?></th>
                             </tr>
                             <tr>
 
-                                <th class="text-center"><?php echo app('translator')->get('Đến'); ?></th>
-                                <th class="text-center"><?php echo app('translator')->get('về'); ?></th>
                                 <th class="text-center"><?php echo app('translator')->get('Không phép'); ?></th>
                                 <th class="text-center"><?php echo app('translator')->get('Có phép'); ?></th>
                             </tr>
@@ -173,17 +170,61 @@
 
                                         <?php echo e($item->student->last_name ?? ''); ?></td>
                                     <td><?php echo e($item->student->nickname ?? ''); ?></td>
-                                    <?php $__currentLoopData = $status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k => $v): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <td class="text-center">
-                                            <label class="box_radio"
-                                                for="student_<?php echo e($item->student_id); ?>_<?php echo e($k); ?>">
-                                                <input id="student_<?php echo e($item->student_id); ?>_<?php echo e($k); ?>"
-                                                    name="student[<?php echo e($item->student_id); ?>][status]"
-                                                    class="radiobox <?php echo e($k); ?>" type="radio" value="1">
-                                            </label>
-                                        </td>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                    
+                                    <td class="text-center">
+                                        <label class="box_radio" for="student_<?php echo e($item->student_id); ?>_checkin">
+                                            <input id="student_<?php echo e($item->student_id); ?>_checkin"
+                                                name="student[<?php echo e($item->student_id); ?>][status]" class="radiobox checkin"
+                                                data-id="<?php echo e($item->student_id); ?>" type="radio" value="1">
+                                        </label>
+                                    </td>
+                                    <td class="text-center">
+                                        <label class="box_radio" for="student_<?php echo e($item->student_id); ?>_absent_unexcused">
+                                            <input id="student_<?php echo e($item->student_id); ?>_absent_unexcused"
+                                                name="student[<?php echo e($item->student_id); ?>][status]"
+                                                class="radiobox absent_unexcused" data-id="<?php echo e($item->student_id); ?>"
+                                                type="radio" value="1">
+                                        </label>
+                                    </td>
+                                    <td class="text-center">
+                                        <label class="box_radio" for="student_<?php echo e($item->student_id); ?>_absent_excused">
+                                            <input id="student_<?php echo e($item->student_id); ?>_absent_excused"
+                                                name="student[<?php echo e($item->student_id); ?>][status]"
+                                                class="radiobox absent_excused" data-id="<?php echo e($item->student_id); ?>"
+                                                type="radio" value="1">
+                                        </label>
+                                    </td>
+                                    <td class="content_<?php echo e($item->student_id); ?>">
+                                        <div class="col-md-6 col-sm-6 col-xs-6">
+                                            <img class="photo_<?php echo e($item->student_id); ?>"
+                                                style="display:none; width: 100%; max-width: 250px;">
+                                        </div>
+                                        <div class="col-md-6 col-sm-6 col-xs-6 information_<?php echo e($item->student_id); ?>"
+                                            style="display:none">
+                                            <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                <select class="form-control select2 w-100"
+                                                    name="student_logtime[<?php echo e($item->student_id); ?>][relative_login]">
+                                                    <option selected="" value="">-Người đưa-</option>
+                                                    ${_option}
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                <select class="form-control select2 w-100"
+                                                    name="student_logtime[<?php echo e($item->student_id); ?>][member_login]">
+                                                    <option value="">-Giáo viên đón-</option>
+                                                    <?php $__currentLoopData = $list_teacher; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <option value="<?php echo e($item->id); ?>">
+                                                            <?php echo e($item->name ?? ''); ?></option>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </select>
+                                            </div>
+                                            <div class="form-group col-sm-12 col-xs-12">
+                                                <input name="student_logtime[<?php echo e($item->student_id); ?>][note]"
+                                                    type="text" class="form-control" style="width: 100%"
+                                                    id="note_<?php echo e($item->student_id); ?>" placeholder="Nhập ghi chú"
+                                                    value="">
+                                            </div>
+                                        </div>
+                                    </td>
                                 </tr>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
@@ -202,14 +243,17 @@
                         <h3 class="modal-title text-center col-md-12"><?php echo app('translator')->get('Chụp ảnh xác nhận'); ?></h3>
                         </h3>
                     </div>
-                    <div class="modal-body show_detail_đeuction">
-                        <video id="video" autoplay style="width: 100%; max-width: 400px;"></video>
-                        <canvas id="canvas" style="display:none;"></canvas>
-                        <img id="photo" alt="Captured Photo" style="display:none; width: 100%; max-width: 400px;">
+                    <div class="modal-body show_detail_eduction">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <video id="video" autoplay style="width: 100%; max-width: 250px;"></video>
+                                <canvas id="canvas" style="display:none;"></canvas>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" id="capture" class="btn btn-success">
-                            <i class="fa fa-save"></i> <?php echo app('translator')->get('Chụp ảnh và xác nhận'); ?>
+                        <button type="button" id="capture" data-id="" class="btn btn-success">
+                            <i class="fa fa-save"></i> <?php echo app('translator')->get('Chụp ảnh và xác nhận điểm danh'); ?>
                         </button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">
                             <i class="fa fa-remove"></i> <?php echo app('translator')->get('Close'); ?>
@@ -222,6 +266,7 @@
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('script'); ?>
     <script>
+        var rows = <?php echo json_encode($rows, 15, 512) ?>;
         let videoStream = null; // Biến lưu trữ stream của camera
         $(document).ready(function() {
             const video = $('#video')[0];
@@ -229,6 +274,22 @@
             const photo = $('#photo')[0];
 
             $(document).on('change', '.checkin', function() {
+                var _student_id = $(this).data('id');
+                var _student = rows.find(row => row.student_id === _student_id);
+                var _option = ``;
+                _student.student.student_parents.forEach(function(row) {
+                    _option += `<option value="${row.parent_id}">
+                                ${row.relationship.title ?? '' }:
+                                ${row.parent.first_name ?? '' }
+                                ${row.parent.last_name ?? '' }</option>`;
+                });
+                var _html = `
+
+                           `;
+
+                $('.select2').select2();
+                $('.box_eduction').html(_html);
+                $('#capture').attr('data-id', _student_id);
                 $('#modal_camera').modal('show');
 
                 // Bật camera
@@ -244,13 +305,13 @@
                         console.error('Không thể truy cập camera:', error);
                     });
             });
+            // Khi tắt modal thì tắt cam
             $('#modal_camera').on('hidden.bs.modal', function() {
                 if (videoStream) {
                     // Dừng tất cả các track video
                     videoStream.getTracks().forEach(track => track.stop());
                     videoStream = null; // Xóa stream để giải phóng bộ nhớ
                 }
-
                 // Xóa nội dung video nếu cần
                 const video = document.querySelector('#video');
                 if (video) {
@@ -260,14 +321,20 @@
 
 
             // Chụp ảnh
-            $('#capture').click(function() {
+            $(document).on('click', '#capture', function() {
+
+                var _id = $(this).data('id');
+                console.log(_id);
+
                 const context = canvas.getContext('2d');
                 canvas.width = video.videoWidth;
                 canvas.height = video.videoHeight;
                 context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
                 // Hiển thị ảnh đã chụp
-                $('#photo').attr('src', canvas.toDataURL('image/png')).show();
+                $('.photo_' + _id).attr('src', canvas.toDataURL('image/png')).show();
+                $('information_' + _id).show();
+                // Đóng modal
+                $('#modal_camera').modal('hide');
             });
 
             // Lưu ảnh

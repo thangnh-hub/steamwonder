@@ -135,7 +135,7 @@
                                 <label class="control-label"><strong><?php echo app('translator')->get('Trạng thái'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p><?php echo e($detail->status); ?></p>
+                                <p><?php echo e(__($detail->status)); ?></p>
                             </div>
                         </div>
                     </div>

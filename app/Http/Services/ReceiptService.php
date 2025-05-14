@@ -37,7 +37,7 @@ class ReceiptService
             }else {
                 $data['period_end'] = $startDate->copy()->addMonths($cycle->months)->endOfMonth()->format('Y-m-d');
             }
-            
+
             $details = $this->generateReceiptDetails($student, $cycle, $policies, $deductions, $data['services'], $startDate, $includeCurrent);
 
             return $this->saveReceipt($student, $cycle, $policies, $details, $data);
@@ -138,7 +138,7 @@ class ReceiptService
                         'final_amount' => $service_info['price'] * $service_info['quantity'] - $discount_amount,
                     ];
                     break;
-                
+
             }
         }
 
@@ -187,7 +187,7 @@ class ReceiptService
         $discount_cycle_type = $cycle->json_params->services->{$service_info['id']}->type ?? null;
         $amount = $service_info['price'] * $service_info['quantity'];
         $amount_after_discount = $amount;
-        
+
 
         // Ưu đãi theo chu kỳ thanh toán
         if ($discount_cycle_type == Consts::TYPE_POLICIES['percent']) {
@@ -248,7 +248,7 @@ class ReceiptService
             $policies = $student->studentPolicies->pluck('policy');
             $promotions = $student->studentPromotions;
             $startDate = Carbon::parse($data['enrolled_at']);
-            
+
             $details = $this->generateReceiptDetailsRenew( $policies,$promotions,  $data['student_services'], $startDate);
             return $this->saveReceiptRenew($student, $details, $data);
         });
@@ -309,7 +309,7 @@ class ReceiptService
 
         // Kiểm tra có chương trình khuyến mãi nào đc áp dụng không
         $has_valid_promotion = false;
-        
+
         // Ưu đãi theo khuyến mãi hợp lệ
         foreach ($promotions as $pro) {
             $start = Carbon::parse($pro->time_start)->startOfMonth();
@@ -319,14 +319,14 @@ class ReceiptService
             if ($checkMonth->between($start, $end)) {
                 $discount_promotion_value = $pro->promotion->json_params->services->{$service_info['id']}->value ?? 0;
                 $discount_promotion_type = $pro->promotion->promotion_type ?? null;
-    
+
                 if ($discount_promotion_type == Consts::TYPE_POLICIES['percent'] && $discount_promotion_value > 0) {
                     $has_valid_promotion = true;
                     $discount_notes[] = "{$pro->promotion->promotion_name} giảm ({$discount_promotion_value}%)";
                     $amount_after_discount = $amount_after_discount - $amount_after_discount * ($discount_promotion_value / 100);
-                }    
+                }
             }
-            
+
         }
         // Ưu đãi theo chu kỳ thanh toán
         if (!$has_valid_promotion) {

@@ -308,8 +308,13 @@
             $('.total_final').html(new Intl.NumberFormat('vi-VN').format(_total_final + _total_prev_balance -
                 _balance));
             $('.total_due').html(new Intl.NumberFormat('vi-VN').format(_total_due + _total_prev_balance -
-            _balance));
+                _balance));
+
         })
+
+        $('.prev_balance').on('change', function() {
+            updateJsonExplanation();
+        });
 
         $('.btn_explanation').click(function() {
             var currentDateTime = Math.floor(Date.now() / 1000);

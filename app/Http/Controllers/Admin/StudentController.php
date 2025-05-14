@@ -23,6 +23,11 @@ use App\Models\StudentPromotion;
 use App\Http\Services\ReceiptService;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
+use App\Imports\StudentPromotionImport;
+use App\Imports\StudentPolicyImport;
+use App\Imports\StudentServiceImport;
+use App\Imports\StudentReceiptImport;
+use App\Imports\StudentBalanceReceiptImport;
 
 class StudentController extends Controller
 {
@@ -143,7 +148,7 @@ class StudentController extends Controller
         //list promotion
         $this->responseData['status'] = Consts::STATUS;
         $this->responseData['services'] = Service::where('status', 'active')->get();
-        $this->responseData['promotion_active'] = StudentPromotion::where('student_id',$student->id)->where('status', 'active')->get();
+        $this->responseData['promotion_active'] = StudentPromotion::where('student_id', $student->id)->where('status', 'active')->get();
         $this->responseData['list_promotion'] = Promotion::getSqlPromotion($params_active)->get();
         return $this->responseView($this->viewPart . '.edit');
     }
@@ -157,6 +162,7 @@ class StudentController extends Controller
      */
     public function update(Request $request, Student $student)
     {
+        $auth = Auth::guard('admin')->user();
         $request->validate([
             'area_id'    => 'required',
             'first_name' => 'required',
@@ -164,7 +170,7 @@ class StudentController extends Controller
             'student_code' => 'unique:students,student_code,' . $student->id,
         ]);
         $params = $request->except(['includeCurrentMonth', 'policies', 'promotion_student', 'radio_promotion']);
-        $params['admin_updated_id'] = Auth::guard('admin')->user()->id;
+        $params['admin_updated_id'] = $auth->id;
 
         $student->update($params);
         try {
@@ -178,19 +184,21 @@ class StudentController extends Controller
                         'student_id' => $student->id,
                         'policy_id'  => $policyId,
                         'status'  => Consts::STATUS_ACTIVE,
-                        'admin_created_id' => Auth::guard('admin')->user()->id,
+                        'admin_created_id' => $auth->id,
                     ]);
                 }
             }
 
             // CT Khuyến mãi
-            if ($request->has('promotion_student')){
+            if ($request->has('promotion_student')) {
                 $params_promotion = $request->input('promotion_student');
                 $params_promotion['student_id'] = $student->id;
                 $params_promotion['promotion_id'] = $request->input('radio_promotion');
+                $params_promotion['admin_created_id'] = $auth->id;
+
                 StudentPromotion::create($params_promotion);
             }
-            
+
 
             return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Update successfully!'));
         } catch (\Exception $e) {
@@ -428,4 +436,163 @@ class StudentController extends Controller
         }
     }
 
+
+    public function importStudentPromotion(Request $request)
+    {
+        $params = $request->all();
+        if (isset($params['file'])) {
+            if ($this->checkFileImport($params['file']) == false) {
+                $_datawith = 'errorMessage';
+                $mess = 'File Import không hợp lệ, có chứ Sheet ẩn !';
+                session()->flash($_datawith, $mess);
+                return $this->sendResponse($_datawith, $mess);
+            }
+            $_datawith = 'successMessage';
+            $import = new StudentPromotionImport($params);
+            Excel::import($import, request()->file('file'));
+            if ($import->hasError) {
+                session()->flash('errorMessage', $import->errorMessage);
+                return $this->sendResponse('warning', $import->errorMessage);
+            }
+            $data_count = $import->getRowCount();
+            $mess = __('Thêm mới') . ": " . $data_count['insert_row'] . " - " . __('Cập nhật') . ": " . $data_count['update_row'] . " - " . __('Lỗi') . ": " . $data_count['error_row'];
+            foreach ($data_count['error_mess'] as $val) {
+                $mess .= '</br>' . $val;
+            };
+            if (count($data_count['error_mess']) > 0) {
+                $_datawith = 'errorMessage';
+            };
+            session()->flash($_datawith, $mess);
+            return $this->sendResponse($_datawith, $mess);
+        }
+        session()->flash('errorMessage', __('Cần chọn file để Import!'));
+        return $this->sendResponse('warning', __('Cần chọn file để Import!'));
+    }
+    public function importStudentPolicy(Request $request)
+    {
+        $params = $request->all();
+        if (isset($params['file'])) {
+            if ($this->checkFileImport($params['file']) == false) {
+                $_datawith = 'errorMessage';
+                $mess = 'File Import không hợp lệ, có chứ Sheet ẩn !';
+                session()->flash($_datawith, $mess);
+                return $this->sendResponse($_datawith, $mess);
+            }
+            $_datawith = 'successMessage';
+            $import = new StudentPolicyImport($params);
+            Excel::import($import, request()->file('file'));
+            if ($import->hasError) {
+                session()->flash('errorMessage', $import->errorMessage);
+                return $this->sendResponse('warning', $import->errorMessage);
+            }
+            $data_count = $import->getRowCount();
+            $mess = __('Thêm mới') . ": " . $data_count['insert_row'] . " - " . __('Cập nhật') . ": " . $data_count['update_row'] . " - " . __('Lỗi') . ": " . $data_count['error_row'];
+            foreach ($data_count['error_mess'] as $val) {
+                $mess .= '</br>' . $val;
+            };
+            if (count($data_count['error_mess']) > 0) {
+                $_datawith = 'errorMessage';
+            };
+            session()->flash($_datawith, $mess);
+            return $this->sendResponse($_datawith, $mess);
+        }
+        session()->flash('errorMessage', __('Cần chọn file để Import!'));
+        return $this->sendResponse('warning', __('Cần chọn file để Import!'));
+    }
+
+     public function importStudentService(Request $request)
+    {
+        $params = $request->all();
+        if (isset($params['file'])) {
+            if ($this->checkFileImport($params['file']) == false) {
+                $_datawith = 'errorMessage';
+                $mess = 'File Import không hợp lệ, có chứ Sheet ẩn !';
+                session()->flash($_datawith, $mess);
+                return $this->sendResponse($_datawith, $mess);
+            }
+            $_datawith = 'successMessage';
+            $import = new StudentServiceImport($params);
+            Excel::import($import, request()->file('file'));
+            if ($import->hasError) {
+                session()->flash('errorMessage', $import->errorMessage);
+                return $this->sendResponse('warning', $import->errorMessage);
+            }
+            $data_count = $import->getRowCount();
+            $mess = __('Thêm mới') . ": " . $data_count['insert_row'] . " - " . __('Cập nhật') . ": " . $data_count['update_row'] . " - " . __('Lỗi') . ": " . $data_count['error_row'];
+            foreach ($data_count['error_mess'] as $val) {
+                $mess .= '</br>' . $val;
+            };
+            if (count($data_count['error_mess']) > 0) {
+                $_datawith = 'errorMessage';
+            };
+            session()->flash($_datawith, $mess);
+            return $this->sendResponse($_datawith, $mess);
+        }
+        session()->flash('errorMessage', __('Cần chọn file để Import!'));
+        return $this->sendResponse('warning', __('Cần chọn file để Import!'));
+    }
+
+    public function importStudentReceipt(Request $request)
+    {
+        $params = $request->all();
+        if (isset($params['file'])) {
+            if ($this->checkFileImport($params['file']) == false) {
+                $_datawith = 'errorMessage';
+                $mess = 'File Import không hợp lệ, có chứ Sheet ẩn !';
+                session()->flash($_datawith, $mess);
+                return $this->sendResponse($_datawith, $mess);
+            }
+            $_datawith = 'successMessage';
+            $import = new StudentReceiptImport($params);
+            Excel::import($import, request()->file('file'));
+            if ($import->hasError) {
+                session()->flash('errorMessage', $import->errorMessage);
+                return $this->sendResponse('warning', $import->errorMessage);
+            }
+            $data_count = $import->getRowCount();
+            $mess = __('Thêm mới') . ": " . $data_count['insert_row'] . " - " . __('Cập nhật') . ": " . $data_count['update_row'] . " - " . __('Lỗi') . ": " . $data_count['error_row'];
+            foreach ($data_count['error_mess'] as $val) {
+                $mess .= '</br>' . $val;
+            };
+            if (count($data_count['error_mess']) > 0) {
+                $_datawith = 'errorMessage';
+            };
+            session()->flash($_datawith, $mess);
+            return $this->sendResponse($_datawith, $mess);
+        }
+        session()->flash('errorMessage', __('Cần chọn file để Import!'));
+        return $this->sendResponse('warning', __('Cần chọn file để Import!'));
+    }
+
+    public function importStudentBalanceReceipt(Request $request)
+    {
+        $params = $request->all();
+        if (isset($params['file'])) {
+            if ($this->checkFileImport($params['file']) == false) {
+                $_datawith = 'errorMessage';
+                $mess = 'File Import không hợp lệ, có chứ Sheet ẩn !';
+                session()->flash($_datawith, $mess);
+                return $this->sendResponse($_datawith, $mess);
+            }
+            $_datawith = 'successMessage';
+            $import = new StudentBalanceReceiptImport($params);
+            Excel::import($import, request()->file('file'));
+            if ($import->hasError) {
+                session()->flash('errorMessage', $import->errorMessage);
+                return $this->sendResponse('warning', $import->errorMessage);
+            }
+            $data_count = $import->getRowCount();
+            $mess = __('Thêm mới') . ": " . $data_count['insert_row'] . " - " . __('Cập nhật') . ": " . $data_count['update_row'] . " - " . __('Lỗi') . ": " . $data_count['error_row'];
+            foreach ($data_count['error_mess'] as $val) {
+                $mess .= ',' . $val;
+            };
+            if (count($data_count['error_mess']) > 0) {
+                $_datawith = 'errorMessage';
+            };
+            session()->flash($_datawith, $mess);
+            return $this->sendResponse($_datawith, $mess);
+        }
+        session()->flash('errorMessage', __('Cần chọn file để Import!'));
+        return $this->sendResponse('warning', __('Cần chọn file để Import!'));
+    }
 }

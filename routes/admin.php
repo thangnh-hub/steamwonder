@@ -111,6 +111,17 @@ Route::group(['namespace' => 'Admin'], function () {
                 'attendance' => 'AttendancesController',
                 'promotions' => 'PromotionController',
             ]);
+            // Import Student Promotion
+            Route::post('import_student_promotion', 'StudentController@importStudentPromotion')->name('student.import_promotion');
+            // Import Student policy
+            Route::post('import_student_policy', 'StudentController@importStudentPolicy')->name('student.import_policy');
+            // Import Student service
+            Route::post('import_student_service', 'StudentController@importStudentService')->name('student.import_service');
+            // Import Student Receipt
+            Route::post('import_student_receipt', 'StudentController@importStudentReceipt')->name('student.import_receipt');
+            // Import Update Balance Receipt
+            Route::post('import_student_balance_receipt', 'StudentController@importStudentBalanceReceipt')->name('student.import_balance_receipt');
+
 
             //CBTS
             Route::get('admissions/students', 'AdmissionStudentController@index')->name('admission.student.index');
