@@ -29,7 +29,7 @@ class ReceiptService
     public function checkExistingServiceInReceipts(Student $student, array $serviceIds)
     {
         $existing = ReceiptDetail::where('student_id', $student->id)
-        ->whereIn('service_id', $serviceIds)->exists();
+            ->whereIn('service_id', $serviceIds)->exists();
         return $existing;
     }
 
@@ -56,20 +56,33 @@ class ReceiptService
             $deductions = $this->getDeductions();
             $startDate = Carbon::parse($data['enrolled_at']);
             $includeCurrent = $data['include_current_month'] ?? true;
-            $details = $this->generateReceiptDetails($policies, $promotions,$deductions, $data['student_services'], $startDate, $includeCurrent);
+            $details = $this->generateReceiptDetails($policies, $promotions, $deductions, $data['student_services'], $startDate, $includeCurrent);
 
             return $this->saveReceipt($student,  $details, $data);
+        });
+    }
+    public function updateReceiptForStudent(Receipt $receipt, Student $student, array $data)
+    {
+        return DB::transaction(function () use ($receipt, $student, $data) {
+            $policies = $student->studentPolicies->pluck('policy');
+            $promotions = $student->studentPromotions;
+            $startDate = Carbon::parse($data['enrolled_at']);
+            if ($receipt->type_receipt == Consts::TYPE_RECEIPT['renew']) {
+
+                $details = $this->generateReceiptDetailsRenew($policies, $promotions, $data['student_services'], $startDate);
+            }
+            return $this->updateReceipt($receipt, $student, $details, $data);
         });
     }
 
     /**
      * Sinh các dòng chi tiết biên lai.
      */
-    protected function generateReceiptDetails( $policies,$promotions , $deductions, $student_services, Carbon $startDate, bool $includeCurrent)
+    protected function generateReceiptDetails($policies, $promotions, $deductions, $student_services, Carbon $startDate, bool $includeCurrent)
     {
         $details = [];
         foreach ($student_services as $studentservice) {
-            $cycle= $studentservice->paymentcycle;
+            $cycle = $studentservice->paymentcycle;
             $service = $studentservice->services;
             // Tìm mức chi phí đang áp dụng vào ngày nhập học
             $matchedDetail = collect($service->serviceDetail)->first(function ($detail) use ($startDate) {
@@ -81,7 +94,7 @@ class ReceiptService
 
 
             $service_info['id'] = $service->id;
-            $service_info['name'] = $service->name??"";
+            $service_info['name'] = $service->name ?? "";
             $service_info['price'] = $matchedDetail['price'] ?? 0;
             $service_info['quantity'] = $matchedDetail['quantity'] ?? 0;
             switch ($service->service_type) {
@@ -89,7 +102,7 @@ class ReceiptService
                     $monthCount = $cycle->months;
                     $firstMonth = $startDate->copy();
                     // Ở đây cần xử lý trường hợp đặc biệt dành cho tháng hiện tại (nhập học)
-                    $discount_amount = $this->calculateDiscount($service_info, $cycle, $policies, $promotions,$deductions, $startDate, $firstMonth);
+                    $discount_amount = $this->calculateDiscount($service_info, $cycle, $policies, $promotions, $deductions, $startDate, $firstMonth);
                     $details[] = [
                         'service_id' => $service->id,
                         'month' => $firstMonth->format('Y-m-d'),
@@ -168,7 +181,6 @@ class ReceiptService
                         'note' => $discount_amount['cal_discount_note'],
                     ];
                     break;
-
             }
         }
         return collect($details);
@@ -209,6 +221,24 @@ class ReceiptService
         return $receipt;
     }
 
+    protected function updateReceipt(Receipt $receipt, Student $student, $details)
+    {
+        // Cập nhât lại giá tiên cho receipt
+        $receipt->total_amount = $details->sum('amount');
+        $receipt->total_discount = $details->sum('discount_amount');
+        $receipt->total_final = $details->sum('final_amount') - $receipt->prev_balance ?? 0;
+        $receipt->total_due = $details->sum('final_amount') - $receipt->prev_balance ?? 0;
+        $receipt->admin_updated_id = $this->admin->id;
+
+        foreach ($details as $detail) {
+            $detail['student_id'] = $student->id;
+            $detail['admin_created_id'] = $this->admin->id;
+            $receipt->receiptDetail()->create($detail);
+        }
+        $receipt->save();
+
+        return $receipt;
+    }
     /**
      * Tính giảm trừ trên từng dịch vụ.
      */
@@ -239,7 +269,6 @@ class ReceiptService
                     $amount_after_discount = $amount_after_discount - $amount_after_discount * ($discount_promotion_value / 100);
                 }
             }
-
         }
 
         // Ưu đãi theo chu kỳ thanh toán
@@ -314,16 +343,16 @@ class ReceiptService
             $promotions = $student->studentPromotions;
             $startDate = Carbon::parse($data['enrolled_at']);
 
-            $details = $this->generateReceiptDetailsRenew( $policies,$promotions,  $data['student_services'], $startDate);
+            $details = $this->generateReceiptDetailsRenew($policies, $promotions,  $data['student_services'], $startDate);
             return $this->saveReceiptRenew($student, $details, $data);
         });
     }
 
-    protected function generateReceiptDetailsRenew( $policies, $promotions, $student_services, Carbon $startDate )
+    protected function generateReceiptDetailsRenew($policies, $promotions, $student_services, Carbon $startDate)
     {
         $details = [];
         foreach ($student_services as $studentservice) {
-            $cycle= $studentservice->paymentcycle;
+            $cycle = $studentservice->paymentcycle;
             $service = $studentservice->services;
             // Tìm mức chi phí đang áp dụng vào ngày nhập học
             $matchedDetail = collect($service->serviceDetail)->first(function ($detail) use ($startDate) {
@@ -334,7 +363,7 @@ class ReceiptService
             });
 
             $service_info['id'] = $service->id;
-            $service_info['name'] = $service->name??"";
+            $service_info['name'] = $service->name ?? "";
             $service_info['price'] = $matchedDetail['price'] ?? 0;
             $service_info['quantity'] = $matchedDetail['quantity'] ?? 0;
             switch ($service->service_type) {
@@ -344,7 +373,7 @@ class ReceiptService
                     // Tính toán các tháng còn lại
                     for ($i = 0; $i < $monthCount; $i++) {
                         $month = $firstMonth->copy()->addMonths($i);
-                        $discount_amount = $this->calculateDiscountRenew( $service_info, $cycle, $policies, $promotions,$month) ;
+                        $discount_amount = $this->calculateDiscountRenew($service_info, $cycle, $policies, $promotions, $month);
                         $details[] = [
                             'service_id' => $service->id,
                             'month' => $month->startOfMonth()->format('Y-m-d'),
@@ -356,14 +385,14 @@ class ReceiptService
                             'note' => $discount_amount['cal_discount_note'],
                         ];
                     }
-                break;
+                    break;
             }
         }
 
         return collect($details);
     }
 
-    protected function calculateDiscountRenew($service_info, $cycle, $policies , $promotions, $month)
+    protected function calculateDiscountRenew($service_info, $cycle, $policies, $promotions, $month)
     {
         $discount_cycle_value = $cycle->json_params->services->{$service_info['id']}->value ?? 0;
         $discount_cycle_type = $cycle->json_params->services->{$service_info['id']}->type ?? null;
@@ -391,7 +420,6 @@ class ReceiptService
                     $amount_after_discount = $amount_after_discount - $amount_after_discount * ($discount_promotion_value / 100);
                 }
             }
-
         }
         // Ưu đãi theo chu kỳ thanh toán
         if (!$has_valid_promotion) {
@@ -468,7 +496,7 @@ class ReceiptService
             $promotions = $student->studentPromotions;
             $deductions = $this->getDeductions();
             $startDate = Carbon::parse($data['enrolled_at']);
-            $details = $this->generateReceiptDetailsYearly($policies, $promotions,$deductions, $data['student_services'], $startDate);
+            $details = $this->generateReceiptDetailsYearly($policies, $promotions, $deductions, $data['student_services'], $startDate);
 
             return $this->saveReceiptYearly($student,  $details, $data);
         });
@@ -477,11 +505,11 @@ class ReceiptService
     /**
      * Sinh các dòng chi tiết biên lai.
      */
-    protected function generateReceiptDetailsYearly( $policies,$promotions , $deductions, $student_services, Carbon $startDate)
+    protected function generateReceiptDetailsYearly($policies, $promotions, $deductions, $student_services, Carbon $startDate)
     {
         $details = [];
         foreach ($student_services as $studentservice) {
-            $cycle= $studentservice->paymentcycle;
+            $cycle = $studentservice->paymentcycle;
             $service = $studentservice->services;
             // Tìm mức chi phí đang áp dụng vào ngày nhập học
             $matchedDetail = collect($service->serviceDetail)->first(function ($detail) use ($startDate) {
@@ -492,13 +520,13 @@ class ReceiptService
             });
 
             $service_info['id'] = $service->id;
-            $service_info['name'] = $service->name??"";
+            $service_info['name'] = $service->name ?? "";
             $service_info['price'] = $matchedDetail['price'] ?? 0;
             $service_info['quantity'] = $matchedDetail['quantity'] ?? 0;
             switch ($service->service_type) {
                 case Consts::SERVICE_TYPE['yearly']:
-                    $month= $startDate->format('Y-m-d');
-                    $discount_amount = $this->calculateDiscountYearly( $service_info, $cycle, $policies, $promotions,$deductions, $startDate , $month);
+                    $month = $startDate->format('Y-m-d');
+                    $discount_amount = $this->calculateDiscountYearly($service_info, $cycle, $policies, $promotions, $deductions, $startDate, $month);
                     $details[] = [
                         'service_id' => $service->id,
                         'month' => $month,
@@ -515,11 +543,11 @@ class ReceiptService
         return collect($details);
     }
 
-        /**
-         * Lưu phiếu thu và chi tiết.
-         */
-        protected function saveReceiptYearly(Student $student, $details, $data)
-        {
+    /**
+     * Lưu phiếu thu và chi tiết.
+     */
+    protected function saveReceiptYearly(Student $student, $details, $data)
+    {
         $startDate = Carbon::parse($data['enrolled_at']);
         $receipt = Receipt::create([
             'area_id' => $student->area_id,
@@ -552,7 +580,7 @@ class ReceiptService
     /**
      * Tính giảm trừ trên từng dịch vụ.
      */
-    protected function calculateDiscountYearly( $service_info, $cycle, $policies, $promotions, $deductions, ?Carbon $startDate = null, $month = null)
+    protected function calculateDiscountYearly($service_info, $cycle, $policies, $promotions, $deductions, ?Carbon $startDate = null, $month = null)
     {
         $discount_cycle_value = $cycle->json_params->services->{$service_info['id']}->value ?? 0;
         $discount_cycle_type = $cycle->json_params->services->{$service_info['id']}->type ?? null;
@@ -579,7 +607,6 @@ class ReceiptService
                     $amount_after_discount = $amount_after_discount - $amount_after_discount * ($discount_promotion_value / 100);
                 }
             }
-
         }
 
         // Ưu đãi theo chu kỳ thanh toán

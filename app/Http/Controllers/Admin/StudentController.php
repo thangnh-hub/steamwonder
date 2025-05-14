@@ -50,14 +50,14 @@ class StudentController extends Controller
         $admin = Auth::guard('admin')->user();
         $params['permisson_area_id'] = DataPermissionService::getPermisisonAreas($admin->id);
         if (empty($params['permisson_area_id'])) {
-            $params['permisson_area_id'] = [-1]; 
+            $params['permisson_area_id'] = [-1];
         }
         // Get list post with filter params
         $rows = Student::getSqlStudent($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
 
         $this->responseData['rows'] =  $rows;
         $this->responseData['params'] = $params;
-        
+
         $params_area['id'] = DataPermissionService::getPermisisonAreas($admin->id);
         $params_area['status'] = Consts::STATUS_ACTIVE;
         $this->responseData['area'] = Area::getsqlArea($params_area)->get();
