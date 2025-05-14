@@ -339,7 +339,7 @@
     <script>
         $(document).ready(function() {
             // Mở hộp thoại in
-            // window.print();
+            window.print();
         });
     </script>
 </body>
