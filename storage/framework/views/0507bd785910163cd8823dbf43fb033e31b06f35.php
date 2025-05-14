@@ -102,6 +102,8 @@
                                             </th>
                                             <th class="text-right">
                                                 <input type="number" name="prev_balance"
+                                                    <?php echo e($detail->status == 'pending' ? '' : 'disabled'); ?>
+
                                                     class="form-control pull-right prev_balance" style="max-width: 200px;"
                                                     placeholder="Nhập số dư kỳ trước"
                                                     value="<?php echo e((int) $detail->prev_balance); ?>">
@@ -149,23 +151,30 @@
                                                 <tr class="item_explanation">
                                                     <td colspan="6">
                                                         <input type="text"
+                                                            <?php echo e($detail->status == 'pending' ? '' : 'disabled'); ?>
+
                                                             name="explanation[<?php echo e($key); ?>][content]"
                                                             class="form-control action_change" value="<?php echo e($item->content); ?>"
                                                             placeholder="Nội dung Truy thu/Hoàn trả">
                                                     </td>
                                                     <td>
                                                         <input type="number"
+                                                            <?php echo e($detail->status == 'pending' ? '' : 'disabled'); ?>
+
                                                             name="explanation[<?php echo e($key); ?>][value]"
                                                             class="form-control action_change" value="<?php echo e($item->value); ?>"
                                                             placeholder="Giá trị tương ứng">
                                                     </td>
                                                     <td>
-                                                        <button class="btn btn-sm btn-danger" type="button"
-                                                            data-toggle="tooltip" onclick="$(this).closest('tr').remove()"
-                                                            title="<?php echo app('translator')->get('Delete'); ?>"
-                                                            data-original-title="<?php echo app('translator')->get('Delete'); ?>">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
+                                                        <?php if($detail->status == 'pending'): ?>
+                                                            <button class="btn btn-sm btn-danger" type="button"
+                                                                data-toggle="tooltip"
+                                                                onclick="$(this).closest('tr').remove()"
+                                                                title="<?php echo app('translator')->get('Delete'); ?>"
+                                                                data-original-title="<?php echo app('translator')->get('Delete'); ?>">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
+                                                        <?php endif; ?>
                                                     </td>
                                                 </tr>
                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -173,7 +182,9 @@
                                     </tbody>
                                 </table>
                             </form>
-                            <button class="btn btn-warning btn_explanation mt-10"><?php echo app('translator')->get('Thêm giải trình'); ?></button>
+                            <?php if($detail->status == 'pending'): ?>
+                                <button class="btn btn-danger btn_explanation mt-10"><?php echo app('translator')->get('Xóa giải trình'); ?></button>
+                            <?php endif; ?>
                         </div>
                         <div class="custom-scroll table-responsive mt-15">
                             <table class="table table-bordered table-hover no-footer no-padding">
@@ -207,7 +218,7 @@
                                                 <td><?php echo e(number_format($item->discount_amount, 0, ',', '.') ?? ''); ?></td>
                                                 
                                                 <td><?php echo e(number_format($item->final_amount, 0, ',', '.') ?? ''); ?></td>
-                                                <td><?php echo e($item->note ?? ''); ?></td>
+                                                <td><?php echo $item->note ?? ''; ?></td>
                                             </tr>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     <?php endif; ?>
@@ -272,6 +283,8 @@
                                         <td><?php echo app('translator')->get('Đã thu'); ?></td>
                                         <td class="text-right">
                                             <input type="number" name="total_paid" class="form-control text-right"
+                                                <?php echo e($detail->status == 'approved' ? '' : 'disabled'); ?>
+
                                                 value="<?php echo e((int) $detail->total_paid ?? 0); ?>">
                                         </td>
                                     </tr>
@@ -285,19 +298,26 @@
                                     <tr>
                                         <td><?php echo app('translator')->get('Hạn thanh toán'); ?></td>
                                         <td class="text-right">
-                                            <input type="date" name="payment_deadline" class="form-control"
-                                                value="<?php echo e($detail->json_params->payment_deadline ?? ''); ?>">
+                                            <input type="date" name="due_date" class="form-control"
+                                                <?php echo e($detail->status == 'approved' ? '' : 'disabled'); ?>
+
+                                                value="<?php echo e($detail->json_params->due_date ?? ''); ?>">
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
 
-                            <button type="submit" class="btn btn-success">
-                                <?php echo app('translator')->get('Duyệt TBP'); ?>
-                            </button>
-                            <button type="submit" class="btn btn-success">
-                                <i class="fa fa-usd" aria-hidden="true" title="Thanh toán"></i> <?php echo app('translator')->get('Xác nhận thanh toán'); ?>
-                            </button>
+                            <?php if($detail->status == 'pending'): ?>
+                                <button type="button" class="btn btn-success btn_approved">
+                                    <?php echo app('translator')->get('Duyệt TBP'); ?>
+                                </button>
+                            <?php endif; ?>
+                            <?php if($detail->status == 'approved'): ?>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fa fa-usd" aria-hidden="true" title="Thanh toán"></i> <?php echo app('translator')->get('Xác nhận thanh toán'); ?>
+                                </button>
+                            <?php endif; ?>
+
                         </form>
                     </div>
                 </div>
@@ -360,6 +380,40 @@
         $('#form_update_explanation').on('submit', function(event) {
             event.preventDefault();
             updateJsonExplanation();
+        });
+
+        $('.btn_approved').click(function() {
+            if (confirm('<?php echo e(__('confirm_action')); ?>')) {
+                var _url = "<?php echo e(route(Request::segment(2) . '.approved', $detail->id)); ?>";
+                var formData = $('#form_update_explanation').serialize();
+                $.ajax({
+                    type: "POST",
+                    url: _url,
+                    data: formData,
+                    success: function(response) {
+                        if (response) {
+                            window.location.reload();
+                        } else {
+                            var _html = `<div class="alert alert-warning alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            Bạn không có quyền thao tác chức năng này!
+                            </div>`;
+                            $('.box_alert').prepend(_html);
+                            $('html, body').animate({
+                                scrollTop: $(".alert").offset().top
+                            }, 1000);
+                            setTimeout(function() {
+                                $(".alert-danger").fadeOut(3000, function() {});
+                            }, 800);
+                        }
+                    },
+                    error: function(data) {
+                        var errors = data.responseJSON.message;
+                        alert(data);
+                    }
+                });
+            }
+
         });
 
         function updateJsonExplanation() {

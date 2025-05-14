@@ -149,6 +149,7 @@
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
+                                <th>@lang('STT')</th>
                                 <th>@lang('Mã TBP')</th>
                                 <th>@lang('Tên TBP')</th>
                                 <th>@lang('Học sinh')</th>
@@ -170,6 +171,9 @@
                         <tbody>
                             @foreach ($rows as $row)
                                 <tr class="valign-middle">
+                                    <td>
+                                        {{$loop->index + 1}}
+                                    </td>
                                     <td>
                                         <strong style="font-size: 14px">{{ $row->receipt_code ?? '' }}</strong>
                                     </td>
