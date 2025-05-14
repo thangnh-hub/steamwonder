@@ -122,6 +122,8 @@ Route::group(['namespace' => 'Admin'], function () {
             // Import Update Balance Receipt
             Route::post('import_student_balance_receipt', 'StudentController@importStudentBalanceReceipt')->name('student.import_balance_receipt');
 
+            // Cập nhật lại service cho học sinh và tính lại phí
+            Route::post('receipt/update_student_service_and_fee', 'ReceiptController@updateStudentServiceAndFee')->name('receipt.update_student_service_and_fee');
 
             //CBTS
             Route::get('admissions/students', 'AdmissionStudentController@index')->name('admission.student.index');

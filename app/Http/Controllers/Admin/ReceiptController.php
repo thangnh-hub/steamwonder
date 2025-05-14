@@ -5,14 +5,18 @@ namespace App\Http\Controllers\Admin;
 use App\Consts;
 use App\Http\Services\VietQrService;
 use App\Http\Services\DataPermissionService;
+use App\Http\Services\ReceiptService;
 use App\Models\Receipt;
 use App\Models\Area;
 use App\Models\Service;
 use App\Models\Student;
+use App\Models\PaymentCycle;
+use App\Models\StudentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use Carbon\Carbon;
 
 
 class ReceiptController extends Controller
@@ -74,6 +78,9 @@ class ReceiptController extends Controller
     {
         $detail = $receipt;
         $this->responseData['detail'] = $detail;
+        $this->responseData['due_date'] = Carbon::parse($detail->created_at)->endOfMonth()->format('Y-m-d');
+
+        $this->responseData['payment_cycle'] = PaymentCycle::all();
         $this->responseData['module_name'] = 'Thanh toán TBP';
         return $this->responseView($this->viewPart . '.show');
     }
@@ -257,5 +264,40 @@ class ReceiptController extends Controller
             );
         }
         return $this->responseView($this->viewPart . '.print');
+    }
+
+
+    // Cập nhật lại dịch vụ cho học sinh và tính lại phí cho học sinh
+    public function updateStudentServiceAndFee(Request $request, ReceiptService $receiptService)
+    {
+        DB::beginTransaction();
+        try {
+            $receipt_id = $request->input('receipt_id');
+            $student_id = $request->input('student_id');
+            $student_services = $request->input('student_services');
+            // Lấy thông tin học sinh và TBP
+            $student = Student::find($student_id);
+            $receipt = Receipt::find($receipt_id);
+            // cập nhật lại service cho học sinh
+            foreach ($student_services as $student_services_id => $item) {
+                $studentService = StudentService::find($student_services_id);
+                $studentService->payment_cycle_id = $item['payment_cycle_id'];
+                $studentService->save();
+            }
+            // Lấy thông tin dịch vụ của học sinh
+            $data['student_services'] = $student->studentServices()->with('services')
+                ->where('status', 'active')
+                ->get()
+                ->pluck('services');
+
+            $data['enrolled_at'] = $receipt->period_start;
+            // Tính lại phí cho học sinh
+            $calcuReceipt = $receiptService->createReceiptForStudent($receipt, $student, $data);
+            DB::commit();
+            return redirect()->back()->with('successMessage', __('Lưu thông tin thành công!'));
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            return redirect()->back()->with('errorMessage', __($ex->getMessage()));
+        }
     }
 }

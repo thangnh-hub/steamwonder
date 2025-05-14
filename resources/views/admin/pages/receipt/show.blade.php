@@ -9,6 +9,9 @@
             max-width: 80%;
             width: auto;
         }
+        ..select2-container{
+            width: 100% !important;
+        }
     </style>
 @endsection
 @section('content-header')
@@ -174,20 +177,23 @@
                                 </table>
                             </form>
                             @if ($detail->status == 'pending')
-                                <button class="btn btn-danger btn_explanation mt-10">@lang('Xóa giải trình')</button>
+                                <button class="btn btn-warning btn_explanation mt-10">@lang('Thêm giải trình')</button>
                             @endif
                         </div>
                         <div class="custom-scroll table-responsive mt-15">
-                            <table class="table table-bordered table-hover no-footer no-padding">
-                                <thead>
-                                    <tr>
-                                        <th colspan="8" class="text-left"><b>2. Phí dự kiến</b></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Du kien thu thang nay -->
-
-                                    @if (isset($detail->receiptDetail) && count($detail->receiptDetail) > 0)
+                            @if (isset($detail->receiptDetail) && count($detail->receiptDetail) > 0)
+                                <table class="table table-bordered table-hover no-footer no-padding">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="7" class="text-left"><b>2. Phí dự kiến</b></th>
+                                            <th class="text-right">
+                                                <button data-toggle="modal" data-target="#modal_show_service"
+                                                    class="btn btn-warning">@lang('Thay đổi kỳ tính phí cho HS')</button>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Du kien thu thang nay -->
                                         <tr>
                                             <th>Tháng</th>
                                             <th>Dịch vụ</th>
@@ -212,9 +218,9 @@
                                                 <td>{!! $item->note ?? '' !!}</td>
                                             </tr>
                                         @endforeach
-                                    @endif
-                                </tbody>
-                            </table>
+                                    </tbody>
+                                </table>
+                            @endif
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
@@ -290,7 +296,7 @@
                                         <td class="text-right">
                                             <input type="date" name="due_date" class="form-control"
                                                 {{ $detail->status == 'approved' ? '' : 'disabled' }}
-                                                value="{{ $detail->json_params->due_date ?? '' }}">
+                                                value="{{ $detail->json_params->due_date ?? $due_date }}">
                                         </td>
                                     </tr>
                                 </tbody>
@@ -309,6 +315,89 @@
 
                         </form>
                     </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.box-body -->
+        <div class="modal fade" id="modal_show_service" data-backdrop="static" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-custom" role="document">
+                <div class="modal-content">
+                    <div class="modal-header ">
+                        <h3 class="modal-title text-center col-md-12">@lang('Thay đổi kỳ tính phí cho học sinh')</h3>
+                        </h3>
+                    </div>
+                    <form action="{{ route('receipt.update_student_service_and_fee') }}" method="POST"
+                        class="form_detail_service">
+                        @csrf
+                        <input type="hidden" name="receipt_id" value="{{ $detail->id }}">
+                        <input type="hidden" name="student_id" value="{{ $detail->student->id }}">
+                        <div class="modal-body show_detail_service">
+                            <div class="modal-alert"></div>
+                            <table class="table table-bordered table-hover no-footer no-padding">
+                                <thead>
+                                    <tr>
+                                        <th>@lang('Tên dịch vụ')</th>
+                                        <th>@lang('Nhóm dịch vụ')</th>
+                                        <th>@lang('Hệ đào tạo')</th>
+                                        <th>@lang('Loại dịch vụ')</th>
+                                        <th>@lang('Biểu phí')</th>
+                                        <th>@lang('Chu kỳ thu')</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="box_service">
+                                    @if (isset($detail->student->studentServices) && count($detail->student->studentServices) > 0)
+                                        @foreach ($detail->student->studentServices as $item)
+                                            <tr>
+                                                <td>{{ $item->services->name ?? '' }}</td>
+                                                <td>{{ $item->services->service_category->name ?? '' }}</td>
+                                                <td>{{ $item->services->education_program->name ?? '' }}</td>
+                                                <td>{{ __($item->services->service_type ?? '') }}</td>
+                                                <td>
+                                                    @if (isset($item->services->serviceDetail) && $item->services->serviceDetail->count() > 0)
+                                                        @foreach ($item->services->serviceDetail as $detail_service)
+                                                            <ul>
+                                                                <li>@lang('Số tiền'):
+                                                                    {{ isset($detail_service->price) && is_numeric($detail_service->price) ? number_format($detail_service->price, 0, ',', '.') . ' đ' : '' }}
+                                                                </li>
+                                                                <li>@lang('Số lượng'):
+                                                                    {{ $detail_service->quantity ?? '' }}
+                                                                </li>
+                                                                <li>@lang('Từ'):
+                                                                    {{ isset($detail_service->start_at) ? \Carbon\Carbon::parse($detail_service->start_at)->format('d-m-Y') : '' }}
+                                                                </li>
+                                                                <li>@lang('Đến'):
+                                                                    {{ isset($detail_service->end_at) ? \Carbon\Carbon::parse($detail_service->end_at)->format('d-m-Y') : '' }}
+                                                                </li>
+                                                            </ul>
+                                                        @endforeach
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <select class="form-control select2 w-100" name="student_services[{{ $item->id }}][payment_cycle_id]">
+                                                        @if (isset($payment_cycle) && count($payment_cycle) > 0)
+                                                            @foreach ($payment_cycle as $val)
+                                                                <option value="{{ $val->id }}"
+                                                                    {{ $item->payment_cycle_id == $val->id ? 'selected' : '' }}>
+                                                                    {{ $val->name ?? '' }}</option>
+                                                            @endforeach
+                                                        @endif
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-save"></i> @lang('Lưu và chạy lại phí')
+                            </button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">
+                                <i class="fa fa-remove"></i> @lang('Close')
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -404,6 +493,49 @@
             }
 
         });
+
+        $(document).on('click', '.update_student_service', function() {
+            var _id = $(this).data('id');
+            var _payment_cycle_id = $(this).closest('tr').find('.payment_cycle').val();
+            $.ajax({
+                type: "POST",
+                url: "{{ route('student.updateService.ajax') }}",
+                data: {
+                    id: _id,
+                    payment_cycle_id: _payment_cycle_id,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.message === 'success') {
+                        var _html = `<div class="alert alert-warning alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            Cập nhật thành công!
+                            </div>`;
+                        $('.modal-alert').prepend(_html);
+                        setTimeout(function() {
+                            $(".alert").fadeOut(3000, function() {});
+                        }, 800);
+                    } else {
+                        var _html = `<div class="alert alert-warning alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            Bạn không có quyền thao tác chức năng này!
+                            </div>`;
+                        $('.modal-alert').prepend(_html);
+                        setTimeout(function() {
+                            $(".alert").fadeOut(3000, function() {});
+                        }, 800);
+                    }
+                },
+                error: function() {
+                    alert("Lỗi cập nhật.");
+                }
+            });
+        });
+
+
+
+
+
 
         function updateJsonExplanation() {
             var _url = $('#form_update_explanation').prop('action')
