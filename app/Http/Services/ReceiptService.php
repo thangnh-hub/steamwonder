@@ -223,8 +223,8 @@ class ReceiptService
         // Cập nhât lại giá tiên cho receipt
         $receipt->total_amount = $details->sum('amount');
         $receipt->total_discount = $details->sum('discount_amount');
-        $receipt->total_final = $details->sum('final_amount');
-        $receipt->total_due = $details->sum('final_amount');
+        $receipt->total_final = $details->sum('final_amount') - $receipt->prev_balance ?? 0;
+        $receipt->total_due = $details->sum('final_amount') - $receipt->prev_balance ?? 0;
         $receipt->admin_updated_id = $this->admin->id;
 
         foreach ($details as $detail) {
@@ -540,11 +540,11 @@ class ReceiptService
         return collect($details);
     }
 
-        /**
-         * Lưu phiếu thu và chi tiết.
-         */
-        protected function saveReceiptYearly(Student $student, $details, $data)
-        {
+    /**
+     * Lưu phiếu thu và chi tiết.
+     */
+    protected function saveReceiptYearly(Student $student, $details, $data)
+    {
         $startDate = Carbon::parse($data['enrolled_at']);
         $receipt = Receipt::create([
             'area_id' => $student->area_id,
