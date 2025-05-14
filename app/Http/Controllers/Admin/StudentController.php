@@ -48,13 +48,19 @@ class StudentController extends Controller
     {
         $params = $request->all();
         $admin = Auth::guard('admin')->user();
-        // $params['list_id'] = DataPermissionService::getPermissionStudents($admin->id);
+        $params['permisson_area_id'] = DataPermissionService::getPermisisonAreas($admin->id);
+        if (empty($params['permisson_area_id'])) {
+            $params['permisson_area_id'] = [-1]; 
+        }
         // Get list post with filter params
         $rows = Student::getSqlStudent($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
 
         $this->responseData['rows'] =  $rows;
         $this->responseData['params'] = $params;
-        $this->responseData['area'] =  Area::where('status', '=', Consts::USER_STATUS['active'])->get();
+        
+        $params_area['id'] = DataPermissionService::getPermisisonAreas($admin->id);
+        $params_area['status'] = Consts::STATUS_ACTIVE;
+        $this->responseData['area'] = Area::getsqlArea($params_area)->get();
 
         return $this->responseView($this->viewPart . '.index');
     }
@@ -67,6 +73,7 @@ class StudentController extends Controller
     public function create()
     {
         $params_area['id'] = DataPermissionService::getPermisisonAreas(Auth::guard('admin')->user()->id);
+        $params_area['status'] = Consts::STATUS_ACTIVE;
         $this->responseData['list_area'] = Area::getsqlArea($params_area)->get();
         $this->responseData['list_status'] = Consts::STATUS_STUDY;
         $this->responseData['list_sex'] = Consts::GENDER;
@@ -110,6 +117,12 @@ class StudentController extends Controller
      */
     public function show(Student $student)
     {
+        $admin = Auth::guard('admin')->user();
+        $permittedAreaIds = DataPermissionService::getPermisisonAreas($admin->id);
+        if (!in_array($student->area_id, $permittedAreaIds)) {
+            return redirect()->route($this->routeDefault . '.index')->with('errorMessage', __('Bạn không có quyền xem học sinh này!'));
+        }
+
         $this->responseData['detail'] = $student;
         $this->responseData['module_name'] = "Chi tiết học sinh";
         return $this->responseView($this->viewPart . '.detail');
@@ -123,6 +136,12 @@ class StudentController extends Controller
      */
     public function edit(Student $student)
     {
+        $admin = Auth::guard('admin')->user();
+        $permittedAreaIds = DataPermissionService::getPermisisonAreas($admin->id);
+        if (!in_array($student->area_id, $permittedAreaIds)) {
+            return redirect()->route($this->routeDefault . '.index')->with('errorMessage', __('Bạn không có quyền xem học sinh này!'));
+        }
+
         $params_area['id'] = DataPermissionService::getPermisisonAreas(Auth::guard('admin')->user()->id);
         $this->responseData['list_area'] = Area::getsqlArea($params_area)->get();
         $this->responseData['list_status'] = Consts::STATUS_STUDY;
@@ -164,6 +183,11 @@ class StudentController extends Controller
     public function update(Request $request, Student $student)
     {
         $auth = Auth::guard('admin')->user();
+        $permittedAreaIds = DataPermissionService::getPermisisonAreas($auth->id);
+        if (!in_array($student->area_id, $permittedAreaIds)) {
+            return redirect()->route($this->routeDefault . '.index')->with('errorMessage', __('Bạn không có quyền sửa học sinh này!'));
+        }
+
         $request->validate([
             'area_id'    => 'required',
             'first_name' => 'required',
@@ -218,6 +242,12 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
+        $auth = Auth::guard('admin')->user();
+        $permittedAreaIds = DataPermissionService::getPermisisonAreas($auth->id);
+        if (!in_array($student->area_id, $permittedAreaIds)) {
+            return redirect()->route($this->routeDefault . '.index')->with('errorMessage', __('Bạn không có quyền xóa học sinh này!'));
+        }
+
         $student->studentParents()->delete();
         $student->delete();
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Delete record successfully!'));
