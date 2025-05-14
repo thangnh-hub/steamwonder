@@ -76,7 +76,7 @@
                     </div>
                 </div>
             </form>
-            <div class="import_excel">
+            {{-- <div class="import_excel">
                 <div style="display: flex; margin-left:10px; max-width: 500px; margin-top: 15px;">
                     <input class="form-control" type="file" name="files" id="importPromotion"
                         placeholder="@lang('File Import Promotion')">
@@ -107,7 +107,7 @@
                     <button type="button" class="btn btn-sm btn-success"
                         onclick="importFile('importReceipt','{{ route('student.import_receipt') }}')">
                         <i class="fa fa-file-excel-o"></i>
-                        @lang('Import dịch vụ')</button>
+                        @lang('Import TBP')</button>
                 </div>
                 <div style="display: flex; margin-left:10px; max-width: 500px; margin-top: 15px;">
                     <input class="form-control" type="file" name="files" id="imporBalancetReceipt"
@@ -117,7 +117,7 @@
                         <i class="fa fa-file-excel-o"></i>
                         @lang('Import Số dư kỳ trước')</button>
                 </div>
-            </div>
+            </div> --}}
 
         </div>
         {{-- End search form --}}
