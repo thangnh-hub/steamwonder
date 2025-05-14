@@ -17,6 +17,9 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
+    <div id="loading-notification" class="loading-notification">
+        <p><?php echo app('translator')->get('Please wait'); ?>...</p>
+    </div>
 
     <!-- Main content -->
     <section class="content">
@@ -38,7 +41,7 @@
                                     value="<?php echo e(isset($params['keyword']) ? $params['keyword'] : ''); ?>">
                             </div>
                         </div>
-                       
+
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Area'); ?></label>
@@ -55,26 +58,68 @@
                                 </select>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Filter'); ?></label>
                                 <div>
-                                    <button type="submit"
-                                        class="btn btn-primary btn-sm mr-10"><?php echo app('translator')->get('Submit'); ?></button>
+                                    <button type="submit" class="btn btn-primary btn-sm mr-10"><?php echo app('translator')->get('Submit'); ?></button>
                                     <a class="btn btn-default btn-sm mr-10"
                                         href="<?php echo e(route(Request::segment(2) . '.index')); ?>">
                                         <?php echo app('translator')->get('Reset'); ?>
                                     </a>
 
                                     <button type="button" data-toggle="modal" data-target="#create_crmdata_student"
-                                    class="btn btn-success btn-sm"><?php echo app('translator')->get('Import Excel'); ?></button>
+                                        class="btn btn-success btn-sm"><?php echo app('translator')->get('Import Excel'); ?></button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </form>
+            <div class="import_excel">
+                <div style="display: flex; margin-left:10px; max-width: 500px; margin-top: 15px;">
+                    <input class="form-control" type="file" name="files" id="importPromotion"
+                        placeholder="<?php echo app('translator')->get('File Import Promotion'); ?>">
+                    <button type="button" class="btn btn-sm btn-success"
+                        onclick="importFile('importPromotion','<?php echo e(route('student.import_promotion')); ?>')">
+                        <i class="fa fa-file-excel-o"></i>
+                        <?php echo app('translator')->get('Import Khuyến mãi'); ?></button>
+                </div>
+                <div style="display: flex; margin-left:10px; max-width: 500px; margin-top: 15px;">
+                    <input class="form-control" type="file" name="files" id="importPolicy"
+                        placeholder="<?php echo app('translator')->get('File Import Policy'); ?>">
+                    <button type="button" class="btn btn-sm btn-success"
+                        onclick="importFile('importPolicy','<?php echo e(route('student.import_policy')); ?>')">
+                        <i class="fa fa-file-excel-o"></i>
+                        <?php echo app('translator')->get('Import Chính sách'); ?></button>
+                </div>
+                <div style="display: flex; margin-left:10px; max-width: 500px; margin-top: 15px;">
+                    <input class="form-control" type="file" name="files" id="importService"
+                        placeholder="<?php echo app('translator')->get('File Import Service'); ?>">
+                    <button type="button" class="btn btn-sm btn-success"
+                        onclick="importFile('importService','<?php echo e(route('student.import_service')); ?>')">
+                        <i class="fa fa-file-excel-o"></i>
+                        <?php echo app('translator')->get('Import dịch vụ'); ?></button>
+                </div>
+                <div style="display: flex; margin-left:10px; max-width: 500px; margin-top: 15px;">
+                    <input class="form-control" type="file" name="files" id="importReceipt"
+                        placeholder="<?php echo app('translator')->get('File Import Receipt'); ?>">
+                    <button type="button" class="btn btn-sm btn-success"
+                        onclick="importFile('importReceipt','<?php echo e(route('student.import_receipt')); ?>')">
+                        <i class="fa fa-file-excel-o"></i>
+                        <?php echo app('translator')->get('Import dịch vụ'); ?></button>
+                </div>
+                <div style="display: flex; margin-left:10px; max-width: 500px; margin-top: 15px;">
+                    <input class="form-control" type="file" name="files" id="imporBalancetReceipt"
+                        placeholder="<?php echo app('translator')->get('File Import Receipt'); ?>">
+                    <button type="button" class="btn btn-sm btn-success"
+                        onclick="importFile('imporBalancetReceipt','<?php echo e(route('student.import_balance_receipt')); ?>')">
+                        <i class="fa fa-file-excel-o"></i>
+                        <?php echo app('translator')->get('Import Số dư kỳ trước'); ?></button>
+                </div>
+            </div>
+
         </div>
         
         <div id="create_crmdata_student" class="modal fade" tabindex="-1" role="dialog">
@@ -90,20 +135,20 @@
                         <div class="modal-body row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label><?php echo app('translator')->get('Chọn tệp'); ?> <a href="<?php echo e(url('themes\admin\img\data_student.xlsx')); ?>" target="_blank">(<?php echo app('translator')->get('Minh họa file excel'); ?>)</a></label>
+                                    <label><?php echo app('translator')->get('Chọn tệp'); ?> <a href="<?php echo e(url('themes\admin\img\data_student.xlsx')); ?>"
+                                            target="_blank">(<?php echo app('translator')->get('Minh họa file excel'); ?>)</a></label>
                                     <small class="text-red">*</small>
                                     <div style="display: flex" class="d-flex">
                                         <input id="file" class="form-control" type="file" required name="file"
                                             placeholder="<?php echo app('translator')->get('Select File'); ?>" value="">
                                         <button type="submit" class="btn btn-success"><i class="fa fa-file-excel-o"
-                                                aria-hidden="true"></i> <?php echo app('translator')->get('Import'); ?></button>   
+                                                aria-hidden="true"></i> <?php echo app('translator')->get('Import'); ?></button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </form>
                 </div>
-    
             </div>
         </div>
         <div class="box">
@@ -142,102 +187,103 @@
                         <?php echo app('translator')->get('not_found'); ?>
                     </div>
                 <?php else: ?>
-                <div class="table-responsive">
-                    <table class="table table-hover table-bordered ">
-                        <thead>
-                            <tr>
-                                <th><?php echo app('translator')->get('STT'); ?></th>
-                                <th><?php echo app('translator')->get('Avatar'); ?></th>
-                                <th><?php echo app('translator')->get('Student code'); ?></th>
-                                <th><?php echo app('translator')->get('Full name'); ?></th>
-                                <th><?php echo app('translator')->get('Tên thường gọi'); ?></th>
-                                <th><?php echo app('translator')->get('Gender'); ?></th>
-                                <th><?php echo app('translator')->get('Area'); ?></th>
-                                <th><?php echo app('translator')->get('Địa chỉ'); ?></th>
-                                <th><?php echo app('translator')->get('Trạng thái'); ?></th>
-                                <th><?php echo app('translator')->get('Lớp đang học'); ?></th>
-                                <th><?php echo app('translator')->get('Ngày nhập học chính thức'); ?></th>
-                                <th><?php echo app('translator')->get('Action'); ?></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php $__currentLoopData = $rows; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <form action="<?php echo e(route(Request::segment(2) . '.destroy', $row->id)); ?>" method="POST"
-                                    onsubmit="return confirm('<?php echo app('translator')->get('confirm_action'); ?>')">
-                                    <tr class="valign-middle">
-                                        <td><?php echo e($loop->index + 1); ?></td>
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered ">
+                            <thead>
+                                <tr>
+                                    <th><?php echo app('translator')->get('STT'); ?></th>
+                                    <th><?php echo app('translator')->get('Avatar'); ?></th>
+                                    <th><?php echo app('translator')->get('Student code'); ?></th>
+                                    <th><?php echo app('translator')->get('Full name'); ?></th>
+                                    <th><?php echo app('translator')->get('Tên thường gọi'); ?></th>
+                                    <th><?php echo app('translator')->get('Gender'); ?></th>
+                                    <th><?php echo app('translator')->get('Area'); ?></th>
+                                    <th><?php echo app('translator')->get('Địa chỉ'); ?></th>
+                                    <th><?php echo app('translator')->get('Trạng thái'); ?></th>
+                                    <th><?php echo app('translator')->get('Lớp đang học'); ?></th>
+                                    <th><?php echo app('translator')->get('Ngày nhập học chính thức'); ?></th>
+                                    <th><?php echo app('translator')->get('Action'); ?></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $__currentLoopData = $rows; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <form action="<?php echo e(route(Request::segment(2) . '.destroy', $row->id)); ?>" method="POST"
+                                        onsubmit="return confirm('<?php echo app('translator')->get('confirm_action'); ?>')">
+                                        <tr class="valign-middle">
+                                            <td><?php echo e($loop->index + 1); ?></td>
+                                            <td>
+                                                <?php if(!empty($row->avatar)): ?>
+                                                    <a href="<?php echo e(asset($row->avatar)); ?>" target="_blank"
+                                                        class="image-popup">
+                                                        <img src="<?php echo e(asset($row->avatar)); ?>" alt="Avatar"
+                                                            width="100" height="100" style="object-fit: cover;">
+                                                    </a>
+                                                <?php else: ?>
+                                                    <span class="text-muted">No image</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <a target="_blank" class="btn btn-sm" data-toggle="tooltip"
+                                                    title="<?php echo app('translator')->get('Xem chi tiết'); ?>" data-original-title="<?php echo app('translator')->get('Xem chi tiết'); ?>"
+                                                    href="<?php echo e(route(Request::segment(2) . '.show', $row->id)); ?>">
+                                                    <i class="fa fa-eye"></i> <?php echo e($row->student_code); ?>
 
-                                        <td>
-                                            <?php if(!empty($row->avatar)): ?>
-                                                <a href="<?php echo e(asset($row->avatar)); ?>" target="_blank" class="image-popup">
-                                                    <img src="<?php echo e(asset($row->avatar)); ?>" alt="Avatar" width="100" height="100" style="object-fit: cover;">
                                                 </a>
-                                            <?php else: ?>
-                                                <span class="text-muted">No image</span>
-                                            <?php endif; ?>
-                                        </td>
+                                            </td>
+                                            <td>
+                                                <?php echo e($row->first_name ?? ''); ?> <?php echo e($row->last_name ?? ''); ?>
 
-                                        <td>
-                                            <a target="_blank" class="btn btn-sm" data-toggle="tooltip"
-                                                title="<?php echo app('translator')->get('Xem chi tiết'); ?>" data-original-title="<?php echo app('translator')->get('Xem chi tiết'); ?>"
-                                                href="<?php echo e(route(Request::segment(2) . '.show', $row->id)); ?>">
-                                                <i class="fa fa-eye"></i> <?php echo e($row->student_code); ?>
+                                            </td>
+                                            <td>
+                                                <?php echo e($row->nickname ?? ''); ?>
 
-                                            </a>
-                                        </td>
-                                        <td>
-                                             <?php echo e($row->first_name ?? ''); ?> <?php echo e($row->last_name ?? ''); ?>
+                                            </td>
+                                            <td>
+                                                <?php echo app('translator')->get($row->sex); ?>
+                                            </td>
+                                            <td>
+                                                <?php echo e($row->area->code ?? ''); ?>
 
-                                        </td>
-                                        <td>
-                                            <?php echo e($row->nickname ?? ''); ?> 
-                                        </td>
-                                        <td>
-                                            <?php echo app('translator')->get($row->sex); ?>
-                                        </td>
-                                        <td>
-                                            <?php echo e($row->area->code ?? ''); ?>
+                                            </td>
 
-                                        </td>
+                                            <td>
+                                                <?php echo e($row->address ?? ''); ?>
 
-                                        <td>
-                                            <?php echo e($row->address ?? ''); ?>
+                                            </td>
 
-                                        </td>
+                                            <td>
+                                                <?php echo e(__($row->status ?? '')); ?>
 
-                                        <td>
-                                            <?php echo e(__($row->status ?? '')); ?>
+                                            <td>
+                                                <?php echo e($row->currentClass->name ?? ''); ?>
 
-                                        <td>
-                                            <?php echo e($row->currentClass->name ?? ''); ?>
+                                            </td>
 
-                                        </td>
+                                            <td>
+                                                <?php echo e(isset($row->enrolled_at) && $row->enrolled_at != '' ? date('d-m-Y', strtotime($row->enrolled_at)) : ''); ?>
 
-                                        <td>
-                                            <?php echo e(isset($row->enrolled_at) &&  $row->enrolled_at !="" ?date("d-m-Y", strtotime($row->enrolled_at)): ''); ?>
+                                            </td>
 
-                                        </td>
-                                    
-                                        <td>
-                                            <a class="btn btn-sm btn-warning" data-toggle="tooltip"
-                                                title="<?php echo app('translator')->get('Update'); ?>" data-original-title="<?php echo app('translator')->get('Update'); ?>"
-                                                href="<?php echo e(route(Request::segment(2) . '.edit', $row->id)); ?>">
-                                                <i class="fa fa-pencil-square-o"></i>
-                                            </a>
-                                            <?php echo csrf_field(); ?>
-                                            <?php echo method_field('DELETE'); ?>
-                                            <button class="btn btn-sm btn-danger" type="submit" data-toggle="tooltip"
-                                                title="<?php echo app('translator')->get('Delete'); ?>" data-original-title="<?php echo app('translator')->get('Delete'); ?>">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </form>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        </tbody>
-                    </table>
-                </div>
-                    
+                                            <td>
+                                                <a class="btn btn-sm btn-warning" data-toggle="tooltip"
+                                                    title="<?php echo app('translator')->get('Update'); ?>" data-original-title="<?php echo app('translator')->get('Update'); ?>"
+                                                    href="<?php echo e(route(Request::segment(2) . '.edit', $row->id)); ?>">
+                                                    <i class="fa fa-pencil-square-o"></i>
+                                                </a>
+                                                <?php echo csrf_field(); ?>
+                                                <?php echo method_field('DELETE'); ?>
+                                                <button class="btn btn-sm btn-danger" type="submit"
+                                                    data-toggle="tooltip" title="<?php echo app('translator')->get('Delete'); ?>"
+                                                    data-original-title="<?php echo app('translator')->get('Delete'); ?>">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </form>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </tbody>
+                        </table>
+                    </div>
                 <?php endif; ?>
             </div>
             <div class="box-footer clearfix">
@@ -256,7 +302,48 @@
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('script'); ?>
     <script>
-        
+        function importFile(_form, _url) {
+            show_loading_notification();
+            var formData = new FormData();
+            var file = $('#' + _form)[0].files[0];
+            if (file == null) {
+                alert('Cần chọn file để Import!');
+                return;
+            }
+            formData.append('file', file);
+            formData.append('_token', '<?php echo e(csrf_token()); ?>');
+            $.ajax({
+                url: _url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    hide_loading_notification();
+                    if (response.data != null) {
+                        console.log(response.data);;
+                    } else {
+                        var _html = `<div class="alert alert-warning alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            Bạn không có quyền thao tác chức năng này!
+                            </div>`;
+                        $('.table-responsive').prepend(_html);
+                        $('html, body').animate({
+                            scrollTop: $(".alert-warning").offset().top
+                        }, 1000);
+                        setTimeout(function() {
+                            $('.alert-warning').remove();
+                        }, 3000);
+                    }
+                },
+                error: function(response) {
+                    // Get errors
+                    hide_loading_notification();
+                    var errors = response.responseJSON.message;
+                    console.log(errors);
+                }
+            });
+        }
     </script>
 <?php $__env->stopSection(); ?>
 
