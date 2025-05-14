@@ -40,14 +40,32 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Keyword'); ?> </label>
-                                <input type="text" class="form-control" name="keyword" placeholder="<?php echo app('translator')->get('Mã hoặc tên chu kỳ'); ?>"
+                                <input type="text" class="form-control" name="keyword" placeholder="<?php echo app('translator')->get('Mã hoặc tên TBP'); ?>"
                                     value="<?php echo e(isset($params['keyword']) ? $params['keyword'] : ''); ?>">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
+                                <label><?php echo app('translator')->get('Học sinh'); ?></label>
+                                <select name="student_id" class="form-control select2 w-100">
+                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
+                                    <?php $__currentLoopData = $students; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($item->id); ?>"
+                                            <?php echo e(isset($params['student_id']) && $params['student_id'] == $item->id ? 'selected' : ''); ?>>
+                                            <?php echo e($item->student_code ?? ''); ?> - <?php echo e($item->first_name ?? ''); ?>
+
+                                            <?php echo e($item->last_name ?? ''); ?>
+
+                                            (<?php echo e($item->nickname ?? ''); ?>)
+                                        </option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
                                 <label><?php echo app('translator')->get('Area'); ?></label>
-                                <select name="area_id" id="area_id" class="form-control select2 w-100">
+                                <select name="area_id" class="form-control select2 w-100">
                                     <option value=""><?php echo app('translator')->get('Please select'); ?></option>
                                     <?php $__currentLoopData = $areas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <option value="<?php echo e($item->id); ?>"
@@ -55,6 +73,26 @@
                                             <?php echo e($item->name); ?></option>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label><?php echo app('translator')->get('Status'); ?></label>
+                                <select name="status" class="form-control select2 w-100">
+                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
+                                    <?php $__currentLoopData = $status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($key); ?>"
+                                            <?php echo e(isset($params['status']) && $params['status'] == $key ? 'selected' : ''); ?>>
+                                            <?php echo e(__($val)); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label><?php echo app('translator')->get('Ngày tạo'); ?></label>
+                                <input type="date" name="created_at" class="form-control"
+                                    value="<?php echo e($params['created_at'] ?? ''); ?>">
                             </div>
                         </div>
 
@@ -128,6 +166,8 @@
                                 <th><?php echo app('translator')->get('Số tiền còn phải thu (+) hoặc thừa (-)'); ?></th>
                                 <th><?php echo app('translator')->get('Trạng thái'); ?></th>
                                 <th><?php echo app('translator')->get('Ghi chú'); ?></th>
+                                <th><?php echo app('translator')->get('Người tạo'); ?></th>
+                                <th><?php echo app('translator')->get('Ngày tạo'); ?></th>
                                 <th><?php echo app('translator')->get('Action'); ?></th>
                             </tr>
                         </thead>
@@ -142,7 +182,9 @@
 
                                     </td>
                                     <td>
-                                        <?php echo e($row->student->student_code ?? ('' . ' - ' . $row->student->first_name ?? ('' . ' ' . $row->student->last_name ?? ''))); ?>(<?php echo e($row->student->nickname); ?>)
+                                        <?php echo e($row->student->student_code ?? ''); ?> - <?php echo e($row->student->first_name ?? ''); ?>
+
+                                        <?php echo e($row->student->last_name ?? ''); ?>(<?php echo e($row->student->nickname ?? ''); ?>)
                                     </td>
                                     <td>
                                         <?php echo e($row->area->name ?? ''); ?>
@@ -162,7 +204,7 @@
 
                                     </td>
                                     <td>
-                                        <?php echo e(number_format($row->total_final + $row->prev_balance, 0, ',', '.') ?? ''); ?>
+                                        <?php echo e(number_format($row->total_final, 0, ',', '.') ?? ''); ?>
 
                                     </td>
                                     <td>
@@ -170,20 +212,33 @@
 
                                     </td>
                                     <td>
-                                        <?php echo e(number_format($row->total_due + $row->prev_balance, 0, ',', '.') ?? ''); ?>
+                                        <?php echo e(number_format($row->total_due, 0, ',', '.') ?? ''); ?>
 
                                     </td>
                                     <td>
-                                        <?php echo e(__($row->status??'')); ?>
+                                        <?php echo e(__($row->status ?? '')); ?>
 
                                     </td>
                                     <td>
                                         <?php echo e($row->note ?? ''); ?>
 
                                     </td>
-                                    <td class="d-flex-wap">
+                                    <td>
+                                        <?php echo e($row->adminCreated->name ?? ''); ?>
 
-                                        <button class="btn btn-sm btn-success btn_show_detail mr-10" data-toggle="tooltip"
+                                    </td>
+                                    <td>
+                                        <?php echo e(\Carbon\Carbon::parse($row->created_at)->format('d/m/Y') ?? ''); ?>
+
+                                    </td>
+                                    <td class="">
+                                        <a class="btn btn-sm btn-primary" href="<?php echo e(route('receipt.print', $row->id)); ?>"
+                                            data-toggle="tooltip" title="<?php echo app('translator')->get('In phiếu'); ?>"
+                                            data-original-title="<?php echo app('translator')->get('In phiếu'); ?>"
+                                            onclick="return openCenteredPopup(this.href)">
+                                            <i class="fa fa-print"></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-success btn_show_detail" data-toggle="tooltip"
                                             data-id="<?php echo e($row->id); ?>"
                                             data-url="<?php echo e(route(Request::segment(2) . '.view', $row->id)); ?>"
                                             title="<?php echo app('translator')->get('Xem nhanh'); ?>" data-original-title="<?php echo app('translator')->get('Xem nhanh'); ?>">
@@ -194,6 +249,10 @@
                                             href="<?php echo e(route(Request::segment(2) . '.show', $row->id)); ?>">
                                             <i class="fa fa-pencil"></i>
                                         </a>
+                                        <button type="button" class="btn btn-sm btn-danger btn_delete_receipt "
+                                            data-id="<?php echo e($row->id); ?>">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -268,6 +327,52 @@
                 }
             });
         })
+        $('.btn_delete_receipt').click(function() {
+            let currentStudentReceiptId = $(this).data('id'); // Lấy ID phiếu thu hiện tại từ nút
+            if (confirm("Bạn có chắc chắn muốn xóa phiếu thu này?")) {
+                $.ajax({
+                    type: "GET",
+                    url: "<?php echo e(route('student.deleteReceipt')); ?>",
+                    data: {
+                        id: currentStudentReceiptId, // Đảm bảo đúng biến được gửi đi
+                    },
+                    success: function(response) {
+                        if (response.message === 'success') {
+                            localStorage.setItem('activeTab', '#tab_4');
+                            location.reload();
+                        } else {
+                            alert("Bạn không có quyền thao tác dữ liệu");
+                        }
+                    },
+                    error: function() {
+                        alert("Lỗi cập nhật.");
+                    }
+                });
+            }
+        });
+
+        // Mở popup ở giữa
+        function openCenteredPopup(url, width, height) {
+            const screenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX;
+            const screenTop = window.screenTop !== undefined ? window.screenTop : window.screenY;
+
+            const screenWidth = window.innerWidth || document.documentElement.clientWidth || screen.width;
+            const screenHeight = window.innerHeight || document.documentElement.clientHeight || screen.height;
+
+            width = width || screenWidth * 0.8;
+            height = height || screenHeight * 0.8;
+
+            const left = screenLeft + (screenWidth - width) / 2;
+            const top = screenTop + (screenHeight - height) / 2;
+
+            window.open(
+                url,
+                'popupWindow',
+                `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes`
+            );
+            console.log(width, height);
+            return false; // Ngăn mở link mặc định
+        }
     </script>
 <?php $__env->stopSection(); ?>
 

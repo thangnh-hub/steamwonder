@@ -185,5 +185,28 @@
             $('#loading-notification').css('display', 'none');
         }, 1500);
     }
+
+    // Mở popup ở giữa
+    function openCenteredPopup(url, width, height) {
+        const screenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX;
+        const screenTop = window.screenTop !== undefined ? window.screenTop : window.screenY;
+
+        const screenWidth = window.innerWidth || document.documentElement.clientWidth || screen.width;
+        const screenHeight = window.innerHeight || document.documentElement.clientHeight || screen.height;
+
+        width = width || screenWidth * 0.8;
+        height = height || screenHeight * 0.8;
+
+        const left = screenLeft + (screenWidth - width) / 2;
+        const top = screenTop + (screenHeight - height) / 2;
+
+        window.open(
+            url,
+            'popupWindow',
+            `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes`
+        );
+        console.log(width, height);
+        return false; // Ngăn mở link mặc định
+    }
 </script>
 <?php /**PATH C:\xampp\htdocs\steamwonders\resources\views/admin/panels/scripts.blade.php ENDPATH**/ ?>

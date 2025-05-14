@@ -99,7 +99,7 @@ class AdmissionStudentController extends Controller
         $student->student_code = 'HS' . str_pad($student->id, 3, '0', STR_PAD_LEFT);
         $student->save();
 
-        return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Add new successfully!'));
+        return redirect()->route($this->routeDefault . '.edit',$student->id)->with('successMessage', __('Add new successfully!'));
     }
 
     /**
@@ -226,12 +226,12 @@ class AdmissionStudentController extends Controller
             }
             
 
-            return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Update successfully!'));
+            return redirect()->route($this->routeDefault . '.edit',$student->id)->with('successMessage', __('Update successfully!'));
         } catch (\Exception $e) {
             return back()->with('errorMessage', __('Có lỗi xảy ra: ') . $e->getMessage());
         }
 
-        return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Update successfully!'));
+        return redirect()->route($this->routeDefault . '.edit', $id)->with('successMessage', __('Update successfully!'));
     }
 
     /**
@@ -276,9 +276,7 @@ class AdmissionStudentController extends Controller
     public function addService(Request $request, $id)
     {
         $student = Student::findOrFail($id);
-        if ($student->payment_cycle_id == "") {
-            return redirect()->back()->with('errorMessage', __('Học sinh chưa chọn chu kỳ thanh toán!'));
-        }
+     
         $parentsInput = $request->input('services', []);
         foreach ($parentsInput as $data) {
             if (!empty($data['id'])) {
@@ -406,62 +404,28 @@ class AdmissionStudentController extends Controller
             abort(422, __($ex->getMessage()));
         }
     }
-
-    // public function calculReceiptStudent(Request $request , ReceiptService $receiptService)
-    // {
-    //     $params = $request->all();
-    //     $student = Student::findOrFail($params['student_id']);
-    //     $data['services'] = $student->studentServices()->with('services') ->where('status', 'active')
-    //     ->get()
-    //     ->pluck('services');
-    //     $data['include_current_month']=true;
-    //     $createReceiptForStudent=$receiptService->createReceiptForStudent($student, $data);
-    //     return redirect()->back()->with('successMessage', __('Tạo hóa đơn thành công!'));
-    // }
-    public function calculReceiptStudent(Request $request, ReceiptService $receiptService)
-    {
+   
+    public function calculateReceiptStudent(Request $request, ReceiptService $receiptService)
+    {   
         try {
             $params = $request->all();
             $student = Student::findOrFail($params['student_id']);
 
-            $data['services'] = $student->studentServices()->with('services')
-                ->where('status', 'active')
-                ->get()
-                ->pluck('services');
+            $studentServices = $student->studentServices()
+            ->where('status', 'active')
+            ->get();
 
-            if ($request->has('payment_cycle_id')) {
-                $student->update([
-                    'payment_cycle_id' => $request->input('payment_cycle_id', null),
-                ]);
+            $serviceIds = $studentServices->pluck('service_id')->toArray();
+
+            // Kiểm tra nếu học sinh đã có biên lai cho bất kỳ dịch vụ nào chưa
+            if ($receiptService->checkExistingServiceInReceipts($student, $serviceIds)) {
+                return redirect()->back()->with('errorMessage', 'Học sinh đã có biên lai cho một trong các dịch vụ hiện tại, không thể xử lý TBP HSM. Vui lòng kiểm tra lại.');
             }
-
+            $data['student_services'] = $studentServices;
             $data['include_current_month'] = $request->input('include_current_month', 0) == 1 ? true : false;
             $data['enrolled_at'] = $request->input('enrolled_at', null);
-            $calcuReceipt = $receiptService->createReceiptForStudent($student, $data);
-            // if ($calcuReceipt) {
-            //     $student->studentServices()->update([
-            //         'payment_cycle_id' => $request->input('payment_cycle_id', null),
-            //     ]);
-            // }
-            return response()->json(['message' => 'success']);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'error', 'error' => $e->getMessage()], 422);
-        }
-    }
-    public function calculReceiptStudentRenew(Request $request, ReceiptService $receiptService)
-    {
-        try {
-            $params = $request->all();
-            $student = Student::findOrFail($params['student_id']);
-
-            $data['student_services'] = $student->studentServices()
-                ->where('status', 'active')
-                ->get();
-
-            $data['include_current_month'] = false;
-            $data['enrolled_at'] = $request->input('enrolled_at', null);
-            $calcuReceiptrenew = $receiptService->renewReceiptForStudent($student, $data);
-            return redirect()->back()->with('successMessage', __('Cập nhật tái tục dịch vụ thành công!'));
+            $receiptService->createReceiptForStudent($student, $data);
+            return redirect()->back()->with('successMessage', __('Cập nhật biểu phí dịch vụ thành công!'));
         } catch (\Exception $e) {
             // Bắt lỗi chung khác
             return redirect()->back()->with('errorMessage', $e->getMessage());

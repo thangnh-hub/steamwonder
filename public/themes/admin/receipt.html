@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Thông báo thu phí</title>
+    <style>
+        body {
+            font-family: "Times New Roman", serif;
+            font-size: 14px;
+            margin: 20px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .title {
+            text-align: center;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .info {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .fee-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .fee-table th,
+        .fee-table td {
+            border: 1px solid #000;
+            padding: 6px;
+            text-align: left;
+        }
+
+        .fee-table th {
+            background-color: #e9f0f8;
+            text-align: center;
+        }
+
+        .section {
+            background-color: #dce6f1;
+            font-weight: bold;
+        }
+
+        .total {
+            background-color: #c5d9f1;
+            font-weight: bold;
+        }
+
+        .note {
+            margin-top: 25px;
+            border-top: 1px dashed #000;
+            padding-top: 10px;
+        }
+
+        .signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+        }
+
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .fee-table th,
+            .section,
+            .total {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <h2 class="title">THÔNG BÁO THU PHÍ</h2>
+        <a href="http://127.0.0.1:9999/admin/receipt/print/18"
+            onclick="window.open(this.href, 'popupWindow', 'width=800,height=600,left=200,top=100'); return false;">Open
+            link</a>
+        <table class="info">
+            <tr>
+                <td><strong>Họ và tên:</strong> Nguyễn Đức Anh Khôi</td>
+                <td><strong>Lớp học:</strong> Moon</td>
+            </tr>
+            <tr>
+                <td><strong>Ngày sinh:</strong> 20/09/2023</td>
+                <td><strong>Họ tên phụ huynh:</strong> Nguyễn Lan Anh</td>
+            </tr>
+            <tr>
+                <td><strong>Mã học sinh:</strong> DPW0440</td>
+                <td></td>
+            </tr>
+        </table>
+
+        <table class="fee-table" border="1" cellspacing="0" cellpadding="5">
+            <thead>
+                <tr>
+                    <th>TT</th>
+                    <th>CHI TIẾT CÁC KHOẢN PHÍ</th>
+                    <th>Số tiền</th>
+                    <th>Ghi chú</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="section">
+                    <td>I</td>
+                    <td colspan="3"><strong>CÁC KHOẢN THU PHÍ ĐẦU NĂM</strong></td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Phí phát triển trường/cơ sở vật chất</td>
+                    <td>2,000,000</td>
+                    <td>Kỳ 2 năm học 2024-2025 từ 01/01/2025 - 31/05/2025</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Phí đặt danh</td>
+                    <td>2,000,000</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Phí đồng phục</td>
+                    <td>1,450,000</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Phí học liệu hè Tiếng Anh Tăng Cường</td>
+                    <td>500,000</td>
+                    <td>Kỳ 2 năm học 2024-2025 từ 01/01/2025 - 31/05/2025</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Phí dã ngoại</td>
+                    <td>500,000</td>
+                    <td></td>
+                </tr>
+
+                <tr class="section">
+                    <td>II</td>
+                    <td colspan="3"><strong>CÁC KHOẢN PHÍ THU THEO KỲ</strong></td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Học phí hè Tiếng Anh Tăng Cường 12 tháng</td>
+                    <td>79,500,000</td>
+                    <td>Từ 01/04/2025 - 31/03/2026</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Tiền ăn (trưa, chiều) & snack</td>
+                    <td>4,500,000</td>
+                    <td>Từ 01/04/2025 - 30/06/2025</td>
+                </tr>
+
+                <tr class="section">
+                    <td>III</td>
+                    <td colspan="3"><strong>CÁC KHOẢN THU PHÍ KHÁC</strong></td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Phí sinh nhật (3 quý 2025: Ngày 28,31)</td>
+                    <td>108,000</td>
+                    <td></td>
+                </tr>
+
+                <tr class="section">
+                    <td>IV</td>
+                    <td colspan="3"><strong>ƯU ĐÃI PHÍ</strong></td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Ưu đãi 1:</td>
+                    <td>-5,000,000</td>
+                    <td>Ưu đãi 01 từ 01/04/2025-31/03/2026</td>
+                </tr>
+
+                <tr class="section">
+                    <td>V</td>
+                    <td colspan="3"><strong>CÁC KHOẢN ƯU ĐÃI/HOÀN TRẢ KHÁC</strong></td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Phí phát triển trường/cơ sở vật chất</td>
+                    <td>-2,000,000</td>
+                    <td>Đã được đóng kỳ 1</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Phí đặt danh</td>
+                    <td>-2,000,000</td>
+                    <td>Đã được đóng phí đặt danh</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Phí đồng phục</td>
+                    <td>-1,450,000</td>
+                    <td>Miễn phí đồng phục</td>
+                </tr>
+
+                <tr class="total">
+                    <td>VI</td>
+                    <td><strong>TỔNG PHẢI NỘP (=I+II+III)-(IV+V)</strong></td>
+                    <td colspan="2"><strong>85,292,000</strong></td>
+                </tr>
+                <tr>
+                    <td>VII</td>
+                    <td>TỔNG SỐ TIỀN ĐÃ NỘP</td>
+                    <td colspan="2"></td>
+                </tr>
+                <tr class="total">
+                    <td>VIII</td>
+                    <td><strong>TỔNG SỐ TIỀN CÒN PHẢI NỘP</strong></td>
+                    <td colspan="2"><strong>85,292,000</strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="note">
+            <p><strong>Hình thức thanh toán</strong></p>
+            <p>Thanh toán bằng chuyển khoản, Quý Phụ huynh vui lòng chuyển tiền vào tài khoản sau:</p>
+            <p><strong>Tên TK:</strong> Công ty Cổ phần Mầm Non STEAME GARTEN</p>
+            <p><strong>Số TK VND:</strong> 26268866 - Techcombank - Chi nhánh Hà Thành - Hà Nội</p>
+            <p><strong>Nội dung chuyển khoản:</strong> <em>Mã học sinh_Tên học sinh_Ngày sinh</em></p>
+            <p>* Thanh toán tiền mặt: chỉ thu bằng tiền mặt tại phòng Tuyển sinh</p>
+        </div>
+
+        <div class="signatures">
+            <p><strong>Tư vấn tuyển sinh</strong></p>
+            <p><strong>Phụ huynh</strong></p>
+        </div>
+    </div>
+</body>
+
+</html>
