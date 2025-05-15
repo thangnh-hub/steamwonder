@@ -34,6 +34,7 @@ class Consts
         'start_month_range' => 'start_month_range',
         'absent_days' => 'absent_days',
         'present_days' => 'present_days',
+        'summer' => 'summer',
     ];
     const TYPE_POLICIES = [
         'percent' => 'percent',
