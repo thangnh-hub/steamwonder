@@ -580,7 +580,7 @@ class ReceiptService
     /**
      * Tính giảm trừ trên từng dịch vụ.
      */
-    protected function calculateDiscountYearly($service_info, $cycle, $policies, $promotions, $deductions, ?Carbon $startDate = null, $month = null)
+    protected function calculateDiscountYearly($service_info, $cycle, $policies, $promotions, $month )
     {
         $discount_cycle_value = $cycle->json_params->services->{$service_info['id']}->value ?? 0;
         $discount_cycle_type = $cycle->json_params->services->{$service_info['id']}->type ?? null;
