@@ -20,6 +20,23 @@
         .select2-container {
             width: 100% !important;
         }
+
+        .box_image {
+            width: 150px;
+            height: 150px;
+            overflow: hidden;
+        }
+
+        .box_image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .box_content {
+            width: calc(100% - 200px);
+        }
     </style>
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content-header'); ?>
@@ -37,6 +54,9 @@
 
     <!-- Main content -->
     <section class="content">
+        <div id="loading-notification" class="loading-notification">
+            <p><?php echo app('translator')->get('Please wait'); ?>...</p>
+        </div>
         
         <div class="box box-default">
 
@@ -72,7 +92,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Lớp'); ?> <small class="text-red">*</small></label>
-                                <select required name="class_id" class="form-control select2 w-100">
+                                <select required name="class_id" class="class_id form-control select2 w-100">
                                     <option value=""><?php echo app('translator')->get('Please select'); ?></option>
                                     <?php $__currentLoopData = $classs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <option value="<?php echo e($item->id); ?>"
@@ -85,7 +105,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Ngày '); ?> <small class="text-red">*</small></label>
-                                <input type="date" name="tracked_at" class="form-control" required
+                                <input type="date" name="tracked_at" class="form-control tracked_at" required
                                     value="<?php echo e(isset($params['tracked_at']) && $params['tracked_at'] != '' ? $params['tracked_at'] : date('Y-m-d', time())); ?>">
                             </div>
                         </div>
@@ -154,6 +174,7 @@
                                 <th class="text-center" rowspan="2"><?php echo app('translator')->get('Đi học'); ?></th>
                                 <th class="text-center" colspan="2"><?php echo app('translator')->get('Nghỉ học'); ?></th>
                                 <th class="text-center" rowspan="2"><?php echo app('translator')->get('Nội dung Đưa/Đón'); ?></th>
+                                <th class="text-center" rowspan="2"><?php echo app('translator')->get('Hành động'); ?></th>
                             </tr>
                             <tr>
 
@@ -162,74 +183,100 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $__currentLoopData = $rows; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php $__currentLoopData = $rows; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr>
                                     <td class="text-center"><?php echo e($loop->index + 1); ?></td>
-                                    <td><?php echo e($item->student->student_code ?? ''); ?></td>
-                                    <td class="text-center"><?php echo e($item->student->first_name ?? ''); ?>
+                                    <td><?php echo e($row->student->student_code ?? ''); ?></td>
+                                    <td class="text-center"><?php echo e($row->student->first_name ?? ''); ?>
 
-                                        <?php echo e($item->student->last_name ?? ''); ?></td>
-                                    <td><?php echo e($item->student->nickname ?? ''); ?></td>
+                                        <?php echo e($row->student->last_name ?? ''); ?></td>
+                                    <td><?php echo e($row->student->nickname ?? ''); ?></td>
                                     <td class="text-center">
-                                        <label class="box_radio" for="student_<?php echo e($item->student_id); ?>_checkin">
-                                            <input id="student_<?php echo e($item->student_id); ?>_checkin"
-                                                name="student[<?php echo e($item->student_id); ?>][status]" class="radiobox checkin"
-                                                data-id="<?php echo e($item->student_id); ?>" type="radio" value="1">
+                                        <label class="box_radio" for="student_<?php echo e($row->student_id); ?>_checkin">
+                                            <input id="student_<?php echo e($row->student_id); ?>_checkin"
+                                                name="attendance[<?php echo e($row->student_id); ?>][status]"
+                                                <?php echo e(isset($row->attendance->status) && $row->attendance->status == 'checkin' ? 'checked disabled' : ''); ?>
+
+                                                class="radiobox checkin" data-id="<?php echo e($row->student_id); ?>" type="radio"
+                                                value="checkin">
                                         </label>
                                     </td>
                                     <td class="text-center">
-                                        <label class="box_radio" for="student_<?php echo e($item->student_id); ?>_absent_unexcused">
-                                            <input id="student_<?php echo e($item->student_id); ?>_absent_unexcused"
-                                                name="student[<?php echo e($item->student_id); ?>][status]"
-                                                class="radiobox absent_unexcused" data-id="<?php echo e($item->student_id); ?>"
-                                                type="radio" value="1">
+                                        <label class="box_radio" for="student_<?php echo e($row->student_id); ?>_absent_unexcused">
+                                            <input id="student_<?php echo e($row->student_id); ?>_absent_unexcused"
+                                                name="attendance[<?php echo e($row->student_id); ?>][status]"
+                                                <?php echo e(isset($row->attendance->status) && $row->attendance->status == 'absent_unexcused' ? 'checked' : ''); ?>
+
+                                                class="radiobox absent_unexcused" data-id="<?php echo e($row->student_id); ?>"
+                                                type="radio" value="absent_unexcused">
                                         </label>
                                     </td>
                                     <td class="text-center">
-                                        <label class="box_radio" for="student_<?php echo e($item->student_id); ?>_absent_excused">
-                                            <input id="student_<?php echo e($item->student_id); ?>_absent_excused"
-                                                name="student[<?php echo e($item->student_id); ?>][status]"
-                                                class="radiobox absent_excused" data-id="<?php echo e($item->student_id); ?>"
-                                                type="radio" value="1">
+                                        <label class="box_radio" for="student_<?php echo e($row->student_id); ?>_absent_excused">
+                                            <input id="student_<?php echo e($row->student_id); ?>_absent_excused"
+                                                name="attendance[<?php echo e($row->student_id); ?>][status]"
+                                                <?php echo e(isset($row->attendance->status) && $row->attendance->status == 'absent_excused' ? 'checked' : ''); ?>
+
+                                                class="radiobox absent_excused" data-id="<?php echo e($row->student_id); ?>"
+                                                type="radio" value="absent_excused">
                                         </label>
                                     </td>
-                                    <td class="content_<?php echo e($item->student_id); ?>">
-                                        <div class="col-md-6 col-sm-6 col-xs-6">
-                                            <img class="photo_<?php echo e($item->student_id); ?>"
-                                                style="display:none; width: 100%; max-width: 250px;">
+                                    <td class="d-flex-wap content_<?php echo e($row->student_id); ?>">
+                                        <div class="box_image">
+                                            <img class="photo_<?php echo e($row->student_id); ?>"
+                                                src="<?php echo e(isset($row->attendance->json_params->img) ? asset($row->attendance->json_params->img) : url('themes/admin/img/no_image.jpg')); ?>">
+                                            <input type="hidden" class="img_<?php echo e($row->student_id); ?>"
+                                                name="attendance[<?php echo e($row->student_id); ?>][json_params][image]"
+                                                value="<?php echo e(isset($row->attendance->json_params->img) ? $row->attendance->json_params->img : ''); ?>">
                                         </div>
-                                        <div class="col-md-6 col-sm-6 col-xs-6 information_<?php echo e($item->student_id); ?>"
-                                            style="display:none">
+                                        <div class="box_content information_<?php echo e($row->student_id); ?>">
                                             <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                                                <select class="form-control select2 w-100"
-                                                    name="student_logtime[<?php echo e($item->student_id); ?>][relative_login]">
+                                                <select class="form-control select2 w-100 check_disable" disabled
+                                                    name="attendance[<?php echo e($row->student_id); ?>][checkin_parent_id]">
                                                     <option selected="" value="">-Người đưa-</option>
-                                                    ${_option}
+                                                    <?php if(isset($row->student->studentParents) && count($row->student->studentParents) > 0): ?>
+                                                        <?php $__currentLoopData = $row->student->studentParents; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                            <option value="<?php echo e($item->parent_id); ?>"
+                                                                <?php echo e(isset($row->attendance->checkin_parent_id) && $row->attendance->checkin_parent_id == $item->parent_id ? 'selected' : ''); ?>>
+                                                                <?php echo e($item->relationship->title ?? ''); ?>:
+                                                                <?php echo e($item->parent->first_name ?? ''); ?>
+
+                                                                <?php echo e($item->parent->last_name ?? ''); ?></option>
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    <?php endif; ?>
                                                 </select>
                                             </div>
                                             <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                                                <select class="form-control select2 w-100"
-                                                    name="student_logtime[<?php echo e($item->student_id); ?>][member_login]">
+                                                <select class="form-control select2 w-100 check_disable" disabled
+                                                    name="attendance[<?php echo e($row->student_id); ?>][checkin_teacher_id]">
                                                     <option value="">-Giáo viên đón-</option>
                                                     <?php $__currentLoopData = $list_teacher; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                        <option value="<?php echo e($item->id); ?>">
+                                                        <option value="<?php echo e($item->id); ?>"
+                                                            <?php echo e(isset($row->attendance->checkin_teacher_id) && $row->attendance->checkin_teacher_id == $item->id ? 'selected' : ''); ?>>
                                                             <?php echo e($item->name ?? ''); ?></option>
                                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                 </select>
                                             </div>
                                             <div class="form-group col-sm-12 col-xs-12">
-                                                <input name="student_logtime[<?php echo e($item->student_id); ?>][note]"
-                                                    type="text" class="form-control" style="width: 100%"
-                                                    id="note_<?php echo e($item->student_id); ?>" placeholder="Nhập ghi chú"
-                                                    value="">
+                                                <input name="attendance[<?php echo e($row->student_id); ?>][json_params][note]"
+                                                    type="text" class="form-control check_disable" disabled
+                                                    id="note_<?php echo e($row->student_id); ?>" placeholder="Nhập ghi chú"
+                                                    value="<?php echo e(isset($row->attendance->json_params->note) ? $row->attendance->json_params->note : ''); ?>">
                                             </div>
                                         </div>
                                     </td>
-                                </tr>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <td class="text-center">
+                                        <?php if(!isset($row->attendance->status) || $row->attendance->status != 'checkin'): ?>
+                                            <button class="btn btn-success btn_attendance"
+                                                data-id="<?php echo e($row->student_id); ?>"><?php echo app('translator')->get('Điểm danh'); ?></button>
+                                    </td>
+                            <?php endif; ?>
 
-                        </tbody>
-                    </table>
+                            </tr>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
+                </tbody>
+                </table>
                 <?php endif; ?>
             </div>
 
@@ -245,15 +292,15 @@
                     </div>
                     <div class="modal-body show_detail_eduction">
                         <div class="row">
-                            <div class="col-md-12 col-sm-12 col-xs-12">
-                                <video id="video" autoplay style="width: 100%; max-width: 250px;"></video>
+                            <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+                                <video id="video" autoplay style="width: 80%"></video>
                                 <canvas id="canvas" style="display:none;"></canvas>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" id="capture" data-id="" class="btn btn-success">
-                            <i class="fa fa-save"></i> <?php echo app('translator')->get('Chụp ảnh và xác nhận điểm danh'); ?>
+                            <i class="fa fa-save"></i> <?php echo app('translator')->get('Chụp ảnh xác nhận'); ?>
                         </button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">
                             <i class="fa fa-remove"></i> <?php echo app('translator')->get('Close'); ?>
@@ -272,26 +319,14 @@
             const video = $('#video')[0];
             const canvas = $('#canvas')[0];
             const photo = $('#photo')[0];
+            var noImage = <?php echo json_encode(url('themes/admin/img/no_image.jpg'), 15, 512) ?>;
 
-            $(document).on('change', '.checkin', function() {
-                var _student_id = $(this).data('id');
-                var _student = rows.find(row => row.student_id === _student_id);
-                var _option = ``;
-                _student.student.student_parents.forEach(function(row) {
-                    _option += `<option value="${row.parent_id}">
-                                ${row.relationship.title ?? '' }:
-                                ${row.parent.first_name ?? '' }
-                                ${row.parent.last_name ?? '' }</option>`;
-                });
-                var _html = `
-
-                           `;
-
-                $('.select2').select2();
-                $('.box_eduction').html(_html);
+            $(document).on('change', '.checkin', function(e) {
+                // Lấy id của học sinh từ thuộc tính data-id
+                var _student_id = $(this).attr('data-id');
                 $('#capture').attr('data-id', _student_id);
                 $('#modal_camera').modal('show');
-
+                $('.information_' + _student_id).find('.check_disable').prop('disabled', false);
                 // Bật camera
                 navigator.mediaDevices.getUserMedia({
                         video: true
@@ -302,11 +337,30 @@
                         video.srcObject = stream;
                     })
                     .catch(error => {
-                        console.error('Không thể truy cập camera:', error);
+                        alert.error('Không thể truy cập camera:', error);
                     });
             });
+            // Chụp ảnh
+            $(document).on('click', '#capture', function() {
+                var _id = $(this).attr('data-id');
+                const context = canvas.getContext('2d');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                // Hiển thị ảnh đã chụp
+                $('.photo_' + _id).attr('src', canvas.toDataURL('image/png', 0.8));
+                $('.img_' + _id).val(canvas.toDataURL('image/png', 0.8));
+                // Đóng modal và checked học sinh
+                $('#modal_camera').modal('hide');
+            });
+            $('.absent_unexcused, .absent_excused').on('change', function() {
+                var _id = $(this).attr('data-id');
+                $('.information_' + _id).find('.check_disable').prop('disabled', true);
+                $('.photo_' + _id).attr('src', noImage);
+                $('.img_' + _id).val('');
+            })
             // Khi tắt modal thì tắt cam
-            $('#modal_camera').on('hidden.bs.modal', function() {
+            $(document).on('hidden.bs.modal', '#modal_camera', function() {
                 if (videoStream) {
                     // Dừng tất cả các track video
                     videoStream.getTracks().forEach(track => track.stop());
@@ -320,41 +374,87 @@
             });
 
 
-            // Chụp ảnh
-            $(document).on('click', '#capture', function() {
+            // Lưu thông tin điểm danh
+            $('.btn_attendance').click(function() {
+                var studentId = $(this).data('id');
+                var class_id = $('.class_id').val();
+                var tracked_at = $('.tracked_at').val();
 
-                var _id = $(this).data('id');
-                console.log(_id);
+                var _status = $('input[name="attendance[' + studentId + '][status]"]:checked').val();
+                var _checkin_parent_id = $('select[name="attendance[' + studentId +
+                    '][checkin_parent_id]"]').val();
+                var _checkin_teacher_id = $('select[name="attendance[' + studentId +
+                    '][checkin_teacher_id]"]').val();
+                var _note = $('input[name="attendance[' + studentId + '][json_params][note]"]').val();
+                var _img = $('input[name="attendance[' + studentId + '][json_params][image]"]').val();
 
-                const context = canvas.getContext('2d');
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                // Hiển thị ảnh đã chụp
-                $('.photo_' + _id).attr('src', canvas.toDataURL('image/png')).show();
-                $('information_' + _id).show();
-                // Đóng modal
-                $('#modal_camera').modal('hide');
-            });
-
-            // Lưu ảnh
-            $('#save').click(function() {
-                const imageData = canvas.toDataURL('image/png');
+                if (_status == undefined) {
+                    alert('Vui lòng chọn trạng thái điểm danh');
+                    return;
+                }
+                if (_status == 'checkin' && _checkin_parent_id == '') {
+                    alert('Vui lòng chọn người đưa');
+                    return;
+                }
+                if (_status == 'checkin' && _checkin_teacher_id == '') {
+                    alert('Vui lòng chọn giáo viên đón');
+                    return;
+                }
+                if (_status == 'checkin' && _img == '') {
+                    alert('Vui lòng chụp ảnh');
+                    return;
+                }
+                show_loading_notification();
                 $.ajax({
-                    url: '<?php echo e(route('save.image')); ?>',
+                    url: '<?php echo e(route('attendance.store')); ?>',
                     type: 'POST',
                     data: {
-                        image: imageData,
-                        _token: '<?php echo e(csrf_token()); ?>'
+                        "student_id": studentId,
+                        "class_id": class_id,
+                        "tracked_at": tracked_at,
+                        "status": _status,
+                        "checkin_parent_id": _checkin_parent_id,
+                        "checkin_teacher_id": _checkin_teacher_id,
+                        "json_params[note]": _note,
+                        "json_params[img]": _img,
+                        _token: '<?php echo e(csrf_token()); ?>',
                     },
                     success: function(response) {
-                        alert(response.message);
+                        hide_loading_notification();
+                        if (response) {
+                            var _html = `<div class="alert alert-${response.data} alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        ${response.message}
+                        </div>`;
+                            $('.box_alert').prepend(_html);
+                            $('html, body').animate({
+                                scrollTop: $(".alert").offset().top
+                            }, 1000);
+                            setTimeout(function() {
+                                $(".alert").fadeOut(2000, function() {});
+                            }, 800);
+                        } else {
+                            var _html = `<div class="alert alert-warning alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        Bạn không có quyền thao tác chức năng này!
+                        </div>`;
+                            $('.box_alert').prepend(_html);
+                            $('html, body').animate({
+                                scrollTop: $(".alert").offset().top
+                            }, 1000);
+                            setTimeout(function() {
+                                $(".alert").fadeOut(2000, function() {});
+                            }, 800);
+                        }
                     },
-                    error: function(xhr) {
-                        console.error(xhr.responseText);
+                    error: function(response) {
+                        hide_loading_notification();
+                        let errors = response.responseJSON.message;
+                        alert(errors);
                     }
                 });
             });
+
         });
     </script>
 <?php $__env->stopSection(); ?>
