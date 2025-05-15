@@ -39,6 +39,11 @@
         .box_content {
             width: calc(100% - 200px);
         }
+        @media (max-width: 768px) {
+            .box_content {
+                width: 100%;
+            }
+        }
     </style>
 @endsection
 @section('content-header')
@@ -53,7 +58,6 @@
 @endsection
 
 @section('content')
-
     <!-- Main content -->
     <section class="content">
         <div id="loading-notification" class="loading-notification">
@@ -114,7 +118,7 @@
 
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label>@lang('Lấy điểm danh')</label>
+                                <label>@lang('Lấy điểm')</label>
                                 <div>
                                     <button type="submit" class="btn btn-primary btn-sm mr-10">@lang('Submit')</button>
                                     <a class="btn btn-default btn-sm" href="{{ route(Request::segment(2) . '.index') }}">
@@ -164,118 +168,117 @@
                         @lang('not_found')
                     </div>
                 @else
-                    <table class="table table-hover table-bordered">
-                        <thead>
-                            <tr>
-                                <th class="text-center" rowspan="2">@lang('STT')</th>
-                                <th class="text-center" rowspan="2">@lang('Mã học sinh')</th>
-                                <th class="text-center" rowspan="2">@lang('Tên học sinh')</th>
-                                <th class="text-center" rowspan="2">@lang('Nickname')</th>
-                                <th class="text-center" rowspan="2">@lang('Đi học')</th>
-                                <th class="text-center" colspan="2">@lang('Nghỉ học')</th>
-                                <th class="text-center" rowspan="2">@lang('Nội dung Đưa/Đón')</th>
-                                <th class="text-center" rowspan="2">@lang('Hành động')</th>
-                            </tr>
-                            <tr>
-
-                                <th class="text-center">@lang('Không phép')</th>
-                                <th class="text-center">@lang('Có phép')</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($rows as $row)
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead>
                                 <tr>
-                                    <td class="text-center">{{ $loop->index + 1 }}</td>
-                                    <td>{{ $row->student->student_code ?? '' }}</td>
-                                    <td class="text-center">{{ $row->student->first_name ?? '' }}
-                                        {{ $row->student->last_name ?? '' }}</td>
-                                    <td>{{ $row->student->nickname ?? '' }}</td>
-                                    <td class="text-center">
-                                        <label class="box_radio" for="student_{{ $row->student_id }}_checkin">
-                                            <input id="student_{{ $row->student_id }}_checkin"
-                                                name="attendance[{{ $row->student_id }}][status]"
-                                                {{ isset($row->attendance->status) && $row->attendance->status == 'checkin' ? 'checked disabled' : '' }}
-                                                class="radiobox checkin" data-id="{{ $row->student_id }}" type="radio"
-                                                value="checkin">
-                                        </label>
-                                    </td>
-                                    <td class="text-center">
-                                        <label class="box_radio" for="student_{{ $row->student_id }}_absent_unexcused">
-                                            <input id="student_{{ $row->student_id }}_absent_unexcused"
-                                                name="attendance[{{ $row->student_id }}][status]"
-                                                {{ isset($row->attendance->status) && $row->attendance->status == 'absent_unexcused' ? 'checked' : '' }}
-                                                class="radiobox absent_unexcused" data-id="{{ $row->student_id }}"
-                                                type="radio" value="absent_unexcused">
-                                        </label>
-                                    </td>
-                                    <td class="text-center">
-                                        <label class="box_radio" for="student_{{ $row->student_id }}_absent_excused">
-                                            <input id="student_{{ $row->student_id }}_absent_excused"
-                                                name="attendance[{{ $row->student_id }}][status]"
-                                                {{ isset($row->attendance->status) && $row->attendance->status == 'absent_excused' ? 'checked' : '' }}
-                                                class="radiobox absent_excused" data-id="{{ $row->student_id }}"
-                                                type="radio" value="absent_excused">
-                                        </label>
-                                    </td>
-                                    <td class="d-flex-wap content_{{ $row->student_id }}">
-                                        <div class="box_image">
-                                            <img class="photo_{{ $row->student_id }}"
-                                                src="{{ isset($row->attendance->json_params->img) ? asset($row->attendance->json_params->img) : url('themes/admin/img/no_image.jpg') }}">
-                                            <input type="hidden" class="img_{{ $row->student_id }}"
-                                                name="attendance[{{ $row->student_id }}][json_params][image]"
-                                                value="{{ isset($row->attendance->json_params->img) ? $row->attendance->json_params->img : '' }}">
-                                        </div>
-                                        <div class="box_content information_{{ $row->student_id }}">
-                                            <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                                                <select class="form-control select2 w-100 check_disable" disabled
-                                                    name="attendance[{{ $row->student_id }}][checkin_parent_id]">
-                                                    <option selected="" value="">-Người đưa-</option>
-                                                    @if (isset($row->student->studentParents) && count($row->student->studentParents) > 0)
-                                                        @foreach ($row->student->studentParents as $item)
-                                                            <option value="{{ $item->parent_id }}"
-                                                                {{ isset($row->attendance->checkin_parent_id) && $row->attendance->checkin_parent_id == $item->parent_id ? 'selected' : '' }}>
-                                                                {{ $item->relationship->title ?? '' }}:
-                                                                {{ $item->parent->first_name ?? '' }}
-                                                                {{ $item->parent->last_name ?? '' }}</option>
+                                    <th class="text-center" rowspan="2">@lang('STT')</th>
+                                    <th class="text-center" rowspan="2">@lang('Mã học sinh')</th>
+                                    <th class="text-center" rowspan="2">@lang('Tên học sinh')</th>
+                                    <th class="text-center" rowspan="2">@lang('Nickname')</th>
+                                    <th class="text-center" rowspan="2">@lang('Đi học')</th>
+                                    <th class="text-center" colspan="2">@lang('Nghỉ học')</th>
+                                    <th class="text-center" rowspan="2">@lang('Nội dung Đưa/Đón')</th>
+                                    <th class="text-center" rowspan="2">@lang('Hành động')</th>
+                                </tr>
+                                <tr>
+
+                                    <th class="text-center">@lang('Không phép')</th>
+                                    <th class="text-center">@lang('Có phép')</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($rows as $row)
+                                    <tr>
+                                        <td class="text-center">{{ $loop->index + 1 }}</td>
+                                        <td>{{ $row->student->student_code ?? '' }}</td>
+                                        <td class="text-center">{{ $row->student->first_name ?? '' }}
+                                            {{ $row->student->last_name ?? '' }}</td>
+                                        <td>{{ $row->student->nickname ?? '' }}</td>
+                                        <td class="text-center">
+                                            <label class="box_radio" for="student_{{ $row->student_id }}_checkin">
+                                                <input id="student_{{ $row->student_id }}_checkin"
+                                                    name="attendance[{{ $row->student_id }}][status]"
+                                                    {{ isset($row->attendance->status) && $row->attendance->status == 'checkin' ? 'checked disabled' : '' }}
+                                                    class="radiobox checkin" data-id="{{ $row->student_id }}"
+                                                    type="radio" value="checkin">
+                                            </label>
+                                        </td>
+                                        <td class="text-center">
+                                            <label class="box_radio"
+                                                for="student_{{ $row->student_id }}_absent_unexcused">
+                                                <input id="student_{{ $row->student_id }}_absent_unexcused"
+                                                    name="attendance[{{ $row->student_id }}][status]"
+                                                    {{ isset($row->attendance->status) && $row->attendance->status == 'absent_unexcused' ? 'checked' : '' }}
+                                                    class="radiobox absent_unexcused" data-id="{{ $row->student_id }}"
+                                                    type="radio" value="absent_unexcused">
+                                            </label>
+                                        </td>
+                                        <td class="text-center">
+                                            <label class="box_radio" for="student_{{ $row->student_id }}_absent_excused">
+                                                <input id="student_{{ $row->student_id }}_absent_excused"
+                                                    name="attendance[{{ $row->student_id }}][status]"
+                                                    {{ isset($row->attendance->status) && $row->attendance->status == 'absent_excused' ? 'checked' : '' }}
+                                                    class="radiobox absent_excused" data-id="{{ $row->student_id }}"
+                                                    type="radio" value="absent_excused">
+                                            </label>
+                                        </td>
+                                        <td class="d-flex-wap content_{{ $row->student_id }}">
+                                            <div class="box_image">
+                                                <img class="photo_{{ $row->student_id }}"
+                                                    src="{{ isset($row->attendance->json_params->img) ? asset($row->attendance->json_params->img) : url('themes/admin/img/no_image.jpg') }}">
+                                                <input type="hidden" class="img_{{ $row->student_id }}"
+                                                    name="attendance[{{ $row->student_id }}][json_params][image]"
+                                                    value="{{ isset($row->attendance->json_params->img) ? $row->attendance->json_params->img : '' }}">
+                                            </div>
+                                            <div class="box_content information_{{ $row->student_id }}">
+                                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                    <select class="form-control select2 w-100 check_disable" disabled
+                                                        name="attendance[{{ $row->student_id }}][checkin_parent_id]">
+                                                        <option selected="" value="">-Người đưa-</option>
+                                                        @if (isset($row->student->studentParents) && count($row->student->studentParents) > 0)
+                                                            @foreach ($row->student->studentParents as $item)
+                                                                <option value="{{ $item->parent_id }}"
+                                                                    {{ isset($row->attendance->checkin_parent_id) && $row->attendance->checkin_parent_id == $item->parent_id ? 'selected' : '' }}>
+                                                                    {{ $item->relationship->title ?? '' }}:
+                                                                    {{ $item->parent->first_name ?? '' }}
+                                                                    {{ $item->parent->last_name ?? '' }}</option>
+                                                            @endforeach
+                                                        @endif
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                                    <select class="form-control select2 w-100 check_disable" disabled
+                                                        name="attendance[{{ $row->student_id }}][checkin_teacher_id]">
+                                                        <option value="">-Giáo viên đón-</option>
+                                                        @foreach ($list_teacher as $item)
+                                                            <option value="{{ $item->id }}"
+                                                                {{ isset($row->attendance->checkin_teacher_id) && $row->attendance->checkin_teacher_id == $item->id ? 'selected' : '' }}>
+                                                                {{ $item->name ?? '' }}</option>
                                                         @endforeach
-                                                    @endif
-                                                </select>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-sm-12 col-xs-12">
+                                                    <input name="attendance[{{ $row->student_id }}][json_params][note]"
+                                                        type="text" class="form-control check_disable" disabled
+                                                        id="note_{{ $row->student_id }}" placeholder="Nhập ghi chú"
+                                                        value="{{ isset($row->attendance->json_params->note) ? $row->attendance->json_params->note : '' }}">
+                                                </div>
                                             </div>
-                                            <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                                                <select class="form-control select2 w-100 check_disable" disabled
-                                                    name="attendance[{{ $row->student_id }}][checkin_teacher_id]">
-                                                    <option value="">-Giáo viên đón-</option>
-                                                    @foreach ($list_teacher as $item)
-                                                        <option value="{{ $item->id }}"
-                                                            {{ isset($row->attendance->checkin_teacher_id) && $row->attendance->checkin_teacher_id == $item->id ? 'selected' : '' }}>
-                                                            {{ $item->name ?? '' }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="form-group col-sm-12 col-xs-12">
-                                                <input name="attendance[{{ $row->student_id }}][json_params][note]"
-                                                    type="text" class="form-control check_disable" disabled
-                                                    id="note_{{ $row->student_id }}" placeholder="Nhập ghi chú"
-                                                    value="{{ isset($row->attendance->json_params->note) ? $row->attendance->json_params->note : '' }}">
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        @if (!isset($row->attendance->status) || $row->attendance->status != 'checkin')
-                                            <button class="btn btn-success btn_attendance"
-                                                data-id="{{ $row->student_id }}">@lang('Điểm danh')</button>
-                                    </td>
-                            @endif
-
-                            </tr>
-                @endforeach
-
-                </tbody>
-                </table>
+                                        </td>
+                                        <td class="text-center">
+                                            @if (!isset($row->attendance->status) || $row->attendance->status != 'checkin')
+                                                <button class="btn btn-success btn_attendance"
+                                                    data-id="{{ $row->student_id }}">@lang('Điểm danh')</button>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 @endif
             </div>
-
-
         </div>
 
         <div class="modal fade" id="modal_camera" data-backdrop="static" tabindex="-1" role="dialog">
