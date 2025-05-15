@@ -353,6 +353,9 @@
                                                 <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#reincarnationModal">
                                                     <i class="fa fa-recycle"></i> <?php echo app('translator')->get('Xử lý TBP HSM'); ?>
                                                 </button>     
+                                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#sumerReceiptModal">
+                                                    <i class="fa fa-sun-o"></i> <?php echo app('translator')->get('Tính phí chỉ kỳ hè'); ?>
+                                                </button>     
                                             </div>
                                             <br>
                                             <div class="table-responsive">
@@ -919,7 +922,39 @@
                     
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary"><?php echo app('translator')->get('Tính toán tái tục dịch vụ'); ?></button>
+                    <button type="submit" class="btn btn-primary"><?php echo app('translator')->get('Tính toán TBP HSM'); ?></button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo app('translator')->get('Đóng'); ?></button>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+    <!-- Modal TBP HSM-->
+    <div data-backdrop="static" class="modal fade" id="sumerReceiptModal" tabindex="-1" role="dialog" aria-labelledby="sumerReceiptModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+        <form id="formSummer" action="<?php echo e(route('admission.receipt.calculateStudent.summer')); ?>"  method="POST">
+            <?php echo csrf_field(); ?>
+            <input type="hidden" name="student_id" value="<?php echo e($detail->id); ?>">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sumerReceiptModalLabel"><?php echo app('translator')->get('Xử lý phí chỉ kỳ hè'); ?></h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label><?php echo app('translator')->get('Ngày bắt đầu chu kỳ thu'); ?></label>
+                                <?php
+                                    $defaultDate = date('Y') . '-06-01';
+                                ?>
+                                <input class="form-control" type="date" name="enrolled_at" value="<?php echo e(old('enrolled_at', $defaultDate)); ?>" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary"><?php echo app('translator')->get('Tính toán phí chỉ kỳ hè'); ?></button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo app('translator')->get('Đóng'); ?></button>
                 </div>
             </div>
@@ -1209,6 +1244,9 @@
         });
         
         $('#formRenew').on('submit', function () {
+            localStorage.setItem('activeTab', '#tab_4');
+        });
+        $('#formSummer').on('submit', function () {
             localStorage.setItem('activeTab', '#tab_4');
         });
         $('#formStudentAddParent').on('submit', function () {

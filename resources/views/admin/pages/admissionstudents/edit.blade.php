@@ -345,6 +345,9 @@
                                                 <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#reincarnationModal">
                                                     <i class="fa fa-recycle"></i> @lang('Xử lý TBP HSM')
                                                 </button>     
+                                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#sumerReceiptModal">
+                                                    <i class="fa fa-sun-o"></i> @lang('Tính phí chỉ kỳ hè')
+                                                </button>     
                                             </div>
                                             <br>
                                             <div class="table-responsive">
@@ -895,7 +898,39 @@
                     
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">@lang('Tính toán tái tục dịch vụ')</button>
+                    <button type="submit" class="btn btn-primary">@lang('Tính toán TBP HSM')</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">@lang('Đóng')</button>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+    <!-- Modal TBP HSM-->
+    <div data-backdrop="static" class="modal fade" id="sumerReceiptModal" tabindex="-1" role="dialog" aria-labelledby="sumerReceiptModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+        <form id="formSummer" action="{{ route('admission.receipt.calculateStudent.summer') }}"  method="POST">
+            @csrf
+            <input type="hidden" name="student_id" value="{{ $detail->id }}">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sumerReceiptModalLabel">@lang('Xử lý phí chỉ kỳ hè')</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>@lang('Ngày bắt đầu chu kỳ thu')</label>
+                                @php
+                                    $defaultDate = date('Y') . '-06-01';
+                                @endphp
+                                <input class="form-control" type="date" name="enrolled_at" value="{{ old('enrolled_at', $defaultDate) }}" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">@lang('Tính toán phí chỉ kỳ hè')</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">@lang('Đóng')</button>
                 </div>
             </div>
@@ -1185,6 +1220,9 @@
         });
         
         $('#formRenew').on('submit', function () {
+            localStorage.setItem('activeTab', '#tab_4');
+        });
+        $('#formSummer').on('submit', function () {
             localStorage.setItem('activeTab', '#tab_4');
         });
         $('#formStudentAddParent').on('submit', function () {
