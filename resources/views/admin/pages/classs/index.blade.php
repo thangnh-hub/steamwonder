@@ -212,7 +212,7 @@
                                         <div class="sw_featured d-flex-al-center">
                                             <label class="switch">
                                                 <input class="" type="checkbox" value="1" disabled
-                                                    {{ isset($detail->is_lastyear) && $detail->is_lastyear == '1' ? 'checked' : '' }}>
+                                                    {{ isset($row->is_lastyear) && $row->is_lastyear == '1' ? 'checked' : '' }}>
                                                 <span class="slider round"></span>
                                             </label>
                                         </div>
