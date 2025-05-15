@@ -114,7 +114,7 @@
 
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label>@lang('Filter')</label>
+                                <label>@lang('Lấy điểm danh')</label>
                                 <div>
                                     <button type="submit" class="btn btn-primary btn-sm mr-10">@lang('Submit')</button>
                                     <a class="btn btn-default btn-sm" href="{{ route(Request::segment(2) . '.index') }}">
