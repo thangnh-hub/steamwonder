@@ -42,17 +42,18 @@ class AttendancesController extends Controller
         $this->responseData['params'] = $params;
         if (isset($params['class_id']) && $params['class_id'] != "") {
             $rows = StudentClass::getSqlStudentClass($params)->get();
-        }
-        // Thông tin điểm danh
-        $attendance = Attendances::where('class_id', $params['class_id'])
-            ->whereDate('tracked_at', $params['tracked_at'])->first();
-        // Chi tiết điểm danh
-        if ($attendance) {
-            $attendance_students = AttendanceStudent::where('class_attendance_id', $attendance->id)->get();
-            foreach ($rows as $row) {
-                $row->attendance = $attendance_students->where('student_id', $row->student_id)->first();
+            // Thông tin điểm danh
+            $attendance = Attendances::where('class_id', $params['class_id'])
+                ->whereDate('tracked_at', $params['tracked_at'])->first();
+            // Chi tiết điểm danh
+            if ($attendance) {
+                $attendance_students = AttendanceStudent::where('class_attendance_id', $attendance->id)->get();
+                foreach ($rows as $row) {
+                    $row->attendance = $attendance_students->where('student_id', $row->student_id)->first();
+                }
             }
         }
+
         $this->responseData['rows'] = $rows;
         return $this->responseView($this->viewPart . '.index');
     }

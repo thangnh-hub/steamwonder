@@ -112,7 +112,7 @@
 
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label><?php echo app('translator')->get('Filter'); ?></label>
+                                <label><?php echo app('translator')->get('Lấy điểm danh'); ?></label>
                                 <div>
                                     <button type="submit" class="btn btn-primary btn-sm mr-10"><?php echo app('translator')->get('Submit'); ?></button>
                                     <a class="btn btn-default btn-sm" href="<?php echo e(route(Request::segment(2) . '.index')); ?>">
