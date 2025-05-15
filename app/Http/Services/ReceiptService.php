@@ -126,7 +126,7 @@ class ReceiptService
                     // Tính toán các tháng còn lại
                     for ($i = 0; $i < $monthCount; $i++) {
                         $month = $firstMonth->copy()->addMonths($i);
-                        $discount_amount = $this->calculateDiscount($service_info, $cycle, $policies, $promotions, $deductions, $startDate, $month);
+                        $discount_amount = $this->calculateDiscount( $service_info, $cycle, $policies,$promotions, $deductions, null ,$month);
                         $details[] = [
                             'service_id' => $service->id,
                             'month' => $month->startOfMonth()->format('Y-m-d'),
@@ -141,7 +141,8 @@ class ReceiptService
                     break;
 
                 case Consts::SERVICE_TYPE['yearly']:
-                    $discount_amount = $this->calculateDiscount($service_info, $cycle, $policies, $promotions, $deductions, $startDate, $month = null);
+                    $month= $startDate->format('Y-m-d');
+                    $discount_amount = $this->calculateDiscount( $service_info, $cycle, $policies, $promotions,$deductions, $startDate , $month);
                     $details[] = [
                         'service_id' => $service->id,
                         'month' => $startDate->format('Y-m-d'),
@@ -155,7 +156,8 @@ class ReceiptService
                     break;
 
                 case Consts::SERVICE_TYPE['once']:
-                    $discount_amount = $this->calculateDiscount($service_info, $cycle, $policies, $promotions, $deductions, $startDate, $month = null);
+                    $month= $startDate->format('Y-m-d');
+                    $discount_amount = $this->calculateDiscount($service_info, $cycle, $policies,$promotions, $deductions, $startDate , $month );
                     $details[] = [
                         'service_id' => $service->id,
                         'month' => $startDate->format('Y-m-d'),
@@ -169,7 +171,8 @@ class ReceiptService
                     break;
 
                 case Consts::SERVICE_TYPE['auto_cancel']:
-                    $discount_amount = $this->calculateDiscount($service_info, $cycle, $policies, $promotions, $deductions, $startDate, $month = null);
+                    $month= $startDate->format('Y-m-d');
+                    $discount_amount = $this->calculateDiscount($service_info, $cycle, $policies, $promotions,$deductions, $startDate , $month );
                     $details[] = [
                         'service_id' => $service->id,
                         'month' => $startDate->format('Y-m-d'),
@@ -242,7 +245,7 @@ class ReceiptService
     /**
      * Tính giảm trừ trên từng dịch vụ.
      */
-    protected function calculateDiscount($service_info, $cycle, $policies, $promotions, $deductions, ?Carbon $startDate = null, $month = null)
+    protected function calculateDiscount( $service_info, $cycle, $policies, $promotions, $deductions, ?Carbon $startDate = null, $month )
     {
         $discount_cycle_value = $cycle->json_params->services->{$service_info['id']}->value ?? 0;
         $discount_cycle_type = $cycle->json_params->services->{$service_info['id']}->type ?? null;
@@ -580,7 +583,7 @@ class ReceiptService
     /**
      * Tính giảm trừ trên từng dịch vụ.
      */
-    protected function calculateDiscountYearly($service_info, $cycle, $policies, $promotions, $deductions, ?Carbon $startDate = null, $month = null)
+    protected function calculateDiscountYearly($service_info, $cycle, $policies, $promotions, $month )
     {
         $discount_cycle_value = $cycle->json_params->services->{$service_info['id']}->value ?? 0;
         $discount_cycle_type = $cycle->json_params->services->{$service_info['id']}->type ?? null;
