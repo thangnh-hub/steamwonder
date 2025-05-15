@@ -183,6 +183,7 @@ Route::group(['namespace' => 'Admin'], function () {
             //chỉnh sưa dịch vụ của bé
             Route::post('asmission/update-service-note', 'AdmissionStudentController@updateServiceNoteAjax')->name('admission.student.updateService.ajax');
             Route::post('asmission/receipts_calculate', 'AdmissionStudentController@calculateReceiptStudent')->name('admission.receipt.calculateStudent');
+            Route::post('asmission/receipts_calculate_summer', 'AdmissionStudentController@calculateReceiptStudentSummer')->name('admission.receipt.calculateStudent.summer');
             Route::post('asmission_import_data_student', 'AdmissionStudentController@importDataStudent')->name('admission.data_student.import');
             // -----
 
