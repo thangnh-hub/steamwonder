@@ -7,7 +7,8 @@
             max-width: 80%;
             width: auto;
         }
-        ..select2-container{
+
+        ..select2-container {
             width: 100% !important;
         }
     </style>
@@ -196,8 +197,10 @@
                                         <tr>
                                             <th colspan="7" class="text-left"><b>2. Phí dự kiến</b></th>
                                             <th class="text-right">
-                                                <button data-toggle="modal" data-target="#modal_show_service"
-                                                    class="btn btn-warning"><?php echo app('translator')->get('Thay đổi kỳ tính phí cho HS'); ?></button>
+                                                <?php if($detail->status == 'pending'): ?>
+                                                    <button data-toggle="modal" data-target="#modal_show_service"
+                                                        class="btn btn-warning"><?php echo app('translator')->get('Thay đổi kỳ tính phí cho HS'); ?></button>
+                                                <?php endif; ?>
                                             </th>
                                         </tr>
                                     </thead>
@@ -388,7 +391,8 @@
                                                     <?php endif; ?>
                                                 </td>
                                                 <td>
-                                                    <select class="form-control select2 w-100" name="student_services[<?php echo e($item->id); ?>][payment_cycle_id]">
+                                                    <select class="form-control select2 w-100"
+                                                        name="student_services[<?php echo e($item->id); ?>][payment_cycle_id]">
                                                         <?php if(isset($payment_cycle) && count($payment_cycle) > 0): ?>
                                                             <?php $__currentLoopData = $payment_cycle; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                                 <option value="<?php echo e($val->id); ?>"
