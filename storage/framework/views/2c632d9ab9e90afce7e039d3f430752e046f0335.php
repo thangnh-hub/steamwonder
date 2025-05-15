@@ -250,7 +250,8 @@
                                             <i class="fa fa-pencil"></i>
                                         </a>
                                         <button type="button" class="btn btn-sm btn-danger btn_delete_receipt "
-                                            data-id="<?php echo e($row->id); ?>">
+                                            data-id="<?php echo e($row->id); ?>" data-toggle="tooltip" title="<?php echo app('translator')->get('Xóa phiếu'); ?>"
+                                            data-original-title="<?php echo app('translator')->get('Xóa phiếu'); ?>">
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </td>
@@ -350,29 +351,6 @@
                 });
             }
         });
-
-        // Mở popup ở giữa
-        function openCenteredPopup(url, width, height) {
-            const screenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX;
-            const screenTop = window.screenTop !== undefined ? window.screenTop : window.screenY;
-
-            const screenWidth = window.innerWidth || document.documentElement.clientWidth || screen.width;
-            const screenHeight = window.innerHeight || document.documentElement.clientHeight || screen.height;
-
-            width = width || screenWidth * 0.8;
-            height = height || screenHeight * 0.8;
-
-            const left = screenLeft + (screenWidth - width) / 2;
-            const top = screenTop + (screenHeight - height) / 2;
-
-            window.open(
-                url,
-                'popupWindow',
-                `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes`
-            );
-            console.log(width, height);
-            return false; // Ngăn mở link mặc định
-        }
     </script>
 <?php $__env->stopSection(); ?>
 

@@ -431,5 +431,24 @@ class AdmissionStudentController extends Controller
             return redirect()->back()->with('errorMessage', $e->getMessage());
         }
     }
+    public function calculateReceiptStudentSummer(Request $request, ReceiptService $receiptService)
+    {   
+        try {
+            $params = $request->all();
+            $student = Student::findOrFail($params['student_id']);
+
+            $studentServices = $student->studentServices()
+            ->where('status', 'active')
+            ->get();
+
+            $data['student_services'] = $studentServices;
+            $data['enrolled_at'] = $request->input('enrolled_at', null);
+            $receiptService->createReceiptForStudentSummer($student, $data);
+            return redirect()->back()->with('successMessage', __('Cập nhật biểu phí dịch vụ kỳ hè thành công!'));
+        } catch (\Exception $e) {
+            // Bắt lỗi chung khác
+            return redirect()->back()->with('errorMessage', $e->getMessage());
+        }
+    }
 
 }
