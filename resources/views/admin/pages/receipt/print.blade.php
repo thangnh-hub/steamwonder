@@ -140,6 +140,7 @@
         .header .logo img {
             max-width: 100%;
             height: auto;
+            width: 150px;
         }
 
         .header .company-info {
@@ -157,6 +158,11 @@
         p {
             margin-top: 0px;
         }
+
+        .sub-title {
+            border-bottom: solid 1px #999999;
+            padding-bottom: 1px;
+        }
     </style>
 </head>
 
@@ -169,7 +175,7 @@
                 <img src="https://steamwonders.vn/data/logo/SWS-logo.png" alt="Logo">
             </div>
             <div class="company-info">
-                <p><strong>{{ optional($detail->area)->json_params->company ?? '' }}</strong></p>
+                <p style="font-size:20px;"><strong>{{ optional($detail->area)->json_params->company ?? '' }}</strong></p>
                 <p><strong>{{ optional($detail->area)->json_params->address ?? '' }}</strong></p>
                 <p>
                     <strong>Điện thoại:</strong> {{ optional($detail->area)->json_params->phone ?? '' }}
@@ -179,7 +185,7 @@
         </div>
 
         <div class="content">
-            <p>Kính gửi: Quý Phụ huynh,</p>
+            <p style="margin-top: 1em;"><strong class="sub-title"><i>Kính gửi: Quý Phụ huynh,</i></strong></p>
             <p>
                 {{ optional($detail->area)->json_params->school ?? '' }} trân trọng cảm ơn Quý Phụ huynh đã quan tâm
                 trong suốt thời
@@ -400,14 +406,14 @@
         <h3 class="text-center">PHẦN II - HƯỚNG DẪN THANH TOÁN</h3>
         <div class="footer">
             <div class="bank-info">
-                <p><strong>Hình thức thanh toán:</strong></p>
+                <p><strong class="sub-title">Hình thức thanh toán:</strong></p>
                 <p>Thanh toán bằng chuyển khoản, Quý Phụ huynh vui lòng chuyển tiền vào tài khoản sau:</p>
                 <p><strong>Tên TK:</strong> {{ optional($detail->area)->json_params->bank_account ?? '' }}</p>
                 <p><strong>Số TK:</strong> {{ optional($detail->area)->json_params->bank_stk ?? '' }} -
                     {{ optional($detail->area)->json_params->bank_name ?? '' }}</p>
                 <p><strong>Nội dung chuyển khoản:</strong> Mã học sinh_Tên học sinh_Mã TBP</p>
                 <p>* Thanh toán tiền mặt: chi trả bằng tiền mặt tại Phòng Tuyển sinh</p>
-                <p><strong>Thời hạn nộp phí:</strong></p>
+                <p><strong class="sub-title">Thời hạn nộp phí:</strong></p>
                 <p>Quý phụ huynh vui lòng thanh toán các khoản phí trên trong vòng 10 ngày kể từ ngày nhận được thông
                     báo từ
                     Nhà trường.</p>
@@ -421,7 +427,7 @@
             @endisset
         </div>
         <div class="content-payment">
-            <p><strong>Thanh toán phí:</strong></p>
+            <p><strong class="sub-title">Thanh toán phí:</strong></p>
             <p>Phụ huynh cần hiểu rõ trách nhiệm hoàn tất phí và thời hạn chi trả của mình. Việc thông báo nhắc nhở
                 của
                 Nhà trường vì một lý do nào đó khống đến được với Phụ huynh không có ý nghĩa trì hoãn trách nhiệm
@@ -450,7 +456,7 @@
     <script>
         $(document).ready(function() {
             // Mở hộp thoại in
-            // window.print();
+            window.print();
         });
     </script>
 </body>
