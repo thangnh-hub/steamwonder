@@ -156,8 +156,8 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::post('receipts_calculate', 'StudentController@calculateReceiptStudent')->name('receipt.calculStudent');
             Route::post('receipts_calculate_renew', 'StudentController@calculateReceiptStudentRenew')->name('receipt.calculateStudent.renew');
             //TÍnh toán phí đầu năm
-            Route::get('view_calculate_receipt_first_year', 'StudentController@viewCalculateReceiptStudentFirstYear')->name('view_calculate_receipt_first_year');
-            Route::post('calculate_receipt_first_year', 'StudentController@calculateReceiptStudentFirstYear')->name('calculate_receipt_first_year');
+            Route::get('student/receipt/first_year', 'StudentController@viewCalculateReceiptStudentFirstYear')->name('view_calculate_receipt_first_year');
+            Route::post('student/receipt/first_year', 'StudentController@calculateReceiptStudentFirstYear')->name('calculate_receipt_first_year');
 
 
             // ------
