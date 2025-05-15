@@ -5,14 +5,18 @@ namespace App\Http\Controllers\Admin;
 use App\Consts;
 use App\Http\Services\VietQrService;
 use App\Http\Services\DataPermissionService;
+use App\Http\Services\ReceiptService;
 use App\Models\Receipt;
 use App\Models\Area;
 use App\Models\Service;
 use App\Models\Student;
+use App\Models\PaymentCycle;
+use App\Models\StudentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use Carbon\Carbon;
 
 
 class ReceiptController extends Controller
@@ -32,8 +36,8 @@ class ReceiptController extends Controller
     public function index(Request $request)
     {
         $auth = Auth::guard('admin')->user();
-        $params = $request->only(['keyword', 'status', 'area_id', 'type','student_id','created_at']);
-        $params['permission_area'] = DataPermissionService::getPermisisonAreas($auth ->id);
+        $params = $request->only(['keyword', 'status', 'area_id', 'type', 'student_id', 'created_at']);
+        $params['permission_area'] = DataPermissionService::getPermisisonAreas($auth->id);
         $rows = Receipt::getSqlReceipt($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
         $this->responseData['rows'] = $rows;
         $this->responseData['areas'] = Area::all();
@@ -74,6 +78,9 @@ class ReceiptController extends Controller
     {
         $detail = $receipt;
         $this->responseData['detail'] = $detail;
+        $this->responseData['due_date'] = Carbon::parse($detail->created_at)->endOfMonth()->format('Y-m-d');
+
+        $this->responseData['payment_cycle'] = PaymentCycle::all();
         $this->responseData['module_name'] = 'Thanh toán TBP';
         return $this->responseView($this->viewPart . '.show');
     }
@@ -126,16 +133,41 @@ class ReceiptController extends Controller
             $receipt = Receipt::find($id);
             $json_params = json_decode(json_encode($receipt->json_params), true);
             // Cập nhật lại thông tin
-            $json_params['payment_deadline'] = $request->input('payment_deadline');
+            $json_params['due_date'] = $request->input('due_date');
             $receipt->status = Consts::STATUS_RECEIPT['paid'];
             $receipt->total_paid = $request->input('total_paid');
             $receipt->total_due = $receipt->total_final - $request->input('total_paid');
             $receipt->cashier_id = $admin->id;
+            $receipt->admin_updated_id = $admin->id;
             $receipt->json_params = $json_params;
             // Cập nhật trạng thái của prev_receipt nếu tồn tại
             if ($receipt->prev_receipt) {
                 $receipt->prev_receipt->status = Consts::STATUS_RECEIPT['completed'];
                 $receipt->prev_receipt->save(); // Lưu thay đổi
+            }
+            $receipt->save();
+            DB::commit();
+            return redirect()->back()->with('successMessage', __('Successfully updated!'));
+        } catch (Exception $ex) {
+            DB::rollBack();
+            return redirect()->back()->with('errorMessage', __($ex->getMessage()));
+        }
+    }
+    public function approved(Request $request, $id)
+    {
+        $admin = Auth::guard('admin')->user();
+        DB::beginTransaction();
+        try {
+            $receipt = Receipt::find($id);
+            $receipt->status = Consts::STATUS_RECEIPT['approved'];
+            $receipt->admin_updated_id = $admin->id;
+            // Cập nhật trạng thái của receiptDetail nếu tồn tại
+            if ($receipt->receiptDetail->count() > 0) {
+                foreach ($receipt->receiptDetail as $item) {
+                    $item->status = Consts::STATUS_RECEIPT['approved'];
+                    $item->admin_updated_id = $admin->id;
+                    $item->save();
+                }
             }
             $receipt->save();
             DB::commit();
@@ -192,9 +224,9 @@ class ReceiptController extends Controller
         });
         // Lấy thông tin giảm trừ
         $listServiceDiscount = $groupDetails
-        ->filter(function ($detail) {
-            return $detail['total_discount_amount'] > 0; // Lọc các dịch vụ có discount_amount > 0
-        });
+            ->filter(function ($detail) {
+                return $detail['total_discount_amount'] > 0; // Lọc các dịch vụ có discount_amount > 0
+            });
         $serviceMonthly = $groupByServiceType->get('monthly', collect()); // Dịch vụ loại monthly
         $serviceYearly = $groupByServiceType->get('yearly', collect()); // Dịch vụ loại monthly
         // Lấy các loại còn lại ngoài monthly và yearly
@@ -232,5 +264,41 @@ class ReceiptController extends Controller
             );
         }
         return $this->responseView($this->viewPart . '.print');
+    }
+
+
+    // Cập nhật lại dịch vụ cho học sinh và tính lại phí cho học sinh
+    public function updateStudentServiceAndFee(Request $request, ReceiptService $receiptService)
+    {
+        DB::beginTransaction();
+        try {
+            $receipt_id = $request->input('receipt_id');
+            $student_id = $request->input('student_id');
+            $student_services = $request->input('student_services');
+            // Lấy thông tin học sinh và TBP
+            $student = Student::find($student_id);
+            $receipt = Receipt::find($receipt_id);
+            // Cập nhật lại thông tin dịch vụ cho học sinh
+            foreach ($student_services as $student_services_id => $item) {
+                $studentService = StudentService::find($student_services_id);
+                $studentService->payment_cycle_id = $item['payment_cycle_id'];
+                $studentService->save();
+
+            }
+            // Lấy thông tin dịch vụ của học sinh
+            $data['student_services'] = $student->studentServices()
+                ->where('status', 'active')
+                ->get();
+            $data['enrolled_at'] = $receipt->period_start;
+            // Xóa các TBP detail cũ
+            $receipt->receiptDetail()->delete();
+            // Tính lại phí cho học sinh
+            $calcuReceipt = $receiptService->updateReceiptForStudent($receipt, $student, $data);
+            DB::commit();
+            return redirect()->back()->with('successMessage', __('Lưu thông tin thành công!'));
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            return redirect()->back()->with('errorMessage', __($ex->getMessage()));
+        }
     }
 }

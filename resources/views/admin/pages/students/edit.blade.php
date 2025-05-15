@@ -134,7 +134,7 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Họ')<small class="text-red">*</small></label>
@@ -150,9 +150,9 @@
                                                             value="{{ old('last_name', $detail->last_name) }}" required>
                                                     </div>
                                                 </div>
-                                                
-                                                
-                                                
+
+
+
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Tên thường gọi')</label>
@@ -160,7 +160,7 @@
                                                             value="{{ old('nickname', $detail->nickname) }}">
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Giới tính')</label>
@@ -174,7 +174,7 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Ngày sinh')</label>
@@ -182,7 +182,7 @@
                                                             value="{{ old('birthday', $detail->birthday) }}">
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Ngày nhập học')</label>
@@ -190,7 +190,7 @@
                                                             value="{{ old('enrolled_at', $detail->enrolled_at) }}">
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Trạng thái')</label>
@@ -222,7 +222,7 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label>@lang('Chu kỳ thu dịch vụ')</label>
@@ -286,7 +286,7 @@
                                                             <th>@lang('Ngày sinh')</th>
                                                             <th>@lang('Số CMND/CCCD')</th>
                                                             <th>@lang('Số điện thoại')</th>
-                                                            <th>@lang('Email')</th>  
+                                                            <th>@lang('Email')</th>
                                                             <th>@lang('Địa chỉ')</th>
                                                             <th>@lang('Khu vực')</th>
                                                             <th>@lang('Trạng thái')</th>
@@ -309,7 +309,7 @@
                                                                 </td>
                                                                 <td>
                                                                     <a target="_blank" href="{{ route('parents.show', $row->parent->id) }}">
-                                                                        {{ $row->parent->first_name ?? '' }} {{ $row->parent->last_name ?? '' }}  
+                                                                        {{ $row->parent->first_name ?? '' }} {{ $row->parent->last_name ?? '' }}
                                                                     </a>
                                                                 </td>
                                                                 <td>@lang($row->parent->sex ?? '')</td>
@@ -329,9 +329,9 @@
                                                             </tr>
                                                         @endif
                                                     </tbody>
-                                                </table>    
+                                                </table>
                                             </div>
-                                        </div>                      
+                                        </div>
                                     </div>
                                     {{-- Dịch vụ đã đăng ký --}}
                                     <div class="tab-pane " id="tab_3">
@@ -340,10 +340,10 @@
                                                 <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
                                                     data-target="#addServiceModal">
                                                     <i class="fa fa-plus"></i> @lang('Đăng ký dịch vụ')
-                                                </button>     
+                                                </button>
                                                 <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#reincarnationModal">
                                                     <i class="fa fa-recycle"></i> @lang('Xử lý tái tục dịch vụ')
-                                                </button>     
+                                                </button>
                                             </div>
                                             <br>
                                             <div class="table-responsive">
@@ -379,7 +379,7 @@
                                                             <td>{{ $row->services->education_age->name ?? "" }}</td>
                                                             <td>{{ $row->services->is_attendance== 0 ? "Không theo điểm danh" : "Tính theo điểm danh"}}</td>
                                                             <td>{{ __($row->services->service_type??"") }}</td>
-                                                            
+
                                                             <td>
                                                                 @if(isset($row->services->serviceDetail) && $row->services->serviceDetail->count() > 0)
                                                                 @foreach ($row->services->serviceDetail as $detail_service)
@@ -390,26 +390,26 @@
                                                                     <li>Đến: {{ (isset($detail_service->end_at) ? \Illuminate\Support\Carbon::parse($detail_service->end_at)->format('d-m-Y') : '') }}</li>
                                                                 </ul>
                                                                 @endforeach
-                        
+
                                                                 @endif
                                                             </td>
                                                             <td>
                                                                 {{ $row->paymentcycle->name ?? "" }}
                                                             </td>
-    
+
                                                             <td>
                                                                 {{ ($row->created_at)
-                                                                    ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') 
-                                                                    : '' 
+                                                                    ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y')
+                                                                    : ''
                                                                 }}
                                                             </td>
                                                             <td>
-                                                                {{ ($row->cancelled_at) 
-                                                                    ? \Carbon\Carbon::parse($row->cancelled_at)->format('d-m-Y') 
-                                                                    : '' 
+                                                                {{ ($row->cancelled_at)
+                                                                    ? \Carbon\Carbon::parse($row->cancelled_at)->format('d-m-Y')
+                                                                    : ''
                                                                 }}
                                                             </td>
-    
+
                                                             <td>
                                                                 {{ $row->json_params->note ?? "" }}
                                                             </td>
@@ -419,7 +419,7 @@
                                                                 </button>
                                                                 <button data-id="{{ $row->id }}" type="button" class="btn btn-primary btn-sm update_student_service" data-toggle="modal" data-target="#editServiceModal">
                                                                     <i class="fa fa-pencil"></i> @lang('Cập nhật')
-                                                                </button> 
+                                                                </button>
                                                             </td>
                                                         </tr>
                                                         @endforeach
@@ -460,19 +460,19 @@
                                                                 <td>{{ $row->services->name ?? '' }}</td>
                                                                 <td>
                                                                     {{ ($row->created_at)
-                                                                        ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') 
-                                                                        : '' 
+                                                                        ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y')
+                                                                        : ''
                                                                     }}
                                                                 </td>
                                                                 <td>
-                                                                    {{ ($row->cancelled_at) 
-                                                                        ? \Carbon\Carbon::parse($row->cancelled_at)->format('d-m-Y') 
-                                                                        : '' 
+                                                                    {{ ($row->cancelled_at)
+                                                                        ? \Carbon\Carbon::parse($row->cancelled_at)->format('d-m-Y')
+                                                                        : ''
                                                                     }}
                                                                 </td>
-                                                             
+
                                                                 <td>
-                                                                    {{ $row->adminUpdated->name ?? "" }} ({{ $row->updated_at ? \Carbon\Carbon::parse($row->updated_at)->format('H:i:s d-m-Y') : '' }})   
+                                                                    {{ $row->adminUpdated->name ?? "" }} ({{ $row->updated_at ? \Carbon\Carbon::parse($row->updated_at)->format('H:i:s d-m-Y') : '' }})
                                                                 </td>
                                                                 <td><span class="badge badge-danger">Đã huỷ</span></td>
                                                             </tr>
@@ -570,7 +570,7 @@
                                                         function format_currency($price)
                                                         {
                                                             return isset($price) && is_numeric($price)
-                                                                ? number_format($price, 0, ',', '.') 
+                                                                ? number_format($price, 0, ',', '.')
                                                                 : '';
                                                         }
                                                     @endphp
@@ -592,7 +592,7 @@
                                                                 <td>{{ isset($row->created_at) ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') : '' }}
                                                                 </td>
                                                                 <td>
-                                                                    
+
                                                                     <button type="button"
                                                                         class="btn btn-sm btn-primary btn_show_detail"
                                                                         data-toggle="tooltip"
@@ -602,7 +602,7 @@
                                                                         data-original-title="@lang('Show')">
                                                                         <i class="fa fa-eye"></i> Xem
                                                                     </button>
-                                                                    
+
                                                                     <a href="{{ route('receipt.show', $row->id) }}">
                                                                         <button type="button"
                                                                             class="btn btn-sm btn-warning  mr-10"
@@ -820,9 +820,9 @@
                                     </tr>
                                 @endforeach
                             </tbody>
-                        </table>    
+                        </table>
                     </div>
-                    
+
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">@lang('Lưu người thân đã chọn')</button>
@@ -868,7 +868,7 @@
                                         <td>{{ $service->service_category->name ?? "" }}</td>
                                         <td>{{ $service->is_attendance== 0 ? "Không theo điểm danh" : "Tính theo điểm danh"}}</td>
                                         <td>{{ __($service->service_type??"") }}</td>
-                                        
+
                                         <td>
                                             @if(isset($service->serviceDetail) && $service->serviceDetail->count() > 0)
                                                 @foreach ($service->serviceDetail as $detail_service)
@@ -1213,7 +1213,7 @@
         $('#submitstudentaddService').on('submit', function () {
             localStorage.setItem('activeTab', '#tab_3');
         });
-        
+
         $('#formRenew').on('submit', function () {
             localStorage.setItem('activeTab', '#tab_4');
         });

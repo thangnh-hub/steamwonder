@@ -122,6 +122,8 @@ Route::group(['namespace' => 'Admin'], function () {
             // Import Update Balance Receipt
             Route::post('import_student_balance_receipt', 'StudentController@importStudentBalanceReceipt')->name('student.import_balance_receipt');
 
+            // Cập nhật lại service cho học sinh và tính lại phí
+            Route::post('receipt/update_student_service_and_fee', 'ReceiptController@updateStudentServiceAndFee')->name('receipt.update_student_service_and_fee');
 
             //CBTS
             Route::get('admissions/students', 'AdmissionStudentController@index')->name('admission.student.index');
@@ -134,7 +136,8 @@ Route::group(['namespace' => 'Admin'], function () {
 
             // Import Class và StudentClass
             Route::post('import_class', 'ClassController@importClassStudent')->name('class.import_class');
-            Route::post('receipt_payment/{id}', 'ReceiptController@payment')->name('receipt.payment');
+            Route::post('receipt/payment/{id}', 'ReceiptController@payment')->name('receipt.payment');
+            Route::post('receipt/approved/{id}', 'ReceiptController@approved')->name('receipt.approved');
             Route::post('data_crms_log_store', 'DataCrmController@storeCRMLOG')->name('data_crms_log_store');
 
             // --- PHẦN HỌC SINH---
@@ -153,8 +156,8 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::post('receipts_calculate', 'StudentController@calculateReceiptStudent')->name('receipt.calculStudent');
             Route::post('receipts_calculate_renew', 'StudentController@calculateReceiptStudentRenew')->name('receipt.calculateStudent.renew');
             //TÍnh toán phí đầu năm
-            Route::get('view_calculate_receipt_first_year', 'StudentController@viewCalculateReceiptStudentFirstYear')->name('view_calculate_receipt_first_year');
-            Route::post('calculate_receipt_first_year', 'StudentController@calculateReceiptStudentFirstYear')->name('calculate_receipt_first_year');
+            Route::get('student/receipt/first_year', 'StudentController@viewCalculateReceiptStudentFirstYear')->name('view_calculate_receipt_first_year');
+            Route::post('student/receipt/first_year', 'StudentController@calculateReceiptStudentFirstYear')->name('calculate_receipt_first_year');
 
 
             // ------
