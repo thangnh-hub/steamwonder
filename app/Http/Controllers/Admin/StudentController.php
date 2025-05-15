@@ -433,12 +433,20 @@ class StudentController extends Controller
     public function viewCalculateReceiptStudentFirstYear(Request $request,ReceiptService $receiptService)
     {
         $params = $request->all();
-        $rows = Student::getSqlStudent($params)->get();
+        $searchParams = collect($params)->except(['_token', 'page'])->filter(function ($value) {
+            return $value !== null && $value !== '';
+        });
+        $rows = collect(); // khởi tạo rỗng mặc định
         $year = now()->year;
-        foreach ($rows as $row) {
-            $serviceIds = $row->studentServices->pluck('service_id')->toArray();
-            $row->is_calculate_year = $receiptService->checkExistingServiceInReceiptsOfYear($row, $serviceIds, $year) ? 1 : 0;
+        if ($searchParams->isNotEmpty()) {
+            $rows = Student::getSqlStudent($params)->get();
+
+            foreach ($rows as $row) {
+                $serviceIds = $row->studentServices->pluck('service_id')->toArray();
+                $row->is_calculate_year = $receiptService->checkExistingServiceInReceiptsOfYear($row, $serviceIds, $year) ? 1 : 0;
+            }
         }
+
         $this->responseData['rows'] = $rows;
         $this->responseData['params'] = $params;
         $this->responseData['list_class'] =  tbClass::orderBy('id', 'desc')->get();
