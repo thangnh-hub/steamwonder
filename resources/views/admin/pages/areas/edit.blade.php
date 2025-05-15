@@ -114,6 +114,54 @@
                                                         value="{{ old('json_params[bank_account]') ?? ($detail->json_params->bank_account ?? '') }}">
                                                 </div>
                                             </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>@lang('Company')</label>
+                                                    <input type="text" class="form-control"
+                                                        name="json_params[company]" placeholder="@lang('Company')"
+                                                        value="{{ old('json_params[company]') ?? ($detail->json_params->company ?? '') }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>@lang('School')</label>
+                                                    <input type="text" class="form-control"
+                                                        name="json_params[school]" placeholder="@lang('School')"
+                                                        value="{{ old('json_params[school]') ?? ($detail->json_params->school ?? '') }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>@lang('Address')</label>
+                                                    <input type="text" class="form-control"
+                                                        name="json_params[address]" placeholder="@lang('Address')"
+                                                        value="{{ old('json_params[address]') ?? ($detail->json_params->address ?? '') }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>@lang('Phone')</label>
+                                                    <input type="text" class="form-control"
+                                                        name="json_params[phone]" placeholder="@lang('Phone')"
+                                                        value="{{ old('json_params[phone]') ?? ($detail->json_params->phone ?? '') }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>@lang('Email')</label>
+                                                    <input type="text" class="form-control"
+                                                        name="json_params[email]" placeholder="@lang('Email')"
+                                                        value="{{ old('json_params[email]') ?? ($detail->json_params->email ?? '') }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label>@lang('Website')</label>
+                                                    <input type="text" class="form-control"
+                                                        name="json_params[website]" placeholder="@lang('Website')"
+                                                        value="{{ old('json_params[website]') ?? ($detail->json_params->website ?? '') }}">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

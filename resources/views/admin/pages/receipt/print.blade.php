@@ -58,18 +58,27 @@
         }
 
         .footer {
-            margin-top: 25px;
+            /* margin-top: 25px;
             border-top: 1px dashed #000;
-            padding-top: 10px;
+            padding-top: 10px; */
             display: flex;
+            /* position: relative; */
         }
 
         .bank-info {
-            width: 70%;
+            width: 80%;
+            text-align: justify;
+        }
+
+        .content-payment {
+            text-align: justify;
         }
 
         .qr-code {
-            width: 30%;
+            width: 20%;
+            /* position: absolute;
+            top: 0;
+            right: 0; */
         }
 
         .signatures {
@@ -82,6 +91,7 @@
             body {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+                zoom: 75%;
             }
 
             .fee-table th,
@@ -97,6 +107,8 @@
             }
 
             .qr-code img {
+                /* position: absolute;
+                top: 0; */
                 width: 100%;
                 height: auto;
             }
@@ -113,18 +125,85 @@
         .text-uppercase {
             text-transform: uppercase;
         }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header .logo {
+            width: 20%;
+            float: left;
+        }
+
+        .header .logo img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .header .company-info {
+            width: 80%;
+            float: left;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+        .qr-code img {
+            width: 100%;
+            height: auto;
+        }
+
+        p {
+            margin-top: 0px;
+        }
     </style>
 </head>
 
 <body>
 
     <div class="wrapper">
-        <h2 class="title">THÔNG BÁO THU PHÍ</h2>
+
+        <div class="header">
+            <div class="logo">
+                <img src="https://steamwonders.vn/data/logo/SWS-logo.png" alt="Logo">
+            </div>
+            <div class="company-info">
+                <p><strong>{{ optional($detail->area)->json_params->company ?? '' }}</strong></p>
+                <p><strong>{{ optional($detail->area)->json_params->address ?? '' }}</strong></p>
+                <p>
+                    <strong>Điện thoại:</strong> {{ optional($detail->area)->json_params->phone ?? '' }}
+                    <strong>Email:</strong> {{ optional($detail->area)->json_params->email ?? '' }}
+                </p>
+            </div>
+        </div>
+
+        <div class="content">
+            <p>Kính gửi: Quý Phụ huynh,</p>
+            <p>
+                {{ optional($detail->area)->json_params->school ?? '' }} trân trọng cảm ơn Quý Phụ huynh đã quan tâm
+                trong suốt thời
+                gian qua.
+            </p>
+            <p>
+                <strong><i>Dưới đây, Nhà trường xin gửi đến Quý Phụ huynh Thông báo thu phí (tạm tính). Sau 02 ngày kể
+                        từ ngày nhận được Thông báo tạm tính này, nếu Quý Phụ huynh không có thắc mức gì thì bản tạm
+                        tính này được coi là bản chính thức.</i></strong>
+            </p>
+
+            <p>
+                <strong><i>Nếu Quý Phụ huynh có yêu cầu hoặc thắc mắc gì, vui lòng liên hệ với bộ phận CSKH để được giải
+                        đáp chi tiết qua email cskh.thuhocphi.steame@gmail.com hoặc hotline: 0473.366.6666</i></strong>
+            </p>
+        </div>
+
+        <h2 class="title">THÔNG BÁO THU PHÍ THÁNG {{ \Carbon\Carbon::parse($detail->period_start)->format('m/Y') }}
+        </h2>
 
         <table class="info">
             <tr>
                 <td>
-                    <strong>Họ và tên:</strong>
+                    <strong>Họ và tên học sinh:</strong>
                     {{ optional($detail->student)->first_name ?? '' }}
                     {{ optional($detail->student)->last_name ?? '' }}
                 </td>
@@ -142,7 +221,8 @@
                     <strong>Phụ huynh:</strong>
                     @isset(optional($detail->student)->studentParents)
                         @foreach (optional($detail->student)->studentParents as $item)
-                            {{ optional($item->relationship)->title ?? '' }} {{ optional($item->parent)->first_name ?? '' }}
+                            {{ optional($item->relationship)->title ?? '' }}
+                            {{ optional($item->parent)->first_name ?? '' }}
                             {{ optional($item->parent)->last_name . '. ' ?? '' }}
                         @endforeach
                     @endisset
@@ -160,6 +240,7 @@
             </tr>
         </table>
 
+        <h3 class="text-center">PHẦN I - CÁC KHOẢN PHÍ PHẢI NỘP</h3>
         <table class="fee-table" border="1" cellspacing="0" cellpadding="5">
             <thead>
                 <tr>
@@ -316,7 +397,7 @@
                 </tr>
             </tbody>
         </table>
-
+        <h3 class="text-center">PHẦN II - HƯỚNG DẪN THANH TOÁN</h3>
         <div class="footer">
             <div class="bank-info">
                 <p><strong>Hình thức thanh toán:</strong></p>
@@ -326,20 +407,50 @@
                     {{ optional($detail->area)->json_params->bank_name ?? '' }}</p>
                 <p><strong>Nội dung chuyển khoản:</strong> Mã học sinh_Tên học sinh_Mã TBP</p>
                 <p>* Thanh toán tiền mặt: chi trả bằng tiền mặt tại Phòng Tuyển sinh</p>
+                <p><strong>Thời hạn nộp phí:</strong></p>
+                <p>Quý phụ huynh vui lòng thanh toán các khoản phí trên trong vòng 10 ngày kể từ ngày nhận được thông
+                    báo từ
+                    Nhà trường.</p>
+
             </div>
             @isset($qrCode)
                 <div class="qr-code">
-                    <p class="text-center"><img src="{{ $qrCode }}" alt="QR Ngân hàng" width="250"></p>
-                    <p class="text-center">@lang('Vui lòng quét mã QR để thanh toán')</p>
+                    <img src="{{ $qrCode }}" alt="QR Ngân hàng">
+                    <p class="text-center">@lang('Quét mã QR để thanh toán')</p>
                 </div>
             @endisset
+        </div>
+        <div class="content-payment">
+            <p><strong>Thanh toán phí:</strong></p>
+            <p>Phụ huynh cần hiểu rõ trách nhiệm hoàn tất phí và thời hạn chi trả của mình. Việc thông báo nhắc nhở
+                của
+                Nhà trường vì một lý do nào đó khống đến được với Phụ huynh không có ý nghĩa trì hoãn trách nhiệm
+                chi
+                trả các khoản phí cho học sinh theo quy định.</p>
+            <p>Nếu Nhà trường chưa nhận được học phí và các khoản phí liên quan sau ngày quy định nộp phí, các khoản
+                phí
+                đến hạn phải nộp sẽ tự động tăng thêm 0.05%/ngày chậm trên số tiền chưa thanh toán và Phụ huynh có
+                trách
+                nhiệm nộp cả phần tăng thêm này. Phụ huynh đóng phí sau thời hạn quy định sẽ không được hưởng ưu
+                đãi.
+            </p>
+            <p>Trường hợp Phụ huynh không đóng phí đúng hạn hoặc không đóng phí theo Quy định tài chính, Nhà trường
+                có
+                quyền không xếp lớp và không cung cấp dịch vụ cho học sinh vào đầu năm học hoặc ngừng cung cấp dịch
+                vụ
+                nếu Phụ huynh không đóng phí cho học sinh theo kỳ học.</p>
+            <p><i>Quý Phụ huynh vui lòng bỏ qua thông báo này nếu đã thanh toán. Mọi yêu cầu hoặc thắc mắc gì, xin
+                    vui
+                    lòng liên hệ với bộ phận CSKH để được giải đáp chi tiết.</i></p>
+            <p class="footer">Thông báo này được in tự động từ hệ thống nên không có dấu và chữ ký.</p>
+            <p>Trân trọng cảm ơn!</p>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
             // Mở hộp thoại in
-            window.print();
+            // window.print();
         });
     </script>
 </body>

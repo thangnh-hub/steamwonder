@@ -118,6 +118,54 @@
                                                         value="<?php echo e(old('json_params[bank_account]') ?? ($detail->json_params->bank_account ?? '')); ?>">
                                                 </div>
                                             </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label><?php echo app('translator')->get('Company'); ?></label>
+                                                    <input type="text" class="form-control"
+                                                        name="json_params[company]" placeholder="<?php echo app('translator')->get('Company'); ?>"
+                                                        value="<?php echo e(old('json_params[company]') ?? ($detail->json_params->company ?? '')); ?>">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label><?php echo app('translator')->get('School'); ?></label>
+                                                    <input type="text" class="form-control"
+                                                        name="json_params[school]" placeholder="<?php echo app('translator')->get('School'); ?>"
+                                                        value="<?php echo e(old('json_params[school]') ?? ($detail->json_params->school ?? '')); ?>">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label><?php echo app('translator')->get('Address'); ?></label>
+                                                    <input type="text" class="form-control"
+                                                        name="json_params[address]" placeholder="<?php echo app('translator')->get('Address'); ?>"
+                                                        value="<?php echo e(old('json_params[address]') ?? ($detail->json_params->address ?? '')); ?>">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label><?php echo app('translator')->get('Phone'); ?></label>
+                                                    <input type="text" class="form-control"
+                                                        name="json_params[phone]" placeholder="<?php echo app('translator')->get('Phone'); ?>"
+                                                        value="<?php echo e(old('json_params[phone]') ?? ($detail->json_params->phone ?? '')); ?>">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label><?php echo app('translator')->get('Email'); ?></label>
+                                                    <input type="text" class="form-control"
+                                                        name="json_params[email]" placeholder="<?php echo app('translator')->get('Email'); ?>"
+                                                        value="<?php echo e(old('json_params[email]') ?? ($detail->json_params->email ?? '')); ?>">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label><?php echo app('translator')->get('Website'); ?></label>
+                                                    <input type="text" class="form-control"
+                                                        name="json_params[website]" placeholder="<?php echo app('translator')->get('Website'); ?>"
+                                                        value="<?php echo e(old('json_params[website]') ?? ($detail->json_params->website ?? '')); ?>">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
