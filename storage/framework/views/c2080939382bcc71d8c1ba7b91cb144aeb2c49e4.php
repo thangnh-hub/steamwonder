@@ -51,7 +51,7 @@
     <section class="content-header">
         <h1>
             <?php echo app('translator')->get($module_name); ?>
-            <a class="btn btn-sm btn-warning pull-right" href="<?php echo e(route(Request::segment(2) . '.create')); ?>"><i
+            <a class="btn btn-sm btn-warning pull-right" href="<?php echo e(route('admission.student.create')); ?>"><i
                     class="fa fa-plus"></i> <?php echo app('translator')->get('Thêm mới học viên'); ?></a>
         </h1>
     </section>
@@ -83,7 +83,7 @@
 
             </div>
         <?php endif; ?>
-        <form role="form" action="<?php echo e(route(Request::segment(2) . '.update', $detail->id)); ?>" method="POST">
+        <form role="form" action="<?php echo e(route('admission.student.update', $detail->id)); ?>" method="POST">
             <?php echo csrf_field(); ?>
             <?php echo method_field('PUT'); ?>
             <div class="row">
@@ -94,29 +94,30 @@
                                 <ul class="nav nav-tabs">
                                     <li class="active">
                                         <a href="#tab_1" data-toggle="tab">
-                                            <h5>Thông tin học sinh <span class="text-danger">*</span></h5>
+                                            <h5><?php echo app('translator')->get('Thông tin học sinh'); ?> <span class="text-danger">*</span></h5>
                                         </a>
                                     </li>
                                     <li class="">
                                         <a href="#tab_2" data-toggle="tab">
-                                            <h5>Người thân của bé</h5>
+                                            <h5><?php echo app('translator')->get('Người thân của bé'); ?></h5>
                                         </a>
                                     </li>
                                     <li class="">
                                         <a href="#tab_3" data-toggle="tab">
-                                            <h5>Dịch vụ đã đăng ký</h5>
-                                        </a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#tab_4" data-toggle="tab">
-                                            <h5>Quản lý TBP</h5>
+                                            <h5><?php echo app('translator')->get('Dịch vụ đã đăng ký'); ?></h5>
                                         </a>
                                     </li>
                                     <li class="">
                                         <a href="#tab_5" data-toggle="tab">
-                                            <h5>CT Kh.Mãi được áp dụng</h5>
+                                            <h5><?php echo app('translator')->get('CT Kh.Mãi được áp dụng'); ?></h5>
                                         </a>
                                     </li>
+                                    <li class="">
+                                        <a href="#tab_4" data-toggle="tab">
+                                            <h5><?php echo app('translator')->get('Quản lý TBP HSM'); ?></h5>
+                                        </a>
+                                    </li>
+                                    
                                 </ul>
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="tab_1">
@@ -137,7 +138,7 @@
                                                         </select>
                                                     </div>
                                                 </div>
-
+                                                
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label><?php echo app('translator')->get('Họ'); ?><small class="text-red">*</small></label>
@@ -153,9 +154,9 @@
                                                             value="<?php echo e(old('last_name', $detail->last_name)); ?>" required>
                                                     </div>
                                                 </div>
-
-
-
+                                                
+                                                
+                                                
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label><?php echo app('translator')->get('Tên thường gọi'); ?></label>
@@ -163,7 +164,7 @@
                                                             value="<?php echo e(old('nickname', $detail->nickname)); ?>">
                                                     </div>
                                                 </div>
-
+                                                
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label><?php echo app('translator')->get('Giới tính'); ?></label>
@@ -178,7 +179,7 @@
                                                         </select>
                                                     </div>
                                                 </div>
-
+                                                
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label><?php echo app('translator')->get('Ngày sinh'); ?></label>
@@ -186,7 +187,7 @@
                                                             value="<?php echo e(old('birthday', $detail->birthday)); ?>">
                                                     </div>
                                                 </div>
-
+                                                
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label><?php echo app('translator')->get('Ngày nhập học'); ?></label>
@@ -194,7 +195,7 @@
                                                             value="<?php echo e(old('enrolled_at', $detail->enrolled_at)); ?>">
                                                     </div>
                                                 </div>
-
+                                                
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label><?php echo app('translator')->get('Trạng thái'); ?></label>
@@ -228,7 +229,7 @@
                                                         </select>
                                                     </div>
                                                 </div>
-
+                                                
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label><?php echo app('translator')->get('Chu kỳ thu dịch vụ'); ?></label>
@@ -293,7 +294,7 @@
                                                             <th><?php echo app('translator')->get('Ngày sinh'); ?></th>
                                                             <th><?php echo app('translator')->get('Số CMND/CCCD'); ?></th>
                                                             <th><?php echo app('translator')->get('Số điện thoại'); ?></th>
-                                                            <th><?php echo app('translator')->get('Email'); ?></th>
+                                                            <th><?php echo app('translator')->get('Email'); ?></th>  
                                                             <th><?php echo app('translator')->get('Địa chỉ'); ?></th>
                                                             <th><?php echo app('translator')->get('Khu vực'); ?></th>
                                                             <th><?php echo app('translator')->get('Trạng thái'); ?></th>
@@ -317,8 +318,7 @@
                                                                 </td>
                                                                 <td>
                                                                     <a target="_blank" href="<?php echo e(route('parents.show', $row->parent->id)); ?>">
-                                                                        <?php echo e($row->parent->first_name ?? ''); ?> <?php echo e($row->parent->last_name ?? ''); ?>
-
+                                                                        <?php echo e($row->parent->first_name ?? ''); ?> <?php echo e($row->parent->last_name ?? ''); ?>  
                                                                     </a>
                                                                 </td>
                                                                 <td><?php echo app('translator')->get($row->parent->sex ?? ''); ?></td>
@@ -338,9 +338,9 @@
                                                             </tr>
                                                         <?php endif; ?>
                                                     </tbody>
-                                                </table>
+                                                </table>    
                                             </div>
-                                        </div>
+                                        </div>                      
                                     </div>
                                     
                                     <div class="tab-pane " id="tab_3">
@@ -349,10 +349,13 @@
                                                 <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
                                                     data-target="#addServiceModal">
                                                     <i class="fa fa-plus"></i> <?php echo app('translator')->get('Đăng ký dịch vụ'); ?>
-                                                </button>
+                                                </button>     
                                                 <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#reincarnationModal">
-                                                    <i class="fa fa-recycle"></i> <?php echo app('translator')->get('Xử lý tái tục dịch vụ'); ?>
-                                                </button>
+                                                    <i class="fa fa-recycle"></i> <?php echo app('translator')->get('Xử lý TBP HSM'); ?>
+                                                </button>     
+                                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#sumerReceiptModal">
+                                                    <i class="fa fa-sun-o"></i> <?php echo app('translator')->get('Tính phí chỉ kỳ hè'); ?>
+                                                </button>     
                                             </div>
                                             <br>
                                             <div class="table-responsive">
@@ -388,7 +391,7 @@
                                                             <td><?php echo e($row->services->education_age->name ?? ""); ?></td>
                                                             <td><?php echo e($row->services->is_attendance== 0 ? "Không theo điểm danh" : "Tính theo điểm danh"); ?></td>
                                                             <td><?php echo e(__($row->services->service_type??"")); ?></td>
-
+                                                            
                                                             <td>
                                                                 <?php if(isset($row->services->serviceDetail) && $row->services->serviceDetail->count() > 0): ?>
                                                                 <?php $__currentLoopData = $row->services->serviceDetail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $detail_service): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -399,27 +402,27 @@
                                                                     <li>Đến: <?php echo e((isset($detail_service->end_at) ? \Illuminate\Support\Carbon::parse($detail_service->end_at)->format('d-m-Y') : '')); ?></li>
                                                                 </ul>
                                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-
+                        
                                                                 <?php endif; ?>
                                                             </td>
                                                             <td>
                                                                 <?php echo e($row->paymentcycle->name ?? ""); ?>
 
                                                             </td>
-
+    
                                                             <td>
                                                                 <?php echo e(($row->created_at)
-                                                                    ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y')
+                                                                    ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') 
                                                                     : ''); ?>
 
                                                             </td>
                                                             <td>
-                                                                <?php echo e(($row->cancelled_at)
-                                                                    ? \Carbon\Carbon::parse($row->cancelled_at)->format('d-m-Y')
+                                                                <?php echo e(($row->cancelled_at) 
+                                                                    ? \Carbon\Carbon::parse($row->cancelled_at)->format('d-m-Y') 
                                                                     : ''); ?>
 
                                                             </td>
-
+    
                                                             <td>
                                                                 <?php echo e($row->json_params->note ?? ""); ?>
 
@@ -430,7 +433,7 @@
                                                                 </button>
                                                                 <button data-id="<?php echo e($row->id); ?>" type="button" class="btn btn-primary btn-sm update_student_service" data-toggle="modal" data-target="#editServiceModal">
                                                                     <i class="fa fa-pencil"></i> <?php echo app('translator')->get('Cập nhật'); ?>
-                                                                </button>
+                                                                </button> 
                                                             </td>
                                                         </tr>
                                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -471,19 +474,19 @@
                                                                 <td><?php echo e($row->services->name ?? ''); ?></td>
                                                                 <td>
                                                                     <?php echo e(($row->created_at)
-                                                                        ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y')
+                                                                        ? \Carbon\Carbon::parse($row->created_at)->format('d-m-Y') 
                                                                         : ''); ?>
 
                                                                 </td>
                                                                 <td>
-                                                                    <?php echo e(($row->cancelled_at)
-                                                                        ? \Carbon\Carbon::parse($row->cancelled_at)->format('d-m-Y')
+                                                                    <?php echo e(($row->cancelled_at) 
+                                                                        ? \Carbon\Carbon::parse($row->cancelled_at)->format('d-m-Y') 
                                                                         : ''); ?>
 
                                                                 </td>
-
+                                                             
                                                                 <td>
-                                                                    <?php echo e($row->adminUpdated->name ?? ""); ?> (<?php echo e($row->updated_at ? \Carbon\Carbon::parse($row->updated_at)->format('H:i:s d-m-Y') : ''); ?>)
+                                                                    <?php echo e($row->adminUpdated->name ?? ""); ?> (<?php echo e($row->updated_at ? \Carbon\Carbon::parse($row->updated_at)->format('H:i:s d-m-Y') : ''); ?>)   
                                                                 </td>
                                                                 <td><span class="badge badge-danger">Đã huỷ</span></td>
                                                             </tr>
@@ -498,7 +501,6 @@
                                     <!-- TAB 4: Biên lai thu phí -->
                                     <div class="tab-pane" id="tab_4">
                                         <div class="box-body ">
-                                            
                                             <table class="table table-hover table-bordered">
                                                 <thead>
                                                     <tr>
@@ -523,7 +525,7 @@
                                                         function format_currency($price)
                                                         {
                                                             return isset($price) && is_numeric($price)
-                                                                ? number_format($price, 0, ',', '.')
+                                                                ? number_format($price, 0, ',', '.') 
                                                                 : '';
                                                         }
                                                     ?>
@@ -546,7 +548,7 @@
 
                                                                 </td>
                                                                 <td>
-
+                                                                    
                                                                     <button type="button"
                                                                         class="btn btn-sm btn-primary btn_show_detail"
                                                                         data-toggle="tooltip"
@@ -556,7 +558,7 @@
                                                                         data-original-title="<?php echo app('translator')->get('Show'); ?>">
                                                                         <i class="fa fa-eye"></i> Xem
                                                                     </button>
-
+                                                                    
                                                                     <a href="<?php echo e(route('receipt.show', $row->id)); ?>">
                                                                         <button type="button"
                                                                             class="btn btn-sm btn-warning  mr-10"
@@ -728,7 +730,7 @@
                             <button type="submit" class="btn btn-info btn-sm pull-right">
                                 <i class="fa fa-save"></i> <?php echo app('translator')->get('Save'); ?>
                             </button>
-                            <a href="<?php echo e(route(Request::segment(2) . '.index')); ?>">
+                            <a href="<?php echo e(route('admission.student.index')); ?>">
                                 <button type="button" class="btn btn-sm btn-success"><?php echo app('translator')->get('Danh sách'); ?></button>
                             </a>
                         </div>
@@ -741,7 +743,7 @@
     <div class="modal fade" id="addParentModal" tabindex="-1" role="dialog" aria-labelledby="addParentModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-full" role="document">
-        <form action="<?php echo e(route('student.addParent', $detail->id)); ?>" method="POST">
+        <form id="formStudentAddParent" action="<?php echo e(route('admission.student.addParent', $detail->id)); ?>" method="POST">
             <?php echo csrf_field(); ?>
             <div class="modal-content">
                 <div class="modal-header">
@@ -787,9 +789,9 @@
                                     </tr>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>
-                        </table>
+                        </table>    
                     </div>
-
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary"><?php echo app('translator')->get('Lưu người thân đã chọn'); ?></button>
@@ -804,7 +806,7 @@
     <div data-backdrop="static" class="modal fade" id="addServiceModal" tabindex="-1" role="dialog"
         aria-labelledby="addServiceModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-full" role="document">
-        <form id="submitstudentaddService" action="<?php echo e(route('student.addService', $detail->id)); ?>" method="POST">
+        <form id="submitstudentaddService" action="<?php echo e(route('admission.student.addService', $detail->id)); ?>" method="POST">
             <?php echo csrf_field(); ?>
             <div class="modal-content">
                 <div class="modal-header">
@@ -835,7 +837,7 @@
                                         <td><?php echo e($service->service_category->name ?? ""); ?></td>
                                         <td><?php echo e($service->is_attendance== 0 ? "Không theo điểm danh" : "Tính theo điểm danh"); ?></td>
                                         <td><?php echo e(__($service->service_type??"")); ?></td>
-
+                                        
                                         <td>
                                             <?php if(isset($service->serviceDetail) && $service->serviceDetail->count() > 0): ?>
                                                 <?php $__currentLoopData = $service->serviceDetail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $detail_service): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -875,26 +877,84 @@
         </form>
         </div>
     </div>
-    <!-- Modal tái tục-->
+    <!-- Modal TBP HSM-->
     <div data-backdrop="static" class="modal fade" id="reincarnationModal" tabindex="-1" role="dialog" aria-labelledby="reincarnationModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
-        <form id="formRenew" action="<?php echo e(route('receipt.calculateStudent.renew')); ?>"  method="POST">
+        <form id="formRenew" action="<?php echo e(route('admission.receipt.calculateStudent')); ?>"  method="POST">
             <?php echo csrf_field(); ?>
+            <input type="hidden" name="student_id" value="<?php echo e($detail->id); ?>">
+
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="reincarnationModalLabel"><?php echo app('translator')->get('Tái tục dịch vụ cho học sinh'); ?></h5>
+                    <h5 class="modal-title" id="reincarnationModalLabel"><?php echo app('translator')->get('Xử lý TBP cho học sinh mới'); ?></h5>
                 </div>
                 <div class="modal-body">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label><?php echo app('translator')->get('Ngày bắt đầu chu kỳ thanh toán'); ?> <small class="text-danger">*</small></label>
-                            <input class="form-control" type="date" name="enrolled_at" value="" required>
-                            <input type="hidden" name="student_id" value="<?php echo e($detail->id); ?>">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label><?php echo app('translator')->get('Ngày bắt đầu chu kỳ thanh toán'); ?> <small class="text-danger">*</small></label>
+                                <input class="form-control" type="date" name="enrolled_at" value="" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="d-block"><?php echo app('translator')->get('Tính tháng hiện tại ở chu kỳ thu?'); ?></label>
+                                <div id="receipt-options" class="flex-inline-group">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                            name="includeCurrentMonth" id="includeCurrentMonthYes"
+                                            value="1">
+                                        <label class="form-check-label mb-0"
+                                            for="includeCurrentMonthYes">Có</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                            name="includeCurrentMonth" id="includeCurrentMonthNo"
+                                            value="0" checked>
+                                        <label class="form-check-label mb-0"
+                                            for="includeCurrentMonthNo">Không</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary"><?php echo app('translator')->get('Tính toán TBP HSM'); ?></button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo app('translator')->get('Đóng'); ?></button>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+    <!-- Modal TBP HSM-->
+    <div data-backdrop="static" class="modal fade" id="sumerReceiptModal" tabindex="-1" role="dialog" aria-labelledby="sumerReceiptModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+        <form id="formSummer" action="<?php echo e(route('admission.receipt.calculateStudent.summer')); ?>"  method="POST">
+            <?php echo csrf_field(); ?>
+            <input type="hidden" name="student_id" value="<?php echo e($detail->id); ?>">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sumerReceiptModalLabel"><?php echo app('translator')->get('Xử lý phí chỉ kỳ hè'); ?></h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label><?php echo app('translator')->get('Ngày bắt đầu chu kỳ thu'); ?></label>
+                                <?php
+                                    $defaultDate = date('Y') . '-06-01';
+                                ?>
+                                <input class="form-control" type="date" name="enrolled_at" value="<?php echo e(old('enrolled_at', $defaultDate)); ?>" required>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary"><?php echo app('translator')->get('Tính toán tái tục dịch vụ'); ?></button>
+                    <button type="submit" class="btn btn-primary"><?php echo app('translator')->get('Tính toán phí chỉ kỳ hè'); ?></button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php echo app('translator')->get('Đóng'); ?></button>
                 </div>
             </div>
@@ -1028,7 +1088,7 @@
         $('.delete_student_service').click(function(e) {
             if (confirm('Bạn có chắc chắn muốn xóa dịch vụ này khỏi học sinh ?')) {
                 let _id = $(this).attr('data-id');
-                let url = "<?php echo e(route('delete_student_service')); ?>/";
+                let url = "<?php echo e(route('admission.delete_student_service')); ?>/";
                 $.ajax({
                     type: "GET",
                     url: url,
@@ -1084,7 +1144,7 @@
             let currentStudentServiceId = $(this).data('id'); // Lấy ID dịch vụ hiện tại từ nút cập nhật
             $.ajax({
                 type: "POST",
-                url: "<?php echo e(route('student.updateService.ajax')); ?>",
+                url: "<?php echo e(route('admission.student.updateService.ajax')); ?>",
                 data: {
                     id: currentStudentServiceId,
                     note: noteValue,
@@ -1110,7 +1170,7 @@
                 if (confirm("Bạn có chắc chắn muốn xóa phiếu thu này?")) {
                     $.ajax({
                         type: "GET",
-                        url: "<?php echo e(route('student.deleteReceipt')); ?>",
+                        url: "<?php echo e(route('admission.student.deleteReceipt')); ?>",
                         data: {
                             id: currentStudentReceiptId, // Đảm bảo đúng biến được gửi đi
                         },
@@ -1130,20 +1190,7 @@
         });
 
 
-        $(document).ready(function() {
-            var activeTab = localStorage.getItem('activeTab');
-            if (activeTab) {
-                // Bỏ class active hiện tại
-                $('.nav-tabs li, .tab-content .tab-pane').removeClass('active');
-
-                // Thêm active cho tab tương ứng
-                $('.nav-tabs li a[href="' + activeTab + '"]').parent().addClass('active');
-                $(activeTab).addClass('active');
-
-                // Xoá dữ liệu đã lưu để tránh kích hoạt lại lần sau
-                localStorage.removeItem('activeTab');
-            }
-        });
+        
 
         $('.btn_show_detail').click(function(e) {
             var url = $(this).data('url');
@@ -1177,14 +1224,35 @@
             });
         });
 
+        $(document).ready(function() {
+            var activeTab = localStorage.getItem('activeTab');
+            if (activeTab) {
+                // Bỏ class active hiện tại
+                $('.nav-tabs li, .tab-content .tab-pane').removeClass('active');
+
+                // Thêm active cho tab tương ứng
+                $('.nav-tabs li a[href="' + activeTab + '"]').parent().addClass('active');
+                $(activeTab).addClass('active');
+
+                // Xoá dữ liệu đã lưu để tránh kích hoạt lại lần sau
+                localStorage.removeItem('activeTab');
+            }
+        });
+        
         $('#submitstudentaddService').on('submit', function () {
             localStorage.setItem('activeTab', '#tab_3');
         });
-
+        
         $('#formRenew').on('submit', function () {
             localStorage.setItem('activeTab', '#tab_4');
+        });
+        $('#formSummer').on('submit', function () {
+            localStorage.setItem('activeTab', '#tab_4');
+        });
+        $('#formStudentAddParent').on('submit', function () {
+            localStorage.setItem('activeTab', '#tab_2');
         });
     </script>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\steamwonder\resources\views/admin/pages/students/edit.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\steamwonders\resources\views/admin/pages/admissionstudents/edit.blade.php ENDPATH**/ ?>

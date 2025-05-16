@@ -55,7 +55,7 @@ class ReceiptService
             $promotions = $student->studentPromotions;
             $deductions = $this->getDeductions();
             $startDate = Carbon::parse($data['enrolled_at']);
-            $includeCurrent = $data['include_current_month'];
+            $includeCurrent = $data['include_current_month'] ?? false;
             $details = $this->generateReceiptDetails($policies, $promotions, $deductions, $data['student_services'], $startDate, $includeCurrent);
 
             return $this->saveReceipt($student,  $details, $data);
@@ -95,7 +95,6 @@ class ReceiptService
 
                 return $startDate->gte($start) && ($end === null || $startDate->lte($end));
             });
-
 
             $service_info['id'] = $service->id;
             $service_info['name'] = $service->name ?? "";
@@ -656,7 +655,7 @@ class ReceiptService
             $promotions = $student->studentPromotions;
             $deductions = $this->getDeductions();
             $startDate = Carbon::parse($data['enrolled_at']);
-            $includeCurrent = false;
+            $includeCurrent = $data['include_current_month'] ?? false;
             $details = $this->generateReceiptDetailsSummer($policies, $promotions, $deductions, $data['student_services'], $startDate, $includeCurrent);
 
             return $this->saveReceiptSummer($student,  $details, $data);

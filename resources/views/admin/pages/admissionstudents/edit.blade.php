@@ -866,14 +866,14 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group">
                                 <label>@lang('Ngày bắt đầu chu kỳ thanh toán') <small class="text-danger">*</small></label>
                                 <input class="form-control" type="date" name="enrolled_at" value="" required>
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6">
                             <div class="form-group">
                                 <label class="d-block">@lang('Tính tháng hiện tại ở chu kỳ thu?')</label>
                                 <div id="receipt-options" class="flex-inline-group">
@@ -893,7 +893,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     
                 </div>
@@ -905,7 +905,7 @@
         </form>
         </div>
     </div>
-    <!-- Modal TBP HSM-->
+    <!-- Modal kỳ hè-->
     <div data-backdrop="static" class="modal fade" id="sumerReceiptModal" tabindex="-1" role="dialog" aria-labelledby="sumerReceiptModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
         <form id="formSummer" action="{{ route('admission.receipt.calculateStudent.summer') }}"  method="POST">

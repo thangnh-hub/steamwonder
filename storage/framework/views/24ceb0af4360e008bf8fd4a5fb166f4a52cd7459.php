@@ -890,34 +890,14 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Ngày bắt đầu chu kỳ thanh toán'); ?> <small class="text-danger">*</small></label>
                                 <input class="form-control" type="date" name="enrolled_at" value="" required>
                             </div>
                         </div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="d-block"><?php echo app('translator')->get('Tính tháng hiện tại ở chu kỳ thu?'); ?></label>
-                                <div id="receipt-options" class="flex-inline-group">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                            name="includeCurrentMonth" id="includeCurrentMonthYes"
-                                            value="1">
-                                        <label class="form-check-label mb-0"
-                                            for="includeCurrentMonthYes">Có</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"
-                                            name="includeCurrentMonth" id="includeCurrentMonthNo"
-                                            value="0" checked>
-                                        <label class="form-check-label mb-0"
-                                            for="includeCurrentMonthNo">Không</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                     
                 </div>
@@ -929,7 +909,7 @@
         </form>
         </div>
     </div>
-    <!-- Modal TBP HSM-->
+    <!-- Modal kỳ hè-->
     <div data-backdrop="static" class="modal fade" id="sumerReceiptModal" tabindex="-1" role="dialog" aria-labelledby="sumerReceiptModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
         <form id="formSummer" action="<?php echo e(route('admission.receipt.calculateStudent.summer')); ?>"  method="POST">
