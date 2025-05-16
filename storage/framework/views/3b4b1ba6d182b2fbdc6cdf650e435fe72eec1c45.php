@@ -364,6 +364,7 @@
             })
             // Khi tắt modal thì tắt cam
             $(document).on('hidden.bs.modal', '#modal_camera', function() {
+                $('.checkin').prop('checked', false);
                 if (videoStream) {
                     // Dừng tất cả các track video
                     videoStream.getTracks().forEach(track => track.stop());

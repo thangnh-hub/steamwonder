@@ -4,15 +4,20 @@ namespace App;
 
 class Consts
 {
+    const SERVICE_FEES = [
+        'late_fee' => 'late_fee',
+        'saturday_fee' => 'saturday_fee',
+        'boarding_fee' => 'boarding_fee',
+    ];
     const PROMOTION_TYPE = [
-        'percent' =>'percent',
-        'fixed_amount' =>'fixed_amount',
-        'add_month' =>'add_month',
+        'percent' => 'percent',
+        'fixed_amount' => 'fixed_amount',
+        'add_month' => 'add_month',
     ];
     const TYPE_RECEIPT = [
-        'new_student' =>'new_student',
-        'renew' =>'renew',
-        'yearly' =>'yearly',
+        'new_student' => 'new_student',
+        'renew' => 'renew',
+        'yearly' => 'yearly',
     ];
     const STATUS_RECEIPT = [
         'pending' => 'pending',
