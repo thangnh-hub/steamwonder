@@ -12,12 +12,12 @@
                     class="fa fa-plus"></i> @lang('Add')</a>
 
             {{-- Tạm thời chưa dùng đến --}}
-            <div class="pull-right" style="display: flex; margin-left:15px ">
+            {{-- <div class="pull-right" style="display: flex; margin-left:15px ">
                 <input class="form-control" type="file" name="files" id="fileImport" placeholder="@lang('Select File')">
                 <button type="button" class="btn btn-sm btn-success" onclick="importFile()">
                     <i class="fa fa-file-excel-o"></i>
                     @lang('Import dữ liệu')</button>
-            </div>
+            </div> --}}
         </h1>
 
     </section>
@@ -212,7 +212,7 @@
                                         <div class="sw_featured d-flex-al-center">
                                             <label class="switch">
                                                 <input class="" type="checkbox" value="1" disabled
-                                                    {{ isset($detail->is_lastyear) && $detail->is_lastyear == '1' ? 'checked' : '' }}>
+                                                    {{ isset($row->is_lastyear) && $row->is_lastyear == '1' ? 'checked' : '' }}>
                                                 <span class="slider round"></span>
                                             </label>
                                         </div>
@@ -233,14 +233,20 @@
                                         {{ __($row->status) }}
                                     </td>
                                     <td style="width:150px">
+
+                                        <a class="btn btn-sm btn-primary" data-toggle="tooltip" target="_blank"
+                                            title="@lang('Điểm danh')" data-original-title="@lang('Điểm danh')"
+                                            href="{{ route('attendance.index',['class_id'=>$row->id,'tracked_at'=>date('Y-m-d')]) }}">
+                                            <i class="fa fa-calendar-check-o"></i>
+                                        </a>
                                         <button class="btn btn-sm btn-success btn_show_detail" data-toggle="tooltip"
                                             data-id="{{ $row->id }}"
                                             data-url="{{ route(Request::segment(2) . '.show', $row->id) }}"
-                                            title="@lang('Show')" data-original-title="@lang('Show')">
+                                            title="@lang('Chi tiết')" data-original-title="@lang('Chi tiết')">
                                             <i class="fa fa-eye"></i>
                                         </button>
                                         <a class="btn btn-sm btn-warning" data-toggle="tooltip"
-                                            title="@lang('Update')" data-original-title="@lang('Update')"
+                                            title="@lang('Chỉnh sửa')" data-original-title="@lang('Chỉnh sửa')"
                                             href="{{ route(Request::segment(2) . '.edit', $row->id) }}">
                                             <i class="fa fa-pencil-square-o"></i>
                                         </a>
