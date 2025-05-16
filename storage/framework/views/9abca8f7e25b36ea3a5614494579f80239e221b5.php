@@ -181,9 +181,7 @@
     }
 
     function hide_loading_notification() {
-        setTimeout(() => {
-            $('#loading-notification').css('display', 'none');
-        }, 1500);
+        $('#loading-notification').css('display', 'none');
     }
 
     // Mở popup ở giữa
