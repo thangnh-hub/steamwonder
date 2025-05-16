@@ -97,21 +97,21 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>@lang('Số CMND/CCCD') <small class="text-red">*</small></label>
-                                            <input type="text" class="form-control" name="identity_card" value="{{ old('identity_card', $detail->identity_card) }}" required>
+                                            <input type="text" class="form-control" name="identity_card" value="{{ old('identity_card', $detail->identity_card) }}" >
                                         </div>
                                     </div>
 
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>@lang('Số điện thoại')<small class="text-red">*</small></label>
-                                            <input type="text" class="form-control" name="phone" value="{{ old('phone', $detail->phone) }}" required>
+                                            <input type="text" class="form-control" name="phone" value="{{ old('phone', $detail->phone) }}" >
                                         </div>
                                     </div>
 
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>@lang('Email')<small class="text-red">*</small></label>
-                                            <input type="email" class="form-control" name="email" value="{{ old('email', $detail->email) }}" required>
+                                            <input type="email" class="form-control" name="email" value="{{ old('email', $detail->email) }}" >
                                         </div>
                                     </div>
 

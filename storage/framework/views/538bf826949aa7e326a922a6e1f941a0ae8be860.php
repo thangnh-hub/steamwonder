@@ -64,8 +64,7 @@
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <p class="job"><strong><?php echo app('translator')->get('Họ và tên'); ?>:</strong>
-                                                            <?php echo e($detail->last_name ?? ''); ?> <?php echo e($detail->first_name ?? ''); ?>
-
+                                                            <?php echo e($detail->first_name ?? ''); ?> <?php echo e($detail->last_name ?? ''); ?> 
                                                         </p>
                                                     </div>
                                                 
@@ -159,7 +158,7 @@
                                                                                 </a>
                                                                             </td>
                                                                             <td><?php echo e($student->student_code ?? ''); ?></td>
-                                                                            <td><?php echo e($student->last_name); ?> <?php echo e($student->first_name); ?></td>
+                                                                            <td><?php echo e($student->first_name); ?> <?php echo e($student->last_name); ?> </td>
                                                                             <td><?php echo e($student->nickname ?? ''); ?></td>
                                                                             <td><?php echo e(__($student->sex)); ?></td>
                                                                             <td><?php echo e($student->area->name ?? ''); ?></td>
