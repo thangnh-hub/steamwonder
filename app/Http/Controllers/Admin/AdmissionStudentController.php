@@ -405,6 +405,7 @@ class AdmissionStudentController extends Controller
         }
     }
    
+    //học sinh mới
     public function calculateReceiptStudent(Request $request, ReceiptService $receiptService)
     {   
         try {
@@ -422,7 +423,7 @@ class AdmissionStudentController extends Controller
                 return redirect()->back()->with('errorMessage', 'Học sinh đã có biên lai cho một trong các dịch vụ hiện tại, không thể xử lý TBP HSM. Vui lòng kiểm tra lại.');
             }
             $data['student_services'] = $studentServices;
-            $data['include_current_month'] = $request->input('include_current_month', 0) == 1 ? true : false;
+            $data['include_current_month'] = false;
             $data['enrolled_at'] = $request->input('enrolled_at', null);
             $receiptService->createReceiptForStudent($student, $data);
             return redirect()->back()->with('successMessage', __('Cập nhật biểu phí dịch vụ thành công!'));
@@ -431,6 +432,8 @@ class AdmissionStudentController extends Controller
             return redirect()->back()->with('errorMessage', $e->getMessage());
         }
     }
+
+    //ky hè
     public function calculateReceiptStudentSummer(Request $request, ReceiptService $receiptService)
     {   
         try {
@@ -443,6 +446,7 @@ class AdmissionStudentController extends Controller
 
             $data['student_services'] = $studentServices;
             $data['enrolled_at'] = $request->input('enrolled_at', null);
+            $data['include_current_month'] = false;
             $receiptService->createReceiptForStudentSummer($student, $data);
             return redirect()->back()->with('successMessage', __('Cập nhật biểu phí dịch vụ kỳ hè thành công!'));
         } catch (\Exception $e) {

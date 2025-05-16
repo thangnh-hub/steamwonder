@@ -487,65 +487,6 @@
                                     <!-- TAB 4: Biên lai thu phí -->
                                     <div class="tab-pane" id="tab_4">
                                         <div class="box-body ">
-                                            {{-- <form id="calculate-receipt-form">
-                                                @csrf
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label>@lang('Ngày bắt đầu chu kỳ thanh toán') <small
-                                                                class="text-danger">*</small></label>
-                                                        <input class="form-control" type="date" id="enrolled_at"
-                                                            value="">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label>@lang('Chu kỳ thu dịch vụ') <small
-                                                                class="text-danger">*</small></label>
-                                                        <select style="width:100%" id="selectpayment_cycle_id"
-                                                            class="form-control select2">
-                                                            <option value="">Chọn</option>
-                                                            @foreach ($list_payment_cycle as $payment_cycle)
-                                                                <option
-                                                                    {{ old('payment_cycle_id', $detail->payment_cycle_id) == $payment_cycle->id ? 'selected' : '' }}
-                                                                    value="{{ $payment_cycle->id }}">
-                                                                    {{ $payment_cycle->name ?? '' }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label class="d-block">@lang('Tính tháng hiện tại ở chu kỳ thu?')</label>
-                                                        <div id="receipt-options" class="flex-inline-group">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="includeCurrentMonth" id="includeCurrentMonthYes"
-                                                                    value="1">
-                                                                <label class="form-check-label mb-0"
-                                                                    for="includeCurrentMonthYes">Có</label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="includeCurrentMonth" id="includeCurrentMonthNo"
-                                                                    value="0" checked>
-                                                                <label class="form-check-label mb-0"
-                                                                    for="includeCurrentMonthNo">Không</label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-12">
-                                                    <button type="button" class="btn btn-success btn-sm mb-15"
-                                                        id="btnCalculateReceipt" data-id="{{ $detail->id }}">
-                                                        <i class="fa fa-money"></i> @lang('Tính toán thu phí')
-                                                    </button>
-                                                </div>
-
-                                            </form> --}}
                                             <table class="table table-hover table-bordered">
                                                 <thead>
                                                     <tr>
