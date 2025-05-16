@@ -61,8 +61,8 @@ class ParentController extends Controller
             'area_id' => 'required',
             'first_name' => 'required',
             'last_name' => 'required',
-            'phone' => 'required|unique:tb_parents,phone',
-            'email' => 'required|email|unique:tb_parents,email',
+            'phone' => 'nullable|unique:tb_parents,phone',
+            'email' => 'nullable|unique:tb_parents,email',
         ]);
 
         $params = $request->all();
@@ -103,8 +103,8 @@ class ParentController extends Controller
             'area_id' => 'required',
             'first_name' => 'required',
             'last_name' => 'required',
-            'phone' => 'required|unique:tb_parents,phone,' . $parent->id,
-            'email' => 'required|email|unique:tb_parents,email,' . $parent->id,
+            'phone' => 'nullable|unique:tb_parents,phone,' . $parent->id,
+            'email' => 'nullable|unique:tb_parents,email,' . $parent->id,
         ]);
 
         $params = $request->all();

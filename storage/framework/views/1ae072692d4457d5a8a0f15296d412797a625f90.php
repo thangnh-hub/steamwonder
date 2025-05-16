@@ -498,7 +498,6 @@
                                     <!-- TAB 4: Biên lai thu phí -->
                                     <div class="tab-pane" id="tab_4">
                                         <div class="box-body ">
-                                            
                                             <table class="table table-hover table-bordered">
                                                 <thead>
                                                     <tr>
