@@ -23,46 +23,47 @@ class ServiceController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-     public function __construct()
-     {
-         parent::__construct();
-         $this->routeDefault = 'services';
-         $this->viewPart = 'admin.pages.services';
-         $this->responseData['module_name'] = 'Quản lý dịch vụ';
-         $this->responseData['routeDefault'] = $this->routeDefault;
-     }
- 
-     public function index(Request $request)
-     {
-         $params = $request->all();
-         $params['order_by'] = 'iorder';
-         $rows = Service::getSqlService($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
-         $this->responseData['rows'] = $rows;
-         $this->responseData['params'] = $params;
+    public function __construct()
+    {
+        parent::__construct();
+        $this->routeDefault = 'services';
+        $this->viewPart = 'admin.pages.services';
+        $this->responseData['module_name'] = 'Quản lý dịch vụ';
+        $this->responseData['routeDefault'] = $this->routeDefault;
+    }
 
-         $params_area['id'] = DataPermissionService::getPermisisonAreas(Auth::guard('admin')->user()->id);
-         $this->responseData['list_area'] = Area::getsqlArea($params_area)->get();
-        
-         $params_service_category['status'] = Consts::STATUS['active'];
-         $this->responseData['list_service_category'] = ServiceCategory::getSqlServiceCategory($params_service_category)->get();
+    public function index(Request $request)
+    {
+        $params = $request->all();
+        $params['order_by'] = 'iorder';
+        $rows = Service::getSqlService($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
+        $this->responseData['rows'] = $rows;
+        $this->responseData['params'] = $params;
 
-         $this->responseData['list_is_attendance'] = Consts::SERVICE_IS_ATTENDANCE;
-         $this->responseData['list_is_default'] = Consts::SERVICE_IS_DEFAULT;
-         $this->responseData['list_service_type'] = Consts::SERVICE_TYPE;
-         $this->responseData['list_status'] = Consts::STATUS;
-         
-         return $this->responseView($this->viewPart . '.index');
-     }
- 
-     public function create()
-     {
         $params_area['id'] = DataPermissionService::getPermisisonAreas(Auth::guard('admin')->user()->id);
         $this->responseData['list_area'] = Area::getsqlArea($params_area)->get();
-       
+
+        $params_service_category['status'] = Consts::STATUS['active'];
+        $this->responseData['list_service_category'] = ServiceCategory::getSqlServiceCategory($params_service_category)->get();
+
         $this->responseData['list_is_attendance'] = Consts::SERVICE_IS_ATTENDANCE;
         $this->responseData['list_is_default'] = Consts::SERVICE_IS_DEFAULT;
         $this->responseData['list_service_type'] = Consts::SERVICE_TYPE;
         $this->responseData['list_status'] = Consts::STATUS;
+
+        return $this->responseView($this->viewPart . '.index');
+    }
+
+    public function create()
+    {
+        $params_area['id'] = DataPermissionService::getPermisisonAreas(Auth::guard('admin')->user()->id);
+        $this->responseData['list_area'] = Area::getsqlArea($params_area)->get();
+
+        $this->responseData['list_is_attendance'] = Consts::SERVICE_IS_ATTENDANCE;
+        $this->responseData['list_is_default'] = Consts::SERVICE_IS_DEFAULT;
+        $this->responseData['list_service_type'] = Consts::SERVICE_TYPE;
+        $this->responseData['list_status'] = Consts::STATUS;
+        $this->responseData['service_fees'] = Consts::SERVICE_FEES;
 
         $params_active['status'] = Consts::STATUS['active'];
         $this->responseData['list_service_category'] = ServiceCategory::getSqlServiceCategory($params_active)->get();
@@ -70,8 +71,8 @@ class ServiceController extends Controller
         $this->responseData['list_education_program'] = EducationProgram::getSqlEducationProgram($params_active)->get();
 
         return $this->responseView($this->viewPart . '.create');
-     }
- 
+    }
+
     public function store(Request $request)
     {
         // dd($request->all());
@@ -111,7 +112,7 @@ class ServiceController extends Controller
         }
     }
 
- 
+
     public function edit($id)
     {
         $service = Service::findOrFail($id);
@@ -129,7 +130,7 @@ class ServiceController extends Controller
         $this->responseData['list_is_default'] = Consts::SERVICE_IS_DEFAULT;
         $this->responseData['list_service_type'] = Consts::SERVICE_TYPE;
         $this->responseData['list_status'] = Consts::STATUS;
-
+        $this->responseData['service_fees'] = Consts::SERVICE_FEES;
         $this->responseData['service'] = $service;
 
         return $this->responseView($this->viewPart . '.edit');
@@ -172,7 +173,7 @@ class ServiceController extends Controller
             throw $ex; // Rethrow the exception to be handled by the global exception handler
         }
     }
- 
+
     public function destroy(Service $service)
     {
         DB::beginTransaction();
@@ -185,12 +186,11 @@ class ServiceController extends Controller
             $service->delete();
             DB::commit();
             return redirect()->route($this->routeDefault . '.index')
-            ->with('successMessage', __('Delete record successfully!'));
+                ->with('successMessage', __('Delete record successfully!'));
         } catch (Exception $e) {
             DB::rollBack();
             return redirect()->route($this->routeDefault . '.index')
                 ->with('errorMessage', __('An error occurred while deleting: ') . $e->getMessage());
         }
     }
- 
 }
