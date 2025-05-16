@@ -4,12 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css"
+        href="{{ asset('themes/frontend/education/plugins/font-awesome-4.7.0/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href=" https://fonts.googleapis.com/css?family=Montserrat:300,400,400i,500,600,700,800,900">
     <title>Thông Báo Thu Phí</title>
     <style>
         body {
-            font-family: "Times New Roman", serif;
-            font-size: 14px;
-            margin: 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            margin: 0 20px;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
@@ -91,7 +94,6 @@
             body {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
-                zoom: 75%;
             }
 
             .fee-table th,
@@ -103,7 +105,7 @@
 
             @page {
                 size: A4 portrait;
-                margin: 0;
+                margin: 10px 0 0 0;
             }
 
             .qr-code img {
@@ -111,6 +113,11 @@
                 top: 0; */
                 width: 100%;
                 height: auto;
+            }
+
+            .page-break {
+                page-break-before: always;
+                break-before: page;
             }
         }
 
@@ -140,6 +147,7 @@
         .header .logo img {
             max-width: 100%;
             height: auto;
+            width: 150px;
         }
 
         .header .company-info {
@@ -157,90 +165,122 @@
         p {
             margin-top: 0px;
         }
+
+        .sub-title {
+            border-bottom: solid 1px #999999;
+            padding-bottom: 1px;
+        }
+
+        .header img {
+            width: 100%;
+            height: auto;
+        }
+
+        h3 {
+            margin-bottom: 0.5em;
+        }
+
+        .color-title {
+            color: #1169b7;
+        }
     </style>
 </head>
+@php
+    $month = \Carbon\Carbon::parse($detail->period_start)->format('m/Y');
+@endphp
 
 <body>
 
     <div class="wrapper">
 
         <div class="header">
-            <div class="logo">
+            <img src="https://steamwonders.vn/data/logo/header.jpg" alt="Banner-header" srcset="">
+            {{-- <div class="logo">
                 <img src="https://steamwonders.vn/data/logo/SWS-logo.png" alt="Logo">
             </div>
             <div class="company-info">
-                <p><strong>{{ optional($detail->area)->json_params->company ?? '' }}</strong></p>
+                <p style="font-size:20px;"><strong>{{ optional($detail->area)->json_params->company ?? '' }}</strong></p>
                 <p><strong>{{ optional($detail->area)->json_params->address ?? '' }}</strong></p>
                 <p>
                     <strong>Điện thoại:</strong> {{ optional($detail->area)->json_params->phone ?? '' }}
                     <strong>Email:</strong> {{ optional($detail->area)->json_params->email ?? '' }}
                 </p>
-            </div>
+            </div> --}}
         </div>
+
+        <h2 class="title color-title">
+            THÔNG BÁO THU PHÍ THÁNG {{ $month }}
+        </h2>
 
         <div class="content">
-            <p>Kính gửi: Quý Phụ huynh,</p>
+            <p style="margin-top: 1em;"><i class="sub-title">Kính gửi:</i> <strong>Quý Phụ huynh,</strong></p>
             <p>
-                {{ optional($detail->area)->json_params->school ?? '' }} trân trọng cảm ơn Quý Phụ huynh đã quan tâm
-                trong suốt thời
-                gian qua.
+                Lời đầu tiên, {{ optional($detail->area)->json_params->school ?? '' }} trân trọng cảm ơn Quý Phụ huynh
+                đã quan tâm trong suốt thời gian qua.
             </p>
             <p>
-                <strong><i>Dưới đây, Nhà trường xin gửi đến Quý Phụ huynh Thông báo thu phí (tạm tính). Sau 02 ngày kể
-                        từ ngày nhận được Thông báo tạm tính này, nếu Quý Phụ huynh không có thắc mức gì thì bản tạm
-                        tính này được coi là bản chính thức.</i></strong>
-            </p>
-
-            <p>
-                <strong><i>Nếu Quý Phụ huynh có yêu cầu hoặc thắc mắc gì, vui lòng liên hệ với bộ phận CSKH để được giải
-                        đáp chi tiết qua email cskh.thuhocphi.steame@gmail.com hoặc hotline: 0473.366.6666</i></strong>
+                Để thuận tiện cho công tác thu học phí tháng {{ $month }}, Nhà trường xin gửi tới Quý Phụ huynh
+                <strong>Thông báo thu phí chi tiết </strong>kèm theo. Quý Phụ huynh vui lòng theo dõi và hoàn tất các
+                khoản phí theo thời hạn được ghi rõ trong thông báo.
             </p>
         </div>
 
-        <h2 class="title">THÔNG BÁO THU PHÍ THÁNG {{ \Carbon\Carbon::parse($detail->period_start)->format('m/Y') }}
-        </h2>
+        <h3 class="color-title">1. THÔNG TIN HỌC SINH</h3>
 
         <table class="info">
             <tr>
                 <td>
-                    <strong>Họ và tên học sinh:</strong>
-                    {{ optional($detail->student)->first_name ?? '' }}
-                    {{ optional($detail->student)->last_name ?? '' }}
-                </td>
-                <td>
-                    <strong>Lớp học:</strong>
-                    {{ optional(optional($detail->student)->currentClass)->name ?? '' }}
+                    - Mã học sinh:
+                    <strong>{{ optional($detail->student)->student_code }}</strong>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <strong>Ngày sinh:</strong>
-                    {{ $detail->student->birthday && optional($detail->student)->birthday ? \Carbon\Carbon::parse(optional($detail->student)->birthday)->format('d/m/Y') : '' }}
-                </td>
-                <td>
-                    <strong>Phụ huynh:</strong>
-                    @isset(optional($detail->student)->studentParents)
-                        @foreach (optional($detail->student)->studentParents as $item)
-                            {{ optional($item->relationship)->title ?? '' }}
-                            {{ optional($item->parent)->first_name ?? '' }}
-                            {{ optional($item->parent)->last_name . '. ' ?? '' }}
-                        @endforeach
-                    @endisset
+                    - Họ và tên học sinh:
+                    <strong>{{ optional($detail->student)->first_name ?? '' }}
+                        {{ optional($detail->student)->last_name ?? '' }}</strong>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <strong>Mã học sinh:</strong>
-                    {{ optional($detail->student)->student_code }}
+                    - Ngày sinh:
+                    <strong>{{ $detail->student->birthday && optional($detail->student)->birthday ? \Carbon\Carbon::parse(optional($detail->student)->birthday)->format('d/m/Y') : '' }}</strong>
                 </td>
+            </tr>
+            <tr>
                 <td>
-                    <strong>Mã TBP:</strong>
-                    {{ $detail->receipt_code ?? '' }}
+                    - Lớp học:
+                    <strong>
+                        {{ optional(optional($detail->student)->currentClass)->name ?? '' }}
+                        -
+                        {{ optional(optional(optional($detail->student)->currentClass)->education_programs)->name ?? '' }}
+                    </strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    - Phụ huynh:
+                    <strong>
+                        @isset(optional($detail->student)->studentParents)
+                            @foreach (optional($detail->student)->studentParents as $item)
+                                {{ optional($item->relationship)->title ?? '' }}
+                                {{ optional($item->parent)->first_name ?? '' }}
+                                {{ optional($item->parent)->last_name ?? '' }}
+                                ({{ optional($item->parent)->phone ?? '' }})
+                            @endforeach
+                        @endisset
+                    </strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    - Mã phiếu thông báo phí:
+                    <strong>{{ $detail->receipt_code ?? '' }}</strong>
                 </td>
             </tr>
         </table>
 
-        <h3 class="text-center">PHẦN I - CÁC KHOẢN PHÍ PHẢI NỘP</h3>
+        <h3 class="color-title">2. CÁC KHOẢN PHÍ PHẢI NỘP (Tạm tính)</h3>
         <table class="fee-table" border="1" cellspacing="0" cellpadding="5">
             <thead>
                 <tr>
@@ -397,60 +437,69 @@
                 </tr>
             </tbody>
         </table>
-        <h3 class="text-center">PHẦN II - HƯỚNG DẪN THANH TOÁN</h3>
+        {{-- <div class="page-break"></div> --}}
+        <h3 class="color-title">3. HƯỚNG DẪN THANH TOÁN</h3>
         <div class="footer">
             <div class="bank-info">
-                <p><strong>Hình thức thanh toán:</strong></p>
-                <p>Thanh toán bằng chuyển khoản, Quý Phụ huynh vui lòng chuyển tiền vào tài khoản sau:</p>
-                <p><strong>Tên TK:</strong> {{ optional($detail->area)->json_params->bank_account ?? '' }}</p>
-                <p><strong>Số TK:</strong> {{ optional($detail->area)->json_params->bank_stk ?? '' }} -
-                    {{ optional($detail->area)->json_params->bank_name ?? '' }}</p>
-                <p><strong>Nội dung chuyển khoản:</strong> Mã học sinh_Tên học sinh_Mã TBP</p>
-                <p>* Thanh toán tiền mặt: chi trả bằng tiền mặt tại Phòng Tuyển sinh</p>
-                <p><strong>Thời hạn nộp phí:</strong></p>
-                <p>Quý phụ huynh vui lòng thanh toán các khoản phí trên trong vòng 10 ngày kể từ ngày nhận được thông
-                    báo từ
-                    Nhà trường.</p>
-
+                <p><strong class="sub-title">Phương thức thanh toán:</strong></p>
+                <p>Quý Phụ huynh vui lòng chuyển khoản vào tài khoản của Nhà trường bằng cách quét mã QR dưới đây hoặc
+                    chuyển khoản theo thông tin sau:</p>
+                <p>- Tên TK: <strong>{{ optional($detail->area)->json_params->bank_account ?? '' }}</strong></p>
+                <p>- Số TK:
+                    <strong>{{ optional($detail->area)->json_params->bank_stk ?? '' }} -
+                        {{ optional($detail->area)->json_params->bank_name ?? '' }}
+                    </strong>
+                </p>
+                <p>Nội dung chuyển khoản: <strong>Mã học sinh_Tên học sinh_Mã TBP</strong></p>
             </div>
             @isset($qrCode)
                 <div class="qr-code">
                     <img src="{{ $qrCode }}" alt="QR Ngân hàng">
-                    <p class="text-center">@lang('Quét mã QR để thanh toán')</p>
                 </div>
             @endisset
         </div>
         <div class="content-payment">
-            <p><strong>Thanh toán phí:</strong></p>
-            <p>Phụ huynh cần hiểu rõ trách nhiệm hoàn tất phí và thời hạn chi trả của mình. Việc thông báo nhắc nhở
-                của
-                Nhà trường vì một lý do nào đó khống đến được với Phụ huynh không có ý nghĩa trì hoãn trách nhiệm
-                chi
-                trả các khoản phí cho học sinh theo quy định.</p>
-            <p>Nếu Nhà trường chưa nhận được học phí và các khoản phí liên quan sau ngày quy định nộp phí, các khoản
-                phí
-                đến hạn phải nộp sẽ tự động tăng thêm 0.05%/ngày chậm trên số tiền chưa thanh toán và Phụ huynh có
-                trách
-                nhiệm nộp cả phần tăng thêm này. Phụ huynh đóng phí sau thời hạn quy định sẽ không được hưởng ưu
-                đãi.
+            <p><strong class="sub-title">Thời hạn và hướng dẫn thanh toán:</strong></p>
+            <p>
+                <strong><i class="fa fa-clock-o"></i> Thời hạn nộp phí:</strong><br />
+                Quý Phụ huynh vui lòng hoàn tất thanh toán trong vòng 10 ngày kể từ khi nhận được thông báo này.
             </p>
-            <p>Trường hợp Phụ huynh không đóng phí đúng hạn hoặc không đóng phí theo Quy định tài chính, Nhà trường
-                có
-                quyền không xếp lớp và không cung cấp dịch vụ cho học sinh vào đầu năm học hoặc ngừng cung cấp dịch
-                vụ
-                nếu Phụ huynh không đóng phí cho học sinh theo kỳ học.</p>
-            <p><i>Quý Phụ huynh vui lòng bỏ qua thông báo này nếu đã thanh toán. Mọi yêu cầu hoặc thắc mắc gì, xin
-                    vui
-                    lòng liên hệ với bộ phận CSKH để được giải đáp chi tiết.</i></p>
-            <p class="footer">Thông báo này được in tự động từ hệ thống nên không có dấu và chữ ký.</p>
-            <p>Trân trọng cảm ơn!</p>
+            <p>
+                <strong><i class="fa fa-money"></i> Thanh toán phí:</strong><br />
+                Việc thanh toán học phí là nghĩa vụ tài chính của Phụ huynh. Trong trường hợp vì bất kỳ lý do nào mà
+                thông báo nhắc phí không đến được, điều này không làm thay đổi trách nhiệm thanh toán đúng hạn.
+            </p>
+            <p>
+                Nếu quá thời hạn nộp phí, tổng số tiền chưa thanh toán sẽ bị tính lãi 0,05%/ngày chậm và Phụ huynh sẽ
+                không được hưởng các chính sách ưu đãi liên quan.
+            </p>
+            <p>
+                <strong><i class="fa fa-bolt"></i> Lưu ý:</strong>
+                Nhà trường có quyền không xếp lớp hoặc tạm dừng cung cấp dịch vụ học tập nếu học phí không được thanh
+                toán đúng hạn theo quy định.
+            </p>
+            <p>
+                Nếu Quý Phụ huynh đã hoàn tất thanh toán, vui lòng bỏ qua thông báo này. Mọi thắc mắc xin liên hệ bộ
+                phận CSKH theo địa chỉ email trong thông báo để được hỗ trợ.
+            </p>
+            <p><strong>Thông báo này được gửi tự động từ hệ thống, không có chữ ký và con dấu.</strong></p>
+            <p>
+                Mọi thắc mắc xin vui lòng liên hệ Bộ phận CSKH của cơ sở hoặc gửi email về địa chỉ: <br />
+                <strong>{{ optional($detail->area)->json_params->email ?? '' }}</strong><br />
+                <strong>Hotline: {{ optional($detail->area)->json_params->phone ?? '' }}</strong>
+            </p>
         </div>
+        <h3 class="color-title">
+            Trân trọng cảm ơn!<br />
+            STEAME WONDERS - ƯƠM MẦM SÁNG TẠO - MỞ LỐI TƯƠNG LAI!
+
+        </h3>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
             // Mở hộp thoại in
-            // window.print();
+            window.print();
         });
     </script>
 </body>

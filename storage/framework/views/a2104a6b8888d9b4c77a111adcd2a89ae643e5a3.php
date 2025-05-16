@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title'); ?>
     <?php echo app('translator')->get($module_name); ?>
 <?php $__env->stopSection(); ?>
@@ -47,7 +45,7 @@
                         <div class="box-header with-border">
                             <h3 class="box-title"><?php echo app('translator')->get('Create form'); ?></h3>
                         </div>
-        
+
                         <div class="box-body">
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
@@ -58,7 +56,7 @@
                                                 <input type="text" name="name" class="form-control" placeholder="<?php echo app('translator')->get('Nhập tên dịch vụ'); ?>" required>
                                             </div>
                                         </div>
-                    
+
                                         <!-- Khu vực -->
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -71,7 +69,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                    
+
                                         <!-- Nhóm dịch vụ -->
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -108,7 +106,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                    
+
                                         <!-- Tính chất dịch vụ -->
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -120,7 +118,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                    
+
                                         <!-- Mặc định -->
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -132,7 +130,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                    
+
                                         <!-- Loại dịch vụ -->
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -144,15 +142,18 @@
                                                 </select>
                                             </div>
                                         </div>
-                    
-                                        <!-- Thứ tự -->
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label><?php echo app('translator')->get('Thứ tự'); ?></label>
-                                                <input type="number" name="iorder" class="form-control" placeholder="<?php echo app('translator')->get('Nhập thứ tự'); ?>">
+                                                <label><?php echo app('translator')->get('Kiểu phí áp dụng'); ?></label>
+                                                <select name="service_fee" class="form-control select2" style="width: 100%;">
+                                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
+                                                    <?php $__currentLoopData = $service_fees; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <option value="<?php echo e($key); ?>"><?php echo e(__($item)); ?></option>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </select>
                                             </div>
                                         </div>
-                    
+
                                         <!-- Trạng thái -->
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -164,8 +165,15 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <hr>
-                                        <div class="box-header ">
+                                        <!-- Thứ tự -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label><?php echo app('translator')->get('Thứ tự'); ?></label>
+                                                <input type="number" name="iorder" class="form-control" placeholder="<?php echo app('translator')->get('Nhập thứ tự'); ?>">
+                                            </div>
+                                        </div>
+                                    </hr>
+                                        <div class="box-header col-md-12">
                                             <h3 class="box-title"><?php echo app('translator')->get('Giá tiền lũy tiến và thời điểm áp dụng:'); ?></h3>
                                         </div>
                                         <div style="padding-left: 0px" class="col-md-12">
@@ -174,33 +182,33 @@
                                                     <div class="form-group">
                                                         <label><?php echo app('translator')->get('Số tiền'); ?> <small class="text-danger">*</small></label>
                                                         <input required type="number" name="service_detail[price]" class="form-control" placeholder="<?php echo app('translator')->get('Nhập số tiền'); ?>">
-                                                    </div>        
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label><?php echo app('translator')->get('Số lượng'); ?> <small class="text-danger">*</small></label>
                                                         <input required type="number" name="service_detail[quantity]" class="form-control" placeholder="<?php echo app('translator')->get('Nhập số lượng'); ?>">
-                                                    </div>        
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label><?php echo app('translator')->get('Từ ngày'); ?> <small class="text-danger">*</small></label>
                                                         <input required type="date" name="service_detail[start_at]" class="form-control">
-                                                    </div>        
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label><?php echo app('translator')->get('Đến ngày'); ?> <small class="text-danger">*</small></label>
                                                         <input required type="date" name="service_detail[end_at]" class="form-control">
-                                                    </div>        
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div> 
-                                </div> 
-                            </div> 
-                        </div> 
-        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="box-footer">
                             <a href="<?php echo e(route(Request::segment(2) . '.index')); ?>">
                                 <button type="button" class="btn btn-sm btn-success">
@@ -220,7 +228,7 @@
 
 <?php $__env->startSection('script'); ?>
     <script>
-        
+
     </script>
 <?php $__env->stopSection(); ?>
 

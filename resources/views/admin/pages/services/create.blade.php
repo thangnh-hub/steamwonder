@@ -45,7 +45,7 @@
                         <div class="box-header with-border">
                             <h3 class="box-title">@lang('Create form')</h3>
                         </div>
-        
+
                         <div class="box-body">
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1">
@@ -56,7 +56,7 @@
                                                 <input type="text" name="name" class="form-control" placeholder="@lang('Nhập tên dịch vụ')" required>
                                             </div>
                                         </div>
-                    
+
                                         <!-- Khu vực -->
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -69,7 +69,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                    
+
                                         <!-- Nhóm dịch vụ -->
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -106,7 +106,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                    
+
                                         <!-- Tính chất dịch vụ -->
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -118,7 +118,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                    
+
                                         <!-- Mặc định -->
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -130,7 +130,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                    
+
                                         <!-- Loại dịch vụ -->
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -142,15 +142,18 @@
                                                 </select>
                                             </div>
                                         </div>
-                    
-                                        <!-- Thứ tự -->
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>@lang('Thứ tự')</label>
-                                                <input type="number" name="iorder" class="form-control" placeholder="@lang('Nhập thứ tự')">
+                                                <label>@lang('Kiểu phí áp dụng')</label>
+                                                <select name="service_fee" class="form-control select2" style="width: 100%;">
+                                                    <option value="">@lang('Please select')</option>
+                                                    @foreach ($service_fees as $key => $item)
+                                                        <option value="{{ $key }}">{{ __($item) }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
-                    
+
                                         <!-- Trạng thái -->
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -162,8 +165,15 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <hr>
-                                        <div class="box-header ">
+                                        <!-- Thứ tự -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>@lang('Thứ tự')</label>
+                                                <input type="number" name="iorder" class="form-control" placeholder="@lang('Nhập thứ tự')">
+                                            </div>
+                                        </div>
+                                    </hr>
+                                        <div class="box-header col-md-12">
                                             <h3 class="box-title">@lang('Giá tiền lũy tiến và thời điểm áp dụng:')</h3>
                                         </div>
                                         <div style="padding-left: 0px" class="col-md-12">
@@ -172,33 +182,33 @@
                                                     <div class="form-group">
                                                         <label>@lang('Số tiền') <small class="text-danger">*</small></label>
                                                         <input required type="number" name="service_detail[price]" class="form-control" placeholder="@lang('Nhập số tiền')">
-                                                    </div>        
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label>@lang('Số lượng') <small class="text-danger">*</small></label>
                                                         <input required type="number" name="service_detail[quantity]" class="form-control" placeholder="@lang('Nhập số lượng')">
-                                                    </div>        
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label>@lang('Từ ngày') <small class="text-danger">*</small></label>
                                                         <input required type="date" name="service_detail[start_at]" class="form-control">
-                                                    </div>        
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label>@lang('Đến ngày') <small class="text-danger">*</small></label>
                                                         <input required type="date" name="service_detail[end_at]" class="form-control">
-                                                    </div>        
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div> 
-                                </div> 
-                            </div> 
-                        </div> 
-        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="box-footer">
                             <a href="{{ route(Request::segment(2) . '.index') }}">
                                 <button type="button" class="btn btn-sm btn-success">
@@ -218,6 +228,6 @@
 
 @section('script')
     <script>
-        
+
     </script>
 @endsection
