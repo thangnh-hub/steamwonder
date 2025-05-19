@@ -309,10 +309,7 @@
                                 <td>{{ $item['service']->name ?? '' }}</td>
                                 <td>{{ number_format($item['total_amount'] ?? 0, 0, ',', '.') }}</td>
                                 <td>
-                                    Từ:
-                                    {{ \Carbon\Carbon::parse($item['min_month'])->copy()->startOfMonth()->format('d/m/Y') ?? '' }}
-                                    -
-                                    {{ \Carbon\Carbon::parse($item['max_month'])->copy()->endOfMonth()->format('d/m/Y') ?? '' }}
+                                    Năm học: {{ \App\Helpers::getYear($item['min_month']) }}
                                 </td>
                             </tr>
                         @endforeach
@@ -363,10 +360,7 @@
                                 <td class="text-right">{{ number_format($item['total_amount'] ?? 0, 0, ',', '.') }}
                                 </td>
                                 <td>
-                                    Từ:
-                                    {{ \Carbon\Carbon::parse($item['min_month'])->copy()->startOfMonth()->format('d/m/Y') ?? '' }}
-                                    -
-                                    {{ \Carbon\Carbon::parse($item['max_month'])->copy()->endOfMonth()->format('d/m/Y') ?? '' }}
+
                                 </td>
                             </tr>
                         @endforeach
@@ -390,11 +384,22 @@
                                 <td>{{ $item['service']->name ?? '' }}</td>
                                 <td class="text-right">
                                     {{ number_format($item['total_discount_amount'] ?? 0, 0, ',', '.') }}</td>
-                                <td>{!! $item['note'] !!}</td>
-                            </tr>
-                        @endforeach
-                    @endif
-                    @php $i++; @endphp
+                                <td>
+                                    @if ($item['service_type'] == 'yearly')
+                                        Năm học: {{ \App\Helpers::getYear($item['min_month']) }}
+                                    @elseif ($item['service_type'] == 'monthly')
+                                        Từ:
+                                        {{ \Carbon\Carbon::parse($item['min_month'])->copy()->format('d/m/Y') ?? '' }}
+                                        -
+                                        {{ \Carbon\Carbon::parse($item['max_month'])->copy()->endOfMonth()->format('d/m/Y') ?? '' }}
+                                        {!! $item['note'] !!}
+                                </td>
+                        @endif
+
+                        </tr>
+                    @endforeach
+                @endif
+                @php $i++; @endphp
                 @endif
 
                 @if (

@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Support\Str;
 use Hashids\Hashids;
+use Carbon\Carbon;
 
 
 class Helpers
@@ -25,5 +26,17 @@ class Helpers
             }
         }
         return $result;
+    }
+
+    public static function getYear($day)
+    {
+        $parsedDay = Carbon::parse($day);
+        $year = (int) $parsedDay->year;
+        $month = (int)$parsedDay->month;
+        if ($month >= 1 && $month < 6) {
+            return ($year - 1) . ' - ' . $year;
+        } else {
+            return $year . ' - ' . ($year + 1);
+        }
     }
 }
