@@ -109,7 +109,6 @@ class StudentImport implements ToModel,WithHeadingRow
 
         $query->where('first_name', $firstName)->where('last_name', $lastName);
         $parent = $query->first();
-
         if ($parent) {
             // Nếu đã có, cập nhật lại
             $parent->update([

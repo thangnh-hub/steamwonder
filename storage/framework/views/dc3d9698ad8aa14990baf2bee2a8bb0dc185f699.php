@@ -153,6 +153,7 @@
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
+                                <th><?php echo app('translator')->get('STT'); ?></th>
                                 <th><?php echo app('translator')->get('Mã TBP'); ?></th>
                                 <th><?php echo app('translator')->get('Tên TBP'); ?></th>
                                 <th><?php echo app('translator')->get('Học sinh'); ?></th>
@@ -174,6 +175,10 @@
                         <tbody>
                             <?php $__currentLoopData = $rows; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr class="valign-middle">
+                                    <td>
+                                        <?php echo e($loop->index + 1); ?>
+
+                                    </td>
                                     <td>
                                         <strong style="font-size: 14px"><?php echo e($row->receipt_code ?? ''); ?></strong>
                                     </td>

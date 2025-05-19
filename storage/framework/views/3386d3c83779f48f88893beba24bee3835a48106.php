@@ -236,9 +236,9 @@
                                                                         <tr class="item_student"
                                                                             data-id="<?php echo e($item->id); ?>">
                                                                             <td><?php echo e($item->student_code); ?></td>
-                                                                            <td><?php echo e($item->last_name ?? ''); ?>
+                                                                            <td><?php echo e($item->first_name ?? ''); ?> <?php echo e($item->last_name ?? ''); ?>
 
-                                                                                <?php echo e($item->first_name ?? ''); ?></td>
+                                                                            </td>
                                                                             <td><?php echo e($item->nickname ?? ''); ?></td>
                                                                             <td><input type="date" class="form-control"
                                                                                     name="student[<?php echo e($item->id); ?>][start_at]"
