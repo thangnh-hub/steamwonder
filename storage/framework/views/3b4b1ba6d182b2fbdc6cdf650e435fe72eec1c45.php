@@ -46,10 +46,42 @@
             margin-bottom: 20px;
         }
 
+        .box_radio {
+            margin-bottom: 0px
+        }
+
+        .radiobox {
+            margin-top: 0px !important
+        }
+
         @media (max-width: 768px) {
             .box_content {
                 width: 100%;
             }
+        }
+
+        .camera-container {
+            position: relative;
+            width: 100%;
+            height: auto;
+            overflow: hidden;
+        }
+
+        #video {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            gap: 10px;
         }
     </style>
 <?php $__env->stopSection(); ?>
@@ -202,39 +234,41 @@
                                         </td>
                                         <td class="">
                                             <div class="d-flex mb-20">
-                                                <label class="box_radio" for="student_<?php echo e($row->student_id); ?>_checkin">
-                                                    Đi học
-                                                </label>
                                                 <input id="student_<?php echo e($row->student_id); ?>_checkin"
                                                     name="attendance[<?php echo e($row->student_id); ?>][status]"
                                                     <?php echo e(isset($row->attendance->status) && $row->attendance->status == 'checkin' ? 'checked disabled' : ''); ?>
 
-                                                    class="radiobox checkin" data-id="<?php echo e($row->student_id); ?>"
+                                                    class="radiobox mr-10 checkin" data-id="<?php echo e($row->student_id); ?>"
                                                     type="radio" value="checkin">
+                                                <label class="box_radio" for="student_<?php echo e($row->student_id); ?>_checkin">
+                                                    Đi học
+                                                </label>
                                             </div>
                                             <div class="d-flex mb-20">
-                                                <label class="box_radio"
-                                                    for="student_<?php echo e($row->student_id); ?>_absent_unexcused">
-                                                    Nghỉ không phép
-                                                </label>
                                                 <input id="student_<?php echo e($row->student_id); ?>_absent_unexcused"
                                                     name="attendance[<?php echo e($row->student_id); ?>][status]"
                                                     <?php echo e(isset($row->attendance->status) && $row->attendance->status == 'absent_unexcused' ? 'checked' : ''); ?>
 
-                                                    class="radiobox absent_unexcused" data-id="<?php echo e($row->student_id); ?>"
-                                                    type="radio" value="absent_unexcused">
+                                                    class="radiobox mr-10 absent_unexcused"
+                                                    data-id="<?php echo e($row->student_id); ?>" type="radio"
+                                                    value="absent_unexcused">
+                                                <label class="box_radio"
+                                                    for="student_<?php echo e($row->student_id); ?>_absent_unexcused">
+                                                    Nghỉ không phép
+                                                </label>
                                             </div>
                                             <div class="d-flex mb-20">
-                                                <label class="box_radio"
-                                                    for="student_<?php echo e($row->student_id); ?>_absent_excused">
-                                                    Nghỉ có phép
-                                                </label>
                                                 <input id="student_<?php echo e($row->student_id); ?>_absent_excused"
                                                     name="attendance[<?php echo e($row->student_id); ?>][status]"
                                                     <?php echo e(isset($row->attendance->status) && $row->attendance->status == 'absent_excused' ? 'checked' : ''); ?>
 
-                                                    class="radiobox absent_excused" data-id="<?php echo e($row->student_id); ?>"
-                                                    type="radio" value="absent_excused">
+                                                    class="radiobox mr-10 absent_excused"
+                                                    data-id="<?php echo e($row->student_id); ?>" type="radio"
+                                                    value="absent_excused">
+                                                <label class="box_radio"
+                                                    for="student_<?php echo e($row->student_id); ?>_absent_excused">
+                                                    Nghỉ có phép
+                                                </label>
                                             </div>
                                         </td>
                                         <td class="d-flex-wap content_<?php echo e($row->student_id); ?>">
@@ -306,14 +340,14 @@
                     <div class="modal-body show_detail_eduction">
                         <div class="row">
                             <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-                                <video id="video" autoplay style="width: 80%"></video>
+                                <video id="video" autoplay playsinline style="width: 80%"></video>
                                 <canvas id="canvas" style="display:none;"></canvas>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" id="front_camera" class="btn btn-primary full-left">Camera Trước</button>
-                        <button type="button" id="back_camera" class="btn btn-secondary full-left">Camera Sau</button>
+                        <button type="button" id="toggle_camera" class="btn btn-primary" style="display: none;">Đổi
+                            Camera</button>
                         <button type="button" id="capture" data-id="" class="btn btn-success">
                             <i class="fa fa-save"></i> <?php echo app('translator')->get('Chụp ảnh xác nhận'); ?>
                         </button>
@@ -330,11 +364,14 @@
     <script>
         var rows = <?php echo json_encode($rows, 15, 512) ?>;
         let videoStream = null; // Biến lưu trữ stream của camera
+        let currentFacingMode = "user"; // Chế độ camera mặc định: Camera trước
         $(document).ready(function() {
             const video = $('#video')[0];
             const canvas = $('#canvas')[0];
             const photo = $('#photo')[0];
             var noImage = <?php echo json_encode(url('themes/admin/img/no_image.jpg'), 15, 512) ?>;
+
+
             $(document).on('change', '.checkin', function(e) {
                 // Lấy id của học sinh từ thuộc tính data-id
                 var _student_id = $(this).attr('data-id');
@@ -343,32 +380,48 @@
                 $('.information_' + _student_id).find('.check_disable').prop('disabled', false);
                 // Xác định thiết bị di động
                 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
                 // Thiết lập facingMode dựa trên thiết bị
                 const facingMode = isMobile ? {
                     exact: "environment"
                 } : "user"; // Mobile: Camera sau, Desktop: Camera trước
-
                 // Bật camera
+                checkCameraAvailability();
                 startCamera(facingMode)
             });
-            // Nút chọn camera trước
-            $('#front_camera').on('click', function() {
-                startCamera("user");
+
+            // Nút đổi camera
+            $('#toggle_camera').on('click', function() {
+                const newFacingMode = currentFacingMode === "user" ? {
+                    exact: "environment"
+                } : "user";
+                startCamera(newFacingMode);
             });
 
-            // Nút chọn camera sau
-            $('#back_camera').on('click', function() {
-                startCamera({
-                    exact: "environment"
-                });
-            });
-            // Bật camera với facingMode
+            // Kiểm tra danh sách camera
+            function checkCameraAvailability() {
+                return navigator.mediaDevices.enumerateDevices()
+                    .then(devices => {
+                        const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                        if (videoDevices.length > 1) {
+                            // Hiển thị nút "Đổi Camera" nếu có nhiều hơn 1 camera
+                            $('#toggle_camera').show();
+                        } else {
+                            // Ẩn nút "Đổi Camera" nếu chỉ có 1 camera
+                            $('#toggle_camera').hide();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi khi kiểm tra camera:', error);
+                        $('#toggle_camera').hide(); // Ẩn nút nếu không thể kiểm tra
+                    });
+            }
+            // Bật camera
             function startCamera(facingMode) {
                 // Tắt camera hiện tại nếu có
                 if (videoStream) {
                     videoStream.getTracks().forEach(track => track.stop());
                 }
+
                 navigator.mediaDevices.getUserMedia({
                         video: {
                             facingMode: facingMode
@@ -378,6 +431,7 @@
                         videoStream = stream; // Lưu stream
                         const video = document.querySelector('#video');
                         video.srcObject = stream;
+                        currentFacingMode = facingMode; // Cập nhật chế độ hiện tại
                     })
                     .catch(error => {
                         alert('Không thể truy cập camera: ' + error.message);
@@ -412,6 +466,7 @@
                     videoStream.getTracks().forEach(track => track.stop());
                     videoStream = null; // Xóa stream để giải phóng bộ nhớ
                 }
+                $('#toggle_camera').hide();
                 // Xóa nội dung video nếu cần
                 const video = document.querySelector('#video');
                 if (video) {
