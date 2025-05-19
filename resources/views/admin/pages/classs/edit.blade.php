@@ -237,8 +237,8 @@
                                                                         <tr class="item_student"
                                                                             data-id="{{ $item->id }}">
                                                                             <td>{{ $item->student_code }}</td>
-                                                                            <td>{{ $item->last_name ?? '' }}
-                                                                                {{ $item->first_name ?? '' }}</td>
+                                                                            <td>{{ $item->first_name ?? '' }} {{ $item->last_name ?? '' }}
+                                                                            </td>
                                                                             <td>{{ $item->nickname ?? '' }}</td>
                                                                             <td><input type="date" class="form-control"
                                                                                     name="student[{{ $item->id }}][start_at]"

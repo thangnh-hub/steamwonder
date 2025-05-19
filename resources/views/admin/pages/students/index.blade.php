@@ -220,11 +220,7 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <a target="_blank" class="btn btn-sm" data-toggle="tooltip"
-                                                    title="@lang('Xem chi tiết')" data-original-title="@lang('Xem chi tiết')"
-                                                    href="{{ route(Request::segment(2) . '.show', $row->id) }}">
-                                                    <i class="fa fa-eye"></i> {{ $row->student_code }}
-                                                </a>
+                                                   {{ $row->student_code }}
                                             </td>
                                             <td>
                                                 {{ $row->first_name ?? '' }} {{ $row->last_name ?? '' }}
@@ -254,6 +250,12 @@
                                             </td>
 
                                             <td>
+                                                <a class="btn btn-sm btn-primary" href="{{ route(Request::segment(2) . '.show', $row->id) }}"
+                                                    data-toggle="tooltip" title="@lang('Chi tiết học sinh')"
+                                                    data-original-title="@lang('Chi tiết học sinh')"
+                                                    onclick="return openCenteredPopup(this.href)">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
                                                 <a class="btn btn-sm btn-warning" data-toggle="tooltip"
                                                     title="@lang('Update')" data-original-title="@lang('Update')"
                                                     href="{{ route(Request::segment(2) . '.edit', $row->id) }}">

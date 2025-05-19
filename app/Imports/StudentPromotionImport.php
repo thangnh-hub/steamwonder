@@ -90,8 +90,6 @@ class StudentPromotionImport implements ToCollection
                     continue;
                 }
 
-
-
                 $student_promotion = StudentPromotion::where('student_id', $student->id)->where('promotion_id', trim($row[4]))->first();
                 if (!empty($student_promotion)) {
                     $this->rowError++;

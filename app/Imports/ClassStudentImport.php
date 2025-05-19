@@ -92,10 +92,10 @@ class ClassStudentImport implements ToCollection
                     ]);
                 }
                 // Kiểm tra lớp học và tạo mới nếu chưa có
-                $class = tbClass::where('name', 'like', '%' . $row[7] . '%')->first();
+                $class = tbClass::where('name', 'like', '%' . $row[7] . '%')->where('area_id',13)->first();
                 if (empty($class)) {
                     $class = tbClass::create([
-                        'area_id' => 1,
+                        'area_id' => 13,
                         'code' => trim($row[7]),
                         'name' => trim($row[7]),
                         'slot' => '40',
@@ -120,6 +120,9 @@ class ClassStudentImport implements ToCollection
                             'admin_created_id' => Auth::guard('admin')->user()->id,
                         ]);
                     }
+                    $student->update([
+                        'current_class_id' => $class->id,
+                    ]);
                 }
                 $this->rowInsert++;
                 continue;
