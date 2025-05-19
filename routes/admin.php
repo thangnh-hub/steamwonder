@@ -101,6 +101,7 @@ Route::group(['namespace' => 'Admin'], function () {
                 'relationships' => 'RelationshipController',
                 'service_categorys' => 'ServiceCategoryController',
                 'services' => 'ServiceController',
+                'service_config' => 'ServiceConfigController',
                 // End for SteamWonder
                 'education_ages' => 'EducationAgesController',
                 'education_programs' => 'EducationProgramsController',
