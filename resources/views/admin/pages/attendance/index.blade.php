@@ -341,10 +341,11 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" id="toggle_camera" class="btn btn-primary" style="display: none;">Đổi
+                        <button type="button" id="toggle_camera" class="btn btn-primary" style="display: none;">
+                            <i class="fa fa-fa fa-refresh"></i>Đổi
                             Camera</button>
                         <button type="button" id="capture" data-id="" class="btn btn-success">
-                            <i class="fa fa-save"></i> @lang('Chụp ảnh xác nhận')
+                            <i class="fa fa-camera"></i> @lang('Chụp ảnh xác nhận')
                         </button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">
                             <i class="fa fa-remove"></i> @lang('Close')
