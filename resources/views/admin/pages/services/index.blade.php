@@ -30,8 +30,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>@lang('Keyword')</label>
-                                <input type="text" class="form-control" name="keyword"
-                                    placeholder="@lang('keyword_note')"
+                                <input type="text" class="form-control" name="keyword" placeholder="@lang('keyword_note')"
                                     value="{{ $params['keyword'] ?? '' }}">
                             </div>
                         </div>
@@ -70,7 +69,7 @@
                                     @foreach ($list_is_attendance as $key => $item)
                                         <option value="{{ $key }}"
                                             {{ isset($params['is_attendance']) && $params['is_attendance'] == $key ? 'selected' : '' }}>
-                                            {{ $item}}</option>
+                                            {{ $item }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -83,7 +82,7 @@
                                     @foreach ($list_is_default as $key => $item)
                                         <option value="{{ $key }}"
                                             {{ isset($params['is_default']) && $params['is_default'] == $key ? 'selected' : '' }}>
-                                            {{ $item}}</option>
+                                            {{ $item }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -181,6 +180,7 @@
                                 <th>@lang('Status')</th>
                                 <th>@lang('Sắp xếp')</th>
                                 <th>@lang('Biểu phí')</th>
+                                <th>@lang('Kiểu tính phí')</th>
                                 <th>@lang('Action')</th>
                             </tr>
                         </thead>
@@ -188,32 +188,41 @@
                             @foreach ($rows as $row)
                                 <tr>
                                     <td>{{ $loop->iteration + ($rows->currentPage() - 1) * $rows->perPage() }}</td>
-                                    <td>{{ $row->area->name ?? "" }}</td>
-                                    <td>{{ $row->name ?? "" }}</td>
-                                    <td>{{ $row->service_category->name ?? "" }}</td>
-                                    <td>{{ $row->education_program->name ?? "" }}</td>
-                                    <td>{{ $row->education_age->name ?? "" }}</td>
-                                    <td>{{ $row->is_attendance== 0 ? "Không theo điểm danh" : "Tính theo điểm danh" }}</td>
-                                    <td>{{ __($row->service_type??"") }}</td>
+                                    <td>{{ $row->area->name ?? '' }}</td>
+                                    <td>{{ $row->name ?? '' }}</td>
+                                    <td>{{ $row->service_category->name ?? '' }}</td>
+                                    <td>{{ $row->education_program->name ?? '' }}</td>
+                                    <td>{{ $row->education_age->name ?? '' }}</td>
+                                    <td>{{ $row->is_attendance == 0 ? 'Không theo điểm danh' : 'Tính theo điểm danh' }}</td>
+                                    <td>{{ __($row->service_type ?? '') }}</td>
                                     <td>@lang($row->status)</td>
                                     <td>
-                                        {{ $row->iorder ?? "" }}
+                                        {{ $row->iorder ?? '' }}
                                     </td>
                                     <td>
-                                        @if(isset($row->serviceDetail) && $row->serviceDetail->count() > 0)
-                                        @foreach ($row->serviceDetail as $detail)
-                                        <ul>
-                                            <li>Số tiền: {{ isset($detail->price) && is_numeric($detail->price) ? number_format($detail->price, 0, ',', '.') . ' đ' : '' }}</li>
-                                            <li>Số lượng: {{ $detail->quantity ?? '' }}</li>
-                                            <li>Từ: {{ (isset($detail->start_at) ? \Illuminate\Support\Carbon::parse($detail->start_at)->format('d-m-Y') : '') }}</li>
-                                            <li>Đến: {{ (isset($detail->end_at) ? \Illuminate\Support\Carbon::parse($detail->end_at)->format('d-m-Y') : '') }}</li>
-                                        </ul>
-                                        @endforeach
-
+                                        @if (isset($row->serviceDetail) && $row->serviceDetail->count() > 0)
+                                            @foreach ($row->serviceDetail as $detail)
+                                                <ul>
+                                                    <li>Số tiền:
+                                                        {{ isset($detail->price) && is_numeric($detail->price) ? number_format($detail->price, 0, ',', '.') . ' đ' : '' }}
+                                                    </li>
+                                                    <li>Số lượng: {{ $detail->quantity ?? '' }}</li>
+                                                    <li>Từ:
+                                                        {{ isset($detail->start_at) ? \Illuminate\Support\Carbon::parse($detail->start_at)->format('d-m-Y') : '' }}
+                                                    </li>
+                                                    <li>Đến:
+                                                        {{ isset($detail->end_at) ? \Illuminate\Support\Carbon::parse($detail->end_at)->format('d-m-Y') : '' }}
+                                                    </li>
+                                                </ul>
+                                            @endforeach
                                         @endif
                                     </td>
                                     <td>
-                                        <a class="btn btn-sm btn-warning" href="{{ route($routeDefault . '.edit', $row->id) }}">
+                                        {{ __($row->service_fee ?? '') }}
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-sm btn-warning"
+                                            href="{{ route($routeDefault . '.edit', $row->id) }}">
                                             <i class="fa fa-pencil-square-o"></i>
                                         </a>
 

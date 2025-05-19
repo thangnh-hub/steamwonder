@@ -15,6 +15,7 @@ class CreateTbServiceConfigTable extends Migration
     {
         Schema::create('tb_service_config', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('area_id')->nullable()->constrained('tb_areas');
             $table->string('type', 255)->comment('Kiểu phí áp dụng: Trông muộn(late_fee) - Trông thứ 7(saturday_fee) - Dịch vụ bán trú(boarding_fee)');
             $table->dateTime('time_start')->nullable()->comment('Ngày bắt đầu khả dụng');
             $table->dateTime('time_end')->nullable()->comment('Ngày kết thúc khả dụng');

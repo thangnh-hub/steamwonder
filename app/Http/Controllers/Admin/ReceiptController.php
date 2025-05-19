@@ -201,8 +201,7 @@ class ReceiptController extends Controller
         $this->responseData['detail'] = $receipt;
 
         $receiptDetails = $receipt->receiptDetail->load('services_receipt'); // Nạp quan hệ service
-
-        // Gộp các receiptDetail theo service_id và tính tổng amount và discount_amount, và gộp các ghi chú
+        // Gộp các receiptDetail theo service_id và tính tổng amount và discount_amount
         $groupDetails = $receiptDetails->groupBy('service_id')->map(function ($details) {
             return [
                 'service' => optional($details->first()->services_receipt),
@@ -211,10 +210,10 @@ class ReceiptController extends Controller
                 'total_discount_amount' => $details->sum('discount_amount'), // Tính tổng discount_amount
                 'min_month' => $details->min('month'), // Tháng áp dụng nhỏ nhất
                 'max_month' => $details->max('month'), // Tháng áp dụng lớn nhất
-                'note' => $details->pluck('note')->filter()->unique()->implode('</br> '),
             ];
         });
-        // Gộp theo service_type và tính tổng total_amount
+
+        // Gộp theo service_type (Tháng năm, ... ) và tính tổng total_amount
         $groupByServiceType = $groupDetails->groupBy('service_type')->map(function ($details, $serviceType) {
             return [
                 'service_type' => $serviceType, // Loại dịch vụ
@@ -222,11 +221,30 @@ class ReceiptController extends Controller
                 'services' => $details, // Chi tiết từng nhóm dịch vụ
             ];
         });
-        // Lấy thông tin giảm trừ
-        $listServiceDiscount = $groupDetails
+
+
+        // Gộp để lấy dịch vụ theo từng loại và ghi chú khác nhau để tính Discount
+        $groupDetailsNote = $receiptDetails->groupBy(function ($detail) {
+            return $detail->service_id . '-' . $detail->note; // Gộp theo service_id và note
+        })->map(function ($details) {
+            return [
+                'service' => optional($details->first()->services_receipt),
+                'service_type' => optional($details->first()->services_receipt)->service_type, // Lấy service_type từ quan hệ service
+                'total_amount' => $details->sum('amount'), // Tính tổng amount
+                'total_discount_amount' => $details->sum('discount_amount'), // Tính tổng discount_amount
+                'min_month' => $details->min('month'), // Tháng áp dụng nhỏ nhất
+                'max_month' => $details->max('month'), // Tháng áp dụng lớn nhất
+                'note' => $details->first()->note, // Lấy ghi chú từ chi tiết đầu tiên
+            ];
+        });
+
+        // Lấy thông tin giảm trừ có total_discount_amount > 0
+        $listServiceDiscount = $groupDetailsNote
             ->filter(function ($detail) {
                 return $detail['total_discount_amount'] > 0; // Lọc các dịch vụ có discount_amount > 0
             });
+
+// dd($listServiceDiscount);
         $serviceMonthly = $groupByServiceType->get('monthly', collect()); // Dịch vụ loại monthly
         $serviceYearly = $groupByServiceType->get('yearly', collect()); // Dịch vụ loại monthly
         // Lấy các loại còn lại ngoài monthly và yearly
@@ -283,7 +301,6 @@ class ReceiptController extends Controller
                 $studentService = StudentService::find($student_services_id);
                 $studentService->payment_cycle_id = $item['payment_cycle_id'];
                 $studentService->save();
-
             }
             // Lấy thông tin dịch vụ của học sinh
             $data['student_services'] = $student->studentServices()

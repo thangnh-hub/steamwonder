@@ -1,3 +1,6 @@
+
+
+
 <?php $__env->startSection('title'); ?>
     <?php echo app('translator')->get($module_name); ?>
 <?php $__env->stopSection(); ?>
@@ -495,7 +498,6 @@
                                     <!-- TAB 4: Biên lai thu phí -->
                                     <div class="tab-pane" id="tab_4">
                                         <div class="box-body ">
-                                            
                                             <table class="table table-hover table-bordered">
                                                 <thead>
                                                     <tr>
