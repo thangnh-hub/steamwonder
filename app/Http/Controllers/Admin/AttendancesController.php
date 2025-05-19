@@ -191,4 +191,13 @@ class AttendancesController extends Controller
     {
         //
     }
+
+    public function attendanceSummaryByMonth(Request $request, $id)
+    {
+        $params = $request->only(['class_id', 'area_id', 'month', 'year']);
+        $date = '2025-05-19';
+        $carbonDate = Carbon::parse($date);
+        dd($carbonDate->daysInMonth);
+        return $this->responseView($this->viewPart . '.attendance_summary_by_month');
+    }
 }

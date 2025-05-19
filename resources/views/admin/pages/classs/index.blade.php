@@ -236,7 +236,8 @@
 
                                         <a class="btn btn-sm btn-primary" data-toggle="tooltip" target="_blank"
                                             title="@lang('Điểm danh')" data-original-title="@lang('Điểm danh')"
-                                            href="{{ route('attendance.index',['class_id'=>$row->id,'tracked_at'=>date('Y-m-d')]) }}">
+                                            href="{{ route('attendance.index',['class_id'=>$row->id,'tracked_at'=>date('Y-m-d')]) }}"
+                                            onclick="return openCenteredPopup(this.href)">
                                             <i class="fa fa-calendar-check-o"></i>
                                         </a>
                                         <button class="btn btn-sm btn-success btn_show_detail" data-toggle="tooltip"
