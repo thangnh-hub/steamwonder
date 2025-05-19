@@ -326,7 +326,21 @@ class ReceiptService
                 }
                 $start = $deduction->json_params->condition->start ?? null;
                 $end = $deduction->json_params->condition->end ?? null;
-                if ($compare >= $start && ($end === null || $compare <= $end)) {
+                // Trường hợp này là tháng bắt đầu lại lớn hơn tháng kết thúc => cần check theo <= 12
+                // Ở đây hiện tại chỉ xử lý với điều kiện là tháng nhập học
+                if ($start > $end) {
+                    if (($start <= $compare && $compare <= 12) || ($compare >= 1 && $compare <= $end)) {
+                        $deduction_value = $deduction->json_params->services->{$service_info['id']}->value ?? 0;
+                        $deduction_type = $deduction->json_params->services->{$service_info['id']}->type ?? null;
+                        if ($deduction_type == Consts::TYPE_POLICIES['percent']) {
+                            $discount_notes[] = "Giảm trừ {$deduction->name} giảm ({$deduction_value}%)";
+                            $amount_after_discount = $amount_after_discount - $amount_after_discount * ($deduction_value / 100);
+                        } else if ($deduction_type == Consts::TYPE_POLICIES['fixed_amount']) {
+                            $discount_notes[] = "Giảm trừ {$deduction->name} giảm (" . number_format($deduction_value) . "đ)";
+                            $amount_after_discount = $amount_after_discount - $deduction_value;
+                        }
+                    }
+                } else if ($compare >= $start && ($end === null || $compare <= $end)) {
                     $deduction_value = $deduction->json_params->services->{$service_info['id']}->value ?? 0;
                     $deduction_type = $deduction->json_params->services->{$service_info['id']}->type ?? null;
                     if ($deduction_type == Consts::TYPE_POLICIES['percent']) {
@@ -741,7 +755,7 @@ class ReceiptService
                         });
                         $service_info['price'] = $matchedDetailMonth['price'] ?? $service_info['price'];
                         $service_info['quantity'] = $matchedDetailMonth['quantity'] ?? $service_info['quantity'];
-                        
+
                         $discount_amount = $this->calculateDiscountSummer($service_info, $cycle, $policies, $promotions, $deductions, null, $month);
                         $details[] = [
                             'service_id' => $service->id,
