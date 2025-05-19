@@ -159,6 +159,7 @@ class AdmissionStudentController extends Controller
         $studentServiceIds = $student->studentServices()->where('status', 'active')->pluck('service_id')->toArray();
         $params_service['status'] = Consts::STATUS_ACTIVE;
         $params_service['different_id'] = $studentServiceIds;
+        $params_service['area_id'] = $student->area_id;
         $this->responseData['unregisteredServices'] =  Service::getSqlService($params_service)->get();
         //danh sách mqh
         $this->responseData['list_relationship'] = Relationship::getSqlRelationship($params_active)->get();

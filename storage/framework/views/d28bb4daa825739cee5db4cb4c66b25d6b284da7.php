@@ -12,11 +12,7 @@
                     class="fa fa-plus"></i> <?php echo app('translator')->get('Add'); ?></a>
 
             
-            <div class="pull-right" style="display: flex; margin-left:15px ">
-                <input class="form-control" type="file" name="files" id="fileImport" placeholder="<?php echo app('translator')->get('Select File'); ?>">
-                <button type="button" class="btn btn-sm btn-success" onclick="importFile()">
-                    <i class="fa fa-file-excel-o"></i>
-                    <?php echo app('translator')->get('Import dữ liệu'); ?></button>
+            
             </div>
         </h1>
 
@@ -219,7 +215,7 @@
                                         <div class="sw_featured d-flex-al-center">
                                             <label class="switch">
                                                 <input class="" type="checkbox" value="1" disabled
-                                                    <?php echo e(isset($detail->is_lastyear) && $detail->is_lastyear == '1' ? 'checked' : ''); ?>>
+                                                    <?php echo e(isset($row->is_lastyear) && $row->is_lastyear == '1' ? 'checked' : ''); ?>>
                                                 <span class="slider round"></span>
                                             </label>
                                         </div>
@@ -241,14 +237,20 @@
 
                                     </td>
                                     <td style="width:150px">
+
+                                        <a class="btn btn-sm btn-primary" data-toggle="tooltip" target="_blank"
+                                            title="<?php echo app('translator')->get('Điểm danh'); ?>" data-original-title="<?php echo app('translator')->get('Điểm danh'); ?>"
+                                            href="<?php echo e(route('attendance.index',['class_id'=>$row->id,'tracked_at'=>date('Y-m-d')])); ?>">
+                                            <i class="fa fa-calendar-check-o"></i>
+                                        </a>
                                         <button class="btn btn-sm btn-success btn_show_detail" data-toggle="tooltip"
                                             data-id="<?php echo e($row->id); ?>"
                                             data-url="<?php echo e(route(Request::segment(2) . '.show', $row->id)); ?>"
-                                            title="<?php echo app('translator')->get('Show'); ?>" data-original-title="<?php echo app('translator')->get('Show'); ?>">
+                                            title="<?php echo app('translator')->get('Chi tiết'); ?>" data-original-title="<?php echo app('translator')->get('Chi tiết'); ?>">
                                             <i class="fa fa-eye"></i>
                                         </button>
                                         <a class="btn btn-sm btn-warning" data-toggle="tooltip"
-                                            title="<?php echo app('translator')->get('Update'); ?>" data-original-title="<?php echo app('translator')->get('Update'); ?>"
+                                            title="<?php echo app('translator')->get('Chỉnh sửa'); ?>" data-original-title="<?php echo app('translator')->get('Chỉnh sửa'); ?>"
                                             href="<?php echo e(route(Request::segment(2) . '.edit', $row->id)); ?>">
                                             <i class="fa fa-pencil-square-o"></i>
                                         </a>
