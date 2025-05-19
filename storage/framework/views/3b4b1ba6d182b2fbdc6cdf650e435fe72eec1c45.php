@@ -37,6 +37,15 @@
         .box_content {
             width: calc(100% - 200px);
         }
+
+        .d-flex {
+            display: flex;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
         @media (max-width: 768px) {
             .box_content {
                 width: 100%;
@@ -73,13 +82,7 @@
             <form action="<?php echo e(route(Request::segment(2) . '.index')); ?>" method="GET">
                 <div class="box-body">
                     <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Keyword'); ?> </label>
-                                <input type="text" class="form-control" name="keyword" placeholder="<?php echo app('translator')->get('Lọc theo mã học viên, họ tên hoặc email'); ?>"
-                                    value="<?php echo e(isset($params['keyword']) ? $params['keyword'] : ''); ?>">
-                            </div>
-                        </div>
+
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Area'); ?></label>
@@ -113,7 +116,13 @@
                                     value="<?php echo e(isset($params['tracked_at']) && $params['tracked_at'] != '' ? $params['tracked_at'] : date('Y-m-d', time())); ?>">
                             </div>
                         </div>
-
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label><?php echo app('translator')->get('Keyword'); ?> </label>
+                                <input type="text" class="form-control" name="keyword" placeholder="<?php echo app('translator')->get('Lọc theo mã học viên, họ tên hoặc email'); ?>"
+                                    value="<?php echo e(isset($params['keyword']) ? $params['keyword'] : ''); ?>">
+                            </div>
+                        </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Lấy điểm'); ?></label>
@@ -172,60 +181,61 @@
                         <table class="table table-hover table-bordered">
                             <thead>
                                 <tr>
-                                    <th class="text-center" rowspan="2"><?php echo app('translator')->get('STT'); ?></th>
-                                    <th class="text-center" rowspan="2"><?php echo app('translator')->get('Mã học sinh'); ?></th>
-                                    <th class="text-center" rowspan="2"><?php echo app('translator')->get('Tên học sinh'); ?></th>
-                                    <th class="text-center" rowspan="2"><?php echo app('translator')->get('Nickname'); ?></th>
-                                    <th class="text-center" rowspan="2"><?php echo app('translator')->get('Đi học'); ?></th>
-                                    <th class="text-center" colspan="2"><?php echo app('translator')->get('Nghỉ học'); ?></th>
+                                    
+                                    <th class="text-center" rowspan="2"><?php echo app('translator')->get('Thông tin học sinh'); ?></th>
+                                    <th class="text-center" rowspan="2"><?php echo app('translator')->get('Điểm danh'); ?></th>
+
                                     <th class="text-center" rowspan="2"><?php echo app('translator')->get('Nội dung Đưa/Đón'); ?></th>
                                     <th class="text-center" rowspan="2"><?php echo app('translator')->get('Hành động'); ?></th>
-                                </tr>
-                                <tr>
-
-                                    <th class="text-center"><?php echo app('translator')->get('Không phép'); ?></th>
-                                    <th class="text-center"><?php echo app('translator')->get('Có phép'); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php $__currentLoopData = $rows; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <tr>
-                                        <td class="text-center"><?php echo e($loop->index + 1); ?></td>
-                                        <td><?php echo e($row->student->student_code ?? ''); ?></td>
-                                        <td class="text-center"><?php echo e($row->student->first_name ?? ''); ?>
+                                        
+                                        <td>
+                                            <p>Mã HS: <?php echo e($row->student->student_code ?? ''); ?></p>
+                                            <p>Họ tên: <?php echo e($row->student->first_name ?? ''); ?>
 
-                                            <?php echo e($row->student->last_name ?? ''); ?></td>
-                                        <td><?php echo e($row->student->nickname ?? ''); ?></td>
-                                        <td class="text-center">
-                                            <label class="box_radio" for="student_<?php echo e($row->student_id); ?>_checkin">
+                                                <?php echo e($row->student->last_name ?? ''); ?></p>
+                                            <p>Nickname: <?php echo e($row->student->nickname ?? ''); ?></p>
+                                        </td>
+                                        <td class="">
+                                            <div class="d-flex mb-20">
+                                                <label class="box_radio" for="student_<?php echo e($row->student_id); ?>_checkin">
+                                                    Đi học
+                                                </label>
                                                 <input id="student_<?php echo e($row->student_id); ?>_checkin"
                                                     name="attendance[<?php echo e($row->student_id); ?>][status]"
                                                     <?php echo e(isset($row->attendance->status) && $row->attendance->status == 'checkin' ? 'checked disabled' : ''); ?>
 
                                                     class="radiobox checkin" data-id="<?php echo e($row->student_id); ?>"
                                                     type="radio" value="checkin">
-                                            </label>
-                                        </td>
-                                        <td class="text-center">
-                                            <label class="box_radio"
-                                                for="student_<?php echo e($row->student_id); ?>_absent_unexcused">
+                                            </div>
+                                            <div class="d-flex mb-20">
+                                                <label class="box_radio"
+                                                    for="student_<?php echo e($row->student_id); ?>_absent_unexcused">
+                                                    Nghỉ không phép
+                                                </label>
                                                 <input id="student_<?php echo e($row->student_id); ?>_absent_unexcused"
                                                     name="attendance[<?php echo e($row->student_id); ?>][status]"
                                                     <?php echo e(isset($row->attendance->status) && $row->attendance->status == 'absent_unexcused' ? 'checked' : ''); ?>
 
                                                     class="radiobox absent_unexcused" data-id="<?php echo e($row->student_id); ?>"
                                                     type="radio" value="absent_unexcused">
-                                            </label>
-                                        </td>
-                                        <td class="text-center">
-                                            <label class="box_radio" for="student_<?php echo e($row->student_id); ?>_absent_excused">
+                                            </div>
+                                            <div class="d-flex mb-20">
+                                                <label class="box_radio"
+                                                    for="student_<?php echo e($row->student_id); ?>_absent_excused">
+                                                    Nghỉ có phép
+                                                </label>
                                                 <input id="student_<?php echo e($row->student_id); ?>_absent_excused"
                                                     name="attendance[<?php echo e($row->student_id); ?>][status]"
                                                     <?php echo e(isset($row->attendance->status) && $row->attendance->status == 'absent_excused' ? 'checked' : ''); ?>
 
                                                     class="radiobox absent_excused" data-id="<?php echo e($row->student_id); ?>"
                                                     type="radio" value="absent_excused">
-                                            </label>
+                                            </div>
                                         </td>
                                         <td class="d-flex-wap content_<?php echo e($row->student_id); ?>">
                                             <div class="box_image">
@@ -302,6 +312,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <button type="button" id="front_camera" class="btn btn-primary full-left">Camera Trước</button>
+                        <button type="button" id="back_camera" class="btn btn-secondary full-left">Camera Sau</button>
                         <button type="button" id="capture" data-id="" class="btn btn-success">
                             <i class="fa fa-save"></i> <?php echo app('translator')->get('Chụp ảnh xác nhận'); ?>
                         </button>
@@ -323,26 +335,55 @@
             const canvas = $('#canvas')[0];
             const photo = $('#photo')[0];
             var noImage = <?php echo json_encode(url('themes/admin/img/no_image.jpg'), 15, 512) ?>;
-
             $(document).on('change', '.checkin', function(e) {
                 // Lấy id của học sinh từ thuộc tính data-id
                 var _student_id = $(this).attr('data-id');
                 $('#capture').attr('data-id', _student_id);
                 $('#modal_camera').modal('show');
                 $('.information_' + _student_id).find('.check_disable').prop('disabled', false);
+                // Xác định thiết bị di động
+                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+                // Thiết lập facingMode dựa trên thiết bị
+                const facingMode = isMobile ? {
+                    exact: "environment"
+                } : "user"; // Mobile: Camera sau, Desktop: Camera trước
+
                 // Bật camera
+                startCamera(facingMode)
+            });
+            // Nút chọn camera trước
+            $('#front_camera').on('click', function() {
+                startCamera("user");
+            });
+
+            // Nút chọn camera sau
+            $('#back_camera').on('click', function() {
+                startCamera({
+                    exact: "environment"
+                });
+            });
+            // Bật camera với facingMode
+            function startCamera(facingMode) {
+                // Tắt camera hiện tại nếu có
+                if (videoStream) {
+                    videoStream.getTracks().forEach(track => track.stop());
+                }
                 navigator.mediaDevices.getUserMedia({
-                        video: true
+                        video: {
+                            facingMode: facingMode
+                        }
                     })
                     .then(stream => {
-                        videoStream = stream; // Lưu stream để sử dụng sau
+                        videoStream = stream; // Lưu stream
                         const video = document.querySelector('#video');
                         video.srcObject = stream;
                     })
                     .catch(error => {
-                        alert.error('Không thể truy cập camera:', error);
+                        alert('Không thể truy cập camera: ' + error.message);
                     });
-            });
+            }
+
             // Chụp ảnh
             $(document).on('click', '#capture', function() {
                 var _id = $(this).attr('data-id');
@@ -362,9 +403,10 @@
                 $('.photo_' + _id).attr('src', noImage);
                 $('.img_' + _id).val('');
             })
+
+
             // Khi tắt modal thì tắt cam
             $(document).on('hidden.bs.modal', '#modal_camera', function() {
-                $('.checkin').prop('checked', false);
                 if (videoStream) {
                     // Dừng tất cả các track video
                     videoStream.getTracks().forEach(track => track.stop());
@@ -374,6 +416,11 @@
                 const video = document.querySelector('#video');
                 if (video) {
                     video.srcObject = null;
+                }
+                // Bỏ checked trạng thái điểm danh nếu chưa chụp ảnh
+                var _id = $('#capture').attr('data-id');
+                if ($('.photo_' + _id).attr('src') == noImage) {
+                    $('#student_' + _id + '_checkin').prop('checked', false);
                 }
             });
 
