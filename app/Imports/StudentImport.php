@@ -95,10 +95,20 @@ class StudentImport implements ToModel,WithHeadingRow
         $lastName = array_pop($nameParts); // Tên riêng
         $firstName = implode(' ', $nameParts); // Họ + tên đệm
 
-        // Tìm parent theo phone hoặc email
-        $parent = tbParent::where('phone', $phone)
-        ->orWhere('email', $email)
-        ->first();
+        // Tìm kiếm phụ huynh theo số điện thoại hoặc email
+        // Nếu không có số điện thoại và email thì không tìm kiếm
+        $query = tbParent::query();
+        $query->where(function ($q) use ($phone, $email) {
+            if (!empty($phone)) {
+                $q->orWhere('phone', $phone);
+            }
+            if (!empty($email)) {
+                $q->orWhere('email', $email);
+            }
+        });
+
+        $query->where('first_name', $firstName)->where('last_name', $lastName);
+        $parent = $query->first();
 
         if ($parent) {
             // Nếu đã có, cập nhật lại

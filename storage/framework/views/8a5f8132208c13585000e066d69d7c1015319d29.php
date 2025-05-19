@@ -100,21 +100,21 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label><?php echo app('translator')->get('Số CMND/CCCD'); ?> <small class="text-red">*</small></label>
-                                            <input type="text" class="form-control" name="identity_card" value="<?php echo e(old('identity_card', $detail->identity_card)); ?>" required>
+                                            <input type="text" class="form-control" name="identity_card" value="<?php echo e(old('identity_card', $detail->identity_card)); ?>" >
                                         </div>
                                     </div>
 
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label><?php echo app('translator')->get('Số điện thoại'); ?><small class="text-red">*</small></label>
-                                            <input type="text" class="form-control" name="phone" value="<?php echo e(old('phone', $detail->phone)); ?>" required>
+                                            <input type="text" class="form-control" name="phone" value="<?php echo e(old('phone', $detail->phone)); ?>" >
                                         </div>
                                     </div>
 
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label><?php echo app('translator')->get('Email'); ?><small class="text-red">*</small></label>
-                                            <input type="email" class="form-control" name="email" value="<?php echo e(old('email', $detail->email)); ?>" required>
+                                            <input type="email" class="form-control" name="email" value="<?php echo e(old('email', $detail->email)); ?>" >
                                         </div>
                                     </div>
 
