@@ -115,8 +115,7 @@
             </div>
             <form action="{{ route(Request::segment(2) . '.index') }}" method="GET">
                 <div class="box-body">
-                    <div class="row">
-
+                    <div class="d-flex-wap">
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>@lang('Area')</label>
