@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title'); ?>
     <?php echo app('translator')->get($module_name); ?>
 <?php $__env->stopSection(); ?>
@@ -30,8 +28,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Keyword'); ?></label>
-                                <input type="text" class="form-control" name="keyword"
-                                    placeholder="<?php echo app('translator')->get('keyword_note'); ?>"
+                                <input type="text" class="form-control" name="keyword" placeholder="<?php echo app('translator')->get('keyword_note'); ?>"
                                     value="<?php echo e($params['keyword'] ?? ''); ?>">
                             </div>
                         </div>
@@ -183,6 +180,7 @@
                                 <th><?php echo app('translator')->get('Status'); ?></th>
                                 <th><?php echo app('translator')->get('Sắp xếp'); ?></th>
                                 <th><?php echo app('translator')->get('Biểu phí'); ?></th>
+                                <th><?php echo app('translator')->get('Kiểu tính phí'); ?></th>
                                 <th><?php echo app('translator')->get('Action'); ?></th>
                             </tr>
                         </thead>
@@ -190,33 +188,46 @@
                             <?php $__currentLoopData = $rows; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr>
                                     <td><?php echo e($loop->iteration + ($rows->currentPage() - 1) * $rows->perPage()); ?></td>
-                                    <td><?php echo e($row->area->name ?? ""); ?></td>
-                                    <td><?php echo e($row->name ?? ""); ?></td>
-                                    <td><?php echo e($row->service_category->name ?? ""); ?></td>
-                                    <td><?php echo e($row->education_program->name ?? ""); ?></td>
-                                    <td><?php echo e($row->education_age->name ?? ""); ?></td>
-                                    <td><?php echo e($row->is_attendance== 0 ? "Không theo điểm danh" : "Tính theo điểm danh"); ?></td>
-                                    <td><?php echo e(__($row->service_type??"")); ?></td>
+                                    <td><?php echo e($row->area->name ?? ''); ?></td>
+                                    <td><?php echo e($row->name ?? ''); ?></td>
+                                    <td><?php echo e($row->service_category->name ?? ''); ?></td>
+                                    <td><?php echo e($row->education_program->name ?? ''); ?></td>
+                                    <td><?php echo e($row->education_age->name ?? ''); ?></td>
+                                    <td><?php echo e($row->is_attendance == 0 ? 'Không theo điểm danh' : 'Tính theo điểm danh'); ?></td>
+                                    <td><?php echo e(__($row->service_type ?? '')); ?></td>
                                     <td><?php echo app('translator')->get($row->status); ?></td>
                                     <td>
-                                        <?php echo e($row->iorder ?? ""); ?>
+                                        <?php echo e($row->iorder ?? ''); ?>
 
                                     </td>
                                     <td>
                                         <?php if(isset($row->serviceDetail) && $row->serviceDetail->count() > 0): ?>
-                                        <?php $__currentLoopData = $row->serviceDetail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $detail): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <ul>
-                                            <li>Số tiền: <?php echo e(isset($detail->price) && is_numeric($detail->price) ? number_format($detail->price, 0, ',', '.') . ' đ' : ''); ?></li>
-                                            <li>Số lượng: <?php echo e($detail->quantity ?? ''); ?></li>
-                                            <li>Từ: <?php echo e((isset($detail->start_at) ? \Illuminate\Support\Carbon::parse($detail->start_at)->format('d-m-Y') : '')); ?></li>
-                                            <li>Đến: <?php echo e((isset($detail->end_at) ? \Illuminate\Support\Carbon::parse($detail->end_at)->format('d-m-Y') : '')); ?></li>
-                                        </ul>
-                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            <?php $__currentLoopData = $row->serviceDetail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $detail): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <ul>
+                                                    <li>Số tiền:
+                                                        <?php echo e(isset($detail->price) && is_numeric($detail->price) ? number_format($detail->price, 0, ',', '.') . ' đ' : ''); ?>
 
+                                                    </li>
+                                                    <li>Số lượng: <?php echo e($detail->quantity ?? ''); ?></li>
+                                                    <li>Từ:
+                                                        <?php echo e(isset($detail->start_at) ? \Illuminate\Support\Carbon::parse($detail->start_at)->format('d-m-Y') : ''); ?>
+
+                                                    </li>
+                                                    <li>Đến:
+                                                        <?php echo e(isset($detail->end_at) ? \Illuminate\Support\Carbon::parse($detail->end_at)->format('d-m-Y') : ''); ?>
+
+                                                    </li>
+                                                </ul>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <a class="btn btn-sm btn-warning" href="<?php echo e(route($routeDefault . '.edit', $row->id)); ?>">
+                                        <?php echo e(__($row->service_fee ?? '')); ?>
+
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-sm btn-warning"
+                                            href="<?php echo e(route($routeDefault . '.edit', $row->id)); ?>">
                                             <i class="fa fa-pencil-square-o"></i>
                                         </a>
 
