@@ -1,3 +1,5 @@
+
+
 <?php $__env->startSection('title'); ?>
     <?php echo app('translator')->get($module_name); ?>
 <?php $__env->stopSection(); ?>
@@ -180,12 +182,8 @@
                                                 <?php endif; ?>
                                             </td>
                                             <td>
-                                                <a target="_blank" class="btn btn-sm" data-toggle="tooltip"
-                                                    title="<?php echo app('translator')->get('Xem chi tiết'); ?>" data-original-title="<?php echo app('translator')->get('Xem chi tiết'); ?>"
-                                                    href="<?php echo e(route(Request::segment(2) . '.show', $row->id)); ?>">
-                                                    <i class="fa fa-eye"></i> <?php echo e($row->student_code); ?>
+                                                   <?php echo e($row->student_code); ?>
 
-                                                </a>
                                             </td>
                                             <td>
                                                 <?php echo e($row->first_name ?? ''); ?> <?php echo e($row->last_name ?? ''); ?>
@@ -222,6 +220,12 @@
                                             </td>
 
                                             <td>
+                                                <a class="btn btn-sm btn-primary" href="<?php echo e(route(Request::segment(2) . '.show', $row->id)); ?>"
+                                                    data-toggle="tooltip" title="<?php echo app('translator')->get('Chi tiết học sinh'); ?>"
+                                                    data-original-title="<?php echo app('translator')->get('Chi tiết học sinh'); ?>"
+                                                    onclick="return openCenteredPopup(this.href)">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
                                                 <a class="btn btn-sm btn-warning" data-toggle="tooltip"
                                                     title="<?php echo app('translator')->get('Update'); ?>" data-original-title="<?php echo app('translator')->get('Update'); ?>"
                                                     href="<?php echo e(route(Request::segment(2) . '.edit', $row->id)); ?>">
