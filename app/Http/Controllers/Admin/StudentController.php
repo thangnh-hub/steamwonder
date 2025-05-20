@@ -61,6 +61,8 @@ class StudentController extends Controller
         $params_area['id'] = DataPermissionService::getPermisisonAreas($admin->id);
         $params_area['status'] = Consts::STATUS_ACTIVE;
         $this->responseData['area'] = Area::getsqlArea($params_area)->get();
+        $this->responseData['list_class'] =  tbClass::getSqlClass($params_area)->get();
+        $this->responseData['list_status'] =  Consts::STATUS_STUDY;
 
         return $this->responseView($this->viewPart . '.index');
     }
@@ -106,7 +108,7 @@ class StudentController extends Controller
         $student->student_code = 'HS' . str_pad($student->id, 3, '0', STR_PAD_LEFT);
         $student->save();
 
-        return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Add new successfully!'));
+        return redirect()->route($this->routeDefault . '.edit',$student->id)->with('successMessage', __('Add new successfully!'));
     }
 
     /**
