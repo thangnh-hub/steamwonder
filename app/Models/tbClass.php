@@ -30,6 +30,28 @@ class tbClass extends Model
         'json_params' => 'object',
     ];
 
+    public static function getSqlClass($params = [])
+    {
+        $query = tbClass::select('tb_class.*')
+            ->when(!empty($params['keyword']), function ($query) use ($params) {
+                $keyword = $params['keyword'];
+                return $query->where(function ($where) use ($keyword) {
+                    return $where->where('tb_class.name', 'like', '%' . $keyword . '%')
+                        ->orWhere('tb_class.code', 'like', '%' . $keyword . '%');
+                });
+            });
+        if (isset($params['area_id']) && !empty($params['area_id'])) {
+            $query->where('tb_class.area_id', $params['area_id']);
+        }
+        if (isset($params['room_id']) && !empty($params['room_id'])) {
+            $query->whereIn('tb_class.id', $params['room_id']);
+        }
+        if (!empty($params['status'])) {
+            $query->where('tb_class.status', $params['status']);
+        }
+        
+        return $query;
+    }
 
     public function room()
     {

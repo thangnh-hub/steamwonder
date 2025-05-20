@@ -9,9 +9,8 @@
     <section class="content-header">
         <h1>
             @lang($module_name)
-
-            <a class="btn btn-sm btn-warning pull-right" href="{{ route(Request::segment(2) . '.create') }}"><i
-                    class="fa fa-plus"></i> @lang('Thêm mới học viên')</a>
+            {{-- <a class="btn btn-sm btn-warning pull-right" href="{{ route(Request::segment(2) . '.create') }}"><i
+                    class="fa fa-plus"></i> @lang('Thêm mới học sinh')</a> --}}
         </h1>
     </section>
 @endsection
@@ -34,15 +33,15 @@
             <form action="{{ route(Request::segment(2) . '.index') }}" id="form_filter" method="GET">
                 <div class="box-body">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label>@lang('Keyword') </label>
-                                <input type="text" class="form-control" name="keyword" placeholder="@lang('Lọc theo mã học viên, họ tên hoặc email')"
+                                <input type="text" class="form-control" name="keyword" placeholder="@lang('Lọc theo mã học sinh, họ tên hoặc email')"
                                     value="{{ isset($params['keyword']) ? $params['keyword'] : '' }}">
                             </div>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label>@lang('Area')</label>
                                 <select name="area_id" id="area_id" class="form-control select2" style="width: 100%;">
@@ -57,8 +56,37 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>@lang('Lớp học ')</label>
+                                <select name="current_class_id"  class="form-control select2" style="width: 100%;">
+                                    <option value="">@lang('Please select')</option>
+                                    @foreach ($list_class as $key => $value)
+                                        <option value="{{ $value->id }}"
+                                            {{ isset($params['current_class_id']) && $value->id == $params['current_class_id'] ? 'selected' : '' }}>
+                                            {{ __($value->name) }}
+                                            (Mã: {{ $value->code }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>@lang('Trạng thái ')</label>
+                                <select name="status"  class="form-control select2" style="width: 100%;">
+                                    <option value="">@lang('Please select')</option>
+                                    @foreach ($list_status as $key => $value)
+                                        <option value="{{ $key }}"
+                                            {{ isset($params['status']) && $key == $params['status'] ? 'selected' : '' }}>
+                                            {{ __($value) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label>@lang('Filter')</label>
                                 <div>
