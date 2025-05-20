@@ -112,6 +112,8 @@ Route::group(['namespace' => 'Admin'], function () {
                 'attendance' => 'AttendancesController',
                 'promotions' => 'PromotionController',
             ]);
+            Route::get('attendance/summary_by_month/{$id}', 'AttendancesController@attendanceSummaryByMonth')->name('attendance.summary_by_month');
+
             // Import Student Promotion
             Route::post('import_student_promotion', 'StudentController@importStudentPromotion')->name('student.import_promotion');
             // Import Student policy

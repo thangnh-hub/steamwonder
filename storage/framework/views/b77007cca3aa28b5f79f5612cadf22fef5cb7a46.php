@@ -237,7 +237,8 @@
 
                                         <a class="btn btn-sm btn-primary" data-toggle="tooltip" target="_blank"
                                             title="<?php echo app('translator')->get('Điểm danh'); ?>" data-original-title="<?php echo app('translator')->get('Điểm danh'); ?>"
-                                            href="<?php echo e(route('attendance.index',['class_id'=>$row->id,'tracked_at'=>date('Y-m-d')])); ?>">
+                                            href="<?php echo e(route('attendance.index',['class_id'=>$row->id,'tracked_at'=>date('Y-m-d')])); ?>"
+                                            onclick="return openCenteredPopup(this.href)">
                                             <i class="fa fa-calendar-check-o"></i>
                                         </a>
                                         <button class="btn btn-sm btn-success btn_show_detail" data-toggle="tooltip"
