@@ -10,8 +10,8 @@
         <h1>
             @lang($module_name)
 
-            <a class="btn btn-sm btn-warning pull-right" href="{{ route('admission.student.create') }}"><i
-                    class="fa fa-plus"></i> @lang('Thêm mới học viên')</a>
+            {{-- <a class="btn btn-sm btn-warning pull-right" href="{{ route('admission.student.create') }}"><i
+                    class="fa fa-plus"></i> @lang('Thêm mới học viên')</a> --}}
         </h1>
     </section>
 @endsection
@@ -31,15 +31,15 @@
             <form action="{{ route('admission.student.index') }}" method="GET">
                 <div class="box-body">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label>@lang('Keyword') </label>
-                                <input type="text" class="form-control" name="keyword" placeholder="@lang('Lọc theo mã học viên, họ tên hoặc email')"
+                                <input type="text" class="form-control" name="keyword" placeholder="@lang('Lọc theo mã học sinh, họ tên hoặc email')"
                                     value="{{ isset($params['keyword']) ? $params['keyword'] : '' }}">
                             </div>
                         </div>
-                       
-                        <div class="col-md-4">
+
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label>@lang('Area')</label>
                                 <select name="area_id" id="area_id" class="form-control select2" style="width: 100%;">
@@ -54,20 +54,48 @@
                                 </select>
                             </div>
                         </div>
-                        
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>@lang('Lớp học ')</label>
+                                <select name="current_class_id"  class="form-control select2" style="width: 100%;">
+                                    <option value="">@lang('Please select')</option>
+                                    @foreach ($list_class as $key => $value)
+                                        <option value="{{ $value->id }}"
+                                            {{ isset($params['current_class_id']) && $value->id == $params['current_class_id'] ? 'selected' : '' }}>
+                                            {{ __($value->name) }}
+                                            (Mã: {{ $value->code }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>@lang('Trạng thái ')</label>
+                                <select name="status"  class="form-control select2" style="width: 100%;">
+                                    <option value="">@lang('Please select')</option>
+                                    @foreach ($list_status as $key => $value)
+                                        <option value="{{ $key }}"
+                                            {{ isset($params['status']) && $key == $params['status'] ? 'selected' : '' }}>
+                                            {{ __($value) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label>@lang('Filter')</label>
                                 <div>
-                                    <button type="submit"
-                                        class="btn btn-primary btn-sm mr-10">@lang('Submit')</button>
-                                        <a class="btn btn-default btn-sm mr-10"
-                                            href="{{ route('admission.student.create') }}">
-                                            @lang('Reset')
-                                        </a>
+                                    <button type="submit" class="btn btn-primary btn-sm mr-10">@lang('Submit')</button>
+                                    <a class="btn btn-default btn-sm mr-10"
+                                        href="{{ route('admission.student.index') }}">
+                                        @lang('Reset')
+                                    </a>
 
                                     <button type="button" data-toggle="modal" data-target="#create_crmdata_student"
-                                    class="btn btn-success btn-sm">@lang('Import Excel')</button>
+                                        class="btn btn-success btn-sm">@lang('Import Excel')</button>
                                 </div>
                             </div>
                         </div>
@@ -175,11 +203,7 @@
                                         </td>
 
                                         <td>
-                                            <a target="_blank" class="btn btn-sm" data-toggle="tooltip"
-                                                title="@lang('Xem chi tiết')" data-original-title="@lang('Xem chi tiết')"
-                                                href="{{ route( 'admission.student.show', $row->id) }}">
-                                                <i class="fa fa-eye"></i> {{ $row->student_code  }}
-                                            </a>
+                                            {{ $row->student_code  }}
                                         </td>
                                         <td>
                                              {{ $row->first_name ?? '' }} {{ $row->last_name ?? '' }}
@@ -209,6 +233,12 @@
                                         </td>
                                     
                                         <td>
+                                            <a class="btn btn-sm btn-primary" href="{{ route('admission.student.show', $row->id) }}"
+                                                data-toggle="tooltip" title="@lang('Chi tiết học sinh')"
+                                                data-original-title="@lang('Chi tiết học sinh')"
+                                                onclick="return openCenteredPopup(this.href)">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
                                             <a class="btn btn-sm btn-warning" data-toggle="tooltip"
                                                 title="@lang('Update')" data-original-title="@lang('Update')"
                                                 href="{{ route('admission.student.edit', $row->id) }}">

@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Imports\StudentImport;
 use App\Models\PaymentCycle;
+use App\Models\tbClass;
 use App\Models\Receipt;
 use App\Models\Service;
 use App\Models\StudentService;
@@ -50,9 +51,12 @@ class AdmissionStudentController extends Controller
         $this->responseData['rows'] =  $rows;
         $this->responseData['params'] = $params;
 
+        
         $params_area['id'] = DataPermissionService::getPermisisonAreas($admin->id);
         $params_area['status'] = Consts::STATUS_ACTIVE;
         $this->responseData['area'] = Area::getsqlArea($params_area)->get();
+        $this->responseData['list_class'] =  tbClass::getSqlClass($params_area)->get();
+        $this->responseData['list_status'] =  Consts::STATUS_STUDY;
 
         return $this->responseView($this->viewPart . '.index');
     }

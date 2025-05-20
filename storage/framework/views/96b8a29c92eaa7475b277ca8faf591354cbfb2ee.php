@@ -9,9 +9,7 @@
     <section class="content-header">
         <h1>
             <?php echo app('translator')->get($module_name); ?>
-
-            <a class="btn btn-sm btn-warning pull-right" href="<?php echo e(route(Request::segment(2) . '.create')); ?>"><i
-                    class="fa fa-plus"></i> <?php echo app('translator')->get('Thêm mới học viên'); ?></a>
+            
         </h1>
     </section>
 <?php $__env->stopSection(); ?>
@@ -34,15 +32,15 @@
             <form action="<?php echo e(route(Request::segment(2) . '.index')); ?>" id="form_filter" method="GET">
                 <div class="box-body">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Keyword'); ?> </label>
-                                <input type="text" class="form-control" name="keyword" placeholder="<?php echo app('translator')->get('Lọc theo mã học viên, họ tên hoặc email'); ?>"
+                                <input type="text" class="form-control" name="keyword" placeholder="<?php echo app('translator')->get('Lọc theo mã học sinh, họ tên hoặc email'); ?>"
                                     value="<?php echo e(isset($params['keyword']) ? $params['keyword'] : ''); ?>">
                             </div>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Area'); ?></label>
                                 <select name="area_id" id="area_id" class="form-control select2" style="width: 100%;">
@@ -58,8 +56,39 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label><?php echo app('translator')->get('Lớp học '); ?></label>
+                                <select name="current_class_id"  class="form-control select2" style="width: 100%;">
+                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
+                                    <?php $__currentLoopData = $list_class; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($value->id); ?>"
+                                            <?php echo e(isset($params['current_class_id']) && $value->id == $params['current_class_id'] ? 'selected' : ''); ?>>
+                                            <?php echo e(__($value->name)); ?>
 
-                        <div class="col-md-4">
+                                            (Mã: <?php echo e($value->code); ?>)
+                                        </option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label><?php echo app('translator')->get('Trạng thái '); ?></label>
+                                <select name="status"  class="form-control select2" style="width: 100%;">
+                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
+                                    <?php $__currentLoopData = $list_status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($key); ?>"
+                                            <?php echo e(isset($params['status']) && $key == $params['status'] ? 'selected' : ''); ?>>
+                                            <?php echo e(__($value)); ?>
+
+                                        </option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Filter'); ?></label>
                                 <div>
