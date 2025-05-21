@@ -13,6 +13,7 @@ use App\Models\StudentClass;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Http\Services\DataPermissionService;
 use Exception;
 use Carbon\Carbon;
 
@@ -107,26 +108,10 @@ class AttendancesController extends Controller
                         unlink($oldFilePath);
                     }
                 }
-                // Nếu có ảnh mới thì lưu vào thư mục
-                // Bỏ tiền tố base64 (nếu có)
-                $image = str_replace('data:image/png;base64,', '', $params['json_params']['img']);
-                $image = str_replace(' ', '+', $image);
-                // Ngày hiện tại (để tạo thư mục)
-                $today = Carbon::parse($tracked_at)->format('dmY');
-                // Định nghĩa đường dẫn thư mục
-                $directory = "data/attendance/{$today}/{$class_id}";
-                // Kiểm tra và tạo thư mục nếu chưa tồn tại
-                if (!file_exists($directory)) {
-                    mkdir($directory, 0755, true);
-                }
-                // Tên file (ví dụ: student_4314.png)
+                $today = Carbon::parse($tracked_at)->format('d_m_Y');
+                $directory = "data/attendance/{$today}/{$class_id}/checkin";
                 $fileName = 'student_' . $student_id . '_' . time() . '.png';
-                // Đường dẫn đầy đủ để lưu ảnh
-                $filePath = "{$directory}/{$fileName}";
-                // Lưu ảnh vào thư mục public
-                file_put_contents($filePath, base64_decode($image));
-                // Trả về đường dẫn ảnh
-                $publicPath = "data/attendance/{$today}/{$class_id}/{$fileName}";
+                $publicPath = $this->storeImagePath($params['json_params']['img'], $directory, $fileName);
             }
             $params['json_params']['img'] = $publicPath ?? null;
             // Đã có thì cập nhật
@@ -192,12 +177,182 @@ class AttendancesController extends Controller
         //
     }
 
-    public function attendanceSummaryByMonth(Request $request, $id)
+    public function attendanceSummaryByMonth(Request $request)
     {
-        $params = $request->only(['class_id', 'area_id', 'month', 'year']);
-        $date = '2025-05-19';
-        $carbonDate = Carbon::parse($date);
-        dd($carbonDate->daysInMonth);
-        return $this->responseView($this->viewPart . '.attendance_summary_by_month');
+        $admin = Auth::guard('admin')->user();
+        $params = $request->only(['keyword', 'class_id', 'month', 'area_id']);
+        $monthYear = $params['month'] ?? Carbon::now()->format('Y-m');
+
+        $carbonDate = Carbon::createFromFormat('Y-m', $monthYear);
+        $daysInMonth = $carbonDate->daysInMonth;
+        $params['permission_class'] = DataPermissionService::getPermissionClasses($admin->id);
+        // Lấy danh sách học sinh theo lớp
+        $studentClass = StudentClass::getSqlStudentClass($params)
+            ->with([
+                'attendances' => function ($query) use ($monthYear, $daysInMonth) {
+                    $query->whereBetween('tracked_at', [
+                        Carbon::createFromFormat('Y-m-d', "$monthYear-1"),
+                        Carbon::createFromFormat('Y-m-d', "$monthYear-$daysInMonth")
+                    ])->select('id', 'class_id', 'tracked_at');
+                },
+                'attendances.attendanceStudent' => function ($query) {
+                    $query->select('id', 'student_id', 'class_attendance_id', 'status'); // Chỉ lấy cột cần thiết
+                }
+            ])
+            ->get();
+
+        foreach ($studentClass as $row) {
+            $attendancesByDay = [];
+
+            foreach (range(1, $daysInMonth) as $day) {
+                $date = Carbon::createFromFormat('Y-m-d', "$monthYear-$day");
+
+                $attendance = $row->attendances->first(function ($item) use ($date) {
+                    return isset($item->tracked_at) &&
+                        Carbon::parse($item->tracked_at)->toDateString() === $date->toDateString();
+                });
+
+                if ($attendance) {
+                    $attendanceStudent = $attendance->attendanceStudent
+                        ->firstWhere('student_id', $row->student_id);
+
+                    if ($attendanceStudent) {
+                        $attendancesByDay[$day] = $attendanceStudent;
+                    }
+                }
+            }
+            $row->attendances_by_day = $attendancesByDay;
+        }
+
+        $this->responseData['areas'] = Area::all();
+        $this->responseData['classs'] = tbClass::all();
+        $this->responseData['list_teacher'] = Teacher::all();
+        $this->responseData['carbonDate'] = $carbonDate;
+        $this->responseData['daysInMonth'] = $daysInMonth;
+        $this->responseData['rows'] = $studentClass;
+        $this->responseData['params'] = $params;
+        $this->responseData['day_week'] = Consts::DAY_WEEK_MINI;
+
+        return $this->responseView($this->viewPart . '.summary_by_month');
+    }
+
+    public function showSummaryByMonth(Request $request)
+    {
+        $class_id = $request->input('class_id');
+        $student_id = $request->input('student_id');
+        $date = $request->input('date');
+        $attendance = Attendances::where('class_id', $class_id)
+            ->whereDate('tracked_at', $date)->first();
+        $detail = null;
+        if ($attendance) {
+
+            $detail = AttendanceStudent::where('class_attendance_id', $attendance->id)
+                ->where('student_id', $student_id)
+                ->first();
+        }
+        $list_teacher = Teacher::all();
+        $result['view'] = view($this->viewPart . '.show_summary_by_month', compact('detail', 'list_teacher', 'date', 'class_id', 'student_id'))->render();
+        return $this->sendResponse($result, __('Lấy thông tin thành công!'));
+    }
+
+    public function updateOrstoreAttendance(Request $request)
+    {
+        $id = $request->input('id');
+        $student_id = $request->input('student_id');
+        $class_id = $request->input('class_id');
+        $date = $request->input('date');
+
+        $image_arrival = $request->input('image_arrival');
+        $image_return = $request->input('image_return');
+
+
+        $params = $request->only([
+            'status',
+            'checkin_parent_id',
+            'checkout_parent_id',
+            'checkin_teacher_id',
+            'checkout_teacher_id',
+            'checkin_at',
+            'checkout_at',
+            'json_params'
+        ]);
+        $attendance_student = AttendanceStudent::find($id);
+        $today = Carbon::parse($date)->format('d_m_Y');
+        // Xử lý lưu ảnh nếu có
+        if ($image_arrival != null) {
+            // Xóa ảnh cũ nếu có
+            if ($attendance_student && $attendance_student->json_params->img) {
+                $oldFilePath = public_path($attendance_student->json_params->img);
+                if (file_exists($oldFilePath)) {
+                    unlink($oldFilePath);
+                }
+            }
+            $directory = "data/attendance/{$today}/{$class_id}/checkin";
+            $fileName = 'student_' . $student_id . '_' . time() . '.png';
+            $params['json_params']['img'] = $this->storeImagePath($image_arrival, $directory, $fileName);
+        }
+        if ($image_return != null) {
+            // Xóa ảnh cũ nếu có
+            if ($attendance_student && isset($attendance_student->json_params->img_return)) {
+                $returnoldFilePath = public_path($attendance_student->json_params->img_return);
+                if (file_exists($returnoldFilePath)) {
+                    unlink($returnoldFilePath);
+                }
+            }
+            $return_directory = "data/attendance/{$today}/{$class_id}/checkout";
+            $return_fileName = 'student_' . $student_id . '_' . time() . '.png';
+            $params['json_params']['img_return'] = $this->storeImagePath($image_return, $return_directory, $return_fileName);
+        }
+        // Check attendance
+        if ($attendance_student) {
+            // Cập nhật thông tin điểm danh
+            // Chuyển object về mảng
+            $old_json_params = is_object($attendance_student->json_params)
+                ? json_decode(json_encode($attendance_student->json_params), true)
+                : (is_array($attendance_student->json_params) ? $attendance_student->json_params : []);
+            // Merge 2 mảng và cập nhật nếu có dữ liệu mới
+            $arr_insert['json_params'] = array_replace_recursive($old_json_params, $params['json_params'] ?? []);
+            $params['json_params'] = $arr_insert['json_params'];
+            $params['admin_updated_id'] = Auth::guard('admin')->user()->id;
+
+            $attendance_student->update($params);
+        } else {
+            // Tìm hoặc tạo mới phiên điểm danh
+            $attendance = Attendances::firstOrCreate(
+                [
+                    'class_id' => $class_id,
+                    'tracked_at' => $date,
+                ],
+                [
+                    'admin_created_id' => Auth::guard('admin')->user()->id,
+                ]
+            );
+            // Tạo mới thông tin điểm danh học sinh
+            $params['class_attendance_id'] = $attendance->id;
+            $params['student_id'] = $student_id;
+            AttendanceStudent::create($params);
+        }
+        return $this->sendResponse('success', __('Lưu thông tin thành công!'));
+    }
+
+    public function storeImagePath($image_base64, $directory, $file_name = null)
+    {
+        // Bỏ tiền tố base64 (nếu có)
+        $image = str_replace('data:image/png;base64,', '', $image_base64);
+        $image = str_replace(' ', '+', $image);
+
+        // Kiểm tra và tạo thư mục nếu chưa tồn tại
+        if (!file_exists($directory)) {
+            mkdir($directory, 0755, true);
+        }
+        // Tên file (ví dụ: student_4314.png)
+        $fileName = $file_name != null ? $file_name : 'image_' . time() . '.png';
+        // Đường dẫn đầy đủ để lưu ảnh
+        $filePath = "{$directory}/{$fileName}";
+        // Lưu ảnh vào thư mục public
+        file_put_contents($filePath, base64_decode($image));
+        // Trả về đường dẫn ảnh
+        $publicPath = $directory . "/{$fileName}";
+        return $publicPath;
     }
 }

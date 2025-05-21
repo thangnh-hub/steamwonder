@@ -7,6 +7,7 @@ use App\Consts;
 use App\Models\Admin;
 use App\Models\Student;
 use App\Models\tbClass;
+use App\Models\TeacherClass;
 use App\Models\UserClass;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -110,18 +111,14 @@ class DataPermissionService
     {
         $class_ids = [];
 
-        // Lấy theo lớp được quản lý hoặc là giáo viên phụ
-        $classes_by_user = DB::table('tb_classs')->selectRaw('GROUP_CONCAT("", id) class_id')
-            ->where('tb_classs.assistant_teacher', 'LIKE', '%"' . $id . '"%')
-            ->orWhere('tb_classs.json_params->teacher', $id)
-            ->first();
-        $class_ids = explode(",", $classes_by_user->class_id);
+        // Lấy theo lớp được quản lý hoặc là giáo viên
+        $class_ids = TeacherClass::where('teacher_id', $id)->pluck('class_id')->toArray();
+
 
         // Lấy theo khu vực và lớp thuộc khu vực được quản lý
         $area_ids = self::getPermisisonAreas($id);
-        $classes_by_area = DB::table('tb_classs')->selectRaw('GROUP_CONCAT("", id) class_id')->whereIn('area_id', $area_ids)->first();
+        $classes_by_area = DB::table('tb_class')->selectRaw('GROUP_CONCAT("", id) class_id')->whereIn('area_id', $area_ids)->first();
         $class_ids_area = explode(",", $classes_by_area->class_id);
-
         // Merge 2 mảng lớp học
         $class_ids = array_merge($class_ids, $class_ids_area);
 

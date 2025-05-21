@@ -45,6 +45,9 @@ class StudentClass extends Model
             ->when(!empty($params['class_id']), function ($query) use ($params) {
                 return $query->where('tb_class_student.class_id', $params['class_id']);
             })
+            ->when(!empty($params['permission_class']), function ($query) use ($params) {
+                return $query->whereIn('tb_class_student.class_id', $params['permission_class']);
+            })
             ->when(!empty($params['student_id']), function ($query) use ($params) {
                 return $query->where('tb_class_student.student_id', $params['student_id']);
             })
@@ -65,5 +68,9 @@ class StudentClass extends Model
     public function class()
     {
         return $this->belongsTo(tbClass::class, 'class_id', 'id');
+    }
+    public function attendances()
+    {
+        return $this->hasMany(Attendances::class, 'class_id', 'class_id');
     }
 }

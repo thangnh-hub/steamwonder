@@ -44,6 +44,10 @@
             margin-block-start: 0px !important;
             padding-inline-start: 10px !important;
         }
+
+        input[type="radio"] {
+            transform: scale(1.5);
+        }
     </style>
 @endsection
 
@@ -997,13 +1001,15 @@
 @section('script')
     <script>
         $(document).on('change', '.radio_promotion', function() {
-            var id = $(this).val();
-            var code = $(this).parents('tr').find('.code').html();
-            var name = $(this).parents('tr').find('.name').html();
-            var des = $(this).parents('tr').find('.des').html();
-            var type = $(this).parents('tr').find('.type').html();
-            var service = $(this).parents('tr').find('.service').html();
-            $('.promotion_new').html(`
+            var _row = $(this).closest('tr');
+            var id = _row.val();
+            var code = _row.find('.code').html();
+            var name = _row.find('.name').html();
+            var des = _row.find('.des').html();
+            var type = _row.find('.type').html();
+            var service = _row.find('.service').html();
+
+            var _html = `
             <td>
                 <button type="button"
                     class="btn btn-sm btn-danger delete_student_promotion"
@@ -1036,8 +1042,12 @@
                     @endforeach
                 </select>
             </td>
-            `)
-            $('.select2').select2();
+            `;
+            $('.promotion_new').html(_html);
+            // $('.select2').select2();
+            $('html, body').animate({
+                scrollTop: $(".promotion_new").offset().top
+            }, 1000);
         })
 
 

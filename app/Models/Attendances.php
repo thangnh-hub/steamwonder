@@ -35,10 +35,13 @@ class Attendances extends Model
     protected $casts = [
         'json_params' => 'object',
     ];
-
+    public function studentClass()
+    {
+        return $this->belongsTo(StudentClass::class, 'class_id', 'class_id');
+    }
     public function attendanceStudent()
     {
-        return $this->hasMany(AttendanceStudent::class, 'class_attendance_id', 'id');
+        return $this->hasMany(AttendanceStudent::class, 'class_attendance_id');
     }
     public function adminCreated()
     {
