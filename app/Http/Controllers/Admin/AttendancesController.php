@@ -13,6 +13,7 @@ use App\Models\StudentClass;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Http\Services\DataPermissionService;
 use Exception;
 use Carbon\Carbon;
 
@@ -178,11 +179,13 @@ class AttendancesController extends Controller
 
     public function attendanceSummaryByMonth(Request $request)
     {
+        $admin = Auth::guard('admin')->user();
         $params = $request->only(['keyword', 'class_id', 'month', 'area_id']);
         $monthYear = $params['month'] ?? Carbon::now()->format('Y-m');
 
         $carbonDate = Carbon::createFromFormat('Y-m', $monthYear);
         $daysInMonth = $carbonDate->daysInMonth;
+        $params['permission_class'] = DataPermissionService::getPermissionClasses($admin->id);
         // Lấy danh sách học sinh theo lớp
         $studentClass = StudentClass::getSqlStudentClass($params)
             ->with([
@@ -251,6 +254,7 @@ class AttendancesController extends Controller
         $result['view'] = view($this->viewPart . '.show_summary_by_month', compact('detail', 'list_teacher', 'date', 'class_id', 'student_id'))->render();
         return $this->sendResponse($result, __('Lấy thông tin thành công!'));
     }
+
     public function updateOrstoreAttendance(Request $request)
     {
         $id = $request->input('id');
