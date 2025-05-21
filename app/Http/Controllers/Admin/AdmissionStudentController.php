@@ -43,18 +43,21 @@ class AdmissionStudentController extends Controller
     {
         $params = $request->all();
         $admin = Auth::guard('admin')->user();
-        //Lấy theo khu vực quản lý và theo quyền của cbts và cbts cấp dưới
-        $params['list_id'] = DataPermissionService::getPermissionStudents($admin->id);
+        $params['permisson_area_id'] = DataPermissionService::getPermisisonAreas($admin->id);
+        if (empty($params['permisson_area_id'])) {
+            $params['permisson_area_id'] = [-1];
+        }
         // Get list post with filter params
         $rows = Student::getSqlStudent($params)->orderBy('id','desc')->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
 
         $this->responseData['rows'] =  $rows;
         $this->responseData['params'] = $params;
 
-        
-        $params_area['id'] = DataPermissionService::getPermisisonAreas($admin->id);
+        $params_area['id'] = $params['permisson_area_id'];
         $params_area['status'] = Consts::STATUS_ACTIVE;
         $this->responseData['area'] = Area::getsqlArea($params_area)->get();
+
+        $params_area['permisson_area_id'] = $params['permisson_area_id'] ;
         $this->responseData['list_class'] =  tbClass::getSqlClass($params_area)->get();
         $this->responseData['list_status'] =  Consts::STATUS_STUDY;
 

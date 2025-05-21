@@ -226,7 +226,7 @@
                                                 <?php echo app('translator')->get($row->sex); ?>
                                             </td>
                                             <td>
-                                                <?php echo e($row->area->code ?? ''); ?>
+                                                <?php echo e($row->area->name ?? ''); ?>
 
                                             </td>
 

@@ -4,6 +4,23 @@
     @lang($module_name)
 @endsection
 
+@section('style')
+<style>
+    .table-wrapper {
+            max-height: 560px;
+            overflow-y: auto;
+            display: block;
+        }
+
+        .table-wrapper thead {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            z-index: 2;
+        }
+</style>
+@endsection
+
 @section('content-header')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -131,7 +148,7 @@
                         </div>
                     </div>
                     
-                    <div class="table-responsive">
+                    <div class="table-wrapper table-responsive">
                         <table class="table table-hover table-bordered ">
                             <thead>
                                 <tr>
@@ -168,9 +185,10 @@
                                             </td>
 
                                             <td>
-                                                <a target="_blank" class="btn btn-sm" data-toggle="tooltip"
-                                                    title="@lang('Xem chi tiết')" data-original-title="@lang('Xem chi tiết')"
-                                                    href="{{ route('students.show', $row->id) }}">
+                                                <a class="" href="{{ route('students.show', $row->id) }}"
+                                                    data-toggle="tooltip" title="@lang('Chi tiết học sinh')"
+                                                    data-original-title="@lang('Chi tiết học sinh')"
+                                                    onclick="return openCenteredPopup(this.href)">
                                                     <i class="fa fa-eye"></i> {{ $row->student_code  }}
                                                 </a>
                                             </td>
@@ -213,8 +231,10 @@
                                 </form>
                             </tbody>
                         </table>
-                        <button type="submit" class="btn btn-primary">Tính toán đầu năm</button>
                     </div>
+<br>
+                    <button type="submit" class="btn btn-primary">Tính toán đầu năm</button>
+
                 </form>
                 @endif
             </div>

@@ -58,9 +58,11 @@ class StudentController extends Controller
         $this->responseData['rows'] =  $rows;
         $this->responseData['params'] = $params;
 
-        $params_area['id'] = DataPermissionService::getPermisisonAreas($admin->id);
+        $params_area['id'] = $params['permisson_area_id'];
         $params_area['status'] = Consts::STATUS_ACTIVE;
         $this->responseData['area'] = Area::getsqlArea($params_area)->get();
+
+        $params_area['permisson_area_id'] = $params['permisson_area_id'] ;
         $this->responseData['list_class'] =  tbClass::getSqlClass($params_area)->get();
         $this->responseData['list_status'] =  Consts::STATUS_STUDY;
 

@@ -215,7 +215,7 @@
                                             @lang($row->sex)
                                         </td>
                                         <td>
-                                            {{ $row->area->code ?? '' }}
+                                            {{ $row->area->name ?? '' }}
                                         </td>
 
                                         <td>
