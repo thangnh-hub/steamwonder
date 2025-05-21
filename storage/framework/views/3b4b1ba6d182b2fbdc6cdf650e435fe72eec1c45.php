@@ -117,7 +117,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Area'); ?></label>
-                                <select name="area_id" class="form-control select2 w-100">
+                                <select name="area_id" class="area_id form-control select2 w-100">
                                     <option value=""><?php echo app('translator')->get('Please select'); ?></option>
                                     <?php $__currentLoopData = $areas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <option value="<?php echo e($item->id); ?>"
@@ -365,6 +365,24 @@
         var rows = <?php echo json_encode($rows, 15, 512) ?>;
         let videoStream = null; // Biến lưu trữ stream của camera
         let currentFacingMode = "user"; // Chế độ camera mặc định: Camera trước
+
+        var areas = <?php echo json_encode($areas ?? [], 15, 512) ?>;
+        var classs = <?php echo json_encode($classs ?? [], 15, 512) ?>;
+
+        $('.area_id').change(function() {
+            var area_id = $(this).val();
+            var _html = '<option value=""></option>';
+            if (area_id != '') {
+                classs.forEach(function(item) {
+                    if (area_id == item.area_id) {
+                        _html += `<option value = "${item.id} " > ${item.name}`;
+                    }
+                });
+            }
+            $('.class_id').html(_html).trigger('change');
+        })
+
+
         $(document).ready(function() {
             const video = $('#video')[0];
             const canvas = $('#canvas')[0];

@@ -129,6 +129,25 @@
             display: flex;
             gap: 10px;
         }
+
+        .div_h {
+            height: 25px;
+            margin-bottom: 10px
+        }
+
+        @media (max-width: 768px) {
+
+            #modal_attendance .modal-dialog {
+                width: calc(100% - 20px);
+            }
+            .box_checked, .box_image, .box_content{
+                width: 100%;
+            }
+            .div_h {
+                display: none;
+            }
+
+        }
     </style>
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content-header'); ?>
@@ -160,10 +179,10 @@
             <form action="<?php echo e(route(Request::segment(2) . '.summary_by_month')); ?>" method="GET">
                 <div class="box-body">
                     <div class="d-flex-wap">
-                        <div class="col-md-3">
+                        <div class="col-xs-12 col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Area'); ?></label>
-                                <select name="area_id" class="form-control select2 w-100">
+                                <select name="area_id" class="area_id form-control select2 w-100">
                                     <option value=""><?php echo app('translator')->get('Please select'); ?></option>
                                     <?php $__currentLoopData = $areas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <option value="<?php echo e($item->id); ?>"
@@ -173,7 +192,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-xs-12 col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Lớp'); ?> <small class="text-red">*</small></label>
                                 <select required name="class_id" class="class_id form-control select2 w-100">
@@ -186,21 +205,21 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-xs-12 col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Tháng'); ?> <small class="text-red">*</small></label>
                                 <input type="month" name="month" class="form-control month" required
                                     value="<?php echo e(isset($params['month']) && $params['month'] != '' ? $params['month'] : date('Y-m', time())); ?>">
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-xs-12 col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Keyword'); ?> </label>
                                 <input type="text" class="form-control" name="keyword" placeholder="<?php echo app('translator')->get('Lọc theo mã học viên, họ tên hoặc email'); ?>"
                                     value="<?php echo e(isset($params['keyword']) ? $params['keyword'] : ''); ?>">
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-xs-12 col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Lấy điểm danh'); ?></label>
                                 <div>
@@ -299,7 +318,7 @@
                                                         data-class="<?php echo e($row->class_id); ?>"
                                                         data-student="<?php echo e($row->student_id); ?>"
                                                         data-date="<?php echo e($carbonDate->copy()->day($i)->format('Y-m-d')); ?>"
-                                                        data-original-title="<?php echo app('translator')->get('Chi tiết'); ?>">
+                                                        data-toggle="tooltip" data-original-title="<?php echo app('translator')->get('Lấy điểm danh'); ?>">
                                                         <i class="<?php echo e(isset($row->attendances_by_day[$i]) ? 'fa fa-check-circle-o' : 'fa fa-window-minimize'); ?> "
                                                             aria-hidden="true"></i>
                                                     </div>
@@ -380,13 +399,28 @@
         let videoStream = null; // Biến lưu trữ stream của camera
         let currentFacingMode = "user"; // Chế độ camera mặc định: Camera trước
         var noImage = <?php echo json_encode(url('themes/admin/img/no_image.jpg'), 15, 512) ?>;
+        var areas = <?php echo json_encode($areas ?? [], 15, 512) ?>;
+        var classs = <?php echo json_encode($classs ?? [], 15, 512) ?>;
+
+
+
         $(document).ready(function() {
 
             const video = $('#video')[0];
             const canvas = $('#canvas')[0];
             const photo_arrival = $('#photo_arrival')[0];
             const photo_return = $('#photo_return')[0];
-
+            $('.area_id').change(function() {
+                var area_id = $(this).val();
+                var _html = `<option value=""><?php echo e(__('Please select')); ?></option>`;
+                if (area_id) {
+                    _html += classs
+                        .filter(item => item.area_id == area_id)
+                        .map(item => `<option value="${item.id}">${item.code} - ${item.name}</option>`)
+                        .join('');
+                }
+                $('.class_id').html(_html).trigger('change');
+            })
 
             $('.item_day').click(function() {
                 var class_id = $(this).data('class');
@@ -502,7 +536,8 @@
                         if (response) {
                             item.removeClass('text-secondary');
                             item.addClass('text-success');
-                            item.html('<i class="fa fa-check-circle-o" aria-hidden="true"></i>');
+                            item.html(
+                                '<i class="fa fa-check-circle-o" aria-hidden="true"></i>');
                             var _html = `<div class="alert alert-${response.data} alert-dismissible">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                             ${response.message}

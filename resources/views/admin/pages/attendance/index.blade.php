@@ -119,7 +119,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>@lang('Area')</label>
-                                <select name="area_id" class="form-control select2 w-100">
+                                <select name="area_id" class="area_id form-control select2 w-100">
                                     <option value="">@lang('Please select')</option>
                                     @foreach ($areas as $item)
                                         <option value="{{ $item->id }}"
@@ -360,6 +360,23 @@
         var rows = @json($rows);
         let videoStream = null; // Biến lưu trữ stream của camera
         let currentFacingMode = "user"; // Chế độ camera mặc định: Camera trước
+
+        var areas = @json($areas ?? []);
+        var classs = @json($classs ?? []);
+
+        $('.area_id').change(function() {
+            var area_id = $(this).val();
+            var _html = `<option value="">{{__('Please select')}}</option>`;
+            if (area_id) {
+                    _html += classs
+                        .filter(item => item.area_id == area_id)
+                        .map(item => `<option value="${item.id}">${item.code} - ${item.name}</option>`)
+                        .join('');
+                }
+            $('.class_id').html(_html).trigger('change');
+        })
+
+
         $(document).ready(function() {
             const video = $('#video')[0];
             const canvas = $('#canvas')[0];
