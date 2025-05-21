@@ -39,7 +39,13 @@ class tbClass extends Model
                     return $where->where('tb_class.name', 'like', '%' . $keyword . '%')
                         ->orWhere('tb_class.code', 'like', '%' . $keyword . '%');
                 });
-            });
+            })
+            ->when(!empty($params['permisson_area_id']), function ($query) use ($params) {
+                if (is_array($params['permisson_area_id'])) {
+                  return $query->whereIn('tb_class.area_id', $params['permisson_area_id']);
+                }
+                return $query->where('tb_class.area_id',  $params['permisson_area_id']);
+              });
         if (isset($params['area_id']) && !empty($params['area_id'])) {
             $query->where('tb_class.area_id', $params['area_id']);
         }

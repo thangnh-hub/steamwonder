@@ -4,6 +4,23 @@
     <?php echo app('translator')->get($module_name); ?>
 <?php $__env->stopSection(); ?>
 
+<?php $__env->startSection('style'); ?>
+<style>
+    .table-wrapper {
+            max-height: 560px;
+            overflow-y: auto;
+            display: block;
+        }
+
+        .table-wrapper thead {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            z-index: 2;
+        }
+</style>
+<?php $__env->stopSection(); ?>
+
 <?php $__env->startSection('content-header'); ?>
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -135,7 +152,7 @@
                         </div>
                     </div>
                     
-                    <div class="table-responsive">
+                    <div class="table-wrapper table-responsive">
                         <table class="table table-hover table-bordered ">
                             <thead>
                                 <tr>
@@ -172,9 +189,10 @@
                                             </td>
 
                                             <td>
-                                                <a target="_blank" class="btn btn-sm" data-toggle="tooltip"
-                                                    title="<?php echo app('translator')->get('Xem chi tiết'); ?>" data-original-title="<?php echo app('translator')->get('Xem chi tiết'); ?>"
-                                                    href="<?php echo e(route('students.show', $row->id)); ?>">
+                                                <a class="" href="<?php echo e(route('students.show', $row->id)); ?>"
+                                                    data-toggle="tooltip" title="<?php echo app('translator')->get('Chi tiết học sinh'); ?>"
+                                                    data-original-title="<?php echo app('translator')->get('Chi tiết học sinh'); ?>"
+                                                    onclick="return openCenteredPopup(this.href)">
                                                     <i class="fa fa-eye"></i> <?php echo e($row->student_code); ?>
 
                                                 </a>
@@ -224,8 +242,10 @@
                                 </form>
                             </tbody>
                         </table>
-                        <button type="submit" class="btn btn-primary">Tính toán đầu năm</button>
                     </div>
+<br>
+                    <button type="submit" class="btn btn-primary">Tính toán đầu năm</button>
+
                 </form>
                 <?php endif; ?>
             </div>
