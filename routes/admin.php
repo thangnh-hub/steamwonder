@@ -112,7 +112,9 @@ Route::group(['namespace' => 'Admin'], function () {
                 'attendance' => 'AttendancesController',
                 'promotions' => 'PromotionController',
             ]);
-            Route::get('attendance/summary_by_month/{$id}', 'AttendancesController@attendanceSummaryByMonth')->name('attendance.summary_by_month');
+
+            Route::get('attendance/summary-by-month/index', 'AttendancesController@attendanceSummaryByMonth')->name('attendance.summary_by_month');
+            Route::post('attendance/summary-by-month/update_or_store', 'AttendancesController@updateOrstoreAttendance')->name('attendance.summary_by_month.update_or_store');
 
             // Import Student Promotion
             Route::post('import_student_promotion', 'StudentController@importStudentPromotion')->name('student.import_promotion');
@@ -273,6 +275,7 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('leave_balances/create', 'LeaveController@createLeaveBalance')->name('leave.balance.create');
             Route::post('leave_balances/store', 'LeaveController@storeLeaveBalance')->name('leave.balance.store');
         });
+        Route::get('attendance/summary-by-month/show', 'AttendancesController@showSummaryByMonth')->name('attendance.summary_by_month.show');
 
         Route::get('receipt_view/{id}', 'ReceiptController@viewIndex')->name('receipt.view');
         Route::get('/camera', 'CameraController@index')->name('camera');

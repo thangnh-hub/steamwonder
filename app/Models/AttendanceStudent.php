@@ -40,6 +40,10 @@ class AttendanceStudent extends Model
     {
         return $this->belongsTo(Attendances::class, 'class_attendance_id', 'id');
     }
+    public function student()
+    {
+        return $this->belongsTo(Student::class, 'student_id', 'id');
+    }
     public function adminCreated()
     {
         return $this->belongsTo(Admin::class, 'admin_created_id', 'id');

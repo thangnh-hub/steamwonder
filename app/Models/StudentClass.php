@@ -66,4 +66,8 @@ class StudentClass extends Model
     {
         return $this->belongsTo(tbClass::class, 'class_id', 'id');
     }
+    public function attendances()
+    {
+        return $this->hasMany(Attendances::class, 'class_id', 'class_id');
+    }
 }
