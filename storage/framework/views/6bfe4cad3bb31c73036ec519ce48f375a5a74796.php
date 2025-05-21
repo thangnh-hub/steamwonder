@@ -10,8 +10,7 @@
         <h1>
             <?php echo app('translator')->get($module_name); ?>
 
-            <a class="btn btn-sm btn-warning pull-right" href="<?php echo e(route('admission.student.create')); ?>"><i
-                    class="fa fa-plus"></i> <?php echo app('translator')->get('Thêm mới học viên'); ?></a>
+            
         </h1>
     </section>
 <?php $__env->stopSection(); ?>
