@@ -56,7 +56,32 @@ class AttendancesController extends Controller
         }
 
         $this->responseData['rows'] = $rows;
+        $this->responseData['module_name'] = 'Điểm danh đến';
         return $this->responseView($this->viewPart . '.index');
+    }
+    public function checkout(Request $request)
+    {
+        $rows = [];
+        $params = $request->only(['keyword', 'class_id', 'area_id', 'tracked_at']);
+        $params['tracked_at'] = $params['tracked_at'] ?? date('Y-m-d', time());
+        $this->responseData['classs'] = tbClass::all();
+        $this->responseData['areas'] = Area::all();
+        $this->responseData['list_teacher'] = Teacher::all();
+        $this->responseData['status'] = Consts::ATTENDANCE_STATUS;
+        $this->responseData['params'] = $params;
+        if (isset($params['class_id']) && $params['class_id'] != "") {
+            // Thông tin điểm danh
+            $attendance = Attendances::where('class_id', $params['class_id'])
+                ->whereDate('tracked_at', $params['tracked_at'])
+                ->with(['attendanceStudent' => function ($query) {
+                    $query->where('status', Consts::ATTENDANCE_STATUS['checkin']); // Lọc chỉ những học sinh checkin
+                }])
+                ->first();
+        }
+
+        $this->responseData['rows'] =  $attendance->attendanceStudent ?? collect();
+        $this->responseData['module_name'] = 'Điểm danh về';
+        return $this->responseView($this->viewPart . '.checkout');
     }
 
     /**
@@ -83,7 +108,7 @@ class AttendancesController extends Controller
             $student_id = $request->input('student_id');
             $class_id = $request->input('class_id');
             $tracked_at = $request->input('tracked_at');
-            $params = $request->only(['status', 'checkin_parent_id', 'checkin_teacher_id', 'json_params']);
+            $params = $request->only(['status', 'checkin_parent_id', 'checkin_teacher_id', 'checkout_parent_id', 'checkout_teacher_id', 'json_params']);
             //Lấy ngày điểm danh của lớp
             $attendance = Attendances::where('class_id', $class_id)->whereDate('tracked_at', $tracked_at)->first();
             // Chưa có thì tạo mới
@@ -101,10 +126,11 @@ class AttendancesController extends Controller
 
             //Xử lý lưu ảnh nếu có
             $publicPath = $attendance_student->json_params->img ?? '';
-            if ($params['json_params']['img']) {
+            $publicPath_return = $attendance_student->json_params->img_return ?? '';
+            if (isset($params['json_params']['img'])) {
                 if ($this->isBase64($params['json_params']['img'])) {
                     // Xóa ảnh cũ nếu có
-                    if ($attendance_student && $attendance_student->json_params->img) {
+                    if (isset($attendance_student->json_params->img) && $attendance_student->json_params->img) {
                         $oldFilePath = public_path($attendance_student->json_params->img);
                         if (file_exists($oldFilePath)) {
                             unlink($oldFilePath);
@@ -116,10 +142,36 @@ class AttendancesController extends Controller
                     $publicPath = $this->storeImagePath($params['json_params']['img'], $directory, $fileName);
                 }
             }
+            if (isset($params['json_params']['img_return'])) {
+                if ($this->isBase64($params['json_params']['img_return'])) {
+                    // Xóa ảnh cũ nếu có
+                    if (isset($attendance_student->json_params->img_return) && $attendance_student->json_params->img_return != '') {
+                        $oldFilePath = public_path($attendance_student->json_params->img_return);
+                        if (file_exists($oldFilePath)) {
+                            unlink($oldFilePath);
+                        }
+                    }
+                    $today = Carbon::parse($tracked_at)->format('d_m_Y');
+                    $directory = "data/attendance/{$today}/{$class_id}/checkout";
+                    $fileName = 'student_' . $student_id . '_' . time() . '.png';
+                    $publicPath_return = $this->storeImagePath($params['json_params']['img_return'], $directory, $fileName);
+                }
+            }
             $params['json_params']['img'] = $publicPath ?? null;
+            $params['json_params']['img_return'] = $publicPath_return ?? null;
+
             // Đã có thì cập nhật
-            // Chưa có thì tạo mới
             if ($attendance_student) {
+                // Chuyển object về mảng
+                $old_json_params = is_object($attendance_student->json_params)
+                    ? json_decode(json_encode($attendance_student->json_params), true)
+                    : (is_array($attendance_student->json_params) ? $attendance_student->json_params : []);
+                // Merge 2 mảng và cập nhật nếu có dữ liệu mới
+                $arr_insert['json_params'] = array_replace_recursive($old_json_params, $params['json_params'] ?? []);
+                $params['json_params'] = $arr_insert['json_params'];
+                $params['admin_updated_id'] = $admin->id;
+                $params['checkout_at'] = Carbon::now();
+
                 $attendance_student->update($params);
             } else {
                 $params['student_id'] = $student_id;

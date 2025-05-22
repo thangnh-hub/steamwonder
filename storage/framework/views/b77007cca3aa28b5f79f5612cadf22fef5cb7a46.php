@@ -235,12 +235,19 @@
                                     </td>
                                     <td style="width:150px">
 
-                                        <a class="btn btn-sm btn-primary" data-toggle="tooltip" target="_blank"
-                                            title="<?php echo app('translator')->get('Điểm danh'); ?>" data-original-title="<?php echo app('translator')->get('Điểm danh'); ?>"
-                                            href="<?php echo e(route('attendance.index',['class_id'=>$row->id,'tracked_at'=>date('Y-m-d')])); ?>"
+                                        <a class="btn btn-sm btn-primary mb-5" data-toggle="tooltip" target="_blank"
+                                            title="<?php echo app('translator')->get('Điểm danh đến'); ?>" data-original-title="<?php echo app('translator')->get('Điểm danh đến'); ?>"
+                                            href="<?php echo e(route('attendance.index', ['class_id' => $row->id, 'tracked_at' => date('Y-m-d')])); ?>"
                                             onclick="return openCenteredPopup(this.href)">
                                             <i class="fa fa-calendar-check-o"></i>
                                         </a>
+                                        <a class="btn btn-sm btn-danger mb-5" data-toggle="tooltip" target="_blank"
+                                            title="<?php echo app('translator')->get('Điểm danh về'); ?>" data-original-title="<?php echo app('translator')->get('Điểm danh về'); ?>"
+                                            href="<?php echo e(route('attendance.checkout', ['class_id' => $row->id, 'tracked_at' => date('Y-m-d')])); ?>"
+                                            onclick="return openCenteredPopup(this.href)">
+                                            <i class="fa fa-calendar-check-o"></i>
+                                        </a>
+                                        <br>
                                         <button class="btn btn-sm btn-success btn_show_detail" data-toggle="tooltip"
                                             data-id="<?php echo e($row->id); ?>"
                                             data-url="<?php echo e(route(Request::segment(2) . '.show', $row->id)); ?>"

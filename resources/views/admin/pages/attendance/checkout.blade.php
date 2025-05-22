@@ -24,13 +24,12 @@
         }
 
         .box_image {
-            width: 150px;
-            height: 150px;
-            overflow: hidden;
+            position: relative;
         }
 
         .box_image img {
             width: 100%;
+            max-width: 160px;
             height: 100%;
             object-fit: cover;
             border-radius: 5px;
@@ -84,6 +83,20 @@
             z-index: 10;
             display: flex;
             gap: 10px;
+        }
+
+        .box_capture {
+            font-size: 60px;
+            position: absolute;
+            top: calc(50% - 42px);
+            left: calc(50% - 32px);
+            opacity: 0;
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        .box_capture:hover {
+            opacity: 0.5;
         }
     </style>
 @endsection
@@ -210,9 +223,8 @@
                         <table class="table table-hover table-bordered">
                             <thead>
                                 <tr>
-                                    {{-- <th class="text-center" rowspan="2">@lang('STT')</th> --}}
+                                    <th class="text-center" rowspan="2">@lang('STT')</th>
                                     <th class="text-center" rowspan="2">@lang('Thông tin học sinh')</th>
-                                    <th class="text-center" rowspan="2">@lang('Điểm danh')</th>
 
                                     <th class="text-center" rowspan="2">@lang('Nội dung Đưa/Đón')</th>
                                     <th class="text-center" rowspan="2">@lang('Hành động')</th>
@@ -221,66 +233,35 @@
                             <tbody>
                                 @foreach ($rows as $row)
                                     <tr>
-                                        {{-- <td class="text-center">{{ $loop->index + 1 }}</td> --}}
+                                        <td class="text-center">{{ $loop->index + 1 }}</td>
                                         <td>
                                             <p>Mã HS: {{ $row->student->student_code ?? '' }}</p>
                                             <p>Họ tên: {{ $row->student->first_name ?? '' }}
                                                 {{ $row->student->last_name ?? '' }}</p>
                                             <p>Nickname: {{ $row->student->nickname ?? '' }}</p>
                                         </td>
-                                        <td class="">
-                                            <div class="d-flex mb-20">
-                                                <input id="student_{{ $row->student_id }}_checkin"
-                                                    name="attendance[{{ $row->student_id }}][status]"
-                                                    {{ isset($row->attendance->status) && $row->attendance->status == 'checkin' ? 'checked disabled' : '' }}
-                                                    class="radiobox mr-10 checkin" data-id="{{ $row->student_id }}"
-                                                    type="radio" value="checkin">
-                                                <label class="box_radio" for="student_{{ $row->student_id }}_checkin">
-                                                    Đi học
-                                                </label>
-                                            </div>
-                                            <div class="d-flex mb-20">
-                                                <input id="student_{{ $row->student_id }}_absent_unexcused"
-                                                    name="attendance[{{ $row->student_id }}][status]"
-                                                    {{ isset($row->attendance->status) && $row->attendance->status == 'absent_unexcused' ? 'checked' : '' }}
-                                                    class="radiobox mr-10 absent_unexcused"
-                                                    data-id="{{ $row->student_id }}" type="radio"
-                                                    value="absent_unexcused">
-                                                <label class="box_radio"
-                                                    for="student_{{ $row->student_id }}_absent_unexcused">
-                                                    Nghỉ không phép
-                                                </label>
-                                            </div>
-                                            <div class="d-flex mb-20">
-                                                <input id="student_{{ $row->student_id }}_absent_excused"
-                                                    name="attendance[{{ $row->student_id }}][status]"
-                                                    {{ isset($row->attendance->status) && $row->attendance->status == 'absent_excused' ? 'checked' : '' }}
-                                                    class="radiobox mr-10 absent_excused"
-                                                    data-id="{{ $row->student_id }}" type="radio"
-                                                    value="absent_excused">
-                                                <label class="box_radio"
-                                                    for="student_{{ $row->student_id }}_absent_excused">
-                                                    Nghỉ có phép
-                                                </label>
-                                            </div>
-                                        </td>
+
                                         <td class="d-flex-wap content_{{ $row->student_id }}">
-                                            <div class="box_image">
+                                            <div class="box_image text-center">
+                                                <div class="box_capture" data-id="{{ $row->student_id }}"><i
+                                                        class="fa fa-camera" aria-hidden="true"></i>
+                                                </div>
                                                 <img class="photo_{{ $row->student_id }}"
-                                                    src="{{ isset($row->attendance->json_params->img) ? asset($row->attendance->json_params->img) : url('themes/admin/img/no_image.jpg') }}">
+                                                    src="{{ isset($row->json_params->img_return) ? asset($row->json_params->img_return) : url('themes/admin/img/no_image.jpg') }}">
                                                 <input type="hidden" class="img_{{ $row->student_id }}"
-                                                    name="attendance[{{ $row->student_id }}][json_params][img]"
-                                                    value="{{ isset($row->attendance->json_params->img) ? $row->attendance->json_params->img : '' }}">
+                                                    name="attendance[{{ $row->student_id }}][json_params][img_return]"
+                                                    value="{{ isset($row->json_params->img_return) ? $row->json_params->img_return : '' }}">
                                             </div>
+
                                             <div class="box_content information_{{ $row->student_id }}">
                                                 <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                                                    <select class="form-control select2 w-100 check_disable" disabled
-                                                        name="attendance[{{ $row->student_id }}][checkin_parent_id]">
-                                                        <option selected="" value="">-Người đưa-</option>
+                                                    <select class="form-control select2 w-100 check_disable"
+                                                        name="attendance[{{ $row->student_id }}][checkout_parent_id]">
+                                                        <option selected="" value="">-Người đón-</option>
                                                         @if (isset($row->student->studentParents) && count($row->student->studentParents) > 0)
                                                             @foreach ($row->student->studentParents as $item)
                                                                 <option value="{{ $item->parent_id }}"
-                                                                    {{ isset($row->attendance->checkin_parent_id) && $row->attendance->checkin_parent_id == $item->parent_id ? 'selected' : '' }}>
+                                                                    {{ isset($row->checkout_parent_id) && $row->checkout_parent_id == $item->parent_id ? 'selected' : '' }}>
                                                                     {{ $item->relationship->title ?? '' }}:
                                                                     {{ $item->parent->first_name ?? '' }}
                                                                     {{ $item->parent->last_name ?? '' }}</option>
@@ -289,29 +270,28 @@
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                                                    <select class="form-control select2 w-100 check_disable" disabled
-                                                        name="attendance[{{ $row->student_id }}][checkin_teacher_id]">
-                                                        <option value="">-Giáo viên đón-</option>
+                                                    <select class="form-control select2 w-100 check_disable"
+                                                        name="attendance[{{ $row->student_id }}][checkout_teacher_id]">
+                                                        <option value="">-Giáo viên đưa-</option>
                                                         @foreach ($list_teacher as $item)
                                                             <option value="{{ $item->id }}"
-                                                                {{ isset($row->attendance->checkin_teacher_id) && $row->attendance->checkin_teacher_id == $item->id ? 'selected' : '' }}>
+                                                                {{ isset($row->checkout_teacher_id) && $row->checkout_teacher_id == $item->id ? 'selected' : '' }}>
                                                                 {{ $item->name ?? '' }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-sm-12 col-xs-12">
-                                                    <input name="attendance[{{ $row->student_id }}][json_params][note]"
-                                                        type="text" class="form-control check_disable" disabled
+                                                    <input
+                                                        name="attendance[{{ $row->student_id }}][json_params][note_return]"
+                                                        type="text" class="form-control check_disable"
                                                         id="note_{{ $row->student_id }}" placeholder="Nhập ghi chú"
-                                                        value="{{ isset($row->attendance->json_params->note) ? $row->attendance->json_params->note : '' }}">
+                                                        value="{{ isset($row->json_params->note_return) ? $row->json_params->note_return : '' }}">
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="text-center">
-                                            @if (!isset($row->attendance->status) || $row->attendance->status != 'checkin')
-                                                <button class="btn btn-success btn_attendance"
-                                                    data-id="{{ $row->student_id }}">@lang('Điểm danh')</button>
-                                            @endif
+                                            <button class="btn btn-success btn_attendance"
+                                                data-id="{{ $row->student_id }}">@lang('Điểm danh')</button>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -364,13 +344,13 @@
 
         $('.area_id').change(function() {
             var area_id = $(this).val();
-            var _html = `<option value="">{{__('Please select')}}</option>`;
+            var _html = `<option value="">{{ __('Please select') }}</option>`;
             if (area_id) {
-                    _html += classs
-                        .filter(item => item.area_id == area_id)
-                        .map(item => `<option value="${item.id}">${item.code} - ${item.name}</option>`)
-                        .join('');
-                }
+                _html += classs
+                    .filter(item => item.area_id == area_id)
+                    .map(item => `<option value="${item.id}">${item.code} - ${item.name}</option>`)
+                    .join('');
+            }
             $('.class_id').html(_html).trigger('change');
         })
 
@@ -382,7 +362,7 @@
             var noImage = @json(url('themes/admin/img/no_image.jpg'));
 
 
-            $(document).on('change', '.checkin', function(e) {
+            $(document).on('click', '.box_capture', function(e) {
                 // Lấy id của học sinh từ thuộc tính data-id
                 var _student_id = $(this).attr('data-id');
                 $('#capture').attr('data-id', _student_id);
@@ -461,13 +441,6 @@
                 // Đóng modal và checked học sinh
                 $('#modal_camera').modal('hide');
             });
-            $('.absent_unexcused, .absent_excused').on('change', function() {
-                var _id = $(this).attr('data-id');
-                $('.information_' + _id).find('.check_disable').prop('disabled', true);
-                $('.photo_' + _id).attr('src', noImage);
-                $('.img_' + _id).val('');
-            })
-
 
             // Khi tắt modal thì tắt cam
             $(document).on('hidden.bs.modal', '#modal_camera', function() {
@@ -497,26 +470,23 @@
                 var tracked_at = $('.tracked_at').val();
 
                 var _status = $('input[name="attendance[' + studentId + '][status]"]:checked').val();
-                var _checkin_parent_id = $('select[name="attendance[' + studentId +
-                    '][checkin_parent_id]"]').val();
-                var _checkin_teacher_id = $('select[name="attendance[' + studentId +
-                    '][checkin_teacher_id]"]').val();
-                var _note = $('input[name="attendance[' + studentId + '][json_params][note]"]').val();
-                var _img = $('input[name="attendance[' + studentId + '][json_params][img]"]').val();
+                var _checkout_parent_id = $('select[name="attendance[' + studentId +
+                    '][checkout_parent_id]"]').val();
+                var _checkout_teacher_id = $('select[name="attendance[' + studentId +
+                    '][checkout_teacher_id]"]').val();
+                var _note = $('input[name="attendance[' + studentId + '][json_params][note_return]"]')
+                    .val();
+                var _img = $('input[name="attendance[' + studentId + '][json_params][img_return]"]').val();
 
-                if (_status == undefined) {
-                    alert('Vui lòng chọn trạng thái điểm danh');
+                if (_checkout_parent_id == '') {
+                    alert('Vui lòng chọn người đón');
                     return;
                 }
-                if (_status == 'checkin' && _checkin_parent_id == '') {
-                    alert('Vui lòng chọn người đưa');
+                if (_checkout_teacher_id == '') {
+                    alert('Vui lòng chọn giáo viên đưa');
                     return;
                 }
-                if (_status == 'checkin' && _checkin_teacher_id == '') {
-                    alert('Vui lòng chọn giáo viên đón');
-                    return;
-                }
-                if (_status == 'checkin' && _img == '') {
+                if (_img == '') {
                     alert('Vui lòng chụp ảnh');
                     return;
                 }
@@ -529,10 +499,10 @@
                         "class_id": class_id,
                         "tracked_at": tracked_at,
                         "status": _status,
-                        "checkin_parent_id": _checkin_parent_id,
-                        "checkin_teacher_id": _checkin_teacher_id,
-                        "json_params[note]": _note,
-                        "json_params[img]": _img,
+                        "checkout_parent_id": _checkout_parent_id,
+                        "checkout_teacher_id": _checkout_teacher_id,
+                        "json_params[note_return]": _note,
+                        "json_params[img_return]": _img,
                         _token: '{{ csrf_token() }}',
                     },
                     success: function(response) {

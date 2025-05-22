@@ -113,6 +113,7 @@ Route::group(['namespace' => 'Admin'], function () {
                 'promotions' => 'PromotionController',
             ]);
 
+            Route::get('attendance/check-out/index', 'AttendancesController@checkout')->name('attendance.checkout');
             Route::get('attendance/summary-by-month/index', 'AttendancesController@attendanceSummaryByMonth')->name('attendance.summary_by_month');
             Route::post('attendance/summary-by-month/update_or_store', 'AttendancesController@updateOrstoreAttendance')->name('attendance.summary_by_month.update_or_store');
 

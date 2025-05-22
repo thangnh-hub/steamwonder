@@ -125,8 +125,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <input name="json_params[return_note]" type="text" class="form-control return_note"
-                            placeholder="Nhập ghi chú" value="<?php echo e(isset($detail->json_params->return_note) ? $detail->json_params->return_note : ''); ?>">
+                        <input name="json_params[note_return]" type="text" class="form-control note_return"
+                            placeholder="Nhập ghi chú" value="<?php echo e(isset($detail->json_params->note_return) ? $detail->json_params->note_return : ''); ?>">
                     </div>
                     <div class="form-group">
                         <input type="datetime-local" class="form-control" name="checkout_at"
