@@ -100,18 +100,21 @@ class AttendancesController extends Controller
                 ->where('class_attendance_id', $attendance->id)->first();
 
             //Xử lý lưu ảnh nếu có
+            $publicPath = $attendance_student->json_params->img ?? '';
             if ($params['json_params']['img']) {
-                // Xóa ảnh cũ nếu có
-                if ($attendance_student && $attendance_student->json_params->img) {
-                    $oldFilePath = public_path($attendance_student->json_params->img);
-                    if (file_exists($oldFilePath)) {
-                        unlink($oldFilePath);
+                if ($this->isBase64($params['json_params']['img'])) {
+                    // Xóa ảnh cũ nếu có
+                    if ($attendance_student && $attendance_student->json_params->img) {
+                        $oldFilePath = public_path($attendance_student->json_params->img);
+                        if (file_exists($oldFilePath)) {
+                            unlink($oldFilePath);
+                        }
                     }
+                    $today = Carbon::parse($tracked_at)->format('d_m_Y');
+                    $directory = "data/attendance/{$today}/{$class_id}/checkin";
+                    $fileName = 'student_' . $student_id . '_' . time() . '.png';
+                    $publicPath = $this->storeImagePath($params['json_params']['img'], $directory, $fileName);
                 }
-                $today = Carbon::parse($tracked_at)->format('d_m_Y');
-                $directory = "data/attendance/{$today}/{$class_id}/checkin";
-                $fileName = 'student_' . $student_id . '_' . time() . '.png';
-                $publicPath = $this->storeImagePath($params['json_params']['img'], $directory, $fileName);
             }
             $params['json_params']['img'] = $publicPath ?? null;
             // Đã có thì cập nhật
@@ -281,28 +284,34 @@ class AttendancesController extends Controller
             $today = Carbon::parse($date)->format('d_m_Y');
             // Xử lý lưu ảnh nếu có
             if ($image_arrival != null) {
-                // Xóa ảnh cũ nếu có
-                if ($attendance_student && $attendance_student->json_params->img) {
-                    $oldFilePath = public_path($attendance_student->json_params->img);
-                    if (file_exists($oldFilePath)) {
-                        unlink($oldFilePath);
+                $params['json_params']['img'] = $attendance_student->json_params->img ?? '';
+                if ($this->isBase64($image_arrival)) {
+                    // Xóa ảnh cũ nếu có
+                    if ($attendance_student && $attendance_student->json_params->img) {
+                        $oldFilePath = public_path($attendance_student->json_params->img);
+                        if (file_exists($oldFilePath)) {
+                            unlink($oldFilePath);
+                        }
                     }
+                    $directory = "data/attendance/{$today}/{$class_id}/checkin";
+                    $fileName = 'student_' . $student_id . '_' . time() . '.png';
+                    $params['json_params']['img'] = $this->storeImagePath($image_arrival, $directory, $fileName);
                 }
-                $directory = "data/attendance/{$today}/{$class_id}/checkin";
-                $fileName = 'student_' . $student_id . '_' . time() . '.png';
-                $params['json_params']['img'] = $this->storeImagePath($image_arrival, $directory, $fileName);
             }
             if ($image_return != null) {
-                // Xóa ảnh cũ nếu có
-                if ($attendance_student && isset($attendance_student->json_params->img_return)) {
-                    $returnoldFilePath = public_path($attendance_student->json_params->img_return);
-                    if (file_exists($returnoldFilePath)) {
-                        unlink($returnoldFilePath);
+                if ($this->isBase64($image_return)) {
+                    $params['json_params']['img_return'] = $attendance_student->json_params->img_return ?? '';
+                    // Xóa ảnh cũ nếu có
+                    if ($attendance_student && isset($attendance_student->json_params->img_return)) {
+                        $returnoldFilePath = public_path($attendance_student->json_params->img_return);
+                        if (file_exists($returnoldFilePath)) {
+                            unlink($returnoldFilePath);
+                        }
                     }
+                    $return_directory = "data/attendance/{$today}/{$class_id}/checkout";
+                    $return_fileName = 'student_' . $student_id . '_' . time() . '.png';
+                    $params['json_params']['img_return'] = $this->storeImagePath($image_return, $return_directory, $return_fileName);
                 }
-                $return_directory = "data/attendance/{$today}/{$class_id}/checkout";
-                $return_fileName = 'student_' . $student_id . '_' . time() . '.png';
-                $params['json_params']['img_return'] = $this->storeImagePath($image_return, $return_directory, $return_fileName);
             }
             // Check attendance
             if ($attendance_student) {
@@ -360,5 +369,9 @@ class AttendancesController extends Controller
         // Trả về đường dẫn ảnh
         $publicPath = $directory . "/{$fileName}";
         return $publicPath;
+    }
+    function isBase64($string)
+    {
+        return (bool) preg_match('/^data:image\/(png|jpeg|jpg|gif);base64,/', $string);
     }
 }

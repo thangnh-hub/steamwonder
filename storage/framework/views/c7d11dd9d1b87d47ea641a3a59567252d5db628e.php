@@ -139,10 +139,24 @@
 
             #modal_attendance .modal-dialog {
                 width: calc(100% - 20px);
+                max-height: calc(100vh - 20px);
+                overflow-y: auto;
             }
-            .box_checked, .box_image, .box_content{
+
+            .box_checked {
+                width: 100%;
+                margin-bottom: 15px
+            }
+
+            .box_image,
+            .box_content {
                 width: 100%;
             }
+
+            .attendance_arrival {
+                border-right: none;
+            }
+
             .div_h {
                 display: none;
             }
@@ -481,6 +495,13 @@
                 // Bật camera
                 checkCameraAvailability();
                 startCamera(facingMode)
+            });
+            // Nút đổi camera
+            $('#toggle_camera').on('click', function() {
+                const newFacingMode = currentFacingMode === "user" ? {
+                    exact: "environment"
+                } : "user";
+                startCamera(newFacingMode);
             });
             // Chụp ảnh
             $(document).on('click', '#capture', function() {
