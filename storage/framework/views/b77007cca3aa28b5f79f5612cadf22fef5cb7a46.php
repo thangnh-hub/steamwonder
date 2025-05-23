@@ -98,12 +98,12 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Chương trình'); ?></label>
-                                <select name="education_programs_id" id="education_programs" class="form-control select2"
+                                <select name="education_program_id" id="education_programs" class="form-control select2"
                                     style="width: 100%;">
                                     <option value=""><?php echo app('translator')->get('Please select'); ?></option>
                                     <?php $__currentLoopData = $programs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <option value="<?php echo e($item->id); ?>"
-                                            <?php echo e(isset($params['education_programs_id']) && $params['education_programs_id'] == $item->id ? 'selected' : ''); ?>>
+                                            <?php echo e(isset($params['education_program_id']) && $params['education_program_id'] == $item->id ? 'selected' : ''); ?>>
                                             <?php echo e($item->name); ?></option>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>

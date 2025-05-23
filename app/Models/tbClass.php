@@ -42,15 +42,21 @@ class tbClass extends Model
             })
             ->when(!empty($params['permisson_area_id']), function ($query) use ($params) {
                 if (is_array($params['permisson_area_id'])) {
-                  return $query->whereIn('tb_class.area_id', $params['permisson_area_id']);
+                    return $query->whereIn('tb_class.area_id', $params['permisson_area_id']);
                 }
                 return $query->where('tb_class.area_id',  $params['permisson_area_id']);
-              });
+            })
+            ->when(!empty($params['education_age_id']), function ($query) use ($params) {
+                return $query->where('tb_class.education_age_id', $params['education_age_id']);
+            })
+            ->when(!empty($params['education_program_id']), function ($query) use ($params) {
+                return $query->where('tb_class.education_program_id', $params['education_program_id']);
+            });
         if (isset($params['area_id']) && !empty($params['area_id'])) {
             $query->where('tb_class.area_id', $params['area_id']);
         }
         if (isset($params['room_id']) && !empty($params['room_id'])) {
-            $query->whereIn('tb_class.id', $params['room_id']);
+            $query->where('tb_class.room_id', $params['room_id']);
         }
         if (!empty($params['status'])) {
             $query->where('tb_class.status', $params['status']);
@@ -105,7 +111,7 @@ class tbClass extends Model
     {
         return $this
             ->belongsToMany(Student::class, StudentClass::class, 'class_id', 'student_id')
-            ->withPivot('start_at', 'stop_at','status','type', 'json_params')
+            ->withPivot('start_at', 'stop_at', 'status', 'type', 'json_params')
             ->withTimestamps();
     }
 
