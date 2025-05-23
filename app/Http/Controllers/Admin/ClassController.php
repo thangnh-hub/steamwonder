@@ -231,7 +231,7 @@ class ClassController extends Controller
             $students = $request->input('student');
             if (isset($students) && count($students) > 0) {
                 foreach ($students as $id => $val) {
-                    // Kiểm tra xem giáo viên đã tồn tại trong lớp chưa
+                    // Kiểm tra xem học viên đã tồn tại trong lớp chưa
                     $check_student = StudentClass::where('class_id', $classs->id)->where('student_id', $id)->first();
                     if ($check_student) {
                         // Nếu học viên đã tồn tại trong lớp thì update lại thông tin
@@ -243,7 +243,7 @@ class ClassController extends Controller
                             'admin_updated_id' => $admin->id
                         ]);
                     } else {
-                        // Nếu giáo viên chưa tồn tại trong lớp thì tạo mới
+                        // Nếu học viên chưa tồn tại trong lớp thì tạo mới
                         StudentClass::create([
                             'class_id' => $classs->id,
                             'student_id' => $id,
@@ -256,6 +256,7 @@ class ClassController extends Controller
                         ]);
                     }
                 }
+
                 $studentIds = array_keys($students);
                 StudentClass::where('class_id', $classs->id)
                     ->whereNotIn('student_id', $studentIds)

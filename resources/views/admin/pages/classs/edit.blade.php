@@ -234,6 +234,7 @@
                                                             <tbody class="box_student">
                                                                 @isset($detail->students)
                                                                     @foreach ($detail->students as $item)
+                                                                    @if ($item->pivot->status != 'delete')
                                                                         <tr class="item_student"
                                                                             data-id="{{ $item->id }}">
                                                                             <td>{{ $item->student_code }}</td>
@@ -276,6 +277,7 @@
                                                                                     onclick="this.parentNode.parentNode.remove()">
                                                                             </td>
                                                                         </tr>
+                                                                       @endif
                                                                     @endforeach
                                                                 @endisset
                                                             </tbody>

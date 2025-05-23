@@ -105,12 +105,12 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>@lang('Chương trình')</label>
-                                <select name="education_programs_id" id="education_programs" class="form-control select2"
+                                <select name="education_program_id" id="education_programs" class="form-control select2"
                                     style="width: 100%;">
                                     <option value="">@lang('Please select')</option>
                                     @foreach ($programs as $key => $item)
                                         <option value="{{ $item->id }}"
-                                            {{ isset($params['education_programs_id']) && $params['education_programs_id'] == $item->id ? 'selected' : '' }}>
+                                            {{ isset($params['education_program_id']) && $params['education_program_id'] == $item->id ? 'selected' : '' }}>
                                             {{ $item->name }}</option>
                                     @endforeach
                                 </select>
