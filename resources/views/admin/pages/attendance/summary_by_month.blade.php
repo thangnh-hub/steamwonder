@@ -131,6 +131,39 @@
             display: flex;
             gap: 10px;
         }
+
+        .div_h {
+            height: 25px;
+            margin-bottom: 10px
+        }
+
+        @media (max-width: 768px) {
+
+            #modal_attendance .modal-dialog {
+                width: calc(100% - 20px);
+                max-height: calc(100vh - 20px);
+                overflow-y: auto;
+            }
+
+            .box_checked {
+                width: 100%;
+                margin-bottom: 15px
+            }
+
+            .box_image,
+            .box_content {
+                width: 100%;
+            }
+
+            .attendance_arrival {
+                border-right: none;
+            }
+
+            .div_h {
+                display: none;
+            }
+
+        }
     </style>
 @endsection
 @section('content-header')
@@ -162,10 +195,10 @@
             <form action="{{ route(Request::segment(2) . '.summary_by_month') }}" method="GET">
                 <div class="box-body">
                     <div class="d-flex-wap">
-                        <div class="col-md-3">
+                        <div class="col-xs-12 col-md-3">
                             <div class="form-group">
                                 <label>@lang('Area')</label>
-                                <select name="area_id" class="form-control select2 w-100">
+                                <select name="area_id" class="area_id form-control select2 w-100">
                                     <option value="">@lang('Please select')</option>
                                     @foreach ($areas as $item)
                                         <option value="{{ $item->id }}"
@@ -175,7 +208,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-xs-12 col-md-3">
                             <div class="form-group">
                                 <label>@lang('Lớp') <small class="text-red">*</small></label>
                                 <select required name="class_id" class="class_id form-control select2 w-100">
@@ -188,21 +221,21 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-xs-12 col-md-3">
                             <div class="form-group">
                                 <label>@lang('Tháng') <small class="text-red">*</small></label>
                                 <input type="month" name="month" class="form-control month" required
                                     value="{{ isset($params['month']) && $params['month'] != '' ? $params['month'] : date('Y-m', time()) }}">
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-xs-12 col-md-3">
                             <div class="form-group">
                                 <label>@lang('Keyword') </label>
                                 <input type="text" class="form-control" name="keyword" placeholder="@lang('Lọc theo mã học viên, họ tên hoặc email')"
                                     value="{{ isset($params['keyword']) ? $params['keyword'] : '' }}">
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-xs-12 col-md-3">
                             <div class="form-group">
                                 <label>@lang('Lấy điểm danh')</label>
                                 <div>
@@ -294,7 +327,7 @@
                                                         data-class="{{ $row->class_id }}"
                                                         data-student="{{ $row->student_id }}"
                                                         data-date="{{ $carbonDate->copy()->day($i)->format('Y-m-d') }}"
-                                                        data-original-title="@lang('Chi tiết')">
+                                                        data-toggle="tooltip" data-original-title="@lang('Lấy điểm danh')">
                                                         <i class="{{ isset($row->attendances_by_day[$i]) ? 'fa fa-check-circle-o' : 'fa fa-window-minimize' }} "
                                                             aria-hidden="true"></i>
                                                     </div>
@@ -375,13 +408,28 @@
         let videoStream = null; // Biến lưu trữ stream của camera
         let currentFacingMode = "user"; // Chế độ camera mặc định: Camera trước
         var noImage = @json(url('themes/admin/img/no_image.jpg'));
+        var areas = @json($areas ?? []);
+        var classs = @json($classs ?? []);
+
+
+
         $(document).ready(function() {
 
             const video = $('#video')[0];
             const canvas = $('#canvas')[0];
             const photo_arrival = $('#photo_arrival')[0];
             const photo_return = $('#photo_return')[0];
-
+            $('.area_id').change(function() {
+                var area_id = $(this).val();
+                var _html = `<option value="">{{ __('Please select') }}</option>`;
+                if (area_id) {
+                    _html += classs
+                        .filter(item => item.area_id == area_id)
+                        .map(item => `<option value="${item.id}">${item.code} - ${item.name}</option>`)
+                        .join('');
+                }
+                $('.class_id').html(_html).trigger('change');
+            })
 
             $('.item_day').click(function() {
                 var class_id = $(this).data('class');
@@ -443,6 +491,13 @@
                 checkCameraAvailability();
                 startCamera(facingMode)
             });
+            // Nút đổi camera
+            $('#toggle_camera').on('click', function() {
+                const newFacingMode = currentFacingMode === "user" ? {
+                    exact: "environment"
+                } : "user";
+                startCamera(newFacingMode);
+            });
             // Chụp ảnh
             $(document).on('click', '#capture', function() {
                 var type = $(this).attr('data-type');
@@ -497,7 +552,8 @@
                         if (response) {
                             item.removeClass('text-secondary');
                             item.addClass('text-success');
-                            item.html('<i class="fa fa-check-circle-o" aria-hidden="true"></i>');
+                            item.html(
+                                '<i class="fa fa-check-circle-o" aria-hidden="true"></i>');
                             var _html = `<div class="alert alert-${response.data} alert-dismissible">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                             ${response.message}

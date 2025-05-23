@@ -32,7 +32,7 @@
                     <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                 </div>
             </div>
-            <form action="<?php echo e(route(Request::segment(2) . '.index')); ?>" method="GET">
+            <form action="<?php echo e(route(Request::segment(2) . '.index')); ?>" method="GET" id="form_filter">
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-3">
@@ -117,6 +117,9 @@
                                     <a class="btn btn-default btn-sm" href="<?php echo e(route(Request::segment(2) . '.index')); ?>">
                                         <?php echo app('translator')->get('Reset'); ?>
                                     </a>
+                                    <a href="javascript:void(0)" data-url="<?php echo e(route('class.export_class')); ?>"
+                                        class="btn btn-sm btn-success btn_export"><i class="fa fa-file-excel-o"></i>
+                                        <?php echo app('translator')->get('Export dữ liệu'); ?></a>
                                 </div>
                             </div>
                         </div>
@@ -221,10 +224,12 @@
                                         <?php if(!empty($row->teacher)): ?>
                                             <ul>
                                                 <?php $__currentLoopData = $row->teacher; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                    <li
-                                                        class="<?php echo e(optional($item->pivot)->is_teacher_main === 1 ? 'text-success text-bold' : ''); ?>">
-                                                        <?php echo e($item->admin_code ?? ''); ?> -
-                                                        <?php echo e($item->name ?? ''); ?></li>
+                                                    <?php if($item->pivot->status != 'delete'): ?>
+                                                        <li
+                                                            class="<?php echo e(optional($item->pivot)->is_teacher_main === 1 ? 'text-success text-bold' : ''); ?>">
+                                                            <?php echo e($item->admin_code ?? ''); ?> -
+                                                            <?php echo e($item->name ?? ''); ?></li>
+                                                    <?php endif; ?>
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </ul>
                                         <?php endif; ?>
@@ -234,13 +239,19 @@
 
                                     </td>
                                     <td style="width:150px">
-
-                                        <a class="btn btn-sm btn-primary" data-toggle="tooltip" target="_blank"
-                                            title="<?php echo app('translator')->get('Điểm danh'); ?>" data-original-title="<?php echo app('translator')->get('Điểm danh'); ?>"
-                                            href="<?php echo e(route('attendance.index',['class_id'=>$row->id,'tracked_at'=>date('Y-m-d')])); ?>"
+                                        <a class="btn btn-sm btn-primary mb-5" data-toggle="tooltip" target="_blank"
+                                            title="<?php echo app('translator')->get('Điểm danh đến'); ?>" data-original-title="<?php echo app('translator')->get('Điểm danh đến'); ?>"
+                                            href="<?php echo e(route('attendance.index', ['class_id' => $row->id, 'tracked_at' => date('Y-m-d')])); ?>"
                                             onclick="return openCenteredPopup(this.href)">
                                             <i class="fa fa-calendar-check-o"></i>
                                         </a>
+                                        <a class="btn btn-sm btn-danger mb-5" data-toggle="tooltip" target="_blank"
+                                            title="<?php echo app('translator')->get('Điểm danh về'); ?>" data-original-title="<?php echo app('translator')->get('Điểm danh về'); ?>"
+                                            href="<?php echo e(route('attendance.checkout', ['class_id' => $row->id, 'tracked_at' => date('Y-m-d')])); ?>"
+                                            onclick="return openCenteredPopup(this.href)">
+                                            <i class="fa fa-calendar-check-o"></i>
+                                        </a>
+                                        <br>
                                         <button class="btn btn-sm btn-success btn_show_detail" data-toggle="tooltip"
                                             data-id="<?php echo e($row->id); ?>"
                                             data-url="<?php echo e(route(Request::segment(2) . '.show', $row->id)); ?>"
@@ -324,6 +335,50 @@
                 error: function(response) {
                     var errors = response.responseJSON.message;
                     console.log(errors);
+                }
+            });
+        })
+        $('.btn_export').click(function() {
+            show_loading_notification()
+            var formData = $('#form_filter').serialize();
+            var url = $(this).data('url');
+            $.ajax({
+                url: url,
+                type: 'GET',
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                data: formData,
+                success: function(response) {
+                    if (response) {
+                        var a = document.createElement('a');
+                        var url = window.URL.createObjectURL(response);
+                        a.href = url;
+                        a.download = 'Class.xlsx';
+                        document.body.append(a);
+                        a.click();
+                        a.remove();
+                        window.URL.revokeObjectURL(url);
+                        hide_loading_notification()
+                    } else {
+                        var _html = `<div class="alert alert-warning alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            Bạn không có quyền thao tác chức năng này!
+                            </div>`;
+                        $('.box_alert').prepend(_html);
+                        $('html, body').animate({
+                            scrollTop: $(".alert").offset().top
+                        }, 1000);
+                        setTimeout(function() {
+                            $('.alert').remove();
+                        }, 3000);
+                        hide_loading_notification()
+                    }
+                },
+                error: function(response) {
+                    hide_loading_notification()
+                    let errors = response.responseJSON.message;
+                    alert(errors);
                 }
             });
         })

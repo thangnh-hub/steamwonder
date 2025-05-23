@@ -6,7 +6,7 @@
     <div class="col-md-6">
         <div class="form-group attendance_arrival">
             <label class="text-center w-100 fw-bold mb-15"><?php echo app('translator')->get('Điểm danh đến'); ?></label>
-            <div class="d-flex justify-content-around mb-10">
+            <div class="d-flex-wap justify-content-around mb-10">
                 <div class="d-flex box_checked">
                     <input id="student_checkin" name="status" required
                         <?php echo e(isset($detail->status) && $detail->status == 'checkin' ? 'checked disabled' : ''); ?>
@@ -35,8 +35,8 @@
                     </label>
                 </div>
             </div>
-            <div class="d-flex align-items-center">
-                <div class="box_image">
+            <div class="d-flex-wap align-items-center">
+                <div class="box_image text-center">
                     <div class="box_capture" data-type="arrival"><i class="fa fa-camera" aria-hidden="true"></i>
                     </div>
                     <img class="photo" id="photo_arrival"
@@ -88,8 +88,8 @@
     <div class="col-md-6">
         <div class="form-group attendance_return">
             <label class="text-center w-100 fw-bold mb-15"><?php echo app('translator')->get('Điểm danh về'); ?></label>
-            <div class="h-25 mb-10"></div>
-            <div class="d-flex align-items-center">
+            <div class="div_h"></div>
+            <div class="d-flex-wap align-items-center">
                 <div class="box_image text-center">
                     <div class="box_capture" data-type="return"><i class="fa fa-camera" aria-hidden="true"></i>
                     </div>
@@ -125,8 +125,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <input name="json_params[return_note]" type="text" class="form-control return_note"
-                            placeholder="Nhập ghi chú" value="<?php echo e(isset($detail->json_params->return_note) ? $detail->json_params->return_note : ''); ?>">
+                        <input name="json_params[note_return]" type="text" class="form-control note_return"
+                            placeholder="Nhập ghi chú" value="<?php echo e(isset($detail->json_params->note_return) ? $detail->json_params->note_return : ''); ?>">
                     </div>
                     <div class="form-group">
                         <input type="datetime-local" class="form-control" name="checkout_at"

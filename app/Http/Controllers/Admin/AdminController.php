@@ -28,6 +28,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\AdminsImport;
+use App\Exports\AdminExport;
 
 
 class AdminController extends Controller
@@ -419,5 +420,11 @@ class AdminController extends Controller
         }
         session()->flash('errorMessage', __('Cần chọn file để Import!'));
         return $this->sendResponse('warning', __('Cần chọn file để Import!'));
+    }
+
+    public function exportAdmin(Request $request)
+    {
+        $params = $request->all();
+        return Excel::download(new AdminExport($params), 'Admin.xlsx');
     }
 }

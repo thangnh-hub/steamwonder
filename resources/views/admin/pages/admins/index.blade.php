@@ -8,12 +8,12 @@
     <section class="content-header">
         <h1>
             @lang($module_name)
-            <div class="pull-right" style="display: flex; margin-left:15px ">
+            {{-- <div class="pull-right" style="display: flex; margin-left:15px ">
                 <input class="form-control" type="file" name="files" id="fileImport" placeholder="@lang('Select File')">
                 <button type="button" class="btn btn-sm btn-success" onclick="importFile()">
                     <i class="fa fa-file-excel-o"></i>
                     @lang('Import dữ liệu')</button>
-            </div>
+            </div> --}}
             <a class="btn btn-sm btn-warning pull-right" href="{{ route(Request::segment(2) . '.create') }}"><i
                     class="fa fa-plus"></i>
                 @lang('Thêm mới người dùng')</a>
@@ -41,10 +41,9 @@
                         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div>
                 </div>
-                <form action="{{ route(Request::segment(2) . '.index') }}" method="GET">
+                <form action="{{ route(Request::segment(2) . '.index') }}" method="GET" id="form_filter">
                     <div class="box-body">
                         <div class="row">
-
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label>@lang('Keyword') </label>
@@ -131,6 +130,9 @@
                                         <a class="btn btn-default btn-sm" href="{{ route(Request::segment(2) . '.index') }}">
                                             @lang('Reset')
                                         </a>
+                                        <a href="javascript:void(0)" data-url="{{ route('admin.export_admin') }}"
+                                            class="btn btn-sm btn-success btn_export"><i class="fa fa-file-excel-o"></i>
+                                            @lang('Export dữ liệu')</a>
                                     </div>
                                 </div>
                             </div>
@@ -292,6 +294,50 @@
 
     @section('script')
         <script>
+            $('.btn_export').click(function() {
+            show_loading_notification()
+            var formData = $('#form_filter').serialize();
+            var url = $(this).data('url');
+            $.ajax({
+                url: url,
+                type: 'GET',
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                data: formData,
+                success: function(response) {
+                    if (response) {
+                        var a = document.createElement('a');
+                        var url = window.URL.createObjectURL(response);
+                        a.href = url;
+                        a.download = 'Admin.xlsx';
+                        document.body.append(a);
+                        a.click();
+                        a.remove();
+                        window.URL.revokeObjectURL(url);
+                        hide_loading_notification()
+                    } else {
+                        var _html = `<div class="alert alert-warning alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            Bạn không có quyền thao tác chức năng này!
+                            </div>`;
+                        $('.box_alert').prepend(_html);
+                        $('html, body').animate({
+                            scrollTop: $(".alert").offset().top
+                        }, 1000);
+                        setTimeout(function() {
+                            $('.alert').remove();
+                        }, 3000);
+                        hide_loading_notification()
+                    }
+                },
+                error: function(response) {
+                    hide_loading_notification()
+                    let errors = response.responseJSON.message;
+                    alert(errors);
+                }
+            });
+        })
             function importFile() {
                 show_loading_notification();
                 var formData = new FormData();

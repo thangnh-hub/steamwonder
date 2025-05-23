@@ -55,7 +55,7 @@ class tbClass extends Model
         if (!empty($params['status'])) {
             $query->where('tb_class.status', $params['status']);
         }
-        
+
         return $query;
     }
 
