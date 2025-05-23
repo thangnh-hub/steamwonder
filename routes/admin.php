@@ -354,6 +354,9 @@ Route::group(['namespace' => 'Admin'], function () {
 
         //import decision
         Route::get('ajax_update_vat_entry_detail', 'WareHouseEntryController@updateVAT')->name('ajax_update_vat_entry_detail');
+        //Export class, teacher by Kudo
+        Route::get('class-export', 'ClassController@exportClass')->name('class.export_class');
+        Route::get('admin-export', 'AdminController@exportAdmin')->name('admin.export_admin');
     });
     // Test teacher
     Route::get('test_teacher', 'TeacherQuizController@testTeacher')->name('test_teacher.test');

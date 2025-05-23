@@ -1,6 +1,3 @@
-
-
-
 <?php $__env->startSection('title'); ?>
     <?php echo app('translator')->get($module_name); ?>
 <?php $__env->stopSection(); ?>
@@ -236,7 +233,9 @@
                                                                         <tr class="item_student"
                                                                             data-id="<?php echo e($item->id); ?>">
                                                                             <td><?php echo e($item->student_code); ?></td>
-                                                                            <td><?php echo e($item->first_name ?? ''); ?> <?php echo e($item->last_name ?? ''); ?>
+                                                                            <td><?php echo e($item->first_name ?? ''); ?>
+
+                                                                                <?php echo e($item->last_name ?? ''); ?>
 
                                                                             </td>
                                                                             <td><?php echo e($item->nickname ?? ''); ?></td>
@@ -314,50 +313,53 @@
                                                             <tbody class="box_teacher">
                                                                 <?php if(isset($detail->teacher)): ?>
                                                                     <?php $__currentLoopData = $detail->teacher; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                        <tr class="item_teacher"
-                                                                            data-id="<?php echo e($item->id); ?>">
-                                                                            <td><?php echo e($item->name ?? ''); ?> </td>
-                                                                            <td><input type="date" class="form-control"
-                                                                                    name="teacher[<?php echo e($item->id); ?>][start_at]"
-                                                                                    value="<?php echo e(optional($item->pivot)->start_at ? date('Y-m-d', strtotime($item->pivot->start_at)) : ''); ?>">
-                                                                            </td>
-                                                                            <td><input type="date" class="form-control"
-                                                                                    name="teacher[<?php echo e($item->id); ?>][stop_at]"
-                                                                                    value="<?php echo e(optional($item->pivot)->stop_at ? date('Y-m-d', strtotime($item->pivot->stop_at)) : ''); ?>">
-                                                                            </td>
+                                                                        <?php if($item->pivot->status != 'delete'): ?>
+                                                                            <tr class="item_teacher"
+                                                                                data-id="<?php echo e($item->id); ?>">
+                                                                                <td><?php echo e($item->name ?? ''); ?> </td>
+                                                                                <td><input type="date" class="form-control"
+                                                                                        name="teacher[<?php echo e($item->id); ?>][start_at]"
+                                                                                        value="<?php echo e(optional($item->pivot)->start_at ? date('Y-m-d', strtotime($item->pivot->start_at)) : ''); ?>">
+                                                                                </td>
+                                                                                <td><input type="date" class="form-control"
+                                                                                        name="teacher[<?php echo e($item->id); ?>][stop_at]"
+                                                                                        value="<?php echo e(optional($item->pivot)->stop_at ? date('Y-m-d', strtotime($item->pivot->stop_at)) : ''); ?>">
+                                                                                </td>
 
-                                                                            <td>
-                                                                                <div class="sw_featured d-flex-al-center">
-                                                                                    <label class="switch">
-                                                                                        <input
-                                                                                            class="teacher_main about-banner"
-                                                                                            name="teacher[<?php echo e($item->id); ?>][is_teacher_main]"
-                                                                                            type="checkbox" value="1"
-                                                                                            <?php echo e(isset($item->pivot->is_teacher_main) && $item->pivot->is_teacher_main == '1' ? 'checked' : ''); ?>>
-                                                                                        <span class="slider round"></span>
-                                                                                    </label>
-                                                                                </div>
-                                                                            </td>
-                                                                            <td>
-                                                                                <div class="w-100">
-                                                                                    <select class="form-control select2 w-100"
-                                                                                        name="teacher[<?php echo e($item->id); ?>][status]">
-                                                                                        <?php $__currentLoopData = $status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                                            <option
-                                                                                                value="<?php echo e($val); ?>"
-                                                                                                <?php echo e(isset($item->pivot->status) && $item->pivot->status == $val ? 'selected' : ''); ?>>
-                                                                                                <?php echo e(__($val)); ?>
+                                                                                <td>
+                                                                                    <div class="sw_featured d-flex-al-center">
+                                                                                        <label class="switch">
+                                                                                            <input
+                                                                                                class="teacher_main about-banner"
+                                                                                                name="teacher[<?php echo e($item->id); ?>][is_teacher_main]"
+                                                                                                type="checkbox" value="1"
+                                                                                                <?php echo e(isset($item->pivot->is_teacher_main) && $item->pivot->is_teacher_main == '1' ? 'checked' : ''); ?>>
+                                                                                            <span class="slider round"></span>
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <div class="w-100">
+                                                                                        <select
+                                                                                            class="form-control select2 w-100"
+                                                                                            name="teacher[<?php echo e($item->id); ?>][status]">
+                                                                                            <?php $__currentLoopData = $status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                                                <option
+                                                                                                    value="<?php echo e($val); ?>"
+                                                                                                    <?php echo e(isset($item->pivot->status) && $item->pivot->status == $val ? 'selected' : ''); ?>>
+                                                                                                    <?php echo e(__($val)); ?>
 
-                                                                                            </option>
-                                                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                                                    </select>
-                                                                                </div>
-                                                                            </td>
-                                                                            <td class="text-center">
-                                                                                <input type="checkbox" checked
-                                                                                    onclick="this.parentNode.parentNode.remove()">
-                                                                            </td>
-                                                                        </tr>
+                                                                                                </option>
+                                                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td class="text-center">
+                                                                                    <input type="checkbox" checked
+                                                                                        onclick="this.parentNode.parentNode.remove()">
+                                                                                </td>
+                                                                            </tr>
+                                                                        <?php endif; ?>
                                                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                                 <?php endif; ?>
                                                             </tbody>
