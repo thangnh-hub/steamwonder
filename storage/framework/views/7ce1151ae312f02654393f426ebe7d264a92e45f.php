@@ -122,7 +122,7 @@
                     <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                 </div>
             </div>
-            <form action="<?php echo e(route(Request::segment(2) . '.index')); ?>" method="GET">
+            <form action="<?php echo e(route(Request::segment(2) . '.checkout')); ?>" method="GET">
                 <div class="box-body">
                     <div class="d-flex-wap">
                         <div class="col-md-3">
@@ -170,7 +170,7 @@
                                 <label><?php echo app('translator')->get('Lấy điểm danh'); ?></label>
                                 <div>
                                     <button type="submit" class="btn btn-primary btn-sm mr-10"><?php echo app('translator')->get('Submit'); ?></button>
-                                    <a class="btn btn-default btn-sm" href="<?php echo e(route(Request::segment(2) . '.index')); ?>">
+                                    <a class="btn btn-default btn-sm" href="<?php echo e(route(Request::segment(2) . '.checkout')); ?>">
                                         <?php echo app('translator')->get('Reset'); ?>
                                     </a>
                                 </div>

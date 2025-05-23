@@ -124,7 +124,7 @@
                     <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                 </div>
             </div>
-            <form action="{{ route(Request::segment(2) . '.index') }}" method="GET">
+            <form action="{{ route(Request::segment(2) . '.checkout') }}" method="GET">
                 <div class="box-body">
                     <div class="d-flex-wap">
                         <div class="col-md-3">
@@ -172,7 +172,7 @@
                                 <label>@lang('Lấy điểm danh')</label>
                                 <div>
                                     <button type="submit" class="btn btn-primary btn-sm mr-10">@lang('Submit')</button>
-                                    <a class="btn btn-default btn-sm" href="{{ route(Request::segment(2) . '.index') }}">
+                                    <a class="btn btn-default btn-sm" href="{{ route(Request::segment(2) . '.checkout') }}">
                                         @lang('Reset')
                                     </a>
                                 </div>
