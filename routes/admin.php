@@ -116,6 +116,7 @@ Route::group(['namespace' => 'Admin'], function () {
                 'unit_conversions' => 'MealUnitConversionController',
             ]);
 
+            Route::get('attendance/check-out/index', 'AttendancesController@checkout')->name('attendance.checkout');
             Route::get('attendance/summary-by-month/index', 'AttendancesController@attendanceSummaryByMonth')->name('attendance.summary_by_month');
             Route::post('attendance/summary-by-month/update_or_store', 'AttendancesController@updateOrstoreAttendance')->name('attendance.summary_by_month.update_or_store');
 
@@ -356,6 +357,9 @@ Route::group(['namespace' => 'Admin'], function () {
 
         //import decision
         Route::get('ajax_update_vat_entry_detail', 'WareHouseEntryController@updateVAT')->name('ajax_update_vat_entry_detail');
+        //Export class, teacher by Kudo
+        Route::get('class-export', 'ClassController@exportClass')->name('class.export_class');
+        Route::get('admin-export', 'AdminController@exportAdmin')->name('admin.export_admin');
     });
     // Test teacher
     Route::get('test_teacher', 'TeacherQuizController@testTeacher')->name('test_teacher.test');

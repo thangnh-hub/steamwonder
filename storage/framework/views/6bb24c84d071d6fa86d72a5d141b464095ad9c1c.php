@@ -1,3 +1,6 @@
+
+
+
 <?php $__env->startSection('title'); ?>
     <?php echo app('translator')->get($module_name); ?>
 <?php $__env->stopSection(); ?>
@@ -214,7 +217,7 @@
                                                 <div class="col-md-4 col-xs-12">
                                                     <div class="form-group">
                                                         <label><?php echo app('translator')->get('Chính sách được hưởng'); ?></label>
-                                                        <select name="policies[]" class="form-control select2" multiple>
+                                                        <select name="policies[]" class="form-control select2">
                                                             <?php
                                                                 $selectedPolicies = $detail->studentPolicies
                                                                     ->pluck('policy_id')

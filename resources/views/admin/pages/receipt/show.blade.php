@@ -164,7 +164,7 @@
                                                         @if ($detail->status == 'pending')
                                                             <button class="btn btn-sm btn-danger" type="button"
                                                                 data-toggle="tooltip"
-                                                                onclick="$(this).closest('tr').remove()"
+                                                                onclick="$(this).closest('tr').remove();updateJsonExplanation()"
                                                                 title="@lang('Delete')"
                                                                 data-original-title="@lang('Delete')">
                                                                 <i class="fa fa-trash"></i>
@@ -445,7 +445,7 @@
                 </td>
                 <td>
                     <button class="btn btn-sm btn-danger" type="button" data-toggle="tooltip"
-                    onclick="$(this).closest('tr').remove()"
+                    onclick="$(this).closest('tr').remove();updateJsonExplanation()"
                         title="@lang('Delete')" data-original-title="@lang('Delete')">
                         <i class="fa fa-trash"></i>
                     </button>

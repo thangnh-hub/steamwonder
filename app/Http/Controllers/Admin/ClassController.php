@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ClassStudentImport;
+use App\Exports\ClassExport;
+
 
 class ClassController extends Controller
 {
@@ -40,7 +42,7 @@ class ClassController extends Controller
     public function index(Request $request)
     {
         $params = $request->all();
-        $rows = tbClass::orderBy('id', 'desc')->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
+        $rows = tbClass::getSqlClass($params)->orderBy('id', 'desc')->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
         $paramStatus['status'] = Consts::STATUS['active'];
         $this->responseData['areas'] =  Area::getsqlArea($paramStatus)->get();
         $this->responseData['rooms'] =  Room::getSqlRoom($paramStatus)->get();
@@ -164,7 +166,8 @@ class ClassController extends Controller
         DB::beginTransaction();
         try {
             $request->validate([
-                'code' => 'required|unique:tb_class,code,' . $classs->id,
+                // 'code' => 'required|unique:tb_class,code,' . $classs->id,
+                'code' => 'required',
                 'name' => "required",
                 'slot' => 'required',
                 'room_id' => 'required',
@@ -188,7 +191,7 @@ class ClassController extends Controller
             $classs->fill($params);
             $classs->save();
             /** Xử lý phần liên quan đến giáo viên trong lớp */
-            $teachers = $request->input('teacher');
+            $teachers = $request->input('teacher') ?? [];
             if (isset($teachers) && count($teachers) > 0) {
                 foreach ($teachers as $id => $val) {
                     // Kiểm tra xem giáo viên đã tồn tại trong lớp chưa
@@ -216,19 +219,19 @@ class ClassController extends Controller
                         ]);
                     }
                 }
-                // Cập nhật status thành 'delete' cho các teacher_id không còn trong danh sách $teachers
-                $teacherIds = array_keys($teachers);
-                TeacherClass::where('class_id', $classs->id)
-                    ->whereNotIn('teacher_id', $teacherIds)
-                    ->update(['status' => 'delete']);
             }
+            // Cập nhật status thành 'delete' cho các teacher_id không còn trong danh sách $teachers
+            $teacherIds = array_keys($teachers);
+            TeacherClass::where('class_id', $classs->id)
+                ->whereNotIn('teacher_id', $teacherIds)
+                ->update(['status' => 'delete']);
 
 
             /** Xử lý phần liên quan đến danh sách học viên trong lớp */
             $students = $request->input('student');
             if (isset($students) && count($students) > 0) {
                 foreach ($students as $id => $val) {
-                    // Kiểm tra xem giáo viên đã tồn tại trong lớp chưa
+                    // Kiểm tra xem học viên đã tồn tại trong lớp chưa
                     $check_student = StudentClass::where('class_id', $classs->id)->where('student_id', $id)->first();
                     if ($check_student) {
                         // Nếu học viên đã tồn tại trong lớp thì update lại thông tin
@@ -240,7 +243,7 @@ class ClassController extends Controller
                             'admin_updated_id' => $admin->id
                         ]);
                     } else {
-                        // Nếu giáo viên chưa tồn tại trong lớp thì tạo mới
+                        // Nếu học viên chưa tồn tại trong lớp thì tạo mới
                         StudentClass::create([
                             'class_id' => $classs->id,
                             'student_id' => $id,
@@ -253,6 +256,7 @@ class ClassController extends Controller
                         ]);
                     }
                 }
+
                 $studentIds = array_keys($students);
                 StudentClass::where('class_id', $classs->id)
                     ->whereNotIn('student_id', $studentIds)
@@ -311,5 +315,12 @@ class ClassController extends Controller
         }
         session()->flash('errorMessage', __('Cần chọn file để Import!'));
         return $this->sendResponse('warning', __('Cần chọn file để Import!'));
+    }
+
+
+    public function exportClass(Request $request)
+    {
+        $params = $request->all();
+        return Excel::download(new ClassExport($params), 'Class.xlsx');
     }
 }
