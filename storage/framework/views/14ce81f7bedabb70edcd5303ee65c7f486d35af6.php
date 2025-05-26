@@ -78,7 +78,7 @@
                             <div class="box box-primary">
                                 <div class="nav-tabs-custom">
                                     <ul class="nav nav-tabs">
-                                        <li class="">
+                                        <li class="active">
                                             <a href="#tab_1" data-toggle="tab">
                                                 <h5>Thông tin chính </h5>
                                             </a>
@@ -93,7 +93,7 @@
                                                 <h5>Dịch vụ đăng ký</h5>
                                             </a>
                                         </li>
-                                        <li class="active">
+                                        <li class="">
                                             <a href="#tab_4" data-toggle="tab">
                                                 <h5>Biên lai thu phí</h5>
                                             </a>
@@ -107,7 +107,7 @@
 
                                     <div class="tab-content">
                                         <!-- TAB 1: Thông tin học sinh -->
-                                        <div class="tab-pane" id="tab_1">
+                                        <div class="tab-pane active" id="tab_1">
                                             <div class="row">
                                                 <div class="col-md-4">
                                                     <p><strong><?php echo app('translator')->get('Mã học sinh'); ?>:</strong>

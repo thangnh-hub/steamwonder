@@ -146,6 +146,9 @@
                                 <input class="form-control" type="date" name="enrolled_at" value="{{ old('enrolled_at', $defaultDate) }}" required>
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <button style="margin-top: 29px" type="submit" class="btn btn-primary">Tính toán đầu năm</button>
+                        </div>
                     </div>
                     
                     <div class="table-wrapper table-responsive">
