@@ -295,49 +295,50 @@
     @section('script')
         <script>
             $('.btn_export').click(function() {
-            show_loading_notification()
-            var formData = $('#form_filter').serialize();
-            var url = $(this).data('url');
-            $.ajax({
-                url: url,
-                type: 'GET',
-                xhrFields: {
-                    responseType: 'blob'
-                },
-                data: formData,
-                success: function(response) {
-                    if (response) {
-                        var a = document.createElement('a');
-                        var url = window.URL.createObjectURL(response);
-                        a.href = url;
-                        a.download = 'Admin.xlsx';
-                        document.body.append(a);
-                        a.click();
-                        a.remove();
-                        window.URL.revokeObjectURL(url);
-                        hide_loading_notification()
-                    } else {
-                        var _html = `<div class="alert alert-warning alert-dismissible">
+                show_loading_notification()
+                var formData = $('#form_filter').serialize();
+                var url = $(this).data('url');
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    xhrFields: {
+                        responseType: 'blob'
+                    },
+                    data: formData,
+                    success: function(response) {
+                        if (response) {
+                            var a = document.createElement('a');
+                            var url = window.URL.createObjectURL(response);
+                            a.href = url;
+                            a.download = 'Admin.xlsx';
+                            document.body.append(a);
+                            a.click();
+                            a.remove();
+                            window.URL.revokeObjectURL(url);
+                            hide_loading_notification()
+                        } else {
+                            var _html = `<div class="alert alert-warning alert-dismissible">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                             Bạn không có quyền thao tác chức năng này!
                             </div>`;
-                        $('.box_alert').prepend(_html);
-                        $('html, body').animate({
-                            scrollTop: $(".alert").offset().top
-                        }, 1000);
-                        setTimeout(function() {
-                            $('.alert').remove();
-                        }, 3000);
+                            $('.box_alert').prepend(_html);
+                            $('html, body').animate({
+                                scrollTop: $(".alert").offset().top
+                            }, 1000);
+                            setTimeout(function() {
+                                $('.alert').remove();
+                            }, 3000);
+                            hide_loading_notification()
+                        }
+                    },
+                    error: function(response) {
                         hide_loading_notification()
+                        let errors = response.responseJSON.message;
+                        alert(errors);
                     }
-                },
-                error: function(response) {
-                    hide_loading_notification()
-                    let errors = response.responseJSON.message;
-                    alert(errors);
-                }
-            });
-        })
+                });
+            })
+
             function importFile() {
                 show_loading_notification();
                 var formData = new FormData();

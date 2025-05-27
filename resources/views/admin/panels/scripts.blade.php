@@ -1,3 +1,6 @@
+<div id="loading-notification" class="loading-notification">
+    <p>@lang('Please wait')...</p>
+</div>
 <!-- jQuery 3 -->
 <script src="{{ asset('themes/admin/js/jquery.min.js') }}"></script>
 <script src="{{ asset('themes/admin/js/jquery.validate.min.js') }}"></script>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Consts;
+use App\Exports\ReceiptExport;
 use App\Http\Services\VietQrService;
 use App\Http\Services\DataPermissionService;
 use App\Http\Services\ReceiptService;
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use Carbon\Carbon;
-
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReceiptController extends Controller
 {
@@ -244,7 +245,7 @@ class ReceiptController extends Controller
                 return $detail['total_discount_amount'] > 0; // Lọc các dịch vụ có discount_amount > 0
             });
 
-// dd($listServiceDiscount);
+        // dd($listServiceDiscount);
         $serviceMonthly = $groupByServiceType->get('monthly', collect()); // Dịch vụ loại monthly
         $serviceYearly = $groupByServiceType->get('yearly', collect()); // Dịch vụ loại monthly
         // Lấy các loại còn lại ngoài monthly và yearly
@@ -317,5 +318,14 @@ class ReceiptController extends Controller
             DB::rollBack();
             return redirect()->back()->with('errorMessage', __($ex->getMessage()));
         }
+    }
+
+    public function exportReceipt(Request $request)
+    {
+        $params = $request->all();
+        $auth = Auth::guard('admin')->user();
+        $params['permission_area'] = DataPermissionService::getPermisisonAreas($auth->id);
+        
+        return Excel::download(new ReceiptExport($params), 'Receipt.xlsx');
     }
 }
