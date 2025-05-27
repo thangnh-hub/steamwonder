@@ -18,7 +18,7 @@ class MealUnitController extends Controller
     public function __construct()
     {
         $this->routeDefault = 'units';
-        $this->viewPart = 'admin.pages.units';
+        $this->viewPart = 'admin.pages.meal.units';
         $this->responseData['module_name'] = 'Quản lý đơn vị thực phẩm';
     }
 

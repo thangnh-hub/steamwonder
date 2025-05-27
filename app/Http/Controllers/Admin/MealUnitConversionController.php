@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\MealUnitConversion;
+use App\Models\MealUnit;
 use App\Consts;
+use Illuminate\Validation\Rule;
 
 class MealUnitConversionController extends Controller
 {
@@ -15,15 +18,15 @@ class MealUnitConversionController extends Controller
      */
     public function __construct()
     {
-        $this->routeDefault = 'units';
-        $this->viewPart = 'admin.pages.units';
-        $this->responseData['module_name'] = 'Quản lý đơn vị thực phẩm';
+        $this->routeDefault = 'unit_conversions';
+        $this->viewPart = 'admin.pages.meal.unit_conversions';
+        $this->responseData['module_name'] = 'Chuyển đổi đơn vị';
     }
 
     public function index(Request $request)
     {
         $params = $request->all();
-        $rows = MealUnit::getSqlUnit($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
+        $rows = MealUnitConversion::paginate(Consts::DEFAULT_PAGINATE_LIMIT);
         $this->responseData['rows'] = $rows;
         $this->responseData['params'] = $params;
 
@@ -31,32 +34,48 @@ class MealUnitConversionController extends Controller
     }
 
     public function create()
-    {
+    {   
+        $this->responseData['list_units'] = MealUnit::all();
         return  $this->responseView($this->viewPart . '.create');
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|unique:tb_meal_units,name',
+       $request->validate([
+            'from_unit_id' => [
+                'required',
+                Rule::unique('tb_meal_unit_conversions')
+                    ->where(fn ($query) => $query->where('to_unit_id', $request->to_unit_id)),
+            ],
+            'to_unit_id' => 'required|exists:tb_meal_units,id|different:from_unit_id',
+            'ratio' => 'required|numeric|min:0.0001',
         ]);
 
         $params = $request->all();
         $params['admin_created_id'] = Auth::guard('admin')->id();
-        MealUnit::create($params);
+        MealUnitConversion::create($params);
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Add new successfully!'));
     }
 
-    public function edit(MealUnit $unit)
+    public function edit($id)
     {
+        $unit = MealUnitConversion::findOrFail($id);
         $this->responseData['detail'] = $unit;
+        $this->responseData['list_units'] = MealUnit::all();
         return $this->responseView($this->viewPart . '.edit' );
     }
 
-    public function update(Request $request, MealUnit $unit)
+    public function update(Request $request, MealUnitConversion $unit)
     {
         $request->validate([
-            'name' => 'required',
+            'from_unit_id' => [
+                'required',
+                Rule::unique('tb_meal_unit_conversions')
+                    ->ignore($id)
+                    ->where(fn ($query) => $query->where('to_unit_id', $request->to_unit_id)),
+            ],
+            'to_unit_id' => 'required|exists:tb_meal_units,id|different:from_unit_id',
+            'ratio' => 'required|numeric|min:0.0001',
         ]);
 
         $params = $request->all();
@@ -67,7 +86,7 @@ class MealUnitConversionController extends Controller
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Update successfully!'));
     }
 
-    public function destroy(MealUnit $unit)
+    public function destroy(MealUnitConversion $unit)
     {
         $unit->delete();
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Delete record successfully!'));
