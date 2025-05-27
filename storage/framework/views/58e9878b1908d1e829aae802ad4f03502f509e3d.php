@@ -230,6 +230,7 @@
                                                             <tbody class="box_student">
                                                                 <?php if(isset($detail->students)): ?>
                                                                     <?php $__currentLoopData = $detail->students; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                    <?php if($item->pivot->status != 'delete'): ?>
                                                                         <tr class="item_student"
                                                                             data-id="<?php echo e($item->id); ?>">
                                                                             <td><?php echo e($item->student_code); ?></td>
@@ -276,6 +277,7 @@
                                                                                     onclick="this.parentNode.parentNode.remove()">
                                                                             </td>
                                                                         </tr>
+                                                                       <?php endif; ?>
                                                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                                 <?php endif; ?>
                                                             </tbody>
