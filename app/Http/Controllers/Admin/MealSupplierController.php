@@ -18,7 +18,7 @@ class MealSupplierController extends Controller
     public function __construct()
     {
         $this->routeDefault = 'suppliers';
-        $this->viewPart = 'admin.pages.suppliers';
+        $this->viewPart = 'admin.pages.meal.suppliers';
         $this->responseData['module_name'] = 'Quản lý nhà cung cấp';
     }
 

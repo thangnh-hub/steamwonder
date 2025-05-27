@@ -101,8 +101,10 @@
                                 <table class="table table-bordered table-hover no-footer no-padding">
                                     <thead>
                                         <tr>
-                                            <th colspan="7" class="text-left"><b>1. Số dư kỳ trước - <small>(+) Có /
-                                                        (-) Nợ</small> </b>
+                                            <th colspan="7" class="text-left"><b>1. Số dư kỳ trước  <span data-toggle="tooltip" title="(+) Có /
+                                                        (-) Nợ"><i class="fa fa-question-circle-o"
+                                                        aria-hidden="true"></i></span>
+                                                </b>
                                             </th>
                                             <th class="text-right">
                                                 <input type="number" name="prev_balance"
@@ -424,7 +426,7 @@
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('script'); ?>
     <script>
-        $('.prev_balance').keyup(function() {
+        $(document).on('change keyup', '.prev_balance', function() {
             var _balance = parseInt($(this).val(), 10);
             if (isNaN(_balance)) {
                 _balance = 0;
@@ -471,7 +473,14 @@
         })
 
         $(document).on('change', '.action_change', function() {
-            updateJsonExplanation();
+
+            var total = 0;
+            $('input.action_change[type="number"]').each(function() {
+                var value = parseFloat($(this).val()) ||
+                    0; // Chuyển giá trị thành số, mặc định 0 nếu không hợp lệ
+                total += value;
+            });
+            $('.prev_balance').val(total).change();
         })
 
         $('#form_update_explanation').on('submit', function(event) {

@@ -31,7 +31,7 @@ class ClassController extends Controller
         parent::__construct();
         $this->routeDefault  = 'classs';
         $this->viewPart = 'admin.pages.classs';
-        $this->responseData['module_name'] = 'Class Management';
+        $this->responseData['module_name'] = 'Class management';
     }
     /**
      * Display a listing of the resource.
@@ -68,6 +68,7 @@ class ClassController extends Controller
         $this->responseData['ages'] =  EducationAges::getSqlEducationAges($paramStatus)->get();
         $this->responseData['programs'] =  EducationPrograms::getSqlEducationPrograms($paramStatus)->get();
         $this->responseData['status'] = Consts::STATUS;
+        $this->responseData['module_name'] = 'Thêm mới lớp học';
         return $this->responseView($this->viewPart . '.create');
     }
 
