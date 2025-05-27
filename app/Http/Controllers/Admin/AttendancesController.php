@@ -84,15 +84,7 @@ class AttendancesController extends Controller
         return $this->responseView($this->viewPart . '.checkout');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -185,51 +177,6 @@ class AttendancesController extends Controller
             DB::rollBack();
             return $this->sendResponse('error', __($ex->getMessage()));
         }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Attendances  $attendances
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Attendances $attendances)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Attendances  $attendances
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Attendances $attendances)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Attendances  $attendances
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Attendances $attendances)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Attendances  $attendances
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Attendances $attendances)
-    {
-        //
     }
 
     public function attendanceSummaryByMonth(Request $request)
