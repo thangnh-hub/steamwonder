@@ -10,8 +10,7 @@
         <h1>
             <?php echo app('translator')->get($module_name); ?>
 
-            <a class="btn btn-sm btn-warning pull-right" href="<?php echo e(route('admission.student.create')); ?>"><i
-                    class="fa fa-plus"></i> <?php echo app('translator')->get('Thêm mới học viên'); ?></a>
+            
         </h1>
     </section>
 <?php $__env->stopSection(); ?>
@@ -31,15 +30,15 @@
             <form action="<?php echo e(route('admission.student.index')); ?>" method="GET">
                 <div class="box-body">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Keyword'); ?> </label>
-                                <input type="text" class="form-control" name="keyword" placeholder="<?php echo app('translator')->get('Lọc theo mã học viên, họ tên hoặc email'); ?>"
+                                <input type="text" class="form-control" name="keyword" placeholder="<?php echo app('translator')->get('Lọc theo mã học sinh, họ tên hoặc email'); ?>"
                                     value="<?php echo e(isset($params['keyword']) ? $params['keyword'] : ''); ?>">
                             </div>
                         </div>
-                       
-                        <div class="col-md-4">
+
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Area'); ?></label>
                                 <select name="area_id" id="area_id" class="form-control select2" style="width: 100%;">
@@ -55,20 +54,50 @@
                                 </select>
                             </div>
                         </div>
-                        
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label><?php echo app('translator')->get('Lớp học '); ?></label>
+                                <select name="current_class_id"  class="form-control select2" style="width: 100%;">
+                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
+                                    <?php $__currentLoopData = $list_class; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($value->id); ?>"
+                                            <?php echo e(isset($params['current_class_id']) && $value->id == $params['current_class_id'] ? 'selected' : ''); ?>>
+                                            <?php echo e(__($value->name)); ?>
+
+                                            (Mã: <?php echo e($value->code); ?>)
+                                        </option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label><?php echo app('translator')->get('Trạng thái '); ?></label>
+                                <select name="status"  class="form-control select2" style="width: 100%;">
+                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
+                                    <?php $__currentLoopData = $list_status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($key); ?>"
+                                            <?php echo e(isset($params['status']) && $key == $params['status'] ? 'selected' : ''); ?>>
+                                            <?php echo e(__($value)); ?>
+
+                                        </option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Filter'); ?></label>
                                 <div>
-                                    <button type="submit"
-                                        class="btn btn-primary btn-sm mr-10"><?php echo app('translator')->get('Submit'); ?></button>
-                                        <a class="btn btn-default btn-sm mr-10"
-                                            href="<?php echo e(route('admission.student.create')); ?>">
-                                            <?php echo app('translator')->get('Reset'); ?>
-                                        </a>
+                                    <button type="submit" class="btn btn-primary btn-sm mr-10"><?php echo app('translator')->get('Submit'); ?></button>
+                                    <a class="btn btn-default btn-sm mr-10"
+                                        href="<?php echo e(route('admission.student.index')); ?>">
+                                        <?php echo app('translator')->get('Reset'); ?>
+                                    </a>
 
                                     <button type="button" data-toggle="modal" data-target="#create_crmdata_student"
-                                    class="btn btn-success btn-sm"><?php echo app('translator')->get('Import Excel'); ?></button>
+                                        class="btn btn-success btn-sm"><?php echo app('translator')->get('Import Excel'); ?></button>
                                 </div>
                             </div>
                         </div>
@@ -178,12 +207,8 @@
                                         </td>
 
                                         <td>
-                                            <a target="_blank" class="btn btn-sm" data-toggle="tooltip"
-                                                title="<?php echo app('translator')->get('Xem chi tiết'); ?>" data-original-title="<?php echo app('translator')->get('Xem chi tiết'); ?>"
-                                                href="<?php echo e(route( 'admission.student.show', $row->id)); ?>">
-                                                <i class="fa fa-eye"></i> <?php echo e($row->student_code); ?>
+                                            <?php echo e($row->student_code); ?>
 
-                                            </a>
                                         </td>
                                         <td>
                                              <?php echo e($row->first_name ?? ''); ?> <?php echo e($row->last_name ?? ''); ?>
@@ -196,7 +221,7 @@
                                             <?php echo app('translator')->get($row->sex); ?>
                                         </td>
                                         <td>
-                                            <?php echo e($row->area->code ?? ''); ?>
+                                            <?php echo e($row->area->name ?? ''); ?>
 
                                         </td>
 
@@ -219,6 +244,12 @@
                                         </td>
                                     
                                         <td>
+                                            <a class="btn btn-sm btn-primary" href="<?php echo e(route('admission.student.show', $row->id)); ?>"
+                                                data-toggle="tooltip" title="<?php echo app('translator')->get('Chi tiết học sinh'); ?>"
+                                                data-original-title="<?php echo app('translator')->get('Chi tiết học sinh'); ?>"
+                                                onclick="return openCenteredPopup(this.href)">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
                                             <a class="btn btn-sm btn-warning" data-toggle="tooltip"
                                                 title="<?php echo app('translator')->get('Update'); ?>" data-original-title="<?php echo app('translator')->get('Update'); ?>"
                                                 href="<?php echo e(route('admission.student.edit', $row->id)); ?>">

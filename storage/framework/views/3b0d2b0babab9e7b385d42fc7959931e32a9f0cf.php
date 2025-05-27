@@ -306,11 +306,7 @@
                                 <td><?php echo e($item['service']->name ?? ''); ?></td>
                                 <td><?php echo e(number_format($item['total_amount'] ?? 0, 0, ',', '.')); ?></td>
                                 <td>
-                                    Từ:
-                                    <?php echo e(\Carbon\Carbon::parse($item['min_month'])->copy()->startOfMonth()->format('d/m/Y') ?? ''); ?>
-
-                                    -
-                                    <?php echo e(\Carbon\Carbon::parse($item['max_month'])->copy()->endOfMonth()->format('d/m/Y') ?? ''); ?>
+                                    Năm học: <?php echo e(\App\Helpers::getYear($item['min_month'])); ?>
 
                                 </td>
                             </tr>
@@ -368,11 +364,6 @@
 
                                 </td>
                                 <td>
-                                    Từ:
-                                    <?php echo e(\Carbon\Carbon::parse($item['min_month'])->copy()->startOfMonth()->format('d/m/Y') ?? ''); ?>
-
-                                    -
-                                    <?php echo e(\Carbon\Carbon::parse($item['max_month'])->copy()->endOfMonth()->format('d/m/Y') ?? ''); ?>
 
                                 </td>
                             </tr>
@@ -398,11 +389,26 @@
                                 <td><?php echo e($item['service']->name ?? ''); ?></td>
                                 <td class="text-right">
                                     <?php echo e(number_format($item['total_discount_amount'] ?? 0, 0, ',', '.')); ?></td>
-                                <td><?php echo $item['note']; ?></td>
-                            </tr>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    <?php endif; ?>
-                    <?php $i++; ?>
+                                <td>
+                                    <?php if($item['service_type'] == 'yearly'): ?>
+                                        Năm học: <?php echo e(\App\Helpers::getYear($item['min_month'])); ?>
+
+                                    <?php elseif($item['service_type'] == 'monthly'): ?>
+                                        Từ:
+                                        <?php echo e(\Carbon\Carbon::parse($item['min_month'])->copy()->format('d/m/Y') ?? ''); ?>
+
+                                        -
+                                        <?php echo e(\Carbon\Carbon::parse($item['max_month'])->copy()->endOfMonth()->format('d/m/Y') ?? ''); ?>
+
+                                        <?php echo $item['note']; ?>
+
+                                </td>
+                        <?php endif; ?>
+
+                        </tr>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                <?php endif; ?>
+                <?php $i++; ?>
                 <?php endif; ?>
 
                 <?php if(
