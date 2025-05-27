@@ -31,7 +31,7 @@ class ReceiptExport implements FromCollection, WithHeadings, WithMapping, WithSt
      */
     public function collection()
     {
-        $rows = Receipt::getSqlReceipt($this->params)->get();
+        $rows = Receipt::getSqlReceipt($this->params)->whereIn('tb_receipt.area_id', $this->params['permission_area'] ?? [])->get();
 
         return $rows;
     }

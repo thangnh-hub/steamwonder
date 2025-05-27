@@ -39,7 +39,7 @@ class ReceiptController extends Controller
         $auth = Auth::guard('admin')->user();
         $params = $request->only(['keyword', 'status', 'area_id', 'type', 'student_id', 'created_at']);
         $params['permission_area'] = DataPermissionService::getPermisisonAreas($auth->id);
-        $rows = Receipt::getSqlReceipt($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
+        $rows = Receipt::getSqlReceipt($params)->whereIn('tb_receipt.area_id', $params['permission_area'])->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
         $this->responseData['rows'] = $rows;
         $this->responseData['areas'] = Area::all();
         $this->responseData['students'] = Student::getSqlStudent()->get();
@@ -325,7 +325,7 @@ class ReceiptController extends Controller
         $params = $request->all();
         $auth = Auth::guard('admin')->user();
         $params['permission_area'] = DataPermissionService::getPermisisonAreas($auth->id);
-        
+
         return Excel::download(new ReceiptExport($params), 'Receipt.xlsx');
     }
 }
