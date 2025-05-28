@@ -68,27 +68,34 @@ class StudentBalanceReceiptImport implements ToCollection
                 }
 
                 // Kiểm tra TBP của học sinh
-                $reseipt = Receipt::where('student_id', $student->id)->first();
-                if (empty($reseipt)) {
+                $receipt = Receipt::where('student_id', $student->id)->first();
+                if (empty($receipt)) {
                     $this->rowError++;
-                    array_push($this->arrErrorMessage, $student->id);
+                    array_push($this->arrErrorMessage, 'Vị trí ' . $key . ': ' . $student->id . ' Chưa có TBP!');
                     continue;
                 }
 
 
-                // Cập nhật prev_balance
-                $reseipt->prev_balance = trim($row[1]);
-                // Key chạy từ 1
+                // Cập nhật TBP
+
+                $data = [
+                    'value' => trim($row[2]),
+                    'content' => trim($row[3]),
+                ];
                 $json = [];
-                for ($i = 0; $i < 4; $i++) {
-                    $stt = 1 + (2 * $i);
-                    if ($row[$stt + 1] != '' ||   $row[$stt + 2] != '') {
-                        $json['explanation'][$i]['value'] = $row[$stt + 1];
-                        $json['explanation'][$i]['content'] = $row[$stt + 2];
-                    }
+                // Cập nhật json_params, Có r thì push vào mảng chưa có thì thêm
+                if (isset($receipt->json_params->explanation)) {
+                    // Push vào mảng json_params
+                    $json = json_decode(json_encode($receipt->json_params), true);
+                    array_push($json['explanation'], $data);
+                } else {
+                    $json['explanation'][] = $data;
                 }
-                $reseipt->json_params = $json;
-                $reseipt->save();
+                $receipt->prev_balance += trim($row[2]);
+                $receipt->total_final = $receipt->total_amount - $receipt->total_discount - $receipt->prev_balance;
+                $receipt->total_due = $receipt->total_final;
+                $receipt->json_params = $json;
+                $receipt->save();
                 $this->rowInsert++;
                 continue;
             }

@@ -455,7 +455,7 @@
                         {{ optional($detail->area)->json_params->bank_name ?? '' }}
                     </strong>
                 </p>
-                <p>Nội dung chuyển khoản: <strong>Mã học sinh_Tên học sinh_Mã TBP</strong></p>
+                <p>Nội dung chuyển khoản: <strong>Mã học sinh_Tên học sinh_Mã phiếu thông báo phí</strong></p>
             </div>
             @isset($qrCode)
                 <div class="qr-code">

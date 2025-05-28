@@ -18,6 +18,7 @@ use App\Imports\StudentImport;
 use App\Models\PaymentCycle;
 use App\Models\Receipt;
 use App\Models\Service;
+use App\Models\ServiceDetail;
 use App\Models\StudentService;
 use App\Models\Promotion;
 use App\Models\StudentPromotion;
@@ -62,9 +63,10 @@ class StudentController extends Controller
         $params_area['status'] = Consts::STATUS_ACTIVE;
         $this->responseData['area'] = Area::getsqlArea($params_area)->get();
 
-        $params_area['permisson_area_id'] = $params['permisson_area_id'] ;
+        $params_area['permisson_area_id'] = $params['permisson_area_id'];
         $this->responseData['list_class'] =  tbClass::getSqlClass($params_area)->get();
         $this->responseData['list_status'] =  Consts::STATUS_STUDY;
+
 
         return $this->responseView($this->viewPart . '.index');
     }
@@ -110,7 +112,7 @@ class StudentController extends Controller
         $student->student_code = 'HS' . str_pad($student->id, 3, '0', STR_PAD_LEFT);
         $student->save();
 
-        return redirect()->route($this->routeDefault . '.edit',$student->id)->with('successMessage', __('Add new successfully!'));
+        return redirect()->route($this->routeDefault . '.edit', $student->id)->with('successMessage', __('Add new successfully!'));
     }
 
     /**
@@ -435,7 +437,7 @@ class StudentController extends Controller
         }
     }
     // Tính toán phí đầu năm
-    public function viewCalculateReceiptStudentFirstYear(Request $request,ReceiptService $receiptService)
+    public function viewCalculateReceiptStudentFirstYear(Request $request, ReceiptService $receiptService)
     {
         $params = $request->all();
         $searchParams = collect($params)->except(['_token', 'page'])->filter(function ($value) {
@@ -460,18 +462,18 @@ class StudentController extends Controller
 
         return $this->responseView($this->viewPart . '.calculate_receipt_year');
     }
-    public function calculateReceiptStudentFirstYear(Request $request,ReceiptService $receiptService)
+    public function calculateReceiptStudentFirstYear(Request $request, ReceiptService $receiptService)
     {
         $list_student_ids = $request->input('student', []);
         //Lọc danh sách id học sinh gửi lên chỉ lấy thằng có ít nhất 1 dịch vụ là active và là laoij yearly thì mới tính hóa đơn
         $students = Student::whereIn('id', $list_student_ids)
-        ->whereHas('studentServices', function ($query) {
-            $query->where('status', 'active')
-                ->whereHas('services', function ($q) {
-                    $q->where('service_type', 'yearly');
-                });
-        })
-        ->get();
+            ->whereHas('studentServices', function ($query) {
+                $query->where('status', 'active')
+                    ->whereHas('services', function ($q) {
+                        $q->where('service_type', 'yearly');
+                    });
+            })
+            ->get();
 
         foreach ($students as $student) {
             $data['student_services'] = $student->studentServices()
@@ -550,7 +552,7 @@ class StudentController extends Controller
         return $this->sendResponse('warning', __('Cần chọn file để Import!'));
     }
 
-     public function importStudentService(Request $request)
+    public function importStudentService(Request $request)
     {
         $params = $request->all();
         if (isset($params['file'])) {
@@ -634,7 +636,7 @@ class StudentController extends Controller
             $data_count = $import->getRowCount();
             $mess = __('Thêm mới') . ": " . $data_count['insert_row'] . " - " . __('Cập nhật') . ": " . $data_count['update_row'] . " - " . __('Lỗi') . ": " . $data_count['error_row'];
             foreach ($data_count['error_mess'] as $val) {
-                $mess .= ',' . $val;
+                $mess .= '</br>' . $val;
             };
             if (count($data_count['error_mess']) > 0) {
                 $_datawith = 'errorMessage';

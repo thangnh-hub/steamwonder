@@ -121,6 +121,8 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('attendance/check-out/index', 'AttendancesController@checkout')->name('attendance.checkout');
             Route::get('attendance/summary-by-month/index', 'AttendancesController@attendanceSummaryByMonth')->name('attendance.summary_by_month');
             Route::post('attendance/summary-by-month/update_or_store', 'AttendancesController@updateOrstoreAttendance')->name('attendance.summary_by_month.update_or_store');
+            // Điểm danh ăn
+            Route::post('attendance/student/meal', 'AttendancesController@studentMeal')->name('attendance.studentMeal');
 
             // Import Student Promotion
             Route::post('import_student_promotion', 'StudentController@importStudentPromotion')->name('student.import_promotion');
@@ -362,6 +364,7 @@ Route::group(['namespace' => 'Admin'], function () {
         //Export class, teacher by Kudo
         Route::get('class-export', 'ClassController@exportClass')->name('class.export_class');
         Route::get('admin-export', 'AdminController@exportAdmin')->name('admin.export_admin');
+        Route::get('receipt-export', 'ReceiptController@exportReceipt')->name('receipt.export');
     });
     // Test teacher
     Route::get('test_teacher', 'TeacherQuizController@testTeacher')->name('test_teacher.test');

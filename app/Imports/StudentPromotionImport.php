@@ -82,7 +82,7 @@ class StudentPromotionImport implements ToCollection
                     array_push($this->arrErrorMessage, 'Vị trí ' . $key . ': Cần nhập thời gian hết hạn!');
                     continue;
                 }
-                // Kiểm tra học sinh, và xem đã có trong lớp hay chưa
+                // Kiểm tra học sinh
                 $student = Student::where('student_code', trim($row[0]))->first();
                 if (empty($student)) {
                     $this->rowError++;
