@@ -114,6 +114,8 @@ Route::group(['namespace' => 'Admin'], function () {
                 'suppliers' => 'MealSupplierController',
                 'units' => 'MealUnitController',
                 'unit_conversions' => 'MealUnitConversionController',
+                'ingredients_category' => 'MealIngredientCategoryController',
+                'ingredients' => 'MealIngredientController',
             ]);
 
             Route::get('attendance/check-out/index', 'AttendancesController@checkout')->name('attendance.checkout');

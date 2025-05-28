@@ -65,8 +65,10 @@ class MealUnitConversionController extends Controller
         return $this->responseView($this->viewPart . '.edit' );
     }
 
-    public function update(Request $request, MealUnitConversion $unit)
+    public function update(Request $request, $id)
     {
+        $unit = MealUnitConversion::findOrFail($id);
+        // Validate the request
         $request->validate([
             'from_unit_id' => [
                 'required',
@@ -86,9 +88,11 @@ class MealUnitConversionController extends Controller
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Update successfully!'));
     }
 
-    public function destroy(MealUnitConversion $unit)
+    public function destroy($id)
     {
+        $unit = MealUnitConversion::findOrFail($id);
         $unit->delete();
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Delete record successfully!'));
     }
+       
 }
