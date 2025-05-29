@@ -10,8 +10,20 @@
             width: auto;
         }
 
-        ..select2-container {
+        .select2-container {
             width: 100% !important;
+        }
+
+        .tooltip-inner {
+            white-space: nowrap;
+            max-width: none;
+            text-align: left
+        }
+
+        .box-flex-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
     </style>
 @endsection
@@ -99,16 +111,21 @@
                                 <table class="table table-bordered table-hover no-footer no-padding">
                                     <thead>
                                         <tr>
-                                            <th colspan="7" class="text-left"><b>1. Số dư kỳ trước  <span data-toggle="tooltip" title="(+) Có /
-                                                        (-) Nợ"><i class="fa fa-question-circle-o"
-                                                        aria-hidden="true"></i></span>
+                                            <th colspan="7" class="text-left"><b>1. Số dư kỳ trước <span data-html="true"
+                                                        data-toggle="tooltip"
+                                                        title="
+                                                        Hoàn trả sẽ nhập số nguyên dương (+)
+                                                        <br>
+                                                        Truy thu sẽ nhập số nguyên âm (-)">
+                                                        <i class="fa fa-question-circle-o" aria-hidden="true"></i></span>
                                                 </b>
                                             </th>
                                             <th class="text-right">
                                                 <input type="number" name="prev_balance"
                                                     {{ $detail->status == 'pending' ? '' : 'disabled' }}
                                                     class="form-control pull-right prev_balance" style="max-width: 200px;"
-                                                    placeholder="Nhập số dư kỳ trước"
+                                                    placeholder="Nhập số dư kỳ trước" data-toggle="tooltip"
+                                                    title="Tổng số dư kỳ trước của học sinh này, nếu có"
                                                     value="{{ (int) $detail->prev_balance }}">
                                             </th>
                                         </tr>
@@ -162,13 +179,14 @@
                                                             class="form-control action_change" value="{{ $item->value }}"
                                                             placeholder="Giá trị tương ứng">
                                                     </td>
+
                                                     <td>
                                                         @if ($detail->status == 'pending')
                                                             <button class="btn btn-sm btn-danger" type="button"
                                                                 data-toggle="tooltip"
-                                                                onclick="$(this).closest('tr').remove();updateJsonExplanation()"
-                                                                title="@lang('Delete')"
-                                                                data-original-title="@lang('Delete')">
+                                                                onclick="$(this).closest('tr').remove();updateBalance()"
+                                                                title="@lang('Xóa giải trình')"
+                                                                data-original-title="@lang('Xóa giải trình')">
                                                                 <i class="fa fa-trash"></i>
                                                             </button>
                                                         @endif
@@ -233,7 +251,7 @@
                             onsubmit="return confirm('@lang('confirm_action')')">
                             @csrf
                             <input type="hidden" name="id" value="{{ $detail->id }}">
-                            <table class="table table-bordered table-hover no-footer no-padding">
+                            <table class="table table-bordered table-hover no-footer no-padding table_paid">
                                 <tbody>
                                     <tr>
                                         <td>@lang('Mã TBP')</td>
@@ -277,17 +295,27 @@
                                         </td>
                                     </tr> --}}
                                     <tr>
-                                        <td>@lang('Tổng tiền thực tế sau đối soát tất cả dịch vụ')</td>
+                                        <td>@lang('Tổng tiền thực tế sau đối soát tất cả dịch vụ') <span data-html="true" data-toggle="tooltip"
+                                                title="Tổng tiền - Giảm trừ - Số dư kỳ trước">
+                                                <i class="fa fa-question-circle-o" aria-hidden="true"></i></span>
+                                        </td>
                                         <td class="text-right total_final" data-final="{{ $detail->total_final }}">
                                             {{ number_format($detail->total_final, 0, ',', '.') ?? '' }}
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>@lang('Đã thu')</td>
+                                        <td>
+                                            <div class="box-flex-between">
+                                                <span>@lang('Đã thu')</span>
+                                                @if ($detail->status == 'approved')
+                                                    <button type="button" class="btn btn-warning btn-sm"
+                                                        data-toggle="modal" data-target="#modal_receipt_transaction">Chi
+                                                        tiết</button>
+                                                @endif
+                                            </div>
+                                        </td>
                                         <td class="text-right">
-                                            <input type="number" name="total_paid" class="form-control text-right"
-                                                {{ $detail->status == 'approved' ? '' : 'disabled' }}
-                                                value="{{ (int) $detail->total_paid ?? 0 }}">
+                                            {{ number_format($detail->total_paid, 0, ',', '.') ?? '' }}
                                         </td>
                                     </tr>
                                     <tr>
@@ -314,7 +342,7 @@
                             @endif
                             @if ($detail->status == 'approved')
                                 <button type="submit" class="btn btn-success">
-                                    <i class="fa fa-usd" aria-hidden="true" title="Thanh toán"></i> @lang('Xác nhận thanh toán')
+                                    <i class="fa fa-usd" aria-hidden="true" title="Thanh toán"></i> @lang('Xác nhận đã thanh toán')
                                 </button>
                             @endif
 
@@ -407,6 +435,90 @@
                 </div>
             </div>
         </div>
+
+
+        <div class="modal fade" id="modal_receipt_transaction" data-backdrop="static" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header ">
+                        <h3 class="modal-title text-center col-md-12">@lang('Danh sách khoản thu của TBP')</h3>
+                        </h3>
+                    </div>
+                    <form action="{{ route('receipt.crud_receipt_transaction') }}" method="POST"
+                        id="form_receipt_transaction">
+                        @csrf
+                        <input type="hidden" name="receipt_id" value="{{ $detail->id }}">
+                        <input type="hidden" name="type" value="create">
+                        <div class="modal-body show_receipt_transaction">
+                            <div class="modal-alert"></div>
+                            <table class="table table-bordered table-hover no-footer no-padding">
+                                <thead>
+                                    <tr>
+                                        <th>@lang('STT')</th>
+                                        <th>@lang('Số tiền thanh toán')</th>
+                                        <th>@lang('Ngày thanh toán')</th>
+                                        <th>@lang('Ghi chú')</th>
+                                        <th>@lang('Thu ngân')</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="box_service">
+                                    @if (isset($detail->receiptTransaction) && count($detail->receiptTransaction) > 0)
+                                        @foreach ($detail->receiptTransaction as $key => $item)
+                                            <tr>
+                                                <td>{{ $loop->index + 1 }}</td>
+                                                <td>{{ number_format($item->paid_amount, 0, ',', '.') ?? '' }}</td>
+                                                <td>{{ date('d-m-Y', strtotime($item->created_at)) }}</td>
+                                                <td>{{ $item->json_params->note ?? '' }}</td>
+                                                <td>{{ $item->user_cashier->name ?? '' }}</td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td colspan="4" class="text-center">@lang('Chưa có giao dịch nào')</td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+                            </table>
+
+                            <div class="row">
+                                <h4 class="text-center form-group col-md-12">@lang('Thông tin thanh toán cho kỳ này')</h4>
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="form-group">
+                                        <label>@lang('Nhập số tiền thanh toán') <small class="text-red">*</small></label>
+                                        <input type="number" class="form-control" name="paid_amount"
+                                            placeholder="@lang('Nhập số tiền thanh toán')" value="{{ old('paid_amount') }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="form-group">
+                                        <label>@lang('Ngày thanh toán') <small class="text-red">*</small></label>
+                                        <input type="date" class="form-control" name="payment_date"
+                                            value="{{ old('payment_date') ?? date('Y-m-d', time()) }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="form-group">
+                                        <label>@lang('Ghi chú')</label>
+                                        <textarea name="json_params[note]" class="form-control" cols="5"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success btn_save_transaction">
+                                <i class="fa fa-save"></i> @lang('Lưu lại')
+                            </button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">
+                                <i class="fa fa-remove"></i> @lang('Đóng')
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
     </section>
 @endsection
 @section('script')
@@ -425,13 +537,14 @@
                 _balance));
             $('.total_due').html(new Intl.NumberFormat('vi-VN').format(_total_due + _total_prev_balance -
                 _balance));
-
+            updateJsonExplanation();
+        })
+        // Thay đổi giá trị prev_balance khi các cập nhật giải trình
+        $(document).on('change', '.action_change', function() {
+            updateBalance();
         })
 
-        $('.prev_balance').on('change', function() {
-            updateJsonExplanation();
-        });
-
+        // Thêm giải trình html
         $('.btn_explanation').click(function() {
             var currentDateTime = Math.floor(Date.now() / 1000);
 
@@ -447,7 +560,7 @@
                 </td>
                 <td>
                     <button class="btn btn-sm btn-danger" type="button" data-toggle="tooltip"
-                    onclick="$(this).closest('tr').remove();updateJsonExplanation()"
+                    onclick="$(this).closest('tr').remove();updateBalance()"
                         title="@lang('Delete')" data-original-title="@lang('Delete')">
                         <i class="fa fa-trash"></i>
                     </button>
@@ -457,22 +570,13 @@
             $('.box_explanation').append(_html);
         })
 
-        $(document).on('change', '.action_change', function() {
-
-            var total = 0;
-            $('input.action_change[type="number"]').each(function() {
-                var value = parseFloat($(this).val()) ||
-                    0; // Chuyển giá trị thành số, mặc định 0 nếu không hợp lệ
-                total += value;
-            });
-            $('.prev_balance').val(total).change();
-        })
-
+        // Cập nhật giải trình khi form được submit
         $('#form_update_explanation').on('submit', function(event) {
             event.preventDefault();
             updateJsonExplanation();
         });
 
+        // Xử lý sự kiện click nút duyệt TBP
         $('.btn_approved').click(function() {
             if (confirm('{{ __('confirm_action') }}')) {
                 var _url = "{{ route(Request::segment(2) . '.approved', $detail->id) }}";
@@ -506,6 +610,16 @@
             }
 
         });
+
+        function updateBalance() {
+            var total = 0;
+            $('input.action_change[type="number"]').each(function() {
+                var value = parseFloat($(this).val()) ||
+                    0; // Chuyển giá trị thành số, mặc định 0 nếu không hợp lệ
+                total += value;
+            });
+            $('.prev_balance').val(total).change();
+        }
 
         $(document).on('click', '.update_student_service', function() {
             var _id = $(this).data('id');
@@ -546,10 +660,48 @@
         });
 
 
+        $('#form_receipt_transaction').on('submit', function(event) {
+            event.preventDefault();
+            var _url = $(this).prop('action')
+            var formData = $(this).serialize();
+            $.ajax({
+                type: "POST",
+                url: _url,
+                data: formData,
+                success: function(response) {
+                    if (response) {
+                        var _html = `<div class="alert alert-${response.data} alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            ${response.message}
+                            </div>`;
+                        $('.modal-alert').prepend(_html);
+                        setTimeout(function() {
+                            $(".alert").fadeOut(3000, function() {});
+                        }, 800);
+                        if (response.data == 'success') {
+                            location.reload();
+                        }
+
+                    } else {
+                        var _html = `<div class="alert alert-warning alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            Bạn không có quyền thao tác chức năng này!
+                            </div>`;
+                        $('.modal-alert').prepend(_html);
+                        setTimeout(function() {
+                            $(".alert").fadeOut(3000, function() {});
+                        }, 800);
+                    }
+                },
+                error: function(data) {
+                    var errors = data.responseJSON.message;
+                    alert(data);
+                }
+            });
+        });
 
 
-
-
+        // Hàm cập nhật giải trình lưu lại trong JSON và tính lại số tiền
         function updateJsonExplanation() {
             var _url = $('#form_update_explanation').prop('action')
             var formData = $('#form_update_explanation').serialize();

@@ -85,6 +85,10 @@ class Receipt extends Model
     {
         return $this->hasMany(ReceiptDetail::class, 'receipt_id');
     }
+    public function receiptTransaction()
+    {
+        return $this->hasMany(ReceiptTransaction::class, 'receipt_id');
+    }
 
     public function prev_receipt_detail()
     {
