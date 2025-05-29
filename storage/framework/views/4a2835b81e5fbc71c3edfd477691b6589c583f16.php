@@ -425,7 +425,7 @@
                             <tr>
                                 <td class="text-center"><?php echo e($loop->index + 1); ?></td>
                                 <td><?php echo e($item->content ?? ''); ?></td>
-                                <td class="text-right"><?php echo e(number_format($item->value ?? 0, 0, ',', '.')); ?></td>
+                                <td class="text-right"><?php echo e(number_format(abs($item->value ?? 0), 0, ',', '.')); ?></td>
                                 <td></td>
                             </tr>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

@@ -7,6 +7,7 @@ use App\Http\Services\VietQrService;
 use App\Http\Services\DataPermissionService;
 use App\Http\Services\ReceiptService;
 use App\Models\Receipt;
+use App\Models\ReceiptTransaction;
 use App\Models\Area;
 use App\Models\Service;
 use App\Models\Student;
@@ -135,8 +136,6 @@ class ReceiptController extends Controller
             // Cập nhật lại thông tin
             $json_params['due_date'] = $request->input('due_date');
             $receipt->status = Consts::STATUS_RECEIPT['paid'];
-            $receipt->total_paid = $request->input('total_paid');
-            $receipt->total_due = $receipt->total_final - $request->input('total_paid');
             $receipt->cashier_id = $admin->id;
             $receipt->admin_updated_id = $admin->id;
             $receipt->json_params = $json_params;
@@ -185,11 +184,11 @@ class ReceiptController extends Controller
         $explanation = $request->input('explanation');
         $json_params = json_decode(json_encode($receipt->json_params), true);
         $json_params['explanation'] = $explanation;
-        // Cập nhật lại tổng tiền và số tiền còn phải thu
-        $receipt->total_final = $receipt->total_final + $receipt->prev_balance - $prev_balance;
-        $receipt->total_due = $receipt->total_due + $receipt->prev_balance - $prev_balance;
         // Cập nhật số dư kỳ trước
         $receipt->prev_balance = $prev_balance;
+        // Cập nhật lại tổng tiền và số tiền còn phải thu
+        $receipt->total_final = $receipt->total_amount - $receipt->total_discount - $receipt->prev_balance;
+        $receipt->total_due = $receipt->total_final - $receipt->total_paid;
         $receipt->json_params = $json_params;
         $receipt->save();
         return $this->sendResponse($receipt, 'Cập nhật thành công!');
@@ -244,7 +243,7 @@ class ReceiptController extends Controller
                 return $detail['total_discount_amount'] > 0; // Lọc các dịch vụ có discount_amount > 0
             });
 
-// dd($listServiceDiscount);
+        // dd($listServiceDiscount);
         $serviceMonthly = $groupByServiceType->get('monthly', collect()); // Dịch vụ loại monthly
         $serviceYearly = $groupByServiceType->get('yearly', collect()); // Dịch vụ loại monthly
         // Lấy các loại còn lại ngoài monthly và yearly
@@ -317,5 +316,38 @@ class ReceiptController extends Controller
             DB::rollBack();
             return redirect()->back()->with('errorMessage', __($ex->getMessage()));
         }
+    }
+
+    public function CrudReceiptTransaction(Request $request)
+    {
+        $admin = Auth::guard('admin')->user();
+        $params = $request->only(['receipt_id', 'paid_amount', 'json_params']);
+        $receipt_id = $request->input('receipt_id');
+        $type = $request->input('type');
+        $result = $message = '';
+        switch ($type) {
+            case 'create':
+                $params['cashier'] = $admin->id;
+                $params['admin_created_id'] = $admin->id;
+                ReceiptTransaction::create($params);
+
+                // Cập nhật lại số tiền trong bảng receipt
+                $receipt = Receipt::find($receipt_id);
+                // Lấy tổng tiền receipt_transaction
+                $total_paid = $receipt->receiptTransaction->sum('paid_amount');
+                $receipt->total_paid = $total_paid;
+                $receipt->total_due = ($receipt->total_final - $total_paid > 0) ? $receipt->total_final - $total_paid : 0;
+                $receipt->save();
+
+                $result = "success";
+                $message = 'Thêm mới thành công!';
+                break;
+            case 'update':
+                break;
+            case 'delete':
+                break;
+            default:
+        }
+        return $this->sendResponse($result, $message);
     }
 }
