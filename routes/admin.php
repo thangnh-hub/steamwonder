@@ -138,7 +138,7 @@ Route::group(['namespace' => 'Admin'], function () {
 
             // Cập nhật lại service cho học sinh và tính lại phí
             Route::post('receipt/update_student_service_and_fee', 'ReceiptController@updateStudentServiceAndFee')->name('receipt.update_student_service_and_fee');
-
+            Route::post('receipt/CRUD_receipt_transaction', 'ReceiptController@CrudReceiptTransaction')->name('receipt.crud_receipt_transaction');
             //CBTS
             Route::get('admissions/students', 'AdmissionStudentController@index')->name('admission.student.index');
             Route::get('admissions/students/create', 'AdmissionStudentController@create')->name('admission.student.create');

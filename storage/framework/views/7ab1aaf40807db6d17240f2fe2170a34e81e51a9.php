@@ -104,7 +104,7 @@
                     </div>
                 </div>
             </form>
-            <div class="import_excel">
+            <div class="import_excel ">
                 <div style="display: flex; margin-left:10px; max-width: 500px; margin-top: 15px;">
                     <input class="form-control" type="file" name="files" id="importPromotion"
                         placeholder="<?php echo app('translator')->get('File Import Promotion'); ?>">
