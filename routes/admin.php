@@ -116,6 +116,7 @@ Route::group(['namespace' => 'Admin'], function () {
                 'unit_conversions' => 'MealUnitConversionController',
                 'ingredients_category' => 'MealIngredientCategoryController',
                 'ingredients' => 'MealIngredientController',
+                'dishes' => 'MealDishesController',
             ]);
 
             Route::get('attendance/check-out/index', 'AttendancesController@checkout')->name('attendance.checkout');

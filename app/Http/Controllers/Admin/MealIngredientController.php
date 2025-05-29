@@ -16,7 +16,7 @@ class MealIngredientController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-     public function __construct()
+    public function __construct()
     {
         $this->routeDefault = 'ingredients';
         $this->viewPart = 'admin.pages.meal.ingredients';

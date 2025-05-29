@@ -54,7 +54,7 @@ class EducationAges extends Model
                 $query->orderByRaw('tb_education_ages.' . $params['order_by'] . ' desc');
             }
         } else {
-            $query->orderBy('tb_education_ages.id', 'desc');
+            $query->orderBy('tb_education_ages.id', 'asc');
         }
         $query->groupBy('tb_education_ages.id');
         return $query;

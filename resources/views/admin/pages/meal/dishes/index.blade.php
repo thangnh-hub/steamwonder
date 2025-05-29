@@ -36,8 +36,34 @@
                         
                         <div class="col-md-3">
                             <div class="form-group">
+                                <label>@lang('Loại món ăn')</label>
+                                <select name="dishes_type" class="form-control select2"style="width: 100%;">
+                                    <option value="">@lang('Please select')</option>
+                                    @foreach ($list_type as $key => $item)
+                                        <option value="{{ $key }}"
+                                            {{ isset($params['dishes_type']) && $params['dishes_type'] == $key ? 'selected' : '' }}>{{ __($item) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>@lang('Bữa áp dụng')</label>
+                                <select name="dishes_time" class="form-control select2"style="width: 100%;">
+                                    <option value="">@lang('Please select')</option>
+                                    @foreach ($list_time as $key => $item)
+                                        <option value="{{ $key }}"
+                                            {{ isset($params['dishes_time']) && $params['dishes_time'] == $key ? 'selected' : '' }}>{{ __($item) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
                                 <label>@lang('Status')</label>
-                                <select name="status" class="form-control select2"style="width: 100%;">
+                                <select name="status" class="form-control select2" style="width: 100%;">
                                     <option value="">@lang('Please select')</option>
                                     @foreach ($list_status as $key => $item)
                                         <option value="{{ $key }}"
@@ -47,21 +73,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>@lang('Danh mục thực phẩm')</label>
-                                <select name="ingredient_category_id" class="form-control select2"style="width: 100%;">
-                                    <option value="">@lang('Please select')</option>
-                                    @foreach ($list_ingredient_categories as $item)
-                                        <option value="{{ $item->id }}"
-                                            {{ isset($params['ingredient_category_id']) && $params['ingredient_category_id'] == $item->id ? 'selected' : '' }}>{{ __($item->name??"") }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
                         
-
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label>@lang('Filter')</label>
@@ -118,11 +130,10 @@
                     <thead>
                         <tr>
                             <th>@lang('STT')</th>
-                            <th>@lang('Mã thực phẩm')</th>
-                            <th>@lang('Tên thực phẩm')</th>
-                            <th>@lang('Danh mục')</th>
+                            <th>@lang('Tên món ăn')</th>
+                            <th>@lang('Loại món ăn')</th>
+                            <th>@lang('Bữa áp dụng')</th>
                             <th>@lang('Mô tả')</th>
-                            <th>@lang('Loại')</th>
                             <th>@lang('Trạng thái')</th>
                             <th>@lang('Thao tác')</th>
                         </tr>
@@ -133,25 +144,24 @@
                                 <td>
                                     {{ $loop->iteration + ($rows->currentPage() - 1) * $rows->perPage() }}
                                 </td>
-                                <td>
-                                    {{ 'TP' . str_pad($row->id, 5, '0', STR_PAD_LEFT) }}
-                                </td>
                                 <td>{{ $row->name ?? '' }}</td>
-                                <td>{{ $row->ingredientCategory->name ?? '' }}</td>
                                 <td>
-                                    {{ $row->description ?? '' }}
+                                    {{ __($row->dishes_type ?? '') }}
                                 </td>
                                 <td>
-                                    {{ __($row->type ?? "") }}
+                                    {{ __($row->dishes_time ?? '') }}
+                                </td>
+                                <td>
+                                    {{ $row->description ?? "" }}
                                 </td>
                                 <td>@lang($row->status)</td>
                                 <td>
                                     <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="@lang('Update')"
-                                       href="{{ route('ingredients.edit', $row->id) }}">
+                                       href="{{ route('dishes.edit', $row->id) }}">
                                         <i class="fa fa-pencil-square-o"></i>
                                     </a>
                 
-                                    <form action="{{ route('ingredients.destroy', $row->id) }}" method="POST"
+                                    <form action="{{ route('dishes.destroy', $row->id) }}" method="POST"
                                           style="display:inline-block"
                                           onsubmit="return confirm('@lang('confirm_action')')">
                                         @csrf
