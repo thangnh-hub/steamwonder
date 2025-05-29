@@ -155,9 +155,7 @@
         margin-top: 15px;
     }
 
-    .mt-10 {
-        margin-top: 10px;
-    }
+
 
     .mr-15 {
         margin-right: 15px !important;
@@ -179,12 +177,24 @@
         margin-right: 10px !important;
     }
 
+    .mt-10 {
+        margin-top: 10px;
+    }
+
+    .mb-10 {
+        margin-bottom: 10px;
+    }
+
     .mx-10 {
         margin: 0 10px !important;
     }
 
     .my-10 {
         margin: 10px 0 !important;
+    }
+
+    .mb-5 {
+        margin-bottom: 5px;
     }
 
     .w-100 {

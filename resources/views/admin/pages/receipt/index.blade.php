@@ -34,7 +34,7 @@
                     <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                 </div>
             </div>
-            <form action="{{ route(Request::segment(2) . '.index') }}" method="GET">
+            <form action="{{ route(Request::segment(2) . '.index') }}" method="GET" id="form_filter">
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-3">
@@ -101,6 +101,11 @@
                                     <button type="submit" class="btn btn-primary btn-sm mr-10">@lang('Submit')</button>
                                     <a class="btn btn-default btn-sm" href="{{ route(Request::segment(2) . '.index') }}">
                                         @lang('Reset')
+                                    </a>
+                                    <a href="javascript:void(0)" data-url="{{ route('receipt.export') }}"
+                                        class="btn btn-sm btn-success btn_export">
+                                        <i class="fa fa-file-excel-o"></i>
+                                        @lang('Export dữ liệu')
                                     </a>
                                 </div>
                             </div>
@@ -172,7 +177,7 @@
                             @foreach ($rows as $row)
                                 <tr class="valign-middle">
                                     <td>
-                                        {{$loop->index + 1}}
+                                        {{ $loop->index + 1 }}
                                     </td>
                                     <td>
                                         <strong style="font-size: 14px">{{ $row->receipt_code ?? '' }}</strong>
@@ -239,8 +244,8 @@
                                             <i class="fa fa-pencil"></i>
                                         </a>
                                         <button type="button" class="btn btn-sm btn-danger btn_delete_receipt "
-                                            data-id="{{ $row->id }}" data-toggle="tooltip" title="@lang('Xóa phiếu')"
-                                            data-original-title="@lang('Xóa phiếu')">
+                                            data-id="{{ $row->id }}" data-toggle="tooltip"
+                                            title="@lang('Xóa phiếu')" data-original-title="@lang('Xóa phiếu')">
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </td>
@@ -315,7 +320,7 @@
                     console.log(errors);
                 }
             });
-        })
+        });
         $('.btn_delete_receipt').click(function() {
             let currentStudentReceiptId = $(this).data('id'); // Lấy ID phiếu thu hiện tại từ nút
             if (confirm("Bạn có chắc chắn muốn xóa phiếu thu này?")) {
@@ -339,5 +344,50 @@
                 });
             }
         });
+
+        $('.btn_export').click(function() {
+            show_loading_notification();
+            var formData = $('#form_filter').serialize();
+            var url = $(this).data('url');
+            $.ajax({
+                url: url,
+                type: 'GET',
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                data: formData,
+                success: function(response) {
+                    if (response) {
+                        var a = document.createElement('a');
+                        var url = window.URL.createObjectURL(response);
+                        a.href = url;
+                        a.download = 'Receipt.xlsx';
+                        document.body.append(a);
+                        a.click();
+                        a.remove();
+                        window.URL.revokeObjectURL(url);
+                        hide_loading_notification();
+                    } else {
+                        var _html = `<div class="alert alert-warning alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            Bạn không có quyền thao tác chức năng này!
+                            </div>`;
+                        $('.box_alert').prepend(_html);
+                        $('html, body').animate({
+                            scrollTop: $(".alert").offset().top
+                        }, 1000);
+                        setTimeout(function() {
+                            $('.alert').remove();
+                        }, 3000);
+                        hide_loading_notification();
+                    }
+                },
+                error: function(response) {
+                    hide_loading_notification();
+                    let errors = response.responseJSON.message;
+                    alert(errors);
+                }
+            });
+        })
     </script>
 @endsection

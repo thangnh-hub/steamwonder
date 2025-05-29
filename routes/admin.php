@@ -114,6 +114,8 @@ Route::group(['namespace' => 'Admin'], function () {
                 'suppliers' => 'MealSupplierController',
                 'units' => 'MealUnitController',
                 'unit_conversions' => 'MealUnitConversionController',
+                'ingredients_category' => 'MealIngredientCategoryController',
+                'ingredients' => 'MealIngredientController',
             ]);
 
             Route::get('attendance/check-out/index', 'AttendancesController@checkout')->name('attendance.checkout');
@@ -362,6 +364,7 @@ Route::group(['namespace' => 'Admin'], function () {
         //Export class, teacher by Kudo
         Route::get('class-export', 'ClassController@exportClass')->name('class.export_class');
         Route::get('admin-export', 'AdminController@exportAdmin')->name('admin.export_admin');
+        Route::get('receipt-export', 'ReceiptController@exportReceipt')->name('receipt.export');
     });
     // Test teacher
     Route::get('test_teacher', 'TeacherQuizController@testTeacher')->name('test_teacher.test');

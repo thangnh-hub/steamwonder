@@ -4,6 +4,10 @@ namespace App;
 
 class Consts
 {
+    const INGREDIENTS_TYPE = [
+        'save_warehouse' => 'save_warehouse',
+        'fresh' => 'fresh',
+    ];
     const SERVICE_FEES = [
         'late_fee' => 'late_fee',
         'saturday_fee' => 'saturday_fee',

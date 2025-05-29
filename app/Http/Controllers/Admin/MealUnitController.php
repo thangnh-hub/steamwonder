@@ -62,6 +62,7 @@ class MealUnitController extends Controller
         ]);
 
         $params = $request->all();
+        $params['is_base'] =  $request->is_base ?? '0';
         $params['admin_updated_id'] = Auth::guard('admin')->id();
 
         $unit->update($params);

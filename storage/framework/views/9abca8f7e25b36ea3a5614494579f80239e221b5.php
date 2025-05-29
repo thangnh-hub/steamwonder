@@ -1,3 +1,6 @@
+<div id="loading-notification" class="loading-notification">
+    <p><?php echo app('translator')->get('Please wait'); ?>...</p>
+</div>
 <!-- jQuery 3 -->
 <script src="<?php echo e(asset('themes/admin/js/jquery.min.js')); ?>"></script>
 <script src="<?php echo e(asset('themes/admin/js/jquery.validate.min.js')); ?>"></script>
