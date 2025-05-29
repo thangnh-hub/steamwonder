@@ -121,5 +121,11 @@
     "boarding_fee": "Phí dịch vụ bán trú",
     "Gender": "Giới tính",
     "save_warehouse": "Lưu kho",
-    "fresh": "Thực phẩm tươi"
+    "fresh": "Thực phẩm tươi",
+    "soup": "Món canh",
+    "savory": "Món mặn (chính)",
+    "boiled": "Món xào (luộc)",
+    "morning": "Bữa sáng",
+    "noon": "Bữa trưa",
+    "afternoon": "Bữa chiều"
 }

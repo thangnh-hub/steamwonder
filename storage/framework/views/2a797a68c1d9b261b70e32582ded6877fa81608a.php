@@ -56,7 +56,7 @@
                                     <ul class="nav nav-tabs">
                                         <li class="active">
                                             <a href="#tab_1" data-toggle="tab">
-                                                <h5>Thông tin danh mục thực phẩm <span class="text-danger">*</span></h5>
+                                                <h5>Thông tin món ăn<span class="text-danger">*</span></h5>
                                             </a>
                                         </li>
                                         <button type="submit" class="btn btn-info btn-sm pull-right">
@@ -67,18 +67,41 @@
                                     <div class="tab-content">
                                         <div class="tab-pane active" id="tab_1">
                                             <div class="d-flex-wap">
-                                                
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <label for="name"><?php echo app('translator')->get('Tên danh mục thực phẩm'); ?> <span class="text-danger">*</span></label>
-                                                        <input placeholder="<?php echo app('translator')->get('Tên danh mục thực phẩm'); ?>" type="text" name="name" class="form-control" value="<?php echo e(old('name', $detail->name ?? '')); ?>" required>
+                                                        <label for="name"><?php echo app('translator')->get('Tên món ăn'); ?> <span class="text-danger">*</span></label>
+                                                        <input placeholder="<?php echo app('translator')->get('Tên món ăn'); ?>" type="text" name="name" class="form-control" value="<?php echo e(old('name', $detail->name ?? '')); ?>" required>
                                                     </div>
                                                 </div>
-                                                
-                                                <div class="col-md-4">
+                                            
+                                                <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <label for="status">Trạng thái</label>
-                                                        <select name="status" class="form-control">
+                                                        <label><?php echo app('translator')->get('Loại món ăn'); ?></label>
+                                                        <select name="dishes_type" class="form-control select2">
+                                                            <option value=""><?php echo app('translator')->get('Chọn'); ?></option>
+                                                            <?php $__currentLoopData = $list_type; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <option value="<?php echo e($key); ?>" <?php echo e(isset($detail->dishes_type) && $detail->dishes_type == $key ? 'selected' : ''); ?>><?php echo e(__($value)); ?></option>
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label><?php echo app('translator')->get('Bữa ăn áp dụng'); ?></label>
+                                                        <select name="dishes_time" class="form-control select2">
+                                                            <option value=""><?php echo app('translator')->get('Chọn'); ?></option>
+                                                            <?php $__currentLoopData = $list_time; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <option value="<?php echo e($key); ?>" <?php echo e(isset($detail->dishes_time) && $detail->dishes_time == $key ? 'selected' : ''); ?>><?php echo e(__($value)); ?></option>
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label for="status"><?php echo app('translator')->get('Trạng thái'); ?></label>
+                                                        <select name="status" class="form-control select2">
                                                             <?php $__currentLoopData = $list_status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                                 <option value="<?php echo e($key); ?>" <?php echo e(old('status', $detail->status ?? 1) == $key ? 'selected' : ''); ?>><?php echo e($value); ?></option>
                                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -86,16 +109,6 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label><?php echo app('translator')->get('Loại'); ?></label>
-                                                        <select name="type" class="form-control select2">
-                                                            <?php $__currentLoopData = $list_type; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                <option value="<?php echo e($key); ?>" <?php echo e(old('type', $detail->type ?? 1) == $key ? 'selected' : ''); ?>><?php echo e(__($value)); ?></option>
-                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
                                                 <div class="col-md-12">
                                                     <div class="form-group">
                                                         <label for=""><?php echo app('translator')->get('Mô tả'); ?></label>
@@ -128,4 +141,4 @@
     </script>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\steamwonder\resources\views/admin/pages/meal/ingredients_category/create.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\steamwonder\resources\views/admin/pages/meal/dishes/create.blade.php ENDPATH**/ ?>

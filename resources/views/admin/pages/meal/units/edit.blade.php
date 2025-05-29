@@ -53,7 +53,7 @@
                                 <ul class="nav nav-tabs">
                                     <li class="active">
                                         <a href="#tab_1" data-toggle="tab">
-                                            <h5>Thông tin phụ huynh <span class="text-danger">*</span></h5>
+                                            <h5>Thông tin đơn vị <span class="text-danger">*</span></h5>
                                         </a>
                                     </li>
                                     <button type="submit" class="btn btn-info btn-sm pull-right">
