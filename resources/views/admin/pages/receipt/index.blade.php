@@ -102,8 +102,7 @@
                                     @foreach ($type_receipt as $key => $val)
                                         <option value="{{ $key }}"
                                             {{ isset($params['type_receipt']) && $params['type_receipt'] == $key ? 'selected' : '' }}>
-                                            @lang('Phiếu') <span
-                                                style="text-transform: lowercase">{{ __($val) }}</span></option>
+                                            {{ __($val) }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -217,7 +216,7 @@
                                         {{ $row->receipt_name }}
                                     </td>
                                     <td>
-                                        Phiếu {{ __($row->type_receipt) }}
+                                        {{ __($row->type_receipt) }}
                                     </td>
                                     <td>
                                         {{ $row->student->student_code ?? '' }}
