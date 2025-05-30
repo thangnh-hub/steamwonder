@@ -120,6 +120,7 @@
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title">@lang('List')</h3>
+
             </div>
             <div class="box-body box_alert">
                 @if (session('errorMessage'))
@@ -187,7 +188,7 @@
                                     </td>
                                     <td>
                                         {{ $row->student->student_code ?? '' }} - {{ $row->student->first_name ?? '' }}
-                                        {{ $row->student->last_name ?? '' }}({{ $row->student->nickname ?? '' }})
+                                        {{ $row->student->last_name ?? '' }} ({{ $row->student->nickname ?? '' }})
                                     </td>
                                     <td>
                                         {{ $row->area->name ?? '' }}

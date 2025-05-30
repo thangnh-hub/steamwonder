@@ -23,12 +23,15 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ReceiptController extends Controller
 {
+    protected $day_start_receipt_yearly;
+
     public function __construct()
     {
         parent::__construct();
         $this->routeDefault  = 'receipt';
         $this->viewPart = 'admin.pages.receipt';
         $this->responseData['module_name'] = 'Quản lý TBP';
+        $this->day_start_receipt_yearly = Carbon::createFromDate(null, 6, 1)->format('Y-m-d');
     }
     /**
      * Display a listing of the resource.

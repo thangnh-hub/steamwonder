@@ -12,7 +12,7 @@ class StudentService extends Model
      * @var array
      */
     protected $table = 'tb_student_services';
-    
+
     /**
      * The attributes that aren't mass assignable.
      *
