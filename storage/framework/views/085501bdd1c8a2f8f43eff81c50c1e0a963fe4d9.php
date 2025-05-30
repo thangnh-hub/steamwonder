@@ -102,8 +102,7 @@
                                     <?php $__currentLoopData = $type_receipt; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <option value="<?php echo e($key); ?>"
                                             <?php echo e(isset($params['type_receipt']) && $params['type_receipt'] == $key ? 'selected' : ''); ?>>
-                                            <?php echo app('translator')->get('Phiếu'); ?> <span
-                                                style="text-transform: lowercase"><?php echo e(__($val)); ?></span></option>
+                                            <?php echo e(__($val)); ?></option>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
@@ -221,7 +220,7 @@
 
                                     </td>
                                     <td>
-                                        Phiếu <?php echo e(__($row->type_receipt)); ?>
+                                        <?php echo e(__($row->type_receipt)); ?>
 
                                     </td>
                                     <td>

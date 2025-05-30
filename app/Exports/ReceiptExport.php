@@ -47,6 +47,7 @@ class ReceiptExport implements FromCollection, WithHeadings, WithMapping, WithSt
         return [
             __('Mã TBP'),
             __('Tên TBP'),
+            __('Loại TBP'),
             __('Mã học sinh'),
             __('Tên học sinh'),
             __('Lớp'),
@@ -87,6 +88,7 @@ class ReceiptExport implements FromCollection, WithHeadings, WithMapping, WithSt
         return [
             $row->receipt_code ?? '',
             $row->receipt_name ?? '',
+            __($row->type_receipt) ?? '',
             (optional($row->student)->student_code ?? ''),
             (optional($row->student)->first_name ?? '') . ' ' . (optional($row->student)->last_name ?? ''),
             optional($row->student->currentClass)->name ?? '',
