@@ -41,8 +41,13 @@ class ClassController extends Controller
 
     public function index(Request $request)
     {
+        $admin = Auth::guard('admin')->user();
         $params = $request->all();
-        $rows = tbClass::getSqlClass($params)->orderBy('id', 'desc')->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
+        $permission_class = DataPermissionService::getPermissionClasses($admin->id);
+        $rows = tbClass::getSqlClass($params)
+            ->whereIn('id', $permission_class)
+            ->orderBy('id', 'desc')
+            ->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
         $paramStatus['status'] = Consts::STATUS['active'];
         $this->responseData['areas'] =  Area::getsqlArea($paramStatus)->get();
         $this->responseData['rooms'] =  Room::getSqlRoom($paramStatus)->get();
