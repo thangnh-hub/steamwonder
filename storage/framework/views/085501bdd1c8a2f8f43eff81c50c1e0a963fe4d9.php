@@ -88,6 +88,20 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
+                                <label><?php echo app('translator')->get('Loại'); ?></label>
+                                <select name="type_receipt" class="form-control select2 w-100">
+                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
+                                    <?php $__currentLoopData = $type_receipt; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($key); ?>"
+                                            <?php echo e(isset($params['type_receipt']) && $params['type_receipt'] == $key ? 'selected' : ''); ?>>
+                                            <?php echo app('translator')->get('Phiếu'); ?> <span
+                                                style="text-transform: lowercase"><?php echo e(__($val)); ?></span></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
                                 <label><?php echo app('translator')->get('Ngày tạo'); ?></label>
                                 <input type="date" name="created_at" class="form-control"
                                     value="<?php echo e($params['created_at'] ?? ''); ?>">
@@ -160,6 +174,7 @@
                                 <th><?php echo app('translator')->get('STT'); ?></th>
                                 <th><?php echo app('translator')->get('Mã TBP'); ?></th>
                                 <th><?php echo app('translator')->get('Tên TBP'); ?></th>
+                                <th><?php echo app('translator')->get('Loại TBP'); ?></th>
                                 <th><?php echo app('translator')->get('Học sinh'); ?></th>
                                 <th><?php echo app('translator')->get('Khu vực'); ?></th>
                                 
@@ -188,6 +203,10 @@
                                     </td>
                                     <td>
                                         <?php echo e($row->receipt_name); ?>
+
+                                    </td>
+                                    <td>
+                                        Phiếu <?php echo e(__($row->type_receipt)); ?>
 
                                     </td>
                                     <td>
@@ -253,8 +272,9 @@
                                             title="<?php echo app('translator')->get('Xem nhanh'); ?>" data-original-title="<?php echo app('translator')->get('Xem nhanh'); ?>">
                                             <i class="fa fa-eye"></i>
                                         </button>
-                                        <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="<?php echo app('translator')->get('Chỉnh sửa'); ?>"
-                                            data-original-title="<?php echo app('translator')->get('Chỉnh sửa'); ?>" style="min-width: 34px"
+                                        <a class="btn btn-sm btn-warning" data-toggle="tooltip"
+                                            title="<?php echo app('translator')->get('Chỉnh sửa'); ?>" data-original-title="<?php echo app('translator')->get('Chỉnh sửa'); ?>"
+                                            style="min-width: 34px"
                                             href="<?php echo e(route(Request::segment(2) . '.show', $row->id)); ?>">
                                             <i class="fa fa-pencil"></i>
                                         </a>
