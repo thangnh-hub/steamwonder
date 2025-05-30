@@ -104,6 +104,7 @@
                     </div>
                 </div>
             </form>
+            <a href="{{route('student.add_service_yearly')}}" class="btn btn-sm btn-warning">@lang('Thêm dịch vụ hàng năm cho học sinh')</a>
             {{-- <div class="import_excel ">
                 <div style="display: flex; margin-left:10px; max-width: 500px; margin-top: 15px;">
                     <input class="form-control" type="file" name="files" id="importPromotion"

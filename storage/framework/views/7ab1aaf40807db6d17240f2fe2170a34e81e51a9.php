@@ -104,48 +104,8 @@
                     </div>
                 </div>
             </form>
-            <div class="import_excel ">
-                <div style="display: flex; margin-left:10px; max-width: 500px; margin-top: 15px;">
-                    <input class="form-control" type="file" name="files" id="importPromotion"
-                        placeholder="<?php echo app('translator')->get('File Import Promotion'); ?>">
-                    <button type="button" class="btn btn-sm btn-success"
-                        onclick="importFile('importPromotion','<?php echo e(route('student.import_promotion')); ?>')">
-                        <i class="fa fa-file-excel-o"></i>
-                        <?php echo app('translator')->get('Import Khuyến mãi'); ?></button>
-                </div>
-                <div style="display: flex; margin-left:10px; max-width: 500px; margin-top: 15px;">
-                    <input class="form-control" type="file" name="files" id="importPolicy"
-                        placeholder="<?php echo app('translator')->get('File Import Policy'); ?>">
-                    <button type="button" class="btn btn-sm btn-success"
-                        onclick="importFile('importPolicy','<?php echo e(route('student.import_policy')); ?>')">
-                        <i class="fa fa-file-excel-o"></i>
-                        <?php echo app('translator')->get('Import Chính sách'); ?></button>
-                </div>
-                <div style="display: flex; margin-left:10px; max-width: 500px; margin-top: 15px;">
-                    <input class="form-control" type="file" name="files" id="importService"
-                        placeholder="<?php echo app('translator')->get('File Import Service'); ?>">
-                    <button type="button" class="btn btn-sm btn-success"
-                        onclick="importFile('importService','<?php echo e(route('student.import_service')); ?>')">
-                        <i class="fa fa-file-excel-o"></i>
-                        <?php echo app('translator')->get('Import dịch vụ'); ?></button>
-                </div>
-                <div style="display: flex; margin-left:10px; max-width: 500px; margin-top: 15px;">
-                    <input class="form-control" type="file" name="files" id="importReceipt"
-                        placeholder="<?php echo app('translator')->get('File Import Receipt'); ?>">
-                    <button type="button" class="btn btn-sm btn-success"
-                        onclick="importFile('importReceipt','<?php echo e(route('student.import_receipt')); ?>')">
-                        <i class="fa fa-file-excel-o"></i>
-                        <?php echo app('translator')->get('Import TBP'); ?></button>
-                </div>
-                <div style="display: flex; margin-left:10px; max-width: 500px; margin-top: 15px;">
-                    <input class="form-control" type="file" name="files" id="imporBalancetReceipt"
-                        placeholder="<?php echo app('translator')->get('File Import Receipt'); ?>">
-                    <button type="button" class="btn btn-sm btn-success"
-                        onclick="importFile('imporBalancetReceipt','<?php echo e(route('student.import_balance_receipt')); ?>')">
-                        <i class="fa fa-file-excel-o"></i>
-                        <?php echo app('translator')->get('Import Số dư kỳ trước'); ?></button>
-                </div>
-            </div>
+            <a href="<?php echo e(route('student.add_service_yearly')); ?>" class="btn btn-sm btn-warning"><?php echo app('translator')->get('Thêm dịch vụ hàng năm cho học sinh'); ?></a>
+            
 
         </div>
         
