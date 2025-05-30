@@ -6,7 +6,7 @@ use App\Models\WareHouseOrder;
 use App\Models\WareHouseOrderDetail;
 use App\Models\WareHouse;
 use App\Models\Area;
-use App\Models\WarehouseDepartment;
+use App\Models\Department;
 use App\Models\WareHouseCategoryProduct;
 use App\Models\WareHouseProduct;
 use Illuminate\Http\Request;
@@ -42,7 +42,7 @@ class WareHouseOrderBuyController extends Controller
     $params_warehouse['warehouse_permission'] = DataPermissionService::getPermisisonWarehouses(Auth::guard('admin')->user()->id);
     $this->responseData['list_warehouse'] = WareHouse::getSqlWareHouse($params_warehouse)->get();
     $this->responseData['status'] =  Consts::APPROVE_WAREHOUSE_ORDER_BUY;
-    $this->responseData['department'] =  WarehouseDepartment::getSqlWareHouseDepartment()->get();
+    $this->responseData['department'] =  Department::getSqlDepartment()->get();
     $params['type'] = Consts::WAREHOUSE_TYPE_ORDER['buy'];
     $params['order_permission'] = DataPermissionService::getPermisisonOrderWarehouses(Auth::guard('admin')->user()->id);
     $rows = WareHouseOrder::getSqlWareHouseOrder($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
@@ -64,7 +64,7 @@ class WareHouseOrderBuyController extends Controller
     $params_area['id'] = DataPermissionService::getPermisisonAreas($user->id);
     $this->responseData['list_area'] = Area::getsqlArea($params_area)->get();
     // Bổ sung quyền phòng ban theo khu vực
-    $this->responseData['department'] =  WarehouseDepartment::where('id', $user->department_id)->get();
+    $this->responseData['department'] =  Department::where('id', $user->department_id)->get();
     $this->responseData['list_warehouse'] = WareHouse::where('area_id', $user->area_id)->get();
     $this->responseData['category_products'] =  WareHouseCategoryProduct::getSqlWareHouseCategoryProduct()->get();
 
@@ -163,7 +163,7 @@ class WareHouseOrderBuyController extends Controller
 
       //Những Phòng ban đề xuất trong phiếu đề xuất order
       $list_id_department_order = collect($list_relateds)->pluck('department_request')->unique()->toArray();
-      $this->responseData['department'] =  WarehouseDepartment::whereIn('id', $list_id_department_order)->get();
+      $this->responseData['department'] =  Department::whereIn('id', $list_id_department_order)->get();
       // Duyệt và lọc + map các phần tử trùng product_id và phòng ban sau đó lấy tổng số lượng
       $allDetails = $list_relateds->flatMap(fn($item) => $item['orderDetails'])
         ->groupBy(fn($item) => $item['product_id'] . '-' . $item['department'])
@@ -495,7 +495,7 @@ class WareHouseOrderBuyController extends Controller
     $params = $request->all();
     $user =  Auth::guard('admin')->user();
     $order_buy = WareHouseOrder::find($params['id']);
-    $department = WarehouseDepartment::find($user->department_id);
+    $department = Department::find($user->department_id);
     $total_money = $order_buy->total_money + ((int) $params['vat10'] ?? 0) + ((int) $params['vat8'] ?? 0) - ((int) $params['money'] ?? 0);
     $text_money = $this->convertNumberToWords((int)$total_money);
     $data = [

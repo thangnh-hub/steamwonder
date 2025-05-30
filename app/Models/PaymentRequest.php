@@ -60,7 +60,7 @@ class PaymentRequest extends Model
     }
     public function department()
     {
-        return $this->belongsTo(WarehouseDepartment::class, 'dep_id', 'id');
+        return $this->belongsTo(Department::class, 'dep_id', 'id');
     }
     public function entry()
     {

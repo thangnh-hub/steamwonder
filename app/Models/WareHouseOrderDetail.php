@@ -75,7 +75,7 @@ class WareHouseOrderDetail extends Model
     }
     public function departmentInfor()
     {
-        return $this->belongsTo(WarehouseDepartment::class, 'department', 'id');
+        return $this->belongsTo(Department::class, 'department', 'id');
     }
     public function order_warehouse()
     {

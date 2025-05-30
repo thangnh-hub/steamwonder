@@ -16,7 +16,7 @@ use App\Models\WareHouseProduct;
 use App\Models\WarehouseAsset;
 use App\Models\WareHouse;
 use App\Models\Area;
-use App\Models\WarehouseDepartment;
+use App\Models\Department;
 use App\Models\WareHouseCategoryProduct;
 use App\Http\Services\DataPermissionService;
 use App\Http\Services\WarehouseService;
@@ -67,7 +67,7 @@ class WarehouseTransferController extends Controller
     $this->responseData['all_area'] = Area::getsqlArea()->get();
     $this->responseData['staff_request'] = Admin::where('status', 'active')->where('admin_type', '!=', 'student')->get();
     //Bổ sung sau quyền phòng ban theo khu vực
-    $this->responseData['department'] =  WarehouseDepartment::getSqlWareHouseDepartment()->get();
+    $this->responseData['department'] =  Department::getSqlDepartment()->get();
     //Danh mục Sản phẩm
     $this->responseData['category_products'] =  WareHouseCategoryProduct::getSqlWareHouseCategoryProduct()->get();
     $this->responseData['warehouses'] =  WareHouse::getSqlWareHouse()->get();
@@ -167,7 +167,7 @@ class WarehouseTransferController extends Controller
     $this->responseData['list_area'] = Area::getsqlArea($params_area)->get();
     $this->responseData['staff_request'] = Admin::where('status', 'active')->where('admin_type', '!=', 'student')->get();
     //Bổ sung sau quyền phòng ban theo khu vực
-    $this->responseData['department'] =  WarehouseDepartment::getSqlWareHouseDepartment()->get();
+    $this->responseData['department'] =  Department::getSqlDepartment()->get();
 
     //list tài sản đã chọn
     $list_asset = isset($warehouseTransfer->json_params->list_asset) && $warehouseTransfer->json_params->list_asset != '' ? (array)$warehouseTransfer->json_params->list_asset : [];
@@ -219,7 +219,7 @@ class WarehouseTransferController extends Controller
     $this->responseData['list_area'] = Area::getsqlArea($params_area)->get();
     $this->responseData['staff_request'] = Admin::where('status', 'active')->where('admin_type', '!=', 'student')->get();
     //Bổ sung sau quyền phòng ban theo khu vực
-    $this->responseData['department'] =  WarehouseDepartment::getSqlWareHouseDepartment()->get();
+    $this->responseData['department'] =  Department::getSqlDepartment()->get();
     //Danh mục Sản phẩm
     $this->responseData['category_products'] =  WareHouseCategoryProduct::getSqlWareHouseCategoryProduct()->get();
     $this->responseData['detail'] = $warehouseTransfer;

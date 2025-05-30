@@ -26,7 +26,7 @@ class Department extends Model
 
     public static function getSqlDepartment($params = [])
     {
-        $query = WarehouseDepartment::select('tb_department.*')
+        $query = Department::select('tb_department.*')
             ->when(!empty($params['keyword']), function ($query) use ($params) {
                 $keyword = $params['keyword'];
                 return $query->where(function ($where) use ($keyword) {

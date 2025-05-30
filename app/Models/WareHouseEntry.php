@@ -120,7 +120,7 @@ class WareHouseEntry extends Model
     }
     public function department()
     {
-        return $this->belongsTo(WarehouseDepartment::class, 'department_request', 'id');
+        return $this->belongsTo(Department::class, 'department_request', 'id');
     }
     public function staff()
     {
