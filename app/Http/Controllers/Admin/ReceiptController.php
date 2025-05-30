@@ -140,7 +140,9 @@ class ReceiptController extends Controller
             $json_params = json_decode(json_encode($receipt->json_params), true);
             // Cập nhật lại thông tin
             $json_params['due_date'] = $request->input('due_date');
-            $receipt->status = Consts::STATUS_RECEIPT['paid'];
+            if ($receipt->total_paid >= $receipt->total_final) {
+                $receipt->status = Consts::STATUS_RECEIPT['paid'];
+            }
             $receipt->cashier_id = $admin->id;
             $receipt->admin_updated_id = $admin->id;
             $receipt->json_params = $json_params;
@@ -336,7 +338,6 @@ class ReceiptController extends Controller
                 $params['cashier'] = $admin->id;
                 $params['admin_created_id'] = $admin->id;
                 ReceiptTransaction::create($params);
-
                 // Cập nhật lại số tiền trong bảng receipt
                 $receipt = Receipt::find($receipt_id);
                 // Lấy tổng tiền receipt_transaction
