@@ -32,6 +32,12 @@ class MealIngredient extends Model
             ->when(!empty($params['ingredient_category_id']), function ($query) use ($params) {
                 return $query->where('ingredient_category_id', $params['ingredient_category_id']);
             })
+            ->when(!empty($params['different_id']), function ($query) use ($params) {
+                if (is_array($params['different_id'])) {
+                    return $query->whereNotIn('tb_meal_ingredients.id', $params['different_id']);
+                }
+                return $query->where('tb_meal_ingredients.id', '!=', $params['different_id']);
+            })
             ;
 
         $query->orderBy('id', 'desc')->groupBy('id');
