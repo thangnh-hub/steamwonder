@@ -88,6 +88,20 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
+                                <label>@lang('Loại')</label>
+                                <select name="type_receipt" class="form-control select2 w-100">
+                                    <option value="">@lang('Please select')</option>
+                                    @foreach ($type_receipt as $key => $val)
+                                        <option value="{{ $key }}"
+                                            {{ isset($params['type_receipt']) && $params['type_receipt'] == $key ? 'selected' : '' }}>
+                                            @lang('Phiếu') <span
+                                                style="text-transform: lowercase">{{ __($val) }}</span></option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
                                 <label>@lang('Ngày tạo')</label>
                                 <input type="date" name="created_at" class="form-control"
                                     value="{{ $params['created_at'] ?? '' }}">
@@ -120,6 +134,7 @@
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title">@lang('List')</h3>
+
             </div>
             <div class="box-body box_alert">
                 @if (session('errorMessage'))
@@ -157,6 +172,7 @@
                                 <th>@lang('STT')</th>
                                 <th>@lang('Mã TBP')</th>
                                 <th>@lang('Tên TBP')</th>
+                                <th>@lang('Loại TBP')</th>
                                 <th>@lang('Học sinh')</th>
                                 <th>@lang('Khu vực')</th>
                                 {{-- <th>@lang('Chu kỳ thanh toán')</th> --}}
@@ -186,8 +202,11 @@
                                         {{ $row->receipt_name }}
                                     </td>
                                     <td>
+                                        Phiếu {{ __($row->type_receipt) }}
+                                    </td>
+                                    <td>
                                         {{ $row->student->student_code ?? '' }} - {{ $row->student->first_name ?? '' }}
-                                        {{ $row->student->last_name ?? '' }}({{ $row->student->nickname ?? '' }})
+                                        {{ $row->student->last_name ?? '' }} ({{ $row->student->nickname ?? '' }})
                                     </td>
                                     <td>
                                         {{ $row->area->name ?? '' }}
@@ -238,8 +257,9 @@
                                             title="@lang('Xem nhanh')" data-original-title="@lang('Xem nhanh')">
                                             <i class="fa fa-eye"></i>
                                         </button>
-                                        <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="@lang('Chỉnh sửa')"
-                                            data-original-title="@lang('Chỉnh sửa')" style="min-width: 34px"
+                                        <a class="btn btn-sm btn-warning" data-toggle="tooltip"
+                                            title="@lang('Chỉnh sửa')" data-original-title="@lang('Chỉnh sửa')"
+                                            style="min-width: 34px"
                                             href="{{ route(Request::segment(2) . '.show', $row->id) }}">
                                             <i class="fa fa-pencil"></i>
                                         </a>

@@ -79,7 +79,9 @@
     "confirm_action": "Bạn có chắc chắn muốn thực hiện hành động này không?",
     "not_found": "Không tìm thấy dữ liệu",
     "monthly": "Hàng tháng",
-    "yearly": "Hàng năm",
+    "yearly": "Đầu năm",
+    "renew": "Tái tục",
+    "new_student": "Học sinh mới",
     "once": "Dùng 1 lần",
     "auto_cancel": "Tự hủy sau khi sử dụng",
     "dang_hoc": "Đang học",
@@ -135,5 +137,13 @@
     "thanhtoan": "Thanh toán",
     "hoantra": "Hoàn trả",
     "in order_buy": "Đã gắn với phiếu mua sắm",
-    "out warehouse": "Đã xuất kho"
+    "out warehouse": "Đã xuất kho",
+    "save_warehouse": "Lưu kho",
+    "fresh": "Thực phẩm tươi",
+    "soup": "Món canh",
+    "savory": "Món mặn (chính)",
+    "boiled": "Món xào (luộc)",
+    "morning": "Bữa sáng",
+    "noon": "Bữa trưa",
+    "afternoon": "Bữa chiều"
 }

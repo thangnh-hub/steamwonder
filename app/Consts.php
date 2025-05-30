@@ -4,6 +4,20 @@ namespace App;
 
 class Consts
 {
+    const DISHES_TYPE = [
+        'soup' => 'soup',//Canh
+        'savory' => 'savory',//Mặn
+        'boiled' => 'boiled', //luoc
+    ];
+    const DISHES_TIME = [
+        'morning' => 'morning',   // sáng
+        'noon' => 'noon',         // trưa
+        'afternoon' => 'afternoon',   // chiều
+    ];
+    const INGREDIENTS_TYPE = [
+        'save_warehouse' => 'save_warehouse',
+        'fresh' => 'fresh',
+    ];
     const SERVICE_FEES = [
         'late_fee' => 'late_fee',
         'saturday_fee' => 'saturday_fee',

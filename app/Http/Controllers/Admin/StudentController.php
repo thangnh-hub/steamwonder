@@ -282,9 +282,6 @@ class StudentController extends Controller
     public function addService(Request $request, $id)
     {
         $student = Student::findOrFail($id);
-        if ($student->payment_cycle_id == "") {
-            return redirect()->back()->with('errorMessage', __('Học sinh chưa chọn chu kỳ thanh toán!'));
-        }
         $parentsInput = $request->input('services', []);
         foreach ($parentsInput as $data) {
             if (!empty($data['id'])) {
@@ -446,7 +443,9 @@ class StudentController extends Controller
         $rows = collect(); // khởi tạo rỗng mặc định
         $year = now()->year;
         if ($searchParams->isNotEmpty()) {
-            $rows = Student::getSqlStudent($params)->get();
+            $rows = Student::getSqlStudent($params)
+                ->whereHas('currentClass', fn($q) => $q->where('is_lastyear', false))
+                ->get();
 
             foreach ($rows as $row) {
                 $serviceIds = $row->studentServices->pluck('service_id')->toArray();
@@ -462,10 +461,11 @@ class StudentController extends Controller
 
         return $this->responseView($this->viewPart . '.calculate_receipt_year');
     }
+
     public function calculateReceiptStudentFirstYear(Request $request, ReceiptService $receiptService)
     {
         $list_student_ids = $request->input('student', []);
-        //Lọc danh sách id học sinh gửi lên chỉ lấy thằng có ít nhất 1 dịch vụ là active và là laoij yearly thì mới tính hóa đơn
+        //Lọc danh sách id học sinh gửi lên chỉ lấy thằng có ít nhất 1 dịch vụ là active và là loại yearly thì mới tính hóa đơn
         $students = Student::whereIn('id', $list_student_ids)
             ->whereHas('studentServices', function ($query) {
                 $query->where('status', 'active')
@@ -475,7 +475,13 @@ class StudentController extends Controller
             })
             ->get();
 
+
+        $serviceYear = Service::where('service_type', 'yearly')->get();
         foreach ($students as $student) {
+            // Thêm dịch vụ năm nếu chưa có
+            $this->addYearlyServicesForStudent($student, $serviceYear);
+
+
             $data['student_services'] = $student->studentServices()
                 ->where('status', 'active')
                 ->get();
@@ -646,5 +652,49 @@ class StudentController extends Controller
         }
         session()->flash('errorMessage', __('Cần chọn file để Import!'));
         return $this->sendResponse('warning', __('Cần chọn file để Import!'));
+    }
+
+    // Thêm dịch vụ hàng năm  cho học sinh
+    public function addYearlyServicesForStudent()
+    {
+        $auth = Auth::guard('admin')->user();
+        ini_set('max_execution_time', 300);
+        // Lấy danh sách các dịch vụ theo năm
+        $serviceYear = Service::where('service_type', 'yearly')->get();
+
+        // Danh sách học sinh đủ điều liện tính phí đầu năm (Không phải là năm cuối)
+        $students = Student::where('status', Consts::STATUS_STUDY['dang_hoc'])
+            ->whereHas('currentClass', fn($q) => $q->where('is_lastyear', false))
+            ->get();
+        // Chạy phí cho từng học sinh
+        $students->chunk(50)->each(function ($chunkedStudents) use ($auth, $serviceYear) {
+            foreach ($chunkedStudents as $student) {
+                // Dịch vụ theo khu vực của học sinh
+                $serviceYearArea = $serviceYear->where('area_id', $student->area_id);
+                // Lấy hệ đào tạo của học sinh từ dịch vụ đã đăng ký
+                $studentServices = $student->studentServices()
+                    ->whereHas('services', fn($q) => $q->whereNotNull('education_program_id'))->first();
+                $education_program_id = $studentServices->services->education_program_id ?? 1;
+                // Dịch vụ học sinh đã đăng ký
+                $existingServices = $student->studentServices()->pluck('service_id')->toArray();
+                // Thêm dịch vụ hàng năm cho học sinh
+                foreach ($serviceYearArea as $item) {
+                    // không nằm trong dịch vụ đã có và trùng hệ đào tạo hoặc rỗng
+                    if (
+                        !in_array($item->id, $existingServices) &&
+                        ($item->education_program_id == $education_program_id || $item->education_program_id == null)
+                    ) {
+                        StudentService::create([
+                            'student_id' => $student->id,
+                            'service_id' => $item->id,
+                            'payment_cycle_id' => 2,
+                            'status' => Consts::STATUS['active'],
+                            'admin_created_id' => $auth->id,
+                        ]);
+                    }
+                }
+            }
+        });
+        return redirect()->back()->with('successMessage', __('Cập nhật thông tin thành công!'));
     }
 }

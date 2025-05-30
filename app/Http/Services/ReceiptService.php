@@ -543,7 +543,6 @@ class ReceiptService
             $deductions = $this->getDeductions();
             $startDate = Carbon::parse($data['enrolled_at']);
             $details = $this->generateReceiptDetailsYearly($policies, $promotions, $deductions, $data['student_services'], $startDate);
-
             return $this->saveReceiptYearly($student,  $details, $data);
         });
     }
@@ -572,7 +571,7 @@ class ReceiptService
             switch ($service->service_type) {
                 case Consts::SERVICE_TYPE['yearly']:
                     $month = $startDate->format('Y-m-d');
-                    $discount_amount = $this->calculateDiscountYearly($service_info, $cycle, $policies, $promotions, $deductions, $startDate, $month);
+                    $discount_amount = $this->calculateDiscountYearly($service_info, $cycle, $policies, $promotions, $month);
                     $details[] = [
                         'service_id' => $service->id,
                         'month' => $month,
@@ -584,8 +583,9 @@ class ReceiptService
                         'note' => $discount_amount['cal_discount_note'],
                     ];
                     break;
+                }
             }
-        }
+
         return collect($details);
     }
 
@@ -636,7 +636,6 @@ class ReceiptService
         $service_name = $service_info['name'];
         // Kiểm tra có chương trình khuyến mãi nào đc áp dụng không
         $has_valid_promotion = false;
-
         // Ưu đãi theo khuyến mãi hợp lệ
         foreach ($promotions as $pro) {
             $start = Carbon::parse($pro->time_start)->startOfMonth();

@@ -416,7 +416,7 @@
                             <tr>
                                 <td class="text-center">{{ $loop->index + 1 }}</td>
                                 <td>{{ $item->content ?? '' }}</td>
-                                <td class="text-right">{{ number_format($item->value ?? 0, 0, ',', '.') }}</td>
+                                <td class="text-right">{{ number_format(abs($item->value ?? 0), 0, ',', '.') }}</td>
                                 <td></td>
                             </tr>
                         @endforeach

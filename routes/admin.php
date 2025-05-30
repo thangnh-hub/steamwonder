@@ -114,6 +114,9 @@ Route::group(['namespace' => 'Admin'], function () {
                 'suppliers' => 'MealSupplierController',
                 'units' => 'MealUnitController',
                 'unit_conversions' => 'MealUnitConversionController',
+                'ingredients_category' => 'MealIngredientCategoryController',
+                'ingredients' => 'MealIngredientController',
+                'dishes' => 'MealDishesController',
             ]);
 
             Route::get('attendance/check-out/index', 'AttendancesController@checkout')->name('attendance.checkout');
@@ -132,9 +135,12 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::post('import_student_receipt', 'StudentController@importStudentReceipt')->name('student.import_receipt');
             // Import Update Balance Receipt
             Route::post('import_student_balance_receipt', 'StudentController@importStudentBalanceReceipt')->name('student.import_balance_receipt');
+            // Cập nhật dịch vụ đầu năm cho học sinh
+            Route::get('student/add_service_yearly', 'StudentController@addYearlyServicesForStudent')->name('student.add_service_yearly');
 
-            // Cập nhật lại service cho học sinh và tính lại phí
+            // Cập nhật lại service cho học sinh và tính lại phí, tính phí đầu năm
             Route::post('receipt/update_student_service_and_fee', 'ReceiptController@updateStudentServiceAndFee')->name('receipt.update_student_service_and_fee');
+            Route::post('receipt/CRUD_receipt_transaction', 'ReceiptController@CrudReceiptTransaction')->name('receipt.crud_receipt_transaction');
 
             //CBTS
             Route::get('admissions/students', 'AdmissionStudentController@index')->name('admission.student.index');
