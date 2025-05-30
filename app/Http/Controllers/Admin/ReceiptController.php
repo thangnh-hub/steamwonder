@@ -41,13 +41,14 @@ class ReceiptController extends Controller
     public function index(Request $request)
     {
         $auth = Auth::guard('admin')->user();
-        $params = $request->only(['keyword', 'status', 'area_id', 'type', 'student_id', 'created_at']);
+        $params = $request->only(['keyword', 'status', 'area_id', 'type_receipt', 'student_id', 'created_at']);
         $params['permission_area'] = DataPermissionService::getPermisisonAreas($auth->id);
         $rows = Receipt::getSqlReceipt($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
         $this->responseData['rows'] = $rows;
         $this->responseData['areas'] = Area::all();
         $this->responseData['students'] = Student::getSqlStudent()->get();
         $this->responseData['status'] = Consts::STATUS_RECEIPT;
+        $this->responseData['type_receipt'] = Consts::TYPE_RECEIPT;
         $this->responseData['params'] = $params;
         return $this->responseView($this->viewPart . '.index');
     }

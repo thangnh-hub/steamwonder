@@ -46,6 +46,10 @@
 
     <!-- Main content -->
     <section class="content">
+        <div id="loading-notification" class="loading-notification">
+            <p><?php echo app('translator')->get('Please wait'); ?>...</p>
+        </div>
+
         <div class="box">
             <div class="box-header">
                 
@@ -303,7 +307,7 @@
                                     
                                     <tr>
                                         <td><?php echo app('translator')->get('Tổng tiền thực tế sau đối soát tất cả dịch vụ'); ?> <span data-html="true" data-toggle="tooltip"
-                                                title="Tổng tiền - Giảm trừ - Số dư kỳ trước">
+                                                title="= [Tổng tiền] - [Giảm trừ] - [Số dư kỳ trước]">
                                                 <i class="fa fa-question-circle-o" aria-hidden="true"></i></span>
                                         </td>
                                         <td class="text-right total_final" data-final="<?php echo e($detail->total_final); ?>">
@@ -596,12 +600,14 @@
             if (confirm('<?php echo e(__('confirm_action')); ?>')) {
                 var _url = "<?php echo e(route(Request::segment(2) . '.approved', $detail->id)); ?>";
                 var formData = $('#form_update_explanation').serialize();
+                show_loading_notification();
                 $.ajax({
                     type: "POST",
                     url: _url,
                     data: formData,
                     success: function(response) {
                         if (response) {
+                            hide_loading_notification();
                             window.location.reload();
                         } else {
                             var _html = `<div class="alert alert-warning alert-dismissible">
@@ -615,9 +621,11 @@
                             setTimeout(function() {
                                 $(".alert-danger").fadeOut(3000, function() {});
                             }, 800);
+                            hide_loading_notification();
                         }
                     },
                     error: function(data) {
+                        hide_loading_notification();
                         var errors = data.responseJSON.message;
                         alert(data);
                     }
@@ -639,6 +647,7 @@
         $(document).on('click', '.update_student_service', function() {
             var _id = $(this).data('id');
             var _payment_cycle_id = $(this).closest('tr').find('.payment_cycle').val();
+            show_loading_notification();
             $.ajax({
                 type: "POST",
                 url: "<?php echo e(route('student.updateService.ajax')); ?>",
@@ -648,6 +657,7 @@
                     _token: '<?php echo e(csrf_token()); ?>'
                 },
                 success: function(response) {
+                    hide_loading_notification();
                     if (response.message === 'success') {
                         var _html = `<div class="alert alert-warning alert-dismissible">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -669,6 +679,7 @@
                     }
                 },
                 error: function() {
+                    hide_loading_notification();
                     alert("Lỗi cập nhật.");
                 }
             });
@@ -679,12 +690,14 @@
             event.preventDefault();
             var _url = $(this).prop('action')
             var formData = $(this).serialize();
+            show_loading_notification();
             $.ajax({
                 type: "POST",
                 url: _url,
                 data: formData,
                 success: function(response) {
                     if (response) {
+                        hide_loading_notification();
                         var _html = `<div class="alert alert-${response.data} alert-dismissible">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                             ${response.message}
@@ -698,6 +711,7 @@
                         }
 
                     } else {
+                        hide_loading_notification();
                         var _html = `<div class="alert alert-warning alert-dismissible">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                             Bạn không có quyền thao tác chức năng này!
@@ -709,6 +723,7 @@
                     }
                 },
                 error: function(data) {
+                    hide_loading_notification();
                     var errors = data.responseJSON.message;
                     alert(data);
                 }
@@ -720,14 +735,17 @@
         function updateJsonExplanation() {
             var _url = $('#form_update_explanation').prop('action')
             var formData = $('#form_update_explanation').serialize();
+            show_loading_notification();
             $.ajax({
                 type: "POST",
                 url: _url,
                 data: formData,
                 success: function(response) {
+                    hide_loading_notification();
                     console.log(response.data);
                 },
                 error: function(data) {
+                    hide_loading_notification();
                     var errors = data.responseJSON.message;
                     alert(data);
                 }
