@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\PaymentRequest;
 use App\Models\PaymentRequestDetail;
-use App\Models\WarehouseDepartment;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use App\Consts;
 use Illuminate\Support\Facades\Auth;
@@ -40,7 +40,7 @@ class PaymentRequestController extends Controller
     $this->responseData['rows'] =  $rows;
     $this->responseData['params'] = $params;
     $this->responseData['status'] = Consts::PAYMENT_REQUEST_STATUS;
-    $this->responseData['department'] = WarehouseDepartment::get();
+    $this->responseData['department'] = Department::get();
 
     return $this->responseView($this->viewPart . '.index');
   }
@@ -53,7 +53,7 @@ class PaymentRequestController extends Controller
   public function create()
   {
     $this->responseData['status'] = Consts::PAYMENT_REQUEST_STATUS;
-    $this->responseData['department'] = WarehouseDepartment::get();
+    $this->responseData['department'] = Department::get();
     $this->responseData['admin'] = Auth::guard('admin')->user();
     return $this->responseView($this->viewPart . '.create');
   }
@@ -131,7 +131,7 @@ class PaymentRequestController extends Controller
 
     $this->responseData['status'] = Consts::PAYMENT_REQUEST_STATUS;
     $this->responseData['type_khoan'] = Consts::PAYMENT_REQUEST_TYPE;
-    $this->responseData['department'] = WarehouseDepartment::get();
+    $this->responseData['department'] = Department::get();
     $this->responseData['admin'] = Auth::guard('admin')->user();
     $this->responseData['detail'] = $paymentRequest;
 

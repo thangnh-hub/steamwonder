@@ -69,7 +69,7 @@ class WareHouseInventory extends Model
     }
     public function departments()
     {
-        return $this->belongsTo(WarehouseDepartment::class, 'department', 'id');
+        return $this->belongsTo(Department::class, 'department', 'id');
     }
     public function positions()
     {

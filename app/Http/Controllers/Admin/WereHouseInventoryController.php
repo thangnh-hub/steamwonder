@@ -6,7 +6,7 @@ use App\Consts;
 use App\Models\WareHouseInventory;
 use App\Models\Admin;
 use App\Models\Area;
-use App\Models\WarehouseDepartment;
+use App\Models\Department;
 use App\Models\WarehouseAsset;
 use App\Models\WarehouseAssetHistory;
 use App\Models\WareHousePosition;
@@ -45,7 +45,7 @@ class WereHouseInventoryController extends Controller
     $this->responseData['persons'] = Admin::where('status', 'active')->where('admin_type', '!=', 'student')->where('id', '!=', '1')->get();
     $params_areas['id'] = DataPermissionService::getPermisisonAreas(Auth::guard('admin')->user()->id);
     $this->responseData['areas'] = Area::getSqlArea($params_areas)->get();
-    $this->responseData['department'] =  WarehouseDepartment::getSqlWareHouseDepartment()->get();
+    $this->responseData['department'] =  Department::getSqlDepartment()->get();
     $this->responseData['status_inventory'] =  Consts::STATUS_INVENTORY;
     return $this->responseView($this->viewPart . '.index');
   }
@@ -64,7 +64,7 @@ class WereHouseInventoryController extends Controller
     $params_warehouse['warehouse_permission'] = DataPermissionService::getPermisisonWarehouses(Auth::guard('admin')->user()->id);
     $this->responseData['warehouses'] =  WareHouse::getSqlWareHouse($params_warehouse)->get();
 
-    $this->responseData['department'] =  WarehouseDepartment::getSqlWareHouseDepartment()->get();
+    $this->responseData['department'] =  Department::getSqlDepartment()->get();
     $this->responseData['positions'] =  WareHousePosition::getSqlWareHousePosition()->get();
     $state = Consts::STATE_WAREHOUSES_ASSET;
     $state = array_combine(array_keys($state), array_map('__', $state));
@@ -186,7 +186,7 @@ class WereHouseInventoryController extends Controller
     $asset_history = WarehouseAssetHistory::where('inventory_id', $wareHouseInventory->id)->get();
     $this->responseData['asset_history'] = $asset_history;
     $this->responseData['state'] = Consts::STATE_WAREHOUSES_ASSET;
-    $this->responseData['department'] =  WarehouseDepartment::getSqlWareHouseDepartment()->get();
+    $this->responseData['department'] =  Department::getSqlDepartment()->get();
     $positions = WareHousePosition::getSqlWareHousePosition(['warehouse_id' => $wareHouseInventory->warehouse_id])->get();
     $this->responseData['positions'] = $positions;
     return $this->responseView($this->viewPart . '.edit');

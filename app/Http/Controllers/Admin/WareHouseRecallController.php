@@ -11,7 +11,7 @@ use App\Models\WarehouseAsset;
 use App\Models\WareHouse;
 use App\Models\WareHouseEntryDetail;
 use App\Models\Area;
-use App\Models\WarehouseDepartment;
+use App\Models\Department;
 use App\Http\Services\DataPermissionService;
 use App\Http\Services\WarehouseService;
 use Illuminate\Support\Facades\Auth;
@@ -62,7 +62,7 @@ class WareHouseRecallController extends Controller
     $this->responseData['warehouses'] = WareHouse::getSqlWareHouse($params)->get();
     $this->responseData['position'] =  WareHousePosition::getSqlWareHousePosition($params)->get();
 
-    $this->responseData['department'] =  WarehouseDepartment::getSqlWareHouseDepartment()->get();
+    $this->responseData['department'] =  Department::getSqlDepartment()->get();
     $this->responseData['staff_request'] = Admin::where('status', 'active')->where('admin_type', '!=', 'student')->get();
     $this->responseData['module_name'] = 'Thêm mới Thu hồi';
     return $this->responseView($this->viewPart . '.create');
@@ -211,7 +211,7 @@ class WareHouseRecallController extends Controller
     $this->responseData['warehouses'] = WareHouse::getSqlWareHouse($params)->get();
     $this->responseData['position'] =  WareHousePosition::getSqlWareHousePosition($params)->get();
 
-    $this->responseData['department'] =  WarehouseDepartment::getSqlWareHouseDepartment()->get();
+    $this->responseData['department'] =  Department::getSqlDepartment()->get();
     $this->responseData['staff_request'] = Admin::where('status', 'active')->where('admin_type', '!=', 'student')->get();
     $this->responseData['module_name'] = 'Thêm mới Hoàn trả';
     return $this->responseView($this->viewPart . '.reimburse_create');

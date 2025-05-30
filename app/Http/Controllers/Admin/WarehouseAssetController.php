@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\WarehouseAsset;
 use App\Models\WareHouseProduct;
 use App\Models\WareHouse;
-use App\Models\WarehouseDepartment;
+use App\Models\Department;
 use App\Models\WareHousePosition;
 use App\Models\WareHouseEntry;
 use App\Models\WareHouseCategoryProduct;
@@ -63,7 +63,7 @@ class WarehouseAssetController extends Controller
     $this->responseData['state'] = Consts::STATE_WAREHOUSES_ASSET;
     $this->responseData['type'] = Consts::WAREHOUSE_PRODUCT_TYPE;
     $this->responseData['list_warehouse'] = Warehouse::whereIn('id', WarehouseService::getUniqueObjectToData('warehouse_id', $all_rows))->get();
-    $this->responseData['list_department'] =  WarehouseDepartment::getSqlWareHouseDepartment()->get();
+    $this->responseData['list_department'] =  Department::getSqlDepartment()->get();
     $this->responseData['list_position'] =  WareHousePosition::getSqlWareHousePosition()->get();
     $this->responseData['warehouse_entry'] =  WareHouseEntry::whereIn('id', WarehouseService::getUniqueObjectToData('entry_id', $all_rows))->get();
     $this->responseData['warehouse_deliver'] =  WareHouseEntry::whereIn('id', WarehouseService::getUniqueObjectToData('deliver_id', $all_rows))->get();

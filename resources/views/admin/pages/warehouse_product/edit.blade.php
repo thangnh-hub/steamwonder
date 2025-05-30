@@ -188,19 +188,6 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>@lang('Level')</label>
-                                                    <select name="json_params[level]" class=" form-control select2">
-                                                        <option value="">@lang('Please select')</option>
-                                                        @foreach ($level as $val)
-                                                            <option value="{{ $val->id }}"
-                                                                {{ isset($detail->json_params->level) && $detail->json_params->level == $val->id ? 'selected' : '' }}>
-                                                                @lang($val->name)</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
                                                     <label>@lang('Code Auto') </label>
                                                     <input type="text" class="form-control" name="code_auto"
                                                         placeholder="@lang('Code Auto')"
@@ -214,19 +201,6 @@
                                                         value="{{ old('code_product') ?? ($detail->code_product ?? null) }}">
                                                 </div>
                                             </div> --}}
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label>@lang('Quà tặng')</label>
-                                                    <select name="gift" class=" form-control select2">
-                                                        <option value="">@lang('Please select')</option>
-                                                        @foreach ($is_gift as $key=> $val)
-                                                            <option value="{{ $key }}"
-                                                                {{ isset($detail->gift) && $detail->gift == $key ? 'selected' : '' }}>
-                                                                @lang($val)</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div><!-- /.tab-content -->
