@@ -1,9 +1,7 @@
-@extends('admin.layouts.app')
-
-@section('title')
-    @lang($module_name)
-@endsection
-@section('style')
+<?php $__env->startSection('title'); ?>
+    <?php echo app('translator')->get($module_name); ?>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('style'); ?>
     <style>
         .table>thead>tr>th,
         .table>tbody>tr>td {
@@ -165,84 +163,84 @@
 
         }
     </style>
-@endsection
-@section('content-header')
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('content-header'); ?>
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
-            @lang($module_name)
-            <a class="btn btn-sm btn-warning pull-right" href="{{ route(Request::segment(2) . '.create') }}"><i
-                    class="fa fa-plus"></i> @lang('Add')</a>
+            <?php echo app('translator')->get($module_name); ?>
+            <a class="btn btn-sm btn-warning pull-right" href="<?php echo e(route(Request::segment(2) . '.create')); ?>"><i
+                    class="fa fa-plus"></i> <?php echo app('translator')->get('Add'); ?></a>
         </h1>
     </section>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <!-- Main content -->
     <section class="content">
         <div id="loading-notification" class="loading-notification">
-            <p>@lang('Please wait')...</p>
+            <p><?php echo app('translator')->get('Please wait'); ?>...</p>
         </div>
-        {{-- Search form --}}
+        
         <div class="box box-default">
 
             <div class="box-header with-border">
-                <h3 class="box-title">@lang('Filter')</h3>
+                <h3 class="box-title"><?php echo app('translator')->get('Filter'); ?></h3>
                 <div class="box-tools pull-right">
                     <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                 </div>
             </div>
-            <form action="{{ route(Request::segment(2) . '.summary_by_month') }}" method="GET">
+            <form action="<?php echo e(route(Request::segment(2) . '.summary_by_month')); ?>" method="GET">
                 <div class="box-body">
                     <div class="d-flex-wap">
                         <div class="col-xs-12 col-md-3">
                             <div class="form-group">
-                                <label>@lang('Area')</label>
+                                <label><?php echo app('translator')->get('Area'); ?></label>
                                 <select name="area_id" class="area_id form-control select2 w-100">
-                                    <option value="">@lang('Please select')</option>
-                                    @foreach ($areas as $item)
-                                        <option value="{{ $item->id }}"
-                                            {{ isset($params['area_id']) && $params['area_id'] == $item->id ? 'selected' : '' }}>
-                                            {{ $item->name }}</option>
-                                    @endforeach
+                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
+                                    <?php $__currentLoopData = $areas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($item->id); ?>"
+                                            <?php echo e(isset($params['area_id']) && $params['area_id'] == $item->id ? 'selected' : ''); ?>>
+                                            <?php echo e($item->name); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-3">
                             <div class="form-group">
-                                <label>@lang('Lớp') <small class="text-red">*</small></label>
+                                <label><?php echo app('translator')->get('Lớp'); ?> <small class="text-red">*</small></label>
                                 <select required name="class_id" class="class_id form-control select2 w-100">
-                                    <option value="">@lang('Please select')</option>
-                                    @foreach ($classs as $item)
-                                        <option value="{{ $item->id }}"
-                                            {{ isset($params['class_id']) && $params['class_id'] == $item->id ? 'selected' : '' }}>
-                                            {{ $item->code ?? '' }} - {{ $item->name ?? '' }}</option>
-                                    @endforeach
+                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
+                                    <?php $__currentLoopData = $classs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($item->id); ?>"
+                                            <?php echo e(isset($params['class_id']) && $params['class_id'] == $item->id ? 'selected' : ''); ?>>
+                                            <?php echo e($item->code ?? ''); ?> - <?php echo e($item->name ?? ''); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-3">
                             <div class="form-group">
-                                <label>@lang('Tháng') <small class="text-red">*</small></label>
+                                <label><?php echo app('translator')->get('Tháng'); ?> <small class="text-red">*</small></label>
                                 <input type="month" name="month" class="form-control month" required
-                                    value="{{ isset($params['month']) && $params['month'] != '' ? $params['month'] : date('Y-m', time()) }}">
+                                    value="<?php echo e(isset($params['month']) && $params['month'] != '' ? $params['month'] : date('Y-m', time())); ?>">
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-3">
                             <div class="form-group">
-                                <label>@lang('Keyword') </label>
-                                <input type="text" class="form-control" name="keyword" placeholder="@lang('Lọc theo mã học viên, họ tên hoặc email')"
-                                    value="{{ isset($params['keyword']) ? $params['keyword'] : '' }}">
+                                <label><?php echo app('translator')->get('Keyword'); ?> </label>
+                                <input type="text" class="form-control" name="keyword" placeholder="<?php echo app('translator')->get('Lọc theo mã học viên, họ tên hoặc email'); ?>"
+                                    value="<?php echo e(isset($params['keyword']) ? $params['keyword'] : ''); ?>">
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-3">
                             <div class="form-group">
-                                <label>@lang('Lấy điểm danh')</label>
+                                <label><?php echo app('translator')->get('Lấy điểm danh'); ?></label>
                                 <div>
-                                    <button type="submit" class="btn btn-primary btn-sm mr-10">@lang('Submit')</button>
+                                    <button type="submit" class="btn btn-primary btn-sm mr-10"><?php echo app('translator')->get('Submit'); ?></button>
                                     <a class="btn btn-default btn-sm"
-                                        href="{{ route(Request::segment(2) . '.summary_by_month') }}">
-                                        @lang('Reset')
+                                        href="<?php echo e(route(Request::segment(2) . '.summary_by_month')); ?>">
+                                        <?php echo app('translator')->get('Reset'); ?>
                                     </a>
                                 </div>
                             </div>
@@ -252,93 +250,100 @@
                 </div>
             </form>
         </div>
-        {{-- End search form --}}
+        
 
         <div class="box">
             <div class="box-header">
-                {{-- <h3 class="box-title">@lang('List')</h3> --}}
+                
             </div>
             <div class="box-body box_alert">
-                @if (session('errorMessage'))
+                <?php if(session('errorMessage')): ?>
                     <div class="alert alert-warning alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        {{ session('errorMessage') }}
+                        <?php echo e(session('errorMessage')); ?>
+
                     </div>
-                @endif
-                @if (session('successMessage'))
+                <?php endif; ?>
+                <?php if(session('successMessage')): ?>
                     <div class="alert alert-success alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        {{ session('successMessage') }}
-                    </div>
-                @endif
+                        <?php echo e(session('successMessage')); ?>
 
-                @if ($errors->any())
+                    </div>
+                <?php endif; ?>
+
+                <?php if($errors->any()): ?>
                     <div class="alert alert-danger alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 
-                        @foreach ($errors->all() as $error)
-                            <p>{{ $error }}</p>
-                        @endforeach
+                        <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <p><?php echo e($error); ?></p>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                     </div>
-                @endif
-                @if (count($rows) == 0)
+                <?php endif; ?>
+                <?php if(count($rows) == 0): ?>
                     <div class="alert alert-warning alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        @lang('not_found')
+                        <?php echo app('translator')->get('not_found'); ?>
                     </div>
-                @else
+                <?php else: ?>
                     <div class="table-responsive">
                         <table class="table table-hover table-bordered">
                             <thead>
                                 <tr>
-                                    <th rowspan="2" class="text-center">@lang('STT')</th>
-                                    <th rowspan="2" class="text-center">@lang('Thông tin học sinh')</th>
-                                    @for ($i = 1; $i <= $daysInMonth; $i++)
+                                    <th rowspan="2" class="text-center"><?php echo app('translator')->get('STT'); ?></th>
+                                    <th rowspan="2" class="text-center"><?php echo app('translator')->get('Thông tin học sinh'); ?></th>
+                                    <?php for($i = 1; $i <= $daysInMonth; $i++): ?>
                                         <th
-                                            class="text-center {{ $carbonDate->copy()->day($i)->dayOfWeek == 0 ? 'bg-danger' : ($carbonDate->copy()->day($i)->dayOfWeek == 6 ? 'bg-warning' : '') }}">
-                                            {{ $day_week[$carbonDate->copy()->day($i)->dayOfWeek] ?? 'CN' }}
+                                            class="text-center <?php echo e($carbonDate->copy()->day($i)->dayOfWeek == 0 ? 'bg-danger' : ($carbonDate->copy()->day($i)->dayOfWeek == 6 ? 'bg-warning' : '')); ?>">
+                                            <?php echo e($day_week[$carbonDate->copy()->day($i)->dayOfWeek] ?? 'CN'); ?>
+
                                         </th>
-                                    @endfor
+                                    <?php endfor; ?>
                                 </tr>
                                 <tr>
-                                    @for ($i = 1; $i <= $daysInMonth; $i++)
+                                    <?php for($i = 1; $i <= $daysInMonth; $i++): ?>
                                         <th
-                                            class="text-center {{ $carbonDate->copy()->day($i)->dayOfWeek == 0 ? 'bg-danger' : ($carbonDate->copy()->day($i)->dayOfWeek == 6 ? 'bg-warning' : '') }}">
-                                            {{ $i }}
+                                            class="text-center <?php echo e($carbonDate->copy()->day($i)->dayOfWeek == 0 ? 'bg-danger' : ($carbonDate->copy()->day($i)->dayOfWeek == 6 ? 'bg-warning' : '')); ?>">
+                                            <?php echo e($i); ?>
+
                                         </th>
-                                    @endfor
+                                    <?php endfor; ?>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($rows as $row)
+                                <?php $__currentLoopData = $rows; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <tr>
-                                        <td class="text-center">{{ $loop->index + 1 }}</td>
-                                        <td class="name_student">{{ $row->student->first_name }}
-                                            {{ $row->student->last_name }}
-                                            {{ $row->student->nickname != '' ? '(' . $row->student->nickname . ')' : '' }}
+                                        <td class="text-center"><?php echo e($loop->index + 1); ?></td>
+                                        <td class="name_student"><?php echo e($row->student->first_name); ?>
+
+                                            <?php echo e($row->student->last_name); ?>
+
+                                            <?php echo e($row->student->nickname != '' ? '(' . $row->student->nickname . ')' : ''); ?>
+
                                         </td>
-                                        @for ($i = 1; $i <= $daysInMonth; $i++)
-                                            <th class="text-center {{ $carbonDate->copy()->day($i)->dayOfWeek == 0 ? 'bg-danger' : ($carbonDate->copy()->day($i)->dayOfWeek == 6 ? 'bg-warning' : '') }}">
-                                                @if ($carbonDate->copy()->day($i)->dayOfWeek != 0)
-                                                    <div class="item_day {{ isset($row->attendances_by_day[$i]) ? 'text-success' : 'text-secondary' }}"
-                                                        id="item_{{ $row->class_id }}_{{ $row->student_id }}_{{ $carbonDate->copy()->day($i)->format('Y-m-d') }}"
-                                                        data-class="{{ $row->class_id }}"
-                                                        data-student="{{ $row->student_id }}"
-                                                        data-date="{{ $carbonDate->copy()->day($i)->format('Y-m-d') }}"
-                                                        data-toggle="tooltip" data-original-title="@lang('Lấy điểm danh')">
-                                                        <i class="{{ isset($row->attendances_by_day[$i]) ? 'fa fa-check-circle-o' : 'fa fa-window-minimize' }} "
+                                        <?php for($i = 1; $i <= $daysInMonth; $i++): ?>
+                                            <th class="text-center <?php echo e($carbonDate->copy()->day($i)->dayOfWeek == 0 ? 'bg-danger' : ($carbonDate->copy()->day($i)->dayOfWeek == 6 ? 'bg-warning' : '')); ?>">
+                                                <?php if($carbonDate->copy()->day($i)->dayOfWeek != 0): ?>
+                                                    <div class="item_day <?php echo e(isset($row->attendances_by_day[$i]) ? 'text-success' : 'text-secondary'); ?>"
+                                                        id="item_<?php echo e($row->class_id); ?>_<?php echo e($row->student_id); ?>_<?php echo e($carbonDate->copy()->day($i)->format('Y-m-d')); ?>"
+                                                        data-class="<?php echo e($row->class_id); ?>"
+                                                        data-student="<?php echo e($row->student_id); ?>"
+                                                        data-date="<?php echo e($carbonDate->copy()->day($i)->format('Y-m-d')); ?>"
+                                                        data-toggle="tooltip" data-original-title="<?php echo app('translator')->get('Lấy điểm danh'); ?>">
+                                                        <i class="<?php echo e(isset($row->attendances_by_day[$i]) ? 'fa fa-check-circle-o' : 'fa fa-window-minimize'); ?> "
                                                             aria-hidden="true"></i>
                                                     </div>
-                                                @endif
+                                                <?php endif; ?>
                                             </th>
-                                        @endfor
+                                        <?php endfor; ?>
                                     </tr>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>
                         </table>
                     </div>
-                @endif
+                <?php endif; ?>
             </div>
         </div>
 
@@ -347,23 +352,23 @@
             <div class="modal-dialog " role="document">
                 <div class="modal-content">
                     <div class="modal-header ">
-                        <h3 class="modal-title text-center col-md-12">@lang('Thông tin điểm danh ngày') <span
+                        <h3 class="modal-title text-center col-md-12"><?php echo app('translator')->get('Thông tin điểm danh ngày'); ?> <span
                                 class="day_attendance"></span>: <span class="student_attendance"></span></h3>
                         </h3>
                     </div>
-                    <form action="{{ route('attendance.summary_by_month.update_or_store') }}" method="POST"
+                    <form action="<?php echo e(route('attendance.summary_by_month.update_or_store')); ?>" method="POST"
                         id="form_attendance">
-                        @csrf
+                        <?php echo csrf_field(); ?>
                         <div class="modal-body show_detail_attendance">
 
                         </div>
 
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-success">
-                                <i class="fa fa-save"></i> @lang('Lưu lại')
+                                <i class="fa fa-save"></i> <?php echo app('translator')->get('Lưu lại'); ?>
                             </button>
                             <button type="button" class="btn btn-danger" data-dismiss="modal">
-                                <i class="fa fa-remove"></i> @lang('Close')
+                                <i class="fa fa-remove"></i> <?php echo app('translator')->get('Close'); ?>
                             </button>
                         </div>
                     </form>
@@ -374,7 +379,7 @@
             <div class="modal-dialog " role="document">
                 <div class="modal-content">
                     <div class="modal-header ">
-                        <h3 class="modal-title text-center col-md-12">@lang('Chụp ảnh xác nhận')</h3>
+                        <h3 class="modal-title text-center col-md-12"><?php echo app('translator')->get('Chụp ảnh xác nhận'); ?></h3>
                         </h3>
                     </div>
                     <div class="modal-body show_detail_eduction">
@@ -390,10 +395,10 @@
                             <i class="fa fa-fa fa-refresh"></i>Đổi
                             Camera</button>
                         <button type="button" id="capture" data-type="" class="btn btn-success">
-                            <i class="fa fa-camera"></i> @lang('Chụp ảnh xác nhận')
+                            <i class="fa fa-camera"></i> <?php echo app('translator')->get('Chụp ảnh xác nhận'); ?>
                         </button>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">
-                            <i class="fa fa-remove"></i> @lang('Close')
+                            <i class="fa fa-remove"></i> <?php echo app('translator')->get('Close'); ?>
                         </button>
                     </div>
                 </div>
@@ -401,14 +406,14 @@
         </div>
 
     </section>
-@endsection
-@section('script')
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('script'); ?>
     <script>
         let videoStream = null; // Biến lưu trữ stream của camera
         let currentFacingMode = "user"; // Chế độ camera mặc định: Camera trước
-        var noImage = @json(url('themes/admin/img/no_image.jpg'));
-        var areas = @json($areas ?? []);
-        var classs = @json($classs ?? []);
+        var noImage = <?php echo json_encode(url('themes/admin/img/no_image.jpg'), 15, 512) ?>;
+        var areas = <?php echo json_encode($areas ?? [], 15, 512) ?>;
+        var classs = <?php echo json_encode($classs ?? [], 15, 512) ?>;
 
 
 
@@ -420,7 +425,7 @@
             const photo_return = $('#photo_return')[0];
             $('.area_id').change(function() {
                 var area_id = $(this).val();
-                var _html = `<option value="">{{ __('Please select') }}</option>`;
+                var _html = `<option value=""><?php echo e(__('Please select')); ?></option>`;
                 if (area_id) {
                     _html += classs
                         .filter(item => item.area_id == area_id)
@@ -439,7 +444,7 @@
                 $('.student_attendance').text(student_name);
 
                 // Gọi ajax lấy thông tin chi tiết
-                var url = "{{ route('attendance.summary_by_month.show') }}";
+                var url = "<?php echo e(route('attendance.summary_by_month.show')); ?>";
                 $.ajax({
                     type: "GET",
                     url: url,
@@ -640,4 +645,6 @@
                 });
         }
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\steamwonder\resources\views/admin/pages/attendance/summary_by_month.blade.php ENDPATH**/ ?>

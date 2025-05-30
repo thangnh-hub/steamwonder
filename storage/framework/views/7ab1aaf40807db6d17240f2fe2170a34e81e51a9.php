@@ -104,7 +104,7 @@
                     </div>
                 </div>
             </form>
-            <a href="<?php echo e(route('student.add_service_yearly')); ?>" class="btn btn-sm btn-warning"><?php echo app('translator')->get('Thêm dịch vụ hàng năm cho học sinh'); ?></a>
+            
             
 
         </div>
