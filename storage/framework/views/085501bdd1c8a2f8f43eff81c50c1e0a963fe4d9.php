@@ -7,6 +7,14 @@
             max-width: 80%;
             width: auto;
         }
+        .tooltip-inner {
+            white-space: nowrap;
+            max-width: none;
+            text-align: left
+        }
+        .table-bordered>thead>tr>th{
+            vertical-align: middle;
+        }
     </style>
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content-header'); ?>
@@ -175,7 +183,9 @@
                                 <th><?php echo app('translator')->get('Mã TBP'); ?></th>
                                 <th><?php echo app('translator')->get('Tên TBP'); ?></th>
                                 <th><?php echo app('translator')->get('Loại TBP'); ?></th>
-                                <th><?php echo app('translator')->get('Học sinh'); ?></th>
+                                <th><?php echo app('translator')->get('Mã học sinh'); ?></th>
+                                <th><?php echo app('translator')->get('Tên học sinh'); ?></th>
+                                <th><?php echo app('translator')->get('Lớp'); ?></th>
                                 <th><?php echo app('translator')->get('Khu vực'); ?></th>
                                 
                                 <th><?php echo app('translator')->get('Thành tiền'); ?></th>
@@ -183,7 +193,12 @@
                                 <th><?php echo app('translator')->get('Số dư kỳ trước'); ?></th>
                                 <th><?php echo app('translator')->get('Tổng tiền thực tế'); ?></th>
                                 <th><?php echo app('translator')->get('Đã thu'); ?></th>
-                                <th><?php echo app('translator')->get('Số tiền còn phải thu (+) hoặc thừa (-)'); ?></th>
+                                <th>
+                                    <?php echo app('translator')->get('Cần thu'); ?>
+                                    <span data-html="true" data-toggle="tooltip"
+                                        title="Số tiền còn phải thu (+) hoặc thừa (-)">
+                                        <i class="fa fa-question-circle-o" aria-hidden="true"></i></span>
+                                </th>
                                 <th><?php echo app('translator')->get('Trạng thái'); ?></th>
                                 <th><?php echo app('translator')->get('Ghi chú'); ?></th>
                                 <th><?php echo app('translator')->get('Người tạo'); ?></th>
@@ -210,9 +225,17 @@
 
                                     </td>
                                     <td>
-                                        <?php echo e($row->student->student_code ?? ''); ?> - <?php echo e($row->student->first_name ?? ''); ?>
+                                        <?php echo e($row->student->student_code ?? ''); ?>
+
+                                    </td>
+                                    <td>
+                                        <?php echo e($row->student->first_name ?? ''); ?>
 
                                         <?php echo e($row->student->last_name ?? ''); ?> (<?php echo e($row->student->nickname ?? ''); ?>)
+                                    </td>
+                                    <td>
+                                        <?php echo e(optional($row->student->currentClass)->name); ?>
+
                                     </td>
                                     <td>
                                         <?php echo e($row->area->name ?? ''); ?>
