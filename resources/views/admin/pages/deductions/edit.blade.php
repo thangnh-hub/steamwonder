@@ -161,7 +161,7 @@
                                             {{ isset($detail->json_params->services->{$item_service->id}) ? 'checked' : '' }}
                                             name="json_params[services][{{ $item_service->id }}][service_id]"
                                             value="{{ $item_service->id }}">
-                                        <input placeholder="Nhập số tiền (hoặc %) giảm trừ"
+                                        <input placeholder="Nhập số tiền (% hoặc ngày) giảm trừ"
                                             class="item_number_hssv form-control mr-10 check_disable "
                                             {{ isset($detail->json_params->services->{$item_service->id}) ? '' : 'disabled' }}
                                             style="width:250px;"
