@@ -34,28 +34,15 @@
                             </div>
                         </div>
                         
+                        
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label><?php echo app('translator')->get('Loại món ăn'); ?></label>
-                                <select name="dishes_type" class="form-control select2"style="width: 100%;">
+                                <label><?php echo app('translator')->get('Nhóm tuổi'); ?></label>
+                                <select name="meal_age_id" class="form-control select2"style="width: 100%;">
                                     <option value=""><?php echo app('translator')->get('Please select'); ?></option>
-                                    <?php $__currentLoopData = $list_type; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($key); ?>"
-                                            <?php echo e(isset($params['dishes_type']) && $params['dishes_type'] == $key ? 'selected' : ''); ?>><?php echo e(__($item)); ?>
-
-                                        </option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Bữa áp dụng'); ?></label>
-                                <select name="dishes_time" class="form-control select2"style="width: 100%;">
-                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
-                                    <?php $__currentLoopData = $list_time; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($key); ?>"
-                                            <?php echo e(isset($params['dishes_time']) && $params['dishes_time'] == $key ? 'selected' : ''); ?>><?php echo e(__($item)); ?>
+                                    <?php $__currentLoopData = $list_meal_age; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($item->id); ?>"
+                                            <?php echo e(isset($params['meal_age_id']) && $params['meal_age_id'] == $item->id ? 'selected' : ''); ?>><?php echo e(__($item->name)); ?>
 
                                         </option>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -135,11 +122,10 @@
                     <thead>
                         <tr>
                             <th><?php echo app('translator')->get('STT'); ?></th>
-                            <th><?php echo app('translator')->get('Tên món ăn'); ?></th>
-                            <th><?php echo app('translator')->get('Mã món ăn'); ?></th>
-                            <th><?php echo app('translator')->get('Loại món ăn'); ?></th>
-                            <th><?php echo app('translator')->get('Bữa áp dụng'); ?></th>
-                            <th><?php echo app('translator')->get('Mô tả'); ?></th>
+                            <th><?php echo app('translator')->get('Mã thực đơn'); ?></th>
+                            <th><?php echo app('translator')->get('Tên thực đơn'); ?></th>
+                            <th><?php echo app('translator')->get('Các món ăn'); ?></th>
+                            <th style="width:350px;white-space: pre-line"><?php echo app('translator')->get('Mô tả'); ?></th>
                             <th><?php echo app('translator')->get('Trạng thái'); ?></th>
                             <th><?php echo app('translator')->get('Thao tác'); ?></th>
                         </tr>
@@ -151,31 +137,32 @@
                                     <?php echo e($loop->iteration + ($rows->currentPage() - 1) * $rows->perPage()); ?>
 
                                 </td>
+                                <td><?php echo e($row->code ?? ''); ?></td>
                                 <td><?php echo e($row->name ?? ''); ?></td>
                                 <td>
-                                    <?php echo e('MA' . str_pad($row->id, 5, '0', STR_PAD_LEFT)); ?>
-
+                                    <?php if(isset($row->menuDishes) && count($row->menuDishes) > 0): ?>
+                                        <ul >
+                                            <?php $__currentLoopData = $row->menuDishes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $dish): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <li><?php echo e($loop->iteration); ?>. <?php echo e($dish->dishes->name ?? ''); ?></li>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </ul>
+                                    <?php else: ?>
+                                        <?php echo app('translator')->get('Chưa có món ăn nào'); ?>
+                                    <?php endif; ?>
                                 </td>
                                 <td>
-                                    <?php echo e(__($row->dishes_type ?? '')); ?>
+                                    <?php echo nl2br(__($row->description ?? '')); ?>
 
                                 </td>
-                                <td>
-                                    <?php echo e(__($row->dishes_time ?? '')); ?>
-
-                                </td>
-                                <td>
-                                    <?php echo e($row->description ?? ""); ?>
-
-                                </td>
+                                
                                 <td><?php echo app('translator')->get($row->status); ?></td>
                                 <td>
                                     <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="<?php echo app('translator')->get('Update'); ?>"
-                                       href="<?php echo e(route('dishes.edit', $row->id)); ?>">
+                                       href="<?php echo e(route('menu_plannings.edit', $row->id)); ?>">
                                         <i class="fa fa-pencil-square-o"></i>
                                     </a>
                 
-                                    <form action="<?php echo e(route('dishes.destroy', $row->id)); ?>" method="POST"
+                                    <form action="<?php echo e(route('menu_plannings.destroy', $row->id)); ?>" method="POST"
                                           style="display:inline-block"
                                           onsubmit="return confirm('<?php echo app('translator')->get('confirm_action'); ?>')">
                                         <?php echo csrf_field(); ?>
@@ -217,4 +204,4 @@
     </script>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\steamwonder\resources\views/admin/pages/meal/dishes/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\steamwonder\resources\views/admin/pages/meal/menu_plannings/index.blade.php ENDPATH**/ ?>

@@ -34,27 +34,15 @@
                             </div>
                         </div>
                         
+                        
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label>@lang('Loại món ăn')</label>
-                                <select name="dishes_type" class="form-control select2"style="width: 100%;">
+                                <label>@lang('Nhóm tuổi')</label>
+                                <select name="meal_age_id" class="form-control select2"style="width: 100%;">
                                     <option value="">@lang('Please select')</option>
-                                    @foreach ($list_type as $key => $item)
-                                        <option value="{{ $key }}"
-                                            {{ isset($params['dishes_type']) && $params['dishes_type'] == $key ? 'selected' : '' }}>{{ __($item) }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>@lang('Bữa áp dụng')</label>
-                                <select name="dishes_time" class="form-control select2"style="width: 100%;">
-                                    <option value="">@lang('Please select')</option>
-                                    @foreach ($list_time as $key => $item)
-                                        <option value="{{ $key }}"
-                                            {{ isset($params['dishes_time']) && $params['dishes_time'] == $key ? 'selected' : '' }}>{{ __($item) }}
+                                    @foreach ($list_meal_age as $key => $item)
+                                        <option value="{{ $item->id }}"
+                                            {{ isset($params['meal_age_id']) && $params['meal_age_id'] == $item->id ? 'selected' : '' }}>{{ __($item->name) }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -130,11 +118,10 @@
                     <thead>
                         <tr>
                             <th>@lang('STT')</th>
-                            <th>@lang('Tên món ăn')</th>
-                            <th>@lang('Mã món ăn')</th>
-                            <th>@lang('Loại món ăn')</th>
-                            <th>@lang('Bữa áp dụng')</th>
-                            <th>@lang('Mô tả')</th>
+                            <th>@lang('Mã thực đơn')</th>
+                            <th>@lang('Tên thực đơn')</th>
+                            <th>@lang('Các món ăn')</th>
+                            <th style="width:350px;white-space: pre-line">@lang('Mô tả')</th>
                             <th>@lang('Trạng thái')</th>
                             <th>@lang('Thao tác')</th>
                         </tr>
@@ -145,27 +132,31 @@
                                 <td>
                                     {{ $loop->iteration + ($rows->currentPage() - 1) * $rows->perPage() }}
                                 </td>
+                                <td>{{ $row->code ?? '' }}</td>
                                 <td>{{ $row->name ?? '' }}</td>
                                 <td>
-                                    {{ 'MA' . str_pad($row->id, 5, '0', STR_PAD_LEFT) }}
+                                    @if (isset($row->menuDishes) && count($row->menuDishes) > 0)
+                                        <ul >
+                                            @foreach ($row->menuDishes as $dish)
+                                                <li>{{ $loop->iteration }}. {{ $dish->dishes->name ?? '' }}</li>
+                                            @endforeach
+                                        </ul>
+                                    @else
+                                        @lang('Chưa có món ăn nào')
+                                    @endif
                                 </td>
                                 <td>
-                                    {{ __($row->dishes_type ?? '') }}
+                                    {!! nl2br(__($row->description ?? '')) !!}
                                 </td>
-                                <td>
-                                    {{ __($row->dishes_time ?? '') }}
-                                </td>
-                                <td>
-                                    {{ $row->description ?? "" }}
-                                </td>
+                                
                                 <td>@lang($row->status)</td>
                                 <td>
                                     <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="@lang('Update')"
-                                       href="{{ route('dishes.edit', $row->id) }}">
+                                       href="{{ route('menu_plannings.edit', $row->id) }}">
                                         <i class="fa fa-pencil-square-o"></i>
                                     </a>
                 
-                                    <form action="{{ route('dishes.destroy', $row->id) }}" method="POST"
+                                    <form action="{{ route('menu_plannings.destroy', $row->id) }}" method="POST"
                                           style="display:inline-block"
                                           onsubmit="return confirm('@lang('confirm_action')')">
                                         @csrf
