@@ -176,7 +176,6 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('student/receipt/first_year', 'StudentController@viewCalculateReceiptStudentFirstYear')->name('view_calculate_receipt_first_year');
             Route::post('student/receipt/first_year', 'StudentController@calculateReceiptStudentFirstYear')->name('calculate_receipt_first_year');
 
-
             // ------
 
 
