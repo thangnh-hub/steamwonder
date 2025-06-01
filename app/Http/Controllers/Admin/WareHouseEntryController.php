@@ -8,7 +8,7 @@ use App\Models\WareHouseProduct;
 use App\Models\WareHouse;
 use App\Models\Area;
 use App\Models\WareHouseEntry;
-use App\Models\WarehouseDepartment;
+use App\Models\Department;
 use App\Models\PaymentRequest;
 use App\Models\WarehouseAsset;
 use App\Models\WareHouseCategoryProduct;
@@ -24,8 +24,6 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Services\WarehouseService;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\WareHouseEntryImportAsset;
-
-
 
 class WareHouseEntryController extends Controller
 {
@@ -257,7 +255,7 @@ class WareHouseEntryController extends Controller
     $this->responseData['module_name'] = __("CHI TIẾT PHIẾU NHẬP KHO");
 
     $this->responseData['status'] = Consts::PAYMENT_REQUEST_STATUS;
-    $this->responseData['department'] = WarehouseDepartment::get();
+    $this->responseData['department'] = Department::get();
     $this->responseData['admin'] = Auth::guard('admin')->user();
     return $this->responseView($this->viewPart . '.show');
   }

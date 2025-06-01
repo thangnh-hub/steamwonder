@@ -182,19 +182,6 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>@lang('Level')</label>
-                                                    <select name="json_params[level]" class=" form-control select2">
-                                                        <option value="">@lang('Please select')</option>
-                                                        @foreach ($level as $val)
-                                                            <option value="{{ $val->id }}"
-                                                                {{ isset($detail->json_params->level) && $detail->json_params->level == $val->id ? 'selected' : '' }}>
-                                                                @lang($val->name)</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
                                                     <label>@lang('Code Auto') </label>
                                                     {{-- <select name="code_auto" class=" form-control select2">
                                                         <option value="">@lang('Please select')</option>

@@ -232,7 +232,7 @@ class AdmissionStudentController extends Controller
                 $params_promotion['promotion_id'] = $request->input('radio_promotion');
                 StudentPromotion::create($params_promotion);
             }
-            
+
 
             return redirect()->route($this->routeDefault . '.edit',$student->id)->with('successMessage', __('Update successfully!'));
         } catch (\Exception $e) {
@@ -284,7 +284,7 @@ class AdmissionStudentController extends Controller
     public function addService(Request $request, $id)
     {
         $student = Student::findOrFail($id);
-     
+
         $parentsInput = $request->input('services', []);
         foreach ($parentsInput as $data) {
             if (!empty($data['id'])) {
@@ -412,10 +412,10 @@ class AdmissionStudentController extends Controller
             abort(422, __($ex->getMessage()));
         }
     }
-   
+
     //học sinh mới
     public function calculateReceiptStudent(Request $request, ReceiptService $receiptService)
-    {   
+    {
         try {
             $params = $request->all();
             $student = Student::findOrFail($params['student_id']);
@@ -443,7 +443,7 @@ class AdmissionStudentController extends Controller
 
     //ky hè
     public function calculateReceiptStudentSummer(Request $request, ReceiptService $receiptService)
-    {   
+    {
         try {
             $params = $request->all();
             $student = Student::findOrFail($params['student_id']);

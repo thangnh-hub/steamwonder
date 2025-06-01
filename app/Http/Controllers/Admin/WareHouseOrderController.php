@@ -8,7 +8,7 @@ use App\Models\WareHouse;
 use App\Models\Area;
 use App\Models\WareHouseProduct;
 use App\Models\WarehouseAsset;
-use App\Models\WarehouseDepartment;
+use App\Models\Department;
 use App\Models\WareHousePosition;
 use App\Models\WareHouseCategoryProduct;
 use App\Http\Services\DataPermissionService;
@@ -42,7 +42,7 @@ class WareHouseOrderController extends Controller
     // Get list post with filter params
     $params_warehouse['warehouse_permission'] = DataPermissionService::getPermisisonWarehouses(Auth::guard('admin')->user()->id);
     $this->responseData['list_warehouse'] = WareHouse::getSqlWareHouse($params_warehouse)->get();
-    $this->responseData['department'] =  WarehouseDepartment::getSqlWareHouseDepartment()->get();
+    $this->responseData['department'] =  Department::getSqlDepartment()->get();
 
     $params['type'] = Consts::WAREHOUSE_TYPE_ORDER['order'];
     $params['order_permission'] = DataPermissionService::getPermisisonOrderWarehouses(Auth::guard('admin')->user()->id);
@@ -70,7 +70,7 @@ class WareHouseOrderController extends Controller
     $this->responseData['list_area'] = Area::where('id', $user->area_id)->get();
     $this->responseData['list_warehouse'] = WareHouse::where('area_id', $user->area_id)->get();
     // Bổ sung sau quyền phòng ban theo khu vực
-    $this->responseData['department'] =  WarehouseDepartment::where('id', $user->department_id)->get();
+    $this->responseData['department'] =  Department::where('id', $user->department_id)->get();
     // Danh mục Sản phẩm
     $this->responseData['category_products'] =  WareHouseCategoryProduct::getSqlWareHouseCategoryProduct()->get();
 
@@ -179,7 +179,7 @@ class WareHouseOrderController extends Controller
     $this->responseData['list_area'] = Area::where('id', $user->area_id)->get();
     $this->responseData['list_warehouse'] = WareHouse::where('area_id', $user->area_id)->get();
     //Bổ sung sau quyền phòng ban theo khu vực
-    $this->responseData['department'] =  WarehouseDepartment::where('id', $user->department_id)->get();
+    $this->responseData['department'] =  Department::where('id', $user->department_id)->get();
     //Danh mục Sản phẩm
     $this->responseData['category_products'] =  WareHouseCategoryProduct::getSqlWareHouseCategoryProduct()->get();
     $this->responseData['detail'] = $detail;
@@ -359,7 +359,7 @@ class WareHouseOrderController extends Controller
     $params_dep['id'] = $all_product->map(function ($item) {
       return $item->department;
     })->unique()->values()->toArray();
-    $this->responseData['list_dep'] = WarehouseDepartment::getSqlWareHouseDepartment($params_dep)->get();
+    $this->responseData['list_dep'] = Department::getSqlDepartment($params_dep)->get();
     $this->responseData['rows'] = $rows;
 
     $this->responseData['params'] = $params;
@@ -368,7 +368,7 @@ class WareHouseOrderController extends Controller
     $params_warehouse['warehouse_permission'] = $warehouse_permission;
     $this->responseData['list_warehouse'] = WareHouse::getSqlWareHouse($params_warehouse)->get();
 
-    $this->responseData['department'] =  WarehouseDepartment::getSqlWareHouseDepartment()->get();
+    $this->responseData['department'] =  Department::getSqlDepartment()->get();
     $this->responseData['status'] =  Consts::APPROVE_WAREHOUSE_ORDER;
 
     return $this->responseView($this->viewPart . '.report_order');
@@ -418,7 +418,7 @@ class WareHouseOrderController extends Controller
   {
     try {
       $params['area_id'] = $request->id;
-      $rows = WarehouseDepartment::getSqlWareHouseDepartment($params)->get();;
+      $rows = Department::getSqlDepartment($params)->get();;
       if (count($rows) > 0) {
         return $this->sendResponse($rows, 'success');
       }

@@ -23,12 +23,15 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ReceiptController extends Controller
 {
+    protected $day_start_receipt_yearly;
+
     public function __construct()
     {
         parent::__construct();
         $this->routeDefault  = 'receipt';
         $this->viewPart = 'admin.pages.receipt';
         $this->responseData['module_name'] = 'Quản lý TBP';
+        $this->day_start_receipt_yearly = Carbon::createFromDate(null, 6, 1)->format('Y-m-d');
     }
     /**
      * Display a listing of the resource.
@@ -38,13 +41,14 @@ class ReceiptController extends Controller
     public function index(Request $request)
     {
         $auth = Auth::guard('admin')->user();
-        $params = $request->only(['keyword', 'status', 'area_id', 'type', 'student_id', 'created_at']);
+        $params = $request->only(['keyword', 'status', 'area_id', 'type_receipt', 'student_id', 'created_at']);
         $params['permission_area'] = DataPermissionService::getPermisisonAreas($auth->id);
-        $rows = Receipt::getSqlReceipt($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
+        $rows = Receipt::getSqlReceipt($params)->whereIn('tb_receipt.area_id', $params['permission_area'])->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
         $this->responseData['rows'] = $rows;
         $this->responseData['areas'] = Area::all();
         $this->responseData['students'] = Student::getSqlStudent()->get();
         $this->responseData['status'] = Consts::STATUS_RECEIPT;
+        $this->responseData['type_receipt'] = Consts::TYPE_RECEIPT;
         $this->responseData['params'] = $params;
         return $this->responseView($this->viewPart . '.index');
     }
@@ -136,7 +140,9 @@ class ReceiptController extends Controller
             $json_params = json_decode(json_encode($receipt->json_params), true);
             // Cập nhật lại thông tin
             $json_params['due_date'] = $request->input('due_date');
-            $receipt->status = Consts::STATUS_RECEIPT['paid'];
+            if ($receipt->total_paid >= $receipt->total_final) {
+                $receipt->status = Consts::STATUS_RECEIPT['paid'];
+            }
             $receipt->cashier_id = $admin->id;
             $receipt->admin_updated_id = $admin->id;
             $receipt->json_params = $json_params;
@@ -332,7 +338,6 @@ class ReceiptController extends Controller
                 $params['cashier'] = $admin->id;
                 $params['admin_created_id'] = $admin->id;
                 ReceiptTransaction::create($params);
-
                 // Cập nhật lại số tiền trong bảng receipt
                 $receipt = Receipt::find($receipt_id);
                 // Lấy tổng tiền receipt_transaction

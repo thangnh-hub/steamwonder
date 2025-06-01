@@ -63,7 +63,8 @@ class Consts
     ];
     const TYPE_POLICIES = [
         'percent' => 'percent',
-        'fixed_amount' => 'fixed_amount'
+        'fixed_amount' => 'fixed_amount',
+        'date' => 'date'
     ];
     const TYPE_CLASS_STUDENT = [
         'hoc_thu' => 'hoc_thu',

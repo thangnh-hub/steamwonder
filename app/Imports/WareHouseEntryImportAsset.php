@@ -8,7 +8,7 @@ use App\Models\WareHouseEntry;
 use App\Models\WareHouseEntryDetail;
 use App\Models\WarehouseAsset;
 use App\Models\WareHouse;
-use App\Models\WarehouseDepartment;
+use App\Models\Department;
 use App\Models\WareHousePosition;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
@@ -82,7 +82,7 @@ class WareHouseEntryImportAsset implements ToCollection
                 $entry = WareHouseEntry::find($this->entry_id);
 
                 // Lấy id phòng ban theo mã $row[15]
-                $depanent = WarehouseDepartment::where('code', 'like', '%' . trim($row[15]) . '%')->first();
+                $depanent = Department::where('code', 'like', '%' . trim($row[15]) . '%')->first();
                 $depanent_id = $depanent->id ?? null;
 
                 // Lấy vị trí cấp cha nếu có

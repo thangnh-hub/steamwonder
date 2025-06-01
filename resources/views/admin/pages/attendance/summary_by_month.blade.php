@@ -319,8 +319,7 @@
                                             {{ $row->student->nickname != '' ? '(' . $row->student->nickname . ')' : '' }}
                                         </td>
                                         @for ($i = 1; $i <= $daysInMonth; $i++)
-                                            <th
-                                                class="text-center {{ $carbonDate->copy()->day($i)->dayOfWeek == 0 ? 'bg-danger' : ($carbonDate->copy()->day($i)->dayOfWeek == 6 ? 'bg-warning' : '') }}">
+                                            <th class="text-center {{ $carbonDate->copy()->day($i)->dayOfWeek == 0 ? 'bg-danger' : ($carbonDate->copy()->day($i)->dayOfWeek == 6 ? 'bg-warning' : '') }}">
                                                 @if ($carbonDate->copy()->day($i)->dayOfWeek != 0)
                                                     <div class="item_day {{ isset($row->attendances_by_day[$i]) ? 'text-success' : 'text-secondary' }}"
                                                         id="item_{{ $row->class_id }}_{{ $row->student_id }}_{{ $carbonDate->copy()->day($i)->format('Y-m-d') }}"

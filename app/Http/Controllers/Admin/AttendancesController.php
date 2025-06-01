@@ -193,8 +193,8 @@ class AttendancesController extends Controller
                 ->with([
                     'attendances' => function ($query) use ($monthYear, $daysInMonth) {
                         $query->whereBetween('tracked_at', [
-                            Carbon::createFromFormat('Y-m-d', "$monthYear-1"),
-                            Carbon::createFromFormat('Y-m-d', "$monthYear-$daysInMonth")
+                            Carbon::createFromFormat('Y-m-d', "$monthYear-01")->startOfDay(),
+                            Carbon::createFromFormat('Y-m-d', "$monthYear-$daysInMonth")->endOfDay()
                         ])->select('id', 'class_id', 'tracked_at');
                     },
                     'attendances.attendanceStudent' => function ($query) {
@@ -205,15 +205,12 @@ class AttendancesController extends Controller
 
             foreach ($studentClass as $row) {
                 $attendancesByDay = [];
-
                 foreach (range(1, $daysInMonth) as $day) {
                     $date = Carbon::createFromFormat('Y-m-d', "$monthYear-$day");
-
                     $attendance = $row->attendances->first(function ($item) use ($date) {
                         return isset($item->tracked_at) &&
                             Carbon::parse($item->tracked_at)->toDateString() === $date->toDateString();
                     });
-
                     if ($attendance) {
                         $attendanceStudent = $attendance->attendanceStudent
                             ->firstWhere('student_id', $row->student_id);

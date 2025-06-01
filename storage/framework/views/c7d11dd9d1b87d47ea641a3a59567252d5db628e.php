@@ -324,8 +324,7 @@
 
                                         </td>
                                         <?php for($i = 1; $i <= $daysInMonth; $i++): ?>
-                                            <th
-                                                class="text-center <?php echo e($carbonDate->copy()->day($i)->dayOfWeek == 0 ? 'bg-danger' : ($carbonDate->copy()->day($i)->dayOfWeek == 6 ? 'bg-warning' : '')); ?>">
+                                            <th class="text-center <?php echo e($carbonDate->copy()->day($i)->dayOfWeek == 0 ? 'bg-danger' : ($carbonDate->copy()->day($i)->dayOfWeek == 6 ? 'bg-warning' : '')); ?>">
                                                 <?php if($carbonDate->copy()->day($i)->dayOfWeek != 0): ?>
                                                     <div class="item_day <?php echo e(isset($row->attendances_by_day[$i]) ? 'text-success' : 'text-secondary'); ?>"
                                                         id="item_<?php echo e($row->class_id); ?>_<?php echo e($row->student_id); ?>_<?php echo e($carbonDate->copy()->day($i)->format('Y-m-d')); ?>"

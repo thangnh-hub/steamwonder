@@ -184,11 +184,6 @@
                                                 {{ $row->order_warehouse->code . '-' . $row->order_warehouse->name ?? '' }}
                                                 <i class="fa fa-eye"></i>
                                             </a>
-                                        @elseif(isset($row->list_class))
-                                            <a href="{{ route('book_distribution.detail_history', $row->id) }}" target="_blank">
-                                                @lang('Phiếu phát sách')
-                                                <i class="fa fa-eye"></i>
-                                            </a>
                                         @endif
                                     </td>
                                     <td>

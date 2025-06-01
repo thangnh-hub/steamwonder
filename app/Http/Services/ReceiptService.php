@@ -53,9 +53,13 @@ class ReceiptService
         return DB::transaction(function () use ($student, $data) {
             $policies = $student->studentPolicies->pluck('policy');
             $promotions = $student->studentPromotions;
-            $deductions = $this->getDeductions();
+            // $deductions = $this->getDeductions();
+            $deductions = $this->getDeductions()->filter(function ($deduction) use ($student) {
+                return $deduction->area_id == $student->area_id;
+            });
             $startDate = Carbon::parse($data['enrolled_at']);
             $includeCurrent = $data['include_current_month'] ?? false;
+
             $details = $this->generateReceiptDetails($policies, $promotions, $deductions, $data['student_services'], $startDate, $includeCurrent);
 
             return $this->saveReceipt($student,  $details, $data);
@@ -341,14 +345,27 @@ class ReceiptService
                         }
                     }
                 } else if ($compare >= $start && ($end === null || $compare <= $end)) {
+                    // Nằm trong khoảng từ - đến
                     $deduction_value = $deduction->json_params->services->{$service_info['id']}->value ?? 0;
                     $deduction_type = $deduction->json_params->services->{$service_info['id']}->type ?? null;
+
                     if ($deduction_type == Consts::TYPE_POLICIES['percent']) {
                         $discount_notes[] = "Giảm trừ {$deduction->name} giảm ({$deduction_value}%)";
                         $amount_after_discount = $amount_after_discount - $amount_after_discount * ($deduction_value / 100);
                     } else if ($deduction_type == Consts::TYPE_POLICIES['fixed_amount']) {
                         $discount_notes[] = "Giảm trừ {$deduction->name} giảm (" . number_format($deduction_value) . "đ)";
                         $amount_after_discount = $amount_after_discount - $deduction_value;
+                    } else if ($deduction_type == Consts::TYPE_POLICIES['date']) {
+                        // Đếm số ngày từ statrtDate đến cuối tháng không tính t7 và cn
+                        $endOfMonth = $startDate->copy()->endOfMonth();
+                        $workingDays = collect(
+                            range(0, $startDate->diffInDays($endOfMonth))
+                        )->map(function ($day) use ($startDate) {
+                            return $startDate->copy()->addDays($day);
+                        })->filter(fn($date) => !$date->isWeekend())->count();
+                        // Lấy số tiền tương ứng của dịch vụ theo số ngày
+                        $amount_after_discount =  ((int)$service_info['price'] / (int)$deduction_value) * $workingDays;
+                        $discount_notes[] = "Giảm trừ {$deduction->name} với số ngày đi học là " . $workingDays;
                     }
                 }
             }
@@ -543,7 +560,6 @@ class ReceiptService
             $deductions = $this->getDeductions();
             $startDate = Carbon::parse($data['enrolled_at']);
             $details = $this->generateReceiptDetailsYearly($policies, $promotions, $deductions, $data['student_services'], $startDate);
-
             return $this->saveReceiptYearly($student,  $details, $data);
         });
     }
@@ -572,7 +588,7 @@ class ReceiptService
             switch ($service->service_type) {
                 case Consts::SERVICE_TYPE['yearly']:
                     $month = $startDate->format('Y-m-d');
-                    $discount_amount = $this->calculateDiscountYearly($service_info, $cycle, $policies, $promotions, $deductions, $startDate, $month);
+                    $discount_amount = $this->calculateDiscountYearly($service_info, $cycle, $policies, $promotions, $month);
                     $details[] = [
                         'service_id' => $service->id,
                         'month' => $month,
@@ -586,6 +602,7 @@ class ReceiptService
                     break;
             }
         }
+
         return collect($details);
     }
 
@@ -636,7 +653,6 @@ class ReceiptService
         $service_name = $service_info['name'];
         // Kiểm tra có chương trình khuyến mãi nào đc áp dụng không
         $has_valid_promotion = false;
-
         // Ưu đãi theo khuyến mãi hợp lệ
         foreach ($promotions as $pro) {
             $start = Carbon::parse($pro->time_start)->startOfMonth();

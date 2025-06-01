@@ -31,7 +31,7 @@ class ReceiptExport implements FromCollection, WithHeadings, WithMapping, WithSt
      */
     public function collection()
     {
-        $rows = Receipt::getSqlReceipt($this->params)->get();
+        $rows = Receipt::getSqlReceipt($this->params)->whereIn('tb_receipt.area_id', $this->params['permission_area'] ?? [])->get();
 
         return $rows;
     }
@@ -47,14 +47,17 @@ class ReceiptExport implements FromCollection, WithHeadings, WithMapping, WithSt
         return [
             __('Mã TBP'),
             __('Tên TBP'),
-            __('Học sinh'),
+            __('Loại TBP'),
+            __('Mã học sinh'),
+            __('Tên học sinh'),
+            __('Lớp'),
             __('Khu vực'),
             __('Thành tiền'),
             __('Tổng giảm trừ'),
             __('Số dư kỳ trước'),
             __('Tổng tiền thực tế'),
             __('Đã thu'),
-            __('Số tiền còn phải thu (+) hoặc thừa (-)'),
+            __('Cần thu'),
             __('Trạng thái'),
             __('Ghi chú'),
             __('Người tạo'),
@@ -85,7 +88,10 @@ class ReceiptExport implements FromCollection, WithHeadings, WithMapping, WithSt
         return [
             $row->receipt_code ?? '',
             $row->receipt_name ?? '',
-            (optional($row->student)->student_code ?? '') . ' - ' . (optional($row->student)->first_name ?? '') . ' ' . (optional($row->student)->last_name ?? ''),
+            __($row->type_receipt) ?? '',
+            (optional($row->student)->student_code ?? ''),
+            (optional($row->student)->first_name ?? '') . ' ' . (optional($row->student)->last_name ?? ''),
+            optional($row->student->currentClass)->name ?? '',
             optional($row->area)->name ?? '',
             $row->total_amount ?? '',
             $row->total_discount ?? '',

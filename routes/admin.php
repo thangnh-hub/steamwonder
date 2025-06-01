@@ -81,7 +81,7 @@ Route::group(['namespace' => 'Admin'], function () {
                 'holiday' => 'HolidayController',
                 'warehouse' => 'WareHouseController',
                 'warehouse_asset' => 'WarehouseAssetController',
-                'warehouse_department' => 'WarehouseDepartmentController',
+                'department' => 'DepartmentController',
                 'warehouse_position' => 'WareHousePositionController',
                 'warehouse_product' => 'WareHouseProductController',
                 'warehouse_category_product' => 'WareHouseCategoryProductController',
@@ -145,10 +145,13 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::post('import_student_receipt', 'StudentController@importStudentReceipt')->name('student.import_receipt');
             // Import Update Balance Receipt
             Route::post('import_student_balance_receipt', 'StudentController@importStudentBalanceReceipt')->name('student.import_balance_receipt');
+            // Cập nhật dịch vụ đầu năm cho học sinh
+            Route::get('student/add_service_yearly', 'StudentController@addYearlyServicesForStudent')->name('student.add_service_yearly');
 
-            // Cập nhật lại service cho học sinh và tính lại phí
+            // Cập nhật lại service cho học sinh và tính lại phí, tính phí đầu năm
             Route::post('receipt/update_student_service_and_fee', 'ReceiptController@updateStudentServiceAndFee')->name('receipt.update_student_service_and_fee');
             Route::post('receipt/CRUD_receipt_transaction', 'ReceiptController@CrudReceiptTransaction')->name('receipt.crud_receipt_transaction');
+
             //CBTS
             Route::get('admissions/students', 'AdmissionStudentController@index')->name('admission.student.index');
             Route::get('admissions/students/create', 'AdmissionStudentController@create')->name('admission.student.create');
@@ -182,7 +185,6 @@ Route::group(['namespace' => 'Admin'], function () {
             //TÍnh toán phí đầu năm
             Route::get('student/receipt/first_year', 'StudentController@viewCalculateReceiptStudentFirstYear')->name('view_calculate_receipt_first_year');
             Route::post('student/receipt/first_year', 'StudentController@calculateReceiptStudentFirstYear')->name('calculate_receipt_first_year');
-
 
             // ------
 
