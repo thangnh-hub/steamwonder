@@ -144,7 +144,7 @@
     "soup": "Món canh",
     "savory": "Món mặn (chính)",
     "boiled": "Món xào (luộc)",
-    "morning": "Bữa sáng",
-    "noon": "Bữa trưa",
-    "afternoon": "Bữa chiều"
+    "breakfast": "Bữa sáng",
+    "lunch": "Bữa trưa",
+    "brunch": "Bữa chiều"
 }

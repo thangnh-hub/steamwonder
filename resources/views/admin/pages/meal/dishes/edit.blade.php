@@ -135,7 +135,7 @@
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label for="">@lang('Mô tả')</label>
-                                                    <textarea name="description" rows="5" class="form-control" placeholder="Mô tả"></textarea>
+                                                    <textarea name="description" rows="5" class="form-control" placeholder="Mô tả">{{ $detail->description ?? "" }}</textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -159,14 +159,12 @@
                                                                     <th style="vertical-align: middle" class="text-center" rowspan="2">@lang('STT')</th>
                                                                     <th style="vertical-align: middle" class="text-center" rowspan="2">@lang('Mã thực phẩm')</th>
                                                                     <th style="vertical-align: middle" class="text-center" rowspan="2">@lang('Tên thực phẩm')</th>
-                                                                    <th colspan="{{ 1 + ($education_age->count() ?? 0) }}" class="text-center">@lang('Định lượng (g)')</th>
+                                                                    <th colspan="{{ ($list_meal_age->count() ?? 0) }}" class="text-center">@lang('Định lượng (g)')</th>
                                                                     <th style="vertical-align: middle" class="text-center" rowspan="2">@lang('Xóa')</th>
                                                                 </tr>
                                                                 <tr>
-                                                                    <th class="text-center">@lang('CBNV')</th>
-
-                                                                    @forelse ($education_age as $age)
-                                                                        <th class="text-center">Trẻ {{ $age->from_month }}-{{ $age->to_month }} tháng</th>
+                                                                    @forelse ($list_meal_age as $age)
+                                                                        <th class="text-center">{{ $age->name ?? "" }} </th>
                                                                     @empty
                                                                         <th class="text-center text-muted" colspan="1">@lang('Không có nhóm tuổi')</th>
                                                                     @endforelse
@@ -184,18 +182,12 @@
                                                                         <td class="text-center">{{ $loop->index + 1 }}</td>
                                                                         <td class="text-center">{{ $ingredientCode }}</td>
                                                                         <td>{{ $ingredient->name }}</td>
-                                                                        <td class="text-center">
-                                                                            <input type="number" class="form-control"
-                                                                                name="json_params[quantitative][{{ $ingredientId }}][cbnv]"
-                                                                                placeholder="Định lượng"
-                                                                                value="{{ $data['cbnv'] ?? 0 }}">
-                                                                        </td>
-                                                                        @foreach ($education_age as $age)
+                                                                        @foreach ($list_meal_age as $age)
                                                                             <td class="text-center">
                                                                                 <input type="number" class="form-control"
-                                                                                    name="json_params[quantitative][{{ $ingredientId }}][hs][{{ $age->id }}]"
-                                                                                    placeholder="Định lượng"
-                                                                                    value="{{ $data['hs'][$age->id] ?? 0 }}">
+                                                                                    name="json_params[quantitative][{{ $ingredientId }}][{{ $age->code }}]"
+                                                                                    placeholder="Định lượng" step="any"
+                                                                                    value="{{ $data[$age->code] }}">
                                                                             </td>
                                                                         @endforeach
                                                                         <td class="text-center">
@@ -311,16 +303,12 @@
                                 <td class="text-center">${stt++}</td>
                                 <td class="text-center">${ingredientCode}</td>
                                 <td>${ingredientName}</td>
-                                <td class="text-center">
-                                    <input type="number" class="form-control"
-                                        name="json_params[quantitative][${ingredientId}][cbnv]"
-                                        placeholder="Định lượng" value="0">
-                                </td>
-                                @foreach ($education_age as $age)
+                                
+                                @foreach ($list_meal_age as $age)
                                     <td class="text-center">
                                         <input type="number" class="form-control"
-                                            name="json_params[quantitative][${ingredientId}][hs][{{ $age->id }}]"
-                                            placeholder="Định lượng" value="0">
+                                            name="json_params[quantitative][${ingredientId}][{{ $age->code }}]"
+                                            placeholder="Định lượng" value="0" step="any">
                                     </td>
                                 @endforeach
                                 <td class="text-center">
