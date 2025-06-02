@@ -54,7 +54,7 @@ class StudentController extends Controller
             $params['permisson_area_id'] = [-1];
         }
         // Get list post with filter params
-        $rows = Student::getSqlStudent($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
+        $rows = Student::getSqlStudent($params)->with(['studentParents.parent', 'studentParents.relationship'])->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
 
         $this->responseData['rows'] =  $rows;
         $this->responseData['params'] = $params;

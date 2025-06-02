@@ -11,8 +11,6 @@
     <section class="content-header">
         <h1>
             @lang($module_name)
-            <a class="btn btn-sm btn-warning pull-right" href="{{ route(Request::segment(2) . '.create') }}"><i
-                    class="fa fa-plus"></i> @lang('Add')</a>
         </h1>
     </section>
 
@@ -70,7 +68,7 @@
                                                 <div class="form-group">
                                                     <label>@lang('Username') <small class="text-red">*</small></label>
                                                     <input type="text" class="form-control" name="username"
-                                                        placeholder="@lang('Name')" value="{{ old('username') }}"
+                                                        placeholder="@lang('Username')" value="{{ old('username') }}"
                                                         required>
                                                 </div>
                                             </div>
@@ -86,17 +84,17 @@
 
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>@lang('First name') <small class="text-red">*</small></label>
+                                                    <label>@lang('First Name') <small class="text-red">*</small></label>
                                                     <input type="text" class="form-control" name="first_name"
-                                                        placeholder="@lang('First name')" value="{{ old('first_name') }}"
+                                                        placeholder="@lang('First Name')" value="{{ old('first_name') }}"
                                                         required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>@lang('Last name') <small class="text-red">*</small></label>
+                                                    <label>@lang('Last Name') <small class="text-red">*</small></label>
                                                     <input type="text" class="form-control" name="last_name"
-                                                        placeholder="@lang('Last name')" value="{{ old('last_name') }}"
+                                                        placeholder="@lang('Last Name')" value="{{ old('last_name') }}"
                                                         required>
                                                 </div>
                                             </div>

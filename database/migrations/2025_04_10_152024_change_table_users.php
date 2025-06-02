@@ -14,7 +14,7 @@ class ChangeTableUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('memeber_id')->nullable()->constrained('tb_parents')->after('id');
+            $table->foreignId('member_id')->nullable()->constrained('tb_parents')->after('id');
             $table->dateTime('last_login')->nullable();
         });
     }

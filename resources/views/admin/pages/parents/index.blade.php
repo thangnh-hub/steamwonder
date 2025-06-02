@@ -53,20 +53,22 @@
                                     <option value="">@lang('Please select')</option>
                                     @foreach ($list_status as $key => $item)
                                         <option value="{{ $key }}"
-                                            {{ isset($params['status']) && $params['status'] == $key ? 'selected' : '' }}>{{ __($item) }}
+                                            {{ isset($params['status']) && $params['status'] == $key ? 'selected' : '' }}>
+                                            {{ __($item) }}
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
-                        
+
 
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label>@lang('Filter')</label>
                                 <div style="display:flex;jsutify-content:space-between;">
                                     <button type="submit" class="btn btn-primary btn-sm mr-10">@lang('Submit')</button>
-                                    <a class="btn btn-default btn-sm  mr-10" href="{{ route(Request::segment(2) . '.index') }}">
+                                    <a class="btn btn-default btn-sm  mr-10"
+                                        href="{{ route(Request::segment(2) . '.index') }}">
                                         @lang('Reset')
                                     </a>
                                 </div>
@@ -113,73 +115,93 @@
                         @lang('not_found')
                     </div>
                 @else
-                <table class="table table-hover table-bordered">
-                    <thead>
-                        <tr>
-                            <th>@lang('STT')</th>
-                            <th>@lang('Avatar')</th>
-                            <th>@lang('Họ và tên')</th>
-                            <th>@lang('Giới tính')</th>
-                            <th>@lang('Ngày sinh')</th>
-                            <th>@lang('Số CMND/CCCD')</th>
-                            <th>@lang('Số điện thoại')</th>
-                            <th>@lang('Email')</th>  
-                            <th>@lang('Địa chỉ')</th>
-                            <th>@lang('Khu vực')</th>
-                            <th>@lang('Trạng thái')</th>
-                            <th>@lang('Thao tác')</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($rows as $row)
-                            <tr class="valign-middle">
-                                <td>
-                                    {{ $loop->iteration + ($rows->currentPage() - 1) * $rows->perPage() }}
-                                </td>
-                                <td>
-                                    @if (!empty($row->avatar))
-                                        <img src="{{ asset($row->avatar) }}" alt="Avatar" width="100" height="100" style="object-fit: cover;">
-                                    @else
-                                        <span class="text-muted">No image</span>
-                                    @endif
-                                </td>
-                                <td>{{ $row->first_name ?? '' }} {{ $row->last_name ?? '' }}</td>
-                                <td>
-                                    @lang($row->sex ?? '')
-                                </td>
-                                <td>{{ \Carbon\Carbon::parse($row->birthday)->format('d/m/Y') ?? '' }}</td>
-                                <td>{{ $row->identity_card ?? '' }}</td>
-                                <td>{{ $row->phone ?? '' }}</td>
-                                <td>{{ $row->email ?? '' }}</td>
-                                <td>{{ $row->address ?? '' }}</td>
-                                <td>{{ $row->area->name ?? '' }}</td>
-                                <td>@lang($row->status)</td>
-                                <td>
-                                    <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="@lang('Update')"
-                                       href="{{ route('parents.edit', $row->id) }}">
-                                        <i class="fa fa-pencil-square-o"></i>
-                                    </a>
-                
-                                    <form action="{{ route('parents.destroy', $row->id) }}" method="POST"
-                                          style="display:inline-block"
-                                          onsubmit="return confirm('@lang('confirm_action')')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-sm btn-danger" type="submit" data-toggle="tooltip" title="@lang('Delete')">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </form>
-                
-                                    <a class="btn btn-sm btn-primary" data-toggle="tooltip" title="@lang('Chi tiết')"
-                                       href="{{ route('parents.show', $row->id) }}">
-                                        <i class="fa fa-eye"></i> Chi tiết
-                                    </a>
-                                </td>
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th>@lang('STT')</th>
+                                <th>@lang('Avatar')</th>
+                                <th>@lang('Họ và tên')</th>
+                                <th>@lang('Học sinh')</th>
+                                <th>@lang('Số CMND/CCCD')</th>
+                                <th>@lang('Số điện thoại')</th>
+                                <th>@lang('Email')</th>
+                                <th>@lang('Tên đăng nhập')</th>
+                                <th>@lang('Địa chỉ')</th>
+                                <th>@lang('Khu vực')</th>
+                                <th>@lang('Trạng thái')</th>
+                                <th>@lang('Thao tác')</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                
+                        </thead>
+                        <tbody>
+                            @foreach ($rows as $row)
+                                <tr class="valign-middle">
+                                    <td>
+                                        {{ $loop->iteration + ($rows->currentPage() - 1) * $rows->perPage() }}
+                                    </td>
+                                    <td>
+                                        @if (!empty($row->avatar))
+                                            <img src="{{ asset($row->avatar) }}" alt="Avatar" width="100"
+                                                height="100" style="object-fit: cover;">
+                                        @else
+                                            <span class="text-muted">No image</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $row->first_name ?? '' }} {{ $row->last_name ?? '' }}</td>
+                                    <td>
+                                        @isset($row->parentStudents)
+                                            @foreach ($row->parentStudents as $student)
+                                                <a href="{{ route('students.show', optional($student->student)->id) }}"
+                                                    data-toggle="tooltip" title="@lang('Chi tiết học sinh')"
+                                                    data-original-title="@lang('Chi tiết học sinh')"
+                                                    onclick="return openCenteredPopup(this.href)">
+                                                    {{ optional($student->student)->student_code ?? '' }}
+                                                    {{ optional($student->student)->first_name ?? '' }}
+                                                    {{ optional($student->student)->last_name ?? '' }}
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+                                            @endforeach
+                                        @endisset
+                                    </td>
+                                    <td>{{ $row->identity_card ?? '' }}</td>
+                                    <td>{{ $row->phone ?? '' }}</td>
+                                    <td>{{ $row->email ?? '' }}</td>
+                                    <td>
+                                        @isset($row->user)
+                                            <a href="{{ route('users.edit', optional($row->user)->id) }}" data-toggle="tooltip"
+                                                title="@lang('Chi tiết tài khoản')" onclick="return openCenteredPopup(this.href)">
+                                                {{ optional($row->user)->username ?? '' }}
+                                            </a>
+                                        @endisset
+                                    </td>
+                                    <td>{{ $row->address ?? '' }}</td>
+                                    <td>{{ $row->area->name ?? '' }}</td>
+                                    <td>@lang($row->status)</td>
+                                    <td>
+                                        <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="@lang('Update')"
+                                            href="{{ route('parents.edit', $row->id) }}">
+                                            <i class="fa fa-pencil-square-o"></i>
+                                        </a>
+
+                                        <form action="{{ route('parents.destroy', $row->id) }}" method="POST"
+                                            style="display:inline-block" onsubmit="return confirm('@lang('confirm_action')')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-sm btn-danger" type="submit" data-toggle="tooltip"
+                                                title="@lang('Delete')">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </form>
+
+                                        <a class="btn btn-sm btn-primary" data-toggle="tooltip"
+                                            title="@lang('Chi tiết')" href="{{ route('parents.show', $row->id) }}"
+                                            onclick="return openCenteredPopup(this.href)">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 @endif
             </div>
 
@@ -201,7 +223,7 @@
 @section('script')
     <script>
         $(document).ready(function() {
-           
+
         });
     </script>
 @endsection

@@ -24,7 +24,7 @@ class UserController extends Controller
         $params = $request->all();
         $this->responseData['params'] = $params;
 
-        $rows = User::getSqlUser($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
+        $rows = User::getSqlUser($params)->orderBy('users.id', 'DESC')->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
         $this->responseData['rows'] = $rows;
         $this->responseData['area'] = Area::getsqlArea(['status' => Consts::STATUS['active']])->get();
         $this->responseData['status'] = Consts::USER_STATUS;

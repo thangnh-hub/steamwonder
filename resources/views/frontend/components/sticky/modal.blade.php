@@ -1,4 +1,3 @@
-
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -21,7 +20,7 @@
                         <input type="hidden" name="referer" value="{{ $referer }}">
                         <input type="hidden" name="current" value="{{ $current }}">
                         <div class="form-group">
-                            <input type="text" class="form-control" name="email" placeholder="@lang('Địa chỉ Email của bạn ... ')"
+                            <input type="text" class="form-control" name="email" placeholder="@lang('Username')"
                                 required>
                         </div>
                         <div class="form-group">
@@ -36,30 +35,21 @@
                         </div>
 
                     </form>
-                    {{-- <div class="text-center text-muted delimiter">@lang('hoặc sử dụng mạng xã hội')</div>
-                    <div class="d-flex justify-content-center social-buttons">
-                        <button type="button" class="btn btn-secondary btn-round" data-toggle="tooltip"
-                            data-placement="top" title="Google">
-                            <i class="ti-google"></i>
-                        </button>
-                        <button type="button" class="btn btn-secondary btn-round" data-toggle="tooltip"
-                            data-placement="top" title="Facebook">
-                            <i class="ti-facebook"></i>
-                        </button>
-                    </div> --}}
                     <div class="text-center mt-3">
                         <a class="text-info" href="{{ route('frontend.password.forgot.get') }}">@lang('Quên mật khẩu')</a>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer d-flex justify-content-center">
+            {{-- <div class="modal-footer d-flex justify-content-center">
                 <div class="signup-section">@lang('Chưa phải là thành viên?') <a href="javascript:void(0)" class="text-info"
                         data-toggle="modal" data-target="#registernModal" data-dismiss="modal"> @lang('Đăng ký')</a>.
                 </div>
-            </div>
+            </div> --}}
         </div>
     </div>
 </div>
+
+{{-- Form đăng ký --}}
 <div class="modal fade" id="registernModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -113,7 +103,7 @@
     </div>
 </div>
 
-
+{{-- Footer button --}}
 <section class="navbar-size">
     <div class="navbar-size-wrapper">
         <div class="navbar-size-item {{ request()->server('REQUEST_URI') == '/' ? 'active' : '' }}">

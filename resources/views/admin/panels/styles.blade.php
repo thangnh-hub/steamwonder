@@ -988,4 +988,10 @@
         padding: 3px 10px;
         display: flex;
     }
+
+    ol,
+    ul {
+        padding-inline-start: 15px;
+        margin-bottom: 0px;
+    }
 </style>

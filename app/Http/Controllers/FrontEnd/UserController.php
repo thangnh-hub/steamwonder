@@ -56,10 +56,10 @@ class UserController extends Controller
             return $this->sendResponse('', 'success');
         }
         try {
-            $email = $request->email;
+            $username = $request->email;
             $password = $request->password;
             $attempt = Auth::guard('web')->attempt([
-                'email' => $email,
+                'username' => $username,
                 'password' => $password,
                 'status' => Consts::USER_STATUS['active']
             ]);
@@ -67,16 +67,7 @@ class UserController extends Controller
                 session()->flash('successMessage', 'Chào mừng ' . Auth::guard('web')->user()->name);
                 return $this->sendResponse(['url' => $url], 'success');
             }
-            // Bổ sung thêm phần check nếu đăng nhập bằng admin_code
-            $attempt_code = Auth::guard('web')->attempt([
-                'admin_code' => $email,
-                'password' => $password,
-                'status' => Consts::USER_STATUS['active']
-            ]);
-            if ($attempt_code) {
-                session()->flash('successMessage', 'Chào mừng ' . Auth::guard('web')->user()->name);
-                return $this->sendResponse(['url' => $url], 'success');
-            }
+
             abort(401, __('Tài khoản hoặc mật khẩu không chính xác!'));
         } catch (Exception $ex) {
             abort(422, __($ex->getMessage()));
@@ -92,7 +83,6 @@ class UserController extends Controller
     // Signup new account
     public function signup(Request $request)
     {
-
         $request->validate([
             'name' => 'required',
             'email' => "required|email|max:255|unique:admins",
@@ -135,7 +125,6 @@ class UserController extends Controller
             $user = Admin::create($params);
             $confirmationCode = Str::random(32);
             $user->code = $confirmationCode;
-            $user->state = Consts::STUDENT_STATUS['try learning'];
             $user->save();
             Mail::to($user->email)->send(new UserRegisterConfirmation($user->email, $confirmationCode));
             DB::commit();
@@ -316,87 +305,5 @@ class UserController extends Controller
             DB::rollBack();
             abort(422, __($ex->getMessage()));
         }
-    }
-    public function myCourse()
-    {
-        if (Auth::guard('web')->check()) {
-            $user = Auth::guard('web');
-            $this->responseData['detail'] = $user->user();
-            $seo_title = ($this->responseData['locale'] == $this->responseData['lang_default']) ? $this->responseData['setting']->seo_title : $this->responseData['setting']->{$this->responseData['locale'] . '-seo_title'} ?? '';
-            $seo_keyword = ($this->responseData['locale'] == $this->responseData['lang_default']) ? $this->responseData['setting']->seo_keyword : $this->responseData['setting']->{$this->responseData['locale'] . '-seo_keyword'} ?? '';
-            $seo_description = ($this->responseData['locale'] == $this->responseData['lang_default']) ? $this->responseData['setting']->seo_description : $this->responseData['setting']->{$this->responseData['locale'] . '-seo_description'} ?? '';
-            $seo_image = $this->responseData['setting']->seo_og_image ?? '';
-            $this->responseData['meta']['seo_title'] = $seo_title;
-            $this->responseData['meta']['seo_keyword'] = $seo_keyword;
-            $this->responseData['meta']['seo_description'] = $seo_description;
-            $this->responseData['meta']['seo_image'] = $seo_image;
-            $this->responseData['menu'] = Menu::getSqlMenu(['status' => 'active', 'order_by' => ['iorder' => 'ASC']])->get();
-            $this->responseData['gender'] = Consts::GENDER;
-            $params['status'] = true;
-            $params['customer_id'] = $user->user()->id;
-            $rows = Order::getOrderCourses($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
-            $this->responseData['rows'] =  $rows;
-            // lấy các buổi học mà user đã và đang học
-            $lesson_user = LessonUser::where('user_id', $user->user()->id)->get();
-            $arr_id_lesson = [];
-            // lọc các buổi đã hoàn thành tiến độ trên 90% để tính phần trăm
-            $lesson_active = $lesson_user->filter(function ($item, $key) {
-                return $item->percent_point >= Consts::PERCENT_PASS;
-            });
-            if ($lesson_active) {
-                foreach ($lesson_user as $val) {
-                    $arr_id_lesson[] = $val->lesson_id; //arr id các buổi đã học trên 90%
-                }
-            }
-            $this->responseData['lesson_user'] =  $lesson_user;
-            $this->responseData['lesson_active'] =  $lesson_active;
-            $this->responseData['arr_id_lesson'] =  $arr_id_lesson;
-            $helpers = new Helpers;
-            $this->responseData['helpers'] =  $helpers;
-            return $this->responseView('frontend.pages.user.course');
-        }
-        return redirect()->route('home')->with('errorMessage', __('Yêu cầu đăng nhập!'));
-    }
-
-    public function myEducation(){
-        if (Auth::guard('web')->check()) {
-            $user = Auth::guard('web');
-            $this->responseData['detail'] = $user->user();
-            $seo_title = ($this->responseData['locale'] == $this->responseData['lang_default']) ? $this->responseData['setting']->seo_title : $this->responseData['setting']->{$this->responseData['locale'] . '-seo_title'} ?? '';
-            $seo_keyword = ($this->responseData['locale'] == $this->responseData['lang_default']) ? $this->responseData['setting']->seo_keyword : $this->responseData['setting']->{$this->responseData['locale'] . '-seo_keyword'} ?? '';
-            $seo_description = ($this->responseData['locale'] == $this->responseData['lang_default']) ? $this->responseData['setting']->seo_description : $this->responseData['setting']->{$this->responseData['locale'] . '-seo_description'} ?? '';
-            $seo_image = $this->responseData['setting']->seo_og_image ?? '';
-            $this->responseData['meta']['seo_title'] = $seo_title;
-            $this->responseData['meta']['seo_keyword'] = $seo_keyword;
-            $this->responseData['meta']['seo_description'] = $seo_description;
-            $this->responseData['meta']['seo_image'] = $seo_image;
-            $this->responseData['menu'] = Menu::getSqlMenu(['status' => 'active', 'order_by' => ['iorder' => 'ASC']])->get();
-            $this->responseData['gender'] = Consts::GENDER;
-            $params['status'] = true;
-            $params['customer_id'] = $user->user()->id;
-            $rows = Order::getOrderCourses($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
-            $this->responseData['rows'] =  $rows;
-
-            // lấy các buổi học mà user đã và đang học
-            $lesson_user = LessonUser::where('user_id', $user->user()->id)->get();
-            $percent_pass = Consts::PERCENT_PASS;
-            $arr_id_lesson = [];
-            // lọc các buổi đã hoàn thành tiến độ trên 90% để tính phần trăm
-            $lesson_active = $lesson_user->filter(function ($item, $key) {
-                return $item->percent_point >= Consts::PERCENT_PASS;
-            });
-            if ($lesson_active) {
-                foreach ($lesson_user as $val) {
-                    $arr_id_lesson[] = $val->lesson_id; //arr id các buổi đã học trên 90%
-                }
-            }
-            $this->responseData['lesson_user'] =  $lesson_user;
-            $this->responseData['lesson_active'] =  $lesson_active;
-            $this->responseData['arr_id_lesson'] =  $arr_id_lesson;
-            $helpers = new Helpers;
-            $this->responseData['helpers'] =  $helpers;
-            return $this->responseView('frontend.pages.user.course');
-        }
-        return redirect()->route('home')->with('errorMessage', __('Yêu cầu đăng nhập!'));
-    }
+    } 
 }
