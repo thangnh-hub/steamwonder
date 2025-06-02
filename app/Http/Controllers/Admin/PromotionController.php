@@ -6,6 +6,7 @@ use App\Consts;
 use App\Models\Promotion;
 use App\Models\Area;
 use App\Models\Service;
+use App\Models\PaymentCycle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +28,7 @@ class PromotionController extends Controller
      */
     public function index(Request $request)
     {
-        $params = $request->only(['keyword', 'status', 'area_id','promotion_type']);
+        $params = $request->only(['keyword', 'status', 'area_id', 'promotion_type']);
         $rows = Promotion::getSqlPromotion($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
         $this->responseData['rows'] = $rows;
         $this->responseData['areas'] = Area::all();
@@ -48,6 +49,8 @@ class PromotionController extends Controller
         $this->responseData['type'] = Consts::PROMOTION_TYPE;
         $this->responseData['areas'] = Area::all();
         $this->responseData['service'] = Service::getSqlService()->get();
+        $this->responseData['payment_cycle'] = PaymentCycle::getSqlPaymentCycle()->get();
+
         $this->responseData['module_name'] = "Thêm chương trình khuyến mãi";
         return $this->responseView($this->viewPart . '.create');
     }
@@ -115,13 +118,13 @@ class PromotionController extends Controller
      */
     public function edit(Promotion $promotion)
     {
-        // $promotion = Promotion::find($id);
         $this->responseData['status'] = Consts::STATUS;
         $this->responseData['areas'] = Area::all();
         $this->responseData['type'] = Consts::PROMOTION_TYPE;
         $this->responseData['service'] = Service::getSqlService()->get();
-        $this->responseData['module_name'] = "Sửa chương trình khuyến mãi";
+        $this->responseData['payment_cycle'] = PaymentCycle::getSqlPaymentCycle()->get();
         $this->responseData['detail'] = $promotion;
+        $this->responseData['module_name'] = "Sửa chương trình khuyến mãi";
         return $this->responseView($this->viewPart . '.edit');
     }
 

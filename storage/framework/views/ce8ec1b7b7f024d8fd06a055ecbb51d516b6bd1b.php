@@ -1,9 +1,7 @@
-@extends('admin.layouts.app')
-
-@section('title')
-    @lang($module_name)
-@endsection
-@section('style')
+<?php $__env->startSection('title'); ?>
+    <?php echo app('translator')->get($module_name); ?>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('style'); ?>
     <style>
         .item_service {
             margin-bottom: 10px;
@@ -29,181 +27,186 @@
         }
 
     </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <section class="content-header">
         <h1>
-            @lang($module_name)
+            <?php echo app('translator')->get($module_name); ?>
         </h1>
     </section>
 
     <!-- Main content -->
     <section class="content">
-        @if (session('errorMessage'))
+        <?php if(session('errorMessage')): ?>
             <div class="alert alert-warning alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                {{ session('errorMessage') }}
+                <?php echo e(session('errorMessage')); ?>
+
             </div>
-        @endif
-        @if (session('successMessage'))
+        <?php endif; ?>
+        <?php if(session('successMessage')): ?>
             <div class="alert alert-success alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                {{ session('successMessage') }}
-            </div>
-        @endif
+                <?php echo e(session('successMessage')); ?>
 
-        @if ($errors->any())
+            </div>
+        <?php endif; ?>
+
+        <?php if($errors->any()): ?>
             <div class="alert alert-danger alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 
-                @foreach ($errors->all() as $error)
-                    <p>{{ $error }}</p>
-                @endforeach
+                <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <p><?php echo e($error); ?></p>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
             </div>
-        @endif
-        <form role="form" action="{{ route(Request::segment(2) . '.store') }}" method="POST" id="form_promotion">
-            @csrf
+        <?php endif; ?>
+        <form role="form" action="<?php echo e(route(Request::segment(2) . '.store')); ?>" method="POST" id="form_promotion">
+            <?php echo csrf_field(); ?>
             <div class="box box-primary">
                 <div class="box-body">
                     <div class="row">
                         <div class="col-xs-12 col-md-6">
                             <div class="form-group">
-                                <label>@lang('Mã CT Kh.Mãi') <small class="text-red">*</small></label>
+                                <label><?php echo app('translator')->get('Mã CT Kh.Mãi'); ?> <small class="text-red">*</small></label>
                                 <input type="text" class="form-control" name="promotion_code"
-                                    placeholder="@lang('Mã CT Kh.Mãi')" value="{{ old('promotion_code') }}" required>
+                                    placeholder="<?php echo app('translator')->get('Mã CT Kh.Mãi'); ?>" value="<?php echo e(old('promotion_code')); ?>" required>
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-6">
                             <div class="form-group">
-                                <label>@lang('Tên CT Kh.Mãi') <small class="text-red">*</small></label>
+                                <label><?php echo app('translator')->get('Tên CT Kh.Mãi'); ?> <small class="text-red">*</small></label>
                                 <input type="text" class="form-control" name="promotion_name"
-                                    placeholder="@lang('Tên CT Kh.Mãi')" value="{{ old('promotion_name') }}" required>
+                                    placeholder="<?php echo app('translator')->get('Tên CT Kh.Mãi'); ?>" value="<?php echo e(old('promotion_name')); ?>" required>
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-6">
                             <div class="form-group">
-                                <label>@lang('Area')</label>
+                                <label><?php echo app('translator')->get('Area'); ?></label>
                                 <select name="area_id" class="form-control select2 w-100">
-                                    <option value="">@lang('Please select')</option>
-                                    @foreach ($areas as $val)
-                                        <option value="{{ $val->id }}"
-                                            {{ old('area_id') && old('area_id') == $val->id ? 'selected' : '' }}>
-                                            {{ $val->name ?? '' }}</option>
-                                    @endforeach
+                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
+                                    <?php $__currentLoopData = $areas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($val->id); ?>"
+                                            <?php echo e(old('area_id') && old('area_id') == $val->id ? 'selected' : ''); ?>>
+                                            <?php echo e($val->name ?? ''); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-6">
                             <div class="form-group">
-                                <label>@lang('Type') <small class="text-red">*</small></label>
+                                <label><?php echo app('translator')->get('Type'); ?> <small class="text-red">*</small></label>
                                 <select required name="promotion_type" class="form-control select2 select_type">
-                                    <option value="">@lang('Please select')</option>
-                                    @foreach ($type as $key => $val)
-                                        <option value="{{ $key }}"
-                                            {{ old('promotion_type') && old('promotion_type') == $val ? 'selected' : '' }}>
-                                            {{ __($val) }}</option>
-                                    @endforeach
+                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
+                                    <?php $__currentLoopData = $type; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($key); ?>"
+                                            <?php echo e(old('promotion_type') && old('promotion_type') == $val ? 'selected' : ''); ?>>
+                                            <?php echo e(__($val)); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-4">
                             <div class="form-group">
-                                <label>@lang('Thời gian bắt đầu') <small class="text-red">*</small></label>
+                                <label><?php echo app('translator')->get('Thời gian bắt đầu'); ?> <small class="text-red">*</small></label>
                                 <input required type="date" name="time_start" class="form-control"
-                                    value="{{ old('time_start') }}">
+                                    value="<?php echo e(old('time_start')); ?>">
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-4">
                             <div class="form-group">
-                                <label>@lang('Thời gian kết thúc') <small class="text-red">*</small></label>
+                                <label><?php echo app('translator')->get('Thời gian kết thúc'); ?> <small class="text-red">*</small></label>
                                 <input required type="date" name="time_end" class="form-control"
-                                    value="{{ old('time_end') }}">
+                                    value="<?php echo e(old('time_end')); ?>">
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-4">
                             <div class="form-group">
-                                <label>@lang('Status') </label>
+                                <label><?php echo app('translator')->get('Status'); ?> </label>
                                 <select required name="status" class="form-control select2">
-                                    @foreach ($status as $key => $val)
-                                        <option value="{{ $key }}"
-                                            {{ old('status') && old('status') == $val ? 'selected' : '' }}>
-                                            {{ __($val) }}</option>
-                                    @endforeach
+                                    <?php $__currentLoopData = $status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($key); ?>"
+                                            <?php echo e(old('status') && old('status') == $val ? 'selected' : ''); ?>>
+                                            <?php echo e(__($val)); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="form-group">
-                                <label>@lang('Mô tả') </label>
+                                <label><?php echo app('translator')->get('Mô tả'); ?> </label>
                                 <textarea class="form-control" name="description" rows="5"></textarea>
                             </div>
                         </div>
                         <hr>
                         <div class="col-md-12">
                             <h4 class="box-title sw_featured">Danh sách dịch vụ (
-                                <span for="sw_featured">@lang('Theo chu kỳ thanh toán')</span>
+                                <span for="sw_featured"><?php echo app('translator')->get('Theo chu kỳ thanh toán'); ?></span>
                                 <span class="d-flex-al-center">
                                     <label class="switch">
                                         <input id="sw_featured" name="json_params[is_payment_cycle]" value="1"
                                             type="checkbox"
-                                            {{ old('json_params[is_payment_cycle]') && old('json_params[is_payment_cycle]') == '1' ? 'checked' : '' }}>
+                                            <?php echo e(old('json_params[is_payment_cycle]') && old('json_params[is_payment_cycle]') == '1' ? 'checked' : ''); ?>>
                                         <span class="slider round"></span>
                                     </label>
                                 </span>
                                 )
+
                             </h4>
                             <div class="d-flex box_cycle" style="display: none">
-                                @foreach ($payment_cycle as $item_cycle)
+                                <?php $__currentLoopData = $payment_cycle; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item_cycle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <div class="item_cycle">
-                                        <h4 class="box-title">{{ $item_cycle->name }}</h4>
+                                        <h4 class="box-title"><?php echo e($item_cycle->name); ?></h4>
                                         <ul class="mt-15">
-                                            @foreach ($service as $item_service)
+                                            <?php $__currentLoopData = $service; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item_service): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <li class="d-flex item_service">
                                                     <input class="item_check mr-10 checkService" type="checkbox"
-                                                        name="json_params[payment_cycle][{{ $item_cycle->id }}][services][{{ $item_service->id }}][service_id]"
-                                                        value="{{ $item_service->id }}">
+                                                        name="json_params[payment_cycle][<?php echo e($item_cycle->id); ?>][services][<?php echo e($item_service->id); ?>][service_id]"
+                                                        value="<?php echo e($item_service->id); ?>">
                                                     <input placeholder=""
                                                         class="item_value form-control mr-10 check_disable " disabled
                                                         style="width:150px;"
-                                                        name="json_params[payment_cycle][{{ $item_cycle->id }}][services][{{ $item_service->id }}][value]"
+                                                        name="json_params[payment_cycle][<?php echo e($item_cycle->id); ?>][services][<?php echo e($item_service->id); ?>][value]"
                                                         type="number" value="">
                                                     <input placeholder="Số lần áp dụng theo dịch vụ"
                                                         class="item_apply form-control mr-10 check_disable " disabled
                                                         style="width:150px;"
-                                                        name="json_params[payment_cycle][{{ $item_cycle->id }}][services][{{ $item_service->id }}][apply_count]"
+                                                        name="json_params[payment_cycle][<?php echo e($item_cycle->id); ?>][services][<?php echo e($item_service->id); ?>][apply_count]"
                                                         type="number" value="">
                                                     <span class="fw-bold ml-10"
-                                                        style="min-width:200px;">{{ $item_service->name ?? '' }}
+                                                        style="min-width:200px;"><?php echo e($item_service->name ?? ''); ?>
+
                                                     </span>
                                                 </li>
-                                            @endforeach
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </ul>
                                     </div>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </div>
                             <div class="box_default">
                                 <ul class="mt-15">
-                                    @foreach ($service as $item_service)
+                                    <?php $__currentLoopData = $service; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item_service): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <li class="d-flex-wap item_service">
                                             <input class="item_check mr-10 checkService" type="checkbox"
-                                                name="json_params[services][{{ $item_service->id }}][service_id]"
-                                                value="{{ $item_service->id }}">
+                                                name="json_params[services][<?php echo e($item_service->id); ?>][service_id]"
+                                                value="<?php echo e($item_service->id); ?>">
                                             <input placeholder="" class="item_value form-control mr-10 check_disable "
                                                 disabled style="width:250px;"
-                                                name="json_params[services][{{ $item_service->id }}][value]"
+                                                name="json_params[services][<?php echo e($item_service->id); ?>][value]"
                                                 type="number" value="">
                                             <input placeholder="Số lần áp dụng theo dịch vụ"
                                                 class="item_apply form-control mr-10 check_disable " disabled
                                                 style="width:250px;"
-                                                name="json_params[services][{{ $item_service->id }}][apply_count]"
+                                                name="json_params[services][<?php echo e($item_service->id); ?>][apply_count]"
                                                 type="number" value="">
                                             <span class="fw-bold ml-10"
-                                                style="min-width:200px;">{{ $item_service->name ?? '' }}
+                                                style="min-width:200px;"><?php echo e($item_service->name ?? ''); ?>
+
                                             </span>
                                         </li>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </ul>
                             </div>
                         </div>
@@ -211,18 +214,18 @@
                     </div>
                 </div>
                 <div class="box-footer">
-                    <a class="btn btn-success btn-sm" href="{{ route(Request::segment(2) . '.index') }}">
-                        <i class="fa fa-bars"></i> @lang('List')
+                    <a class="btn btn-success btn-sm" href="<?php echo e(route(Request::segment(2) . '.index')); ?>">
+                        <i class="fa fa-bars"></i> <?php echo app('translator')->get('List'); ?>
                     </a>
                     <button type="submit" class="btn btn-primary pull-right btn-sm"><i class="fa fa-floppy-o"></i>
-                        @lang('Save')</button>
+                        <?php echo app('translator')->get('Save'); ?></button>
                 </div>
             </div>
         </form>
     </section>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('script')
+<?php $__env->startSection('script'); ?>
     <script>
         $(document).ready(function() {
             $('#form_promotion').on('submit', function(e) {
@@ -267,4 +270,6 @@
             });
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\steamwonder\resources\views/admin/pages/promotion/create.blade.php ENDPATH**/ ?>
