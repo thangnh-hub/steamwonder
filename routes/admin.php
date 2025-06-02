@@ -118,16 +118,21 @@ Route::group(['namespace' => 'Admin'], function () {
                 'ingredients' => 'MealIngredientController',
                 'dishes' => 'MealDishesController',
                 'menu_plannings' => 'MealMenuPlanningController',
+                'menu_dailys' => 'MealMenuDailyController',
 
             ]);
-            //Thực đơn 
+            //Thực đơn mẫu
             Route::post('meal_dishes_move_to_meal', 'MealMenuPlanningController@moveDish')->name('mealmenu.moveDish');
             Route::delete('meal_dishes_delete', 'MealMenuPlanningController@deleteDish')->name('mealmenu.deleteDish');
             Route::get('/mealmenu/search-dishes', 'MealMenuPlanningController@searchDishes')->name('mealmenu.searchDishes');
             Route::post('/mealmenu/add-dishes', 'MealMenuPlanningController@addDishes')->name('mealmenu.addDishes');
             Route::post('meal-menu/{id}/update-ingredients', 'MealMenuPlanningController@updateIngredients')->name('admin.meal_menu.updateIngredients');
-            
-
+            //Thực đơn hàng ngày
+            Route::post('meal-menu-daily/create-from-template', 'MealMenuDailyController@createFromTemplate')->name('admin.meal-menu-daily.create-from-template');
+            Route::post('meal_dishes_move_to_meal_daily', 'MealMenuDailyController@moveDish')->name('mealmenu.moveDish.daily');
+            Route::delete('meal_dishes_delete_daily', 'MealMenuDailyController@deleteDish')->name('mealmenu.deleteDish.daily');
+            Route::post('/mealmenu/add-dishes-daily', 'MealMenuDailyController@addDishes')->name('mealmenu.addDishes.daily');
+            Route::post('meal-menu/{id}/update-ingredients-daily', 'MealMenuDailyController@updateIngredients')->name('admin.meal_menu.updateIngredients.daily');
 
             Route::get('attendance/check-out/index', 'AttendancesController@checkout')->name('attendance.checkout');
             Route::get('attendance/summary-by-month/index', 'AttendancesController@attendanceSummaryByMonth')->name('attendance.summary_by_month');
