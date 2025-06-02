@@ -656,7 +656,7 @@
                                                                         @php
                                                                             $payment_cycle = $list_payment_cycle->firstWhere(
                                                                                 'id',
-                                                                                (int) $key_cycle,
+                                                                                (int) $key_cycle
                                                                             );
                                                                         @endphp
                                                                         <div class="box-title">
@@ -665,7 +665,7 @@
                                                                             @php
                                                                                 $service_detail = $services->firstWhere(
                                                                                     'id',
-                                                                                    $val->service_id,
+                                                                                    $val->service_id
                                                                                 );
                                                                             @endphp
                                                                             <ul>
@@ -686,7 +686,7 @@
                                                                         @php
                                                                             $service_detail = $services->firstWhere(
                                                                                 'id',
-                                                                                $val->service_id,
+                                                                                $val->service_id
                                                                             );
                                                                         @endphp
 
@@ -751,7 +751,7 @@
                                                                         @php
                                                                             $payment_cycle = $list_payment_cycle->firstWhere(
                                                                                 'id',
-                                                                                (int) $key_cycle,
+                                                                                (int) $key_cycle
                                                                             );
                                                                         @endphp
                                                                         <div class="box-title">
@@ -760,7 +760,7 @@
                                                                             @php
                                                                                 $service_detail = $services->firstWhere(
                                                                                     'id',
-                                                                                    $val->service_id,
+                                                                                    $val->service_id
                                                                                 );
                                                                             @endphp
                                                                             <ul>
@@ -781,7 +781,7 @@
                                                                         @php
                                                                             $service_detail = $services->firstWhere(
                                                                                 'id',
-                                                                                $val->service_id,
+                                                                                $val->service_id
                                                                             );
                                                                         @endphp
 
@@ -859,7 +859,7 @@
                                             $isChecked = in_array($parent->id, $studentParentIds);
                                             $existingRelation = $detail->studentParents->firstWhere(
                                                 'parent_id',
-                                                $parent->id,
+                                                $parent->id
                                             );
                                         @endphp
                                         <tr>
