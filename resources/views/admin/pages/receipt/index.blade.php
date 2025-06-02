@@ -9,6 +9,14 @@
             max-width: 80%;
             width: auto;
         }
+        .tooltip-inner {
+            white-space: nowrap;
+            max-width: none;
+            text-align: left
+        }
+        .table-bordered>thead>tr>th{
+            vertical-align: middle;
+        }
     </style>
 @endsection
 @section('content-header')
@@ -94,8 +102,7 @@
                                     @foreach ($type_receipt as $key => $val)
                                         <option value="{{ $key }}"
                                             {{ isset($params['type_receipt']) && $params['type_receipt'] == $key ? 'selected' : '' }}>
-                                            @lang('Phiếu') <span
-                                                style="text-transform: lowercase">{{ __($val) }}</span></option>
+                                            {{ __($val) }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -173,7 +180,9 @@
                                 <th>@lang('Mã TBP')</th>
                                 <th>@lang('Tên TBP')</th>
                                 <th>@lang('Loại TBP')</th>
-                                <th>@lang('Học sinh')</th>
+                                <th>@lang('Mã học sinh')</th>
+                                <th>@lang('Tên học sinh')</th>
+                                <th>@lang('Lớp')</th>
                                 <th>@lang('Khu vực')</th>
                                 {{-- <th>@lang('Chu kỳ thanh toán')</th> --}}
                                 <th>@lang('Thành tiền')</th>
@@ -181,7 +190,12 @@
                                 <th>@lang('Số dư kỳ trước')</th>
                                 <th>@lang('Tổng tiền thực tế')</th>
                                 <th>@lang('Đã thu')</th>
-                                <th>@lang('Số tiền còn phải thu (+) hoặc thừa (-)')</th>
+                                <th>
+                                    @lang('Cần thu')
+                                    <span data-html="true" data-toggle="tooltip"
+                                        title="Số tiền còn phải thu (+) hoặc thừa (-)">
+                                        <i class="fa fa-question-circle-o" aria-hidden="true"></i></span>
+                                </th>
                                 <th>@lang('Trạng thái')</th>
                                 <th>@lang('Ghi chú')</th>
                                 <th>@lang('Người tạo')</th>
@@ -202,11 +216,17 @@
                                         {{ $row->receipt_name }}
                                     </td>
                                     <td>
-                                        Phiếu {{ __($row->type_receipt) }}
+                                        {{ __($row->type_receipt) }}
                                     </td>
                                     <td>
-                                        {{ $row->student->student_code ?? '' }} - {{ $row->student->first_name ?? '' }}
+                                        {{ $row->student->student_code ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $row->student->first_name ?? '' }}
                                         {{ $row->student->last_name ?? '' }} ({{ $row->student->nickname ?? '' }})
+                                    </td>
+                                    <td>
+                                        {{ optional($row->student->currentClass)->name }}
                                     </td>
                                     <td>
                                         {{ $row->area->name ?? '' }}

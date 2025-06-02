@@ -137,7 +137,7 @@
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label for=""><?php echo app('translator')->get('Mô tả'); ?></label>
-                                                    <textarea name="description" rows="5" class="form-control" placeholder="Mô tả"></textarea>
+                                                    <textarea name="description" rows="5" class="form-control" placeholder="Mô tả"><?php echo e($detail->description ?? ""); ?></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -161,14 +161,12 @@
                                                                     <th style="vertical-align: middle" class="text-center" rowspan="2"><?php echo app('translator')->get('STT'); ?></th>
                                                                     <th style="vertical-align: middle" class="text-center" rowspan="2"><?php echo app('translator')->get('Mã thực phẩm'); ?></th>
                                                                     <th style="vertical-align: middle" class="text-center" rowspan="2"><?php echo app('translator')->get('Tên thực phẩm'); ?></th>
-                                                                    <th colspan="<?php echo e(1 + ($education_age->count() ?? 0)); ?>" class="text-center"><?php echo app('translator')->get('Định lượng (g)'); ?></th>
+                                                                    <th colspan="<?php echo e(($list_meal_age->count() ?? 0)); ?>" class="text-center"><?php echo app('translator')->get('Định lượng (g)'); ?></th>
                                                                     <th style="vertical-align: middle" class="text-center" rowspan="2"><?php echo app('translator')->get('Xóa'); ?></th>
                                                                 </tr>
                                                                 <tr>
-                                                                    <th class="text-center"><?php echo app('translator')->get('CBNV'); ?></th>
-
-                                                                    <?php $__empty_1 = true; $__currentLoopData = $education_age; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $age): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                                                                        <th class="text-center">Trẻ <?php echo e($age->from_month); ?>-<?php echo e($age->to_month); ?> tháng</th>
+                                                                    <?php $__empty_1 = true; $__currentLoopData = $list_meal_age; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $age): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                                                        <th class="text-center"><?php echo e($age->name ?? ""); ?> </th>
                                                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                                                         <th class="text-center text-muted" colspan="1"><?php echo app('translator')->get('Không có nhóm tuổi'); ?></th>
                                                                     <?php endif; ?>
@@ -186,18 +184,12 @@
                                                                         <td class="text-center"><?php echo e($loop->index + 1); ?></td>
                                                                         <td class="text-center"><?php echo e($ingredientCode); ?></td>
                                                                         <td><?php echo e($ingredient->name); ?></td>
-                                                                        <td class="text-center">
-                                                                            <input type="number" class="form-control"
-                                                                                name="json_params[quantitative][<?php echo e($ingredientId); ?>][cbnv]"
-                                                                                placeholder="Định lượng"
-                                                                                value="<?php echo e($data['cbnv'] ?? 0); ?>">
-                                                                        </td>
-                                                                        <?php $__currentLoopData = $education_age; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $age): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                        <?php $__currentLoopData = $list_meal_age; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $age): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                                             <td class="text-center">
                                                                                 <input type="number" class="form-control"
-                                                                                    name="json_params[quantitative][<?php echo e($ingredientId); ?>][hs][<?php echo e($age->id); ?>]"
-                                                                                    placeholder="Định lượng"
-                                                                                    value="<?php echo e($data['hs'][$age->id] ?? 0); ?>">
+                                                                                    name="json_params[quantitative][<?php echo e($ingredientId); ?>][<?php echo e($age->code); ?>]"
+                                                                                    placeholder="Định lượng" step="any"
+                                                                                    value="<?php echo e($data[$age->code]); ?>">
                                                                             </td>
                                                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                                         <td class="text-center">
@@ -313,16 +305,12 @@
                                 <td class="text-center">${stt++}</td>
                                 <td class="text-center">${ingredientCode}</td>
                                 <td>${ingredientName}</td>
-                                <td class="text-center">
-                                    <input type="number" class="form-control"
-                                        name="json_params[quantitative][${ingredientId}][cbnv]"
-                                        placeholder="Định lượng" value="0">
-                                </td>
-                                <?php $__currentLoopData = $education_age; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $age): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                
+                                <?php $__currentLoopData = $list_meal_age; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $age): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <td class="text-center">
                                         <input type="number" class="form-control"
-                                            name="json_params[quantitative][${ingredientId}][hs][<?php echo e($age->id); ?>]"
-                                            placeholder="Định lượng" value="0">
+                                            name="json_params[quantitative][${ingredientId}][<?php echo e($age->code); ?>]"
+                                            placeholder="Định lượng" value="0" step="any">
                                     </td>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 <td class="text-center">

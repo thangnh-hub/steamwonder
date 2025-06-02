@@ -128,7 +128,8 @@ class StudentController extends Controller
         if (!in_array($student->area_id, $permittedAreaIds)) {
             return redirect()->route($this->routeDefault . '.index')->with('errorMessage', __('Bạn không có quyền xem học sinh này!'));
         }
-
+        $this->responseData['list_payment_cycle'] = PaymentCycle::getSqlPaymentCycle()->get();
+        $this->responseData['services'] = Service::where('status', 'active')->get();
         $this->responseData['detail'] = $student;
         $this->responseData['module_name'] = "Chi tiết học sinh";
         return $this->responseView($this->viewPart . '.detail');

@@ -172,7 +172,8 @@
                                 <label>@lang('Lấy điểm danh')</label>
                                 <div>
                                     <button type="submit" class="btn btn-primary btn-sm mr-10">@lang('Submit')</button>
-                                    <a class="btn btn-default btn-sm" href="{{ route(Request::segment(2) . '.checkout') }}">
+                                    <a class="btn btn-default btn-sm"
+                                        href="{{ route(Request::segment(2) . '.checkout') }}">
                                         @lang('Reset')
                                     </a>
                                 </div>
@@ -247,10 +248,10 @@
                                                         class="fa fa-camera" aria-hidden="true"></i>
                                                 </div>
                                                 <img class="photo_{{ $row->student_id }}"
-                                                    src="{{ isset($row->json_params->img_return) ? asset($row->json_params->img_return) : url('themes/admin/img/no_image.jpg') }}">
+                                                    src="{{ isset($row->json_params->img_return) && $row->json_params->img_return != '' ? asset($row->json_params->img_return) : url('themes/admin/img/no_image.jpg') }}">
                                                 <input type="hidden" class="img_{{ $row->student_id }}"
                                                     name="attendance[{{ $row->student_id }}][json_params][img_return]"
-                                                    value="{{ isset($row->json_params->img_return) ? $row->json_params->img_return : '' }}">
+                                                    value="{{ isset($row->json_params->img_return) && $row->json_params->img_return != '' ? $row->json_params->img_return : '' }}">
                                             </div>
 
                                             <div class="box_content information_{{ $row->student_id }}">

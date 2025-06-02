@@ -131,6 +131,7 @@
                         <tr>
                             <th>@lang('STT')</th>
                             <th>@lang('Tên món ăn')</th>
+                            <th>@lang('Mã món ăn')</th>
                             <th>@lang('Loại món ăn')</th>
                             <th>@lang('Bữa áp dụng')</th>
                             <th>@lang('Mô tả')</th>
@@ -145,6 +146,9 @@
                                     {{ $loop->iteration + ($rows->currentPage() - 1) * $rows->perPage() }}
                                 </td>
                                 <td>{{ $row->name ?? '' }}</td>
+                                <td>
+                                    {{ 'MA' . str_pad($row->id, 5, '0', STR_PAD_LEFT) }}
+                                </td>
                                 <td>
                                     {{ __($row->dishes_type ?? '') }}
                                 </td>

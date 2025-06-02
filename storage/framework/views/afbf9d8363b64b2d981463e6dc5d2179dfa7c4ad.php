@@ -136,6 +136,7 @@
                         <tr>
                             <th><?php echo app('translator')->get('STT'); ?></th>
                             <th><?php echo app('translator')->get('Tên món ăn'); ?></th>
+                            <th><?php echo app('translator')->get('Mã món ăn'); ?></th>
                             <th><?php echo app('translator')->get('Loại món ăn'); ?></th>
                             <th><?php echo app('translator')->get('Bữa áp dụng'); ?></th>
                             <th><?php echo app('translator')->get('Mô tả'); ?></th>
@@ -151,6 +152,10 @@
 
                                 </td>
                                 <td><?php echo e($row->name ?? ''); ?></td>
+                                <td>
+                                    <?php echo e('MA' . str_pad($row->id, 5, '0', STR_PAD_LEFT)); ?>
+
+                                </td>
                                 <td>
                                     <?php echo e(__($row->dishes_type ?? '')); ?>
 

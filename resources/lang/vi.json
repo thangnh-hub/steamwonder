@@ -130,6 +130,7 @@
     "Delete": "Xóa",
     "not approved": "Chưa duyệt",
     "in warehouse": "Đã nhập kho",
+    "Permission denied!": "Bạn chưa được cấp quyền!",
     "received": "Đã nhận",
     "using": "Đang sử dụng",
     "unused": "Không sử dụng",
@@ -143,9 +144,6 @@
     "soup": "Món canh",
     "savory": "Món mặn (chính)",
     "boiled": "Món xào (luộc)",
-    "morning": "Bữa sáng",
-    "noon": "Bữa trưa",
-    "afternoon": "Bữa chiều",
     "delete": "Xóa",
     "User Name": " Tên đăng nhập",
     "Created at": "Tạo lúc",
@@ -154,5 +152,8 @@
     "Phone": "Số điện thoại",
     "Address": "Địa chỉ",
     "Image": "Hình ảnh",
-    "choose": "Chọn"
+    "choose": "Chọn",
+    "breakfast": "Bữa sáng",
+    "lunch": "Bữa trưa",
+    "brunch": "Bữa chiều"
 }

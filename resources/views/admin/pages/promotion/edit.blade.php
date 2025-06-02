@@ -10,6 +10,28 @@
             margin-bottom: 10px;
             align-items: center;
         }
+
+        .d-flex {
+            display: flex;
+        }
+
+        .justify-between {
+            justify-content: space-between
+        }
+
+        ul {
+            padding-inline-start: 5px;
+        }
+
+        .box_cycle {
+            overflow-x: auto
+        }
+
+        .item_cycle {
+            margin-right: 5px;
+            padding: 5px;
+            border: 1px solid #a9a9a9
+        }
     </style>
 @endsection
 
@@ -129,35 +151,83 @@
                         </div>
                         <hr>
                         <div class="col-md-12">
-                            <h4 class="box-title">Danh sách dịch vụ</h4>
-                            <ul class="mt-15">
-                                @foreach ($service as $item_service)
-                                    <li class="d-flex-wap item_service">
-                                        <input class="item_check mr-10 checkService" type="checkbox"
-                                            {{ isset($detail->json_params->services->{$item_service->id}) ? 'checked' : '' }}
-                                            name="json_params[services][{{ $item_service->id }}][service_id]"
-                                            value="{{ $item_service->id }}">
-                                        <input placeholder="" class="item_value form-control mr-10 check_disable "
-                                            {{ isset($detail->json_params->services->{$item_service->id}) ? '' : 'disabled' }}
-                                            style="width:250px;"
-                                            name="json_params[services][{{ $item_service->id }}][value]" type="number"
-                                            value="{{ $detail->json_params->services->{$item_service->id}->value ?? '' }}">
-                                        <input placeholder="Số lần áp dụng theo dịch vụ"
-                                            class="item_apply form-control mr-10 check_disable "
-                                            {{ isset($detail->json_params->services->{$item_service->id}) ? '' : 'disabled' }}
-                                            style="width:250px;"
-                                            name="json_params[services][{{ $item_service->id }}][apply_count]"
-                                            type="number"
-                                            value="{{ $detail->json_params->services->{$item_service->id}->apply_count ?? '' }}">
-                                        <span class="fw-bold ml-10"
-                                            style="min-width:200px;">{{ $item_service->name ?? '' }}
-                                        </span>
-                                    </li>
+                            <h4 class="box-title sw_featured">Danh sách dịch vụ (
+                                <span for="sw_featured">@lang('Theo chu kỳ thanh toán')</span>
+                                <span class="d-flex-al-center">
+                                    <label class="switch">
+                                        <input id="sw_featured" name="json_params[is_payment_cycle]" value="1"
+                                            type="checkbox"
+                                            {{ isset($detail->json_params->is_payment_cycle) && $detail->json_params->is_payment_cycle == 1 ? 'checked' : '' }}>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </span>
+                                )
+                            </h4>
+                            <div class="d-flex box_cycle"
+                                style="display: {{ isset($detail->json_params->is_payment_cycle) && $detail->json_params->is_payment_cycle == 1 ? 'flex' : 'none' }}">
+                                @foreach ($payment_cycle as $item_cycle)
+                                    <div class="item_cycle">
+                                        <h4 class="box-title">{{ $item_cycle->name }}</h4>
+                                        <ul class="mt-15">
+                                            @foreach ($service as $item_service)
+                                                <li class="d-flex item_service">
+                                                    <input class="item_check mr-10 checkService" type="checkbox"
+                                                        {{ isset($detail->json_params->payment_cycle->{$item_cycle->id}->services->{$item_service->id}) ? 'checked' : '' }}
+                                                        name="json_params[payment_cycle][{{ $item_cycle->id }}][services][{{ $item_service->id }}][service_id]"
+                                                        value="{{ $item_service->id }}">
+                                                    <input placeholder=""
+                                                        class="item_value form-control mr-10 check_disable "
+                                                        {{ isset($detail->json_params->payment_cycle->{$item_cycle->id}->services->{$item_service->id}) ? '' : 'disabled' }}
+                                                        style="width:150px;"
+                                                        name="json_params[payment_cycle][{{ $item_cycle->id }}][services][{{ $item_service->id }}][value]"
+                                                        type="number"
+                                                        value="{{ $detail->json_params->payment_cycle->{$item_cycle->id}->services->{$item_service->id}->value ?? '' }}">
+                                                    <input placeholder="Số lần áp dụng theo dịch vụ"
+                                                        class="item_apply form-control mr-10 check_disable "
+                                                        {{ isset($detail->json_params->payment_cycle->{$item_cycle->id}->services->{$item_service->id}) ? '' : 'disabled' }}
+                                                        style="width:150px;"
+                                                        name="json_params[payment_cycle][{{ $item_cycle->id }}][services][{{ $item_service->id }}][apply_count]"
+                                                        type="number" value="{{ $detail->json_params->payment_cycle->{$item_cycle->id}->services->{$item_service->id}->apply_count ?? '' }}">
+                                                    <span class="fw-bold ml-10"
+                                                        style="min-width:200px;">{{ $item_service->name ?? '' }}
+                                                    </span>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
                                 @endforeach
+                            </div>
+                            <div class="box_default"
+                                style="display: {{ isset($detail->json_params->is_payment_cycle) && $detail->json_params->is_payment_cycle == 1 ? 'none' : 'flex' }}">
+                                <ul class="mt-15">
+                                    @foreach ($service as $item_service)
+                                        <li class="d-flex item_service">
+                                            <input class="item_check mr-10 checkService" type="checkbox"
+                                                {{ isset($detail->json_params->services->{$item_service->id}) ? 'checked' : '' }}
+                                                name="json_params[services][{{ $item_service->id }}][service_id]"
+                                                value="{{ $item_service->id }}">
+                                            <input placeholder="" class="item_value form-control mr-10 check_disable "
+                                                {{ isset($detail->json_params->services->{$item_service->id}) ? '' : 'disabled' }}
+                                                style="width:250px;"
+                                                name="json_params[services][{{ $item_service->id }}][value]"
+                                                type="number"
+                                                value="{{ $detail->json_params->services->{$item_service->id}->value ?? '' }}">
+                                            <input placeholder="Số lần áp dụng theo dịch vụ"
+                                                class="item_apply form-control mr-10 check_disable "
+                                                {{ isset($detail->json_params->services->{$item_service->id}) ? '' : 'disabled' }}
+                                                style="width:250px;"
+                                                name="json_params[services][{{ $item_service->id }}][apply_count]"
+                                                type="number"
+                                                value="{{ $detail->json_params->services->{$item_service->id}->apply_count ?? '' }}">
+                                            <span class="fw-bold ml-10"
+                                                style="min-width:200px;">{{ $item_service->name ?? '' }}
+                                            </span>
+                                        </li>
+                                    @endforeach
 
-                            </ul>
+                                </ul>
+                            </div>
                         </div>
-
                     </div>
                 </div>
                 <div class="box-footer">

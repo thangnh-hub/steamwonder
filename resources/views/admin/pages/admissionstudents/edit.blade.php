@@ -44,6 +44,28 @@
             margin-block-start: 0px !important;
             padding-inline-start: 10px !important;
         }
+        input[type="radio"] {
+            transform: scale(1.5);
+        }
+
+        td.service {
+            cursor: pointer;
+        }
+
+        .service {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 6;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+        }
+
+        td.service.expanded {
+            display: table-cell;
+            -webkit-line-clamp: unset;
+            overflow: visible;
+        }
     </style>
 @endsection
 
@@ -632,24 +654,58 @@
                                                             <td>{{ \Carbon\Carbon::parse($row->time_end)->format('d/m/Y') ?? '' }}
                                                             </td>
                                                             <td class="service">
-                                                                @foreach ($row->json_params->services as $val)
-                                                                    @php
-                                                                        $service_detail = $row
-                                                                            ->getServices()
-                                                                            ->find($val->service_id);
-                                                                    @endphp
-                                                                    <ul>
-                                                                        <li>Dịch vụ:
-                                                                            {{ $service_detail->name ?? '' }}
-                                                                        </li>
-                                                                        <li>Giá trị áp dụng:
-                                                                            {{ number_format($val->value, 0, ',', '.') }}
-                                                                        </li>
-                                                                        <li>Số lần áp dụng:
-                                                                            {{ $val->apply_count ?? '' }}
-                                                                        </li>
-                                                                    </ul>
-                                                                @endforeach
+                                                                @if (isset($row->json_params->is_payment_cycle) && $row->json_params->is_payment_cycle == 1)
+                                                                    @foreach ($row->json_params->payment_cycle as $key_cycle => $item_cycle)
+                                                                        @php
+                                                                            $payment_cycle = $list_payment_cycle->firstWhere(
+                                                                                'id',
+                                                                                (int) $key_cycle
+                                                                            );
+                                                                        @endphp
+                                                                        <div class="box-title">
+                                                                            {{ $payment_cycle->name ?? '' }}</div>
+                                                                        @foreach ($item_cycle->services as $val)
+                                                                            @php
+                                                                                $service_detail = $services->firstWhere(
+                                                                                    'id',
+                                                                                    $val->service_id
+                                                                                );
+                                                                            @endphp
+                                                                            <ul>
+                                                                                <li>Dịch vụ:
+                                                                                    {{ $service_detail->name ?? '' }}
+                                                                                </li>
+                                                                                <li>Giá trị áp dụng:
+                                                                                    {{ number_format($val->value, 0, ',', '.') }}
+                                                                                </li>
+                                                                                <li>Số lần áp dụng:
+                                                                                    {{ $val->apply_count ?? '1' }}
+                                                                                </li>
+                                                                            </ul>
+                                                                        @endforeach
+                                                                    @endforeach
+                                                                @else
+                                                                    @foreach ($row->json_params->services as $val)
+                                                                        @php
+                                                                            $service_detail = $services->firstWhere(
+                                                                                'id',
+                                                                                $val->service_id
+                                                                            );
+                                                                        @endphp
+
+                                                                        <ul>
+                                                                            <li>Dịch vụ:
+                                                                                {{ $service_detail->name ?? '' }}
+                                                                            </li>
+                                                                            <li>Giá trị áp dụng:
+                                                                                {{ number_format($val->value, 0, ',', '.') }}
+                                                                            </li>
+                                                                            <li>Số lần áp dụng:
+                                                                                {{ $val->apply_count ?? '1' }}
+                                                                            </li>
+                                                                        </ul>
+                                                                    @endforeach
+                                                                @endif
                                                             </td>
                                                             <td class="status">
                                                                 {{ __($row->status) }}
@@ -693,26 +749,59 @@
                                                             <td>
                                                                 {{ \Carbon\Carbon::parse($row->time_end)->format('Y-m-d') ?? '' }}
                                                             </td>
-                                                            <td>
-                                                                @foreach ($row->promotion->json_params->services as $val)
-                                                                    @php
+                                                            <td class="service">
+                                                                @if (isset($row->promotion->json_params->is_payment_cycle) && $row->promotion->json_params->is_payment_cycle == 1)
+                                                                    @foreach ($row->promotion->json_params->payment_cycle as $key_cycle => $item_cycle)
+                                                                        @php
+                                                                            $payment_cycle = $list_payment_cycle->firstWhere(
+                                                                                'id',
+                                                                                (int) $key_cycle
+                                                                            );
+                                                                        @endphp
+                                                                        <div class="box-title">
+                                                                            {{ $payment_cycle->name ?? '' }}</div>
+                                                                        @foreach ($item_cycle->services as $val)
+                                                                            @php
+                                                                                $service_detail = $services->firstWhere(
+                                                                                    'id',
+                                                                                    $val->service_id
+                                                                                );
+                                                                            @endphp
+                                                                            <ul>
+                                                                                <li>Dịch vụ:
+                                                                                    {{ $service_detail->name ?? '' }}
+                                                                                </li>
+                                                                                <li>Giá trị áp dụng:
+                                                                                    {{ number_format($val->value, 0, ',', '.') }}
+                                                                                </li>
+                                                                                <li>Số lần áp dụng:
+                                                                                    {{ $val->apply_count ?? '1' }}
+                                                                                </li>
+                                                                            </ul>
+                                                                        @endforeach
+                                                                    @endforeach
+                                                                @else
+                                                                    @foreach ($row->promotion->json_params->services as $val)
+                                                                        @php
+                                                                            $service_detail = $services->firstWhere(
+                                                                                'id',
+                                                                                $val->service_id
+                                                                            );
+                                                                        @endphp
 
-                                                                        $service_detail = $row->promotion
-                                                                            ->getServices()
-                                                                            ->find($val->service_id);
-                                                                    @endphp
-                                                                    <ul>
-                                                                        <li>Dịch vụ:
-                                                                            {{ $service_detail->name ?? '' }}
-                                                                        </li>
-                                                                        <li>Giá trị áp dụng:
-                                                                            {{ number_format($val->value, 0, ',', '.') }}
-                                                                        </li>
-                                                                        <li>Số lần áp dụng:
-                                                                            {{ $val->apply_count ?? '' }}
-                                                                        </li>
-                                                                    </ul>
-                                                                @endforeach
+                                                                        <ul>
+                                                                            <li>Dịch vụ:
+                                                                                {{ $service_detail->name ?? '' }}
+                                                                            </li>
+                                                                            <li>Giá trị áp dụng:
+                                                                                {{ number_format($val->value, 0, ',', '.') }}
+                                                                            </li>
+                                                                            <li>Số lần áp dụng:
+                                                                                {{ $val->apply_count ?? '1' }}
+                                                                            </li>
+                                                                        </ul>
+                                                                    @endforeach
+                                                                @endif
                                                             </td>
                                                             <td>
                                                                 {{ __($row->status) }}
@@ -1264,6 +1353,10 @@
         });
 
         $(document).ready(function() {
+            $("td.service").on("click", function() {
+                $(this).toggleClass("expanded");
+            });
+
             var activeTab = localStorage.getItem('activeTab');
             if (activeTab) {
                 // Bỏ class active hiện tại

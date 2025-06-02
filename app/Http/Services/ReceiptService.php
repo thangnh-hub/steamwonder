@@ -53,9 +53,13 @@ class ReceiptService
         return DB::transaction(function () use ($student, $data) {
             $policies = $student->studentPolicies->pluck('policy');
             $promotions = $student->studentPromotions;
-            $deductions = $this->getDeductions();
+            // $deductions = $this->getDeductions();
+            $deductions = $this->getDeductions()->filter(function ($deduction) use ($student) {
+                return $deduction->area_id == $student->area_id;
+            });
             $startDate = Carbon::parse($data['enrolled_at']);
             $includeCurrent = $data['include_current_month'] ?? false;
+
             $details = $this->generateReceiptDetails($policies, $promotions, $deductions, $data['student_services'], $startDate, $includeCurrent);
 
             return $this->saveReceipt($student,  $details, $data);
@@ -273,9 +277,13 @@ class ReceiptService
             $start = Carbon::parse($pro->time_start)->startOfMonth();
             $end = Carbon::parse($pro->time_end)->endOfMonth();
             $checkMonth = Carbon::parse($month)->startOfMonth();
-
             if ($checkMonth->between($start, $end)) {
-                $discount_promotion_value = $pro->promotion->json_params->services->{$service_info['id']}->value ?? 0;
+                $json_params = $pro->promotion->json_params;
+                if (isset($json_params->is_payment_cycle) && $json_params->is_payment_cycle == 1) {
+                    $discount_promotion_value = $json_params->payment_cycle->{$cycle->id}->services->{$service_info['id']}->value ?? 0;
+                } else {
+                    $discount_promotion_value = $json_params->services->{$service_info['id']}->value ?? 0;
+                }
                 $discount_promotion_type = $pro->promotion->promotion_type ?? null;
 
                 if ($discount_promotion_type == Consts::TYPE_POLICIES['percent'] && $discount_promotion_value > 0) {
@@ -341,14 +349,27 @@ class ReceiptService
                         }
                     }
                 } else if ($compare >= $start && ($end === null || $compare <= $end)) {
+                    // Nằm trong khoảng từ - đến
                     $deduction_value = $deduction->json_params->services->{$service_info['id']}->value ?? 0;
                     $deduction_type = $deduction->json_params->services->{$service_info['id']}->type ?? null;
+
                     if ($deduction_type == Consts::TYPE_POLICIES['percent']) {
                         $discount_notes[] = "Giảm trừ {$deduction->name} giảm ({$deduction_value}%)";
                         $amount_after_discount = $amount_after_discount - $amount_after_discount * ($deduction_value / 100);
                     } else if ($deduction_type == Consts::TYPE_POLICIES['fixed_amount']) {
                         $discount_notes[] = "Giảm trừ {$deduction->name} giảm (" . number_format($deduction_value) . "đ)";
                         $amount_after_discount = $amount_after_discount - $deduction_value;
+                    } else if ($deduction_type == Consts::TYPE_POLICIES['date']) {
+                        // Đếm số ngày từ statrtDate đến cuối tháng không tính t7 và cn
+                        $endOfMonth = $startDate->copy()->endOfMonth();
+                        $workingDays = collect(
+                            range(0, $startDate->diffInDays($endOfMonth))
+                        )->map(function ($day) use ($startDate) {
+                            return $startDate->copy()->addDays($day);
+                        })->filter(fn($date) => !$date->isWeekend())->count();
+                        // Lấy số tiền tương ứng của dịch vụ theo số ngày
+                        $amount_after_discount =  ((int)$service_info['price'] / (int)$deduction_value) * $workingDays;
+                        $discount_notes[] = "Giảm trừ {$deduction->name} với số ngày đi học là " . $workingDays;
                     }
                 }
             }
@@ -455,11 +476,14 @@ class ReceiptService
             $start = Carbon::parse($pro->time_start)->startOfMonth();
             $end = Carbon::parse($pro->time_end)->endOfMonth();
             $checkMonth = Carbon::parse($month)->startOfMonth();
-
             if ($checkMonth->between($start, $end)) {
-                $discount_promotion_value = $pro->promotion->json_params->services->{$service_info['id']}->value ?? 0;
+                $json_params = $pro->promotion->json_params;
+                if (isset($json_params->is_payment_cycle) && $json_params->is_payment_cycle == 1) {
+                    $discount_promotion_value = $json_params->payment_cycle->{$cycle->id}->services->{$service_info['id']}->value ?? 0;
+                } else {
+                    $discount_promotion_value = $json_params->services->{$service_info['id']}->value ?? 0;
+                }
                 $discount_promotion_type = $pro->promotion->promotion_type ?? null;
-
                 if ($discount_promotion_type == Consts::TYPE_POLICIES['percent'] && $discount_promotion_value > 0) {
                     $has_valid_promotion = true;
                     $discount_notes[] = "{$pro->promotion->promotion_name} giảm ({$discount_promotion_value}%)";
@@ -583,8 +607,8 @@ class ReceiptService
                         'note' => $discount_amount['cal_discount_note'],
                     ];
                     break;
-                }
             }
+        }
 
         return collect($details);
     }
@@ -643,7 +667,12 @@ class ReceiptService
             $checkMonth = Carbon::parse($month)->startOfMonth();
 
             if ($checkMonth->between($start, $end)) {
-                $discount_promotion_value = $pro->promotion->json_params->services->{$service_info['id']}->value ?? 0;
+                $json_params = $pro->promotion->json_params;
+                if (isset($json_params->is_payment_cycle) && $json_params->is_payment_cycle == 1) {
+                    $discount_promotion_value = $json_params->payment_cycle->{$cycle->id}->services->{$service_info['id']}->value ?? 0;
+                } else {
+                    $discount_promotion_value = $json_params->services->{$service_info['id']}->value ?? 0;
+                }
                 $discount_promotion_type = $pro->promotion->promotion_type ?? null;
 
                 if ($discount_promotion_type == Consts::TYPE_POLICIES['percent'] && $discount_promotion_value > 0) {
@@ -836,7 +865,13 @@ class ReceiptService
             $checkMonth = Carbon::parse($month)->startOfMonth();
 
             if ($checkMonth->between($start, $end)) {
-                $discount_promotion_value = $pro->promotion->json_params->services->{$service_info['id']}->value ?? 0;
+                $json_params = $pro->promotion->json_params;
+                if (isset($json_params->is_payment_cycle) && $json_params->is_payment_cycle == 1) {
+                    $discount_promotion_value = $json_params->payment_cycle->{$cycle->id}->services->{$service_info['id']}->value ?? 0;
+                } else {
+                    $discount_promotion_value = $json_params->services->{$service_info['id']}->value ?? 0;
+                }
+
                 $discount_promotion_type = $pro->promotion->promotion_type ?? null;
 
                 if ($discount_promotion_type == Consts::TYPE_POLICIES['percent'] && $discount_promotion_value > 0) {

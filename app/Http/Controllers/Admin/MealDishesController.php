@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\MealDishes;
-use App\Models\EducationAges;
+use App\Models\MealAges;
 use App\Models\MealIngredient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -66,11 +66,11 @@ class MealDishesController extends Controller
 
         //Nguyên liệu
         //Nhóm tuổi
-        $param_active = Consts::STATUS['active'];
-        $this->responseData['education_age'] = EducationAges::getSqlEducationAges($param_active)->get();
+        
+        $this->responseData['list_meal_age'] = MealAges::getSqlMealAge(Consts::STATUS['active'])->get();
 
         //thực phẩm
-        $this->responseData['list_ingredient'] = MealIngredient::getSqlIngredient($param_active)->get();
+        $this->responseData['list_ingredient'] = MealIngredient::getSqlIngredient(Consts::STATUS['active'])->get();
 
         return $this->responseView($this->viewPart . '.edit' );
     }

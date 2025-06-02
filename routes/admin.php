@@ -117,7 +117,17 @@ Route::group(['namespace' => 'Admin'], function () {
                 'ingredients_category' => 'MealIngredientCategoryController',
                 'ingredients' => 'MealIngredientController',
                 'dishes' => 'MealDishesController',
+                'menu_plannings' => 'MealMenuPlanningController',
+
             ]);
+            //Thực đơn 
+            Route::post('meal_dishes_move_to_meal', 'MealMenuPlanningController@moveDish')->name('mealmenu.moveDish');
+            Route::delete('meal_dishes_delete', 'MealMenuPlanningController@deleteDish')->name('mealmenu.deleteDish');
+            Route::get('/mealmenu/search-dishes', 'MealMenuPlanningController@searchDishes')->name('mealmenu.searchDishes');
+            Route::post('/mealmenu/add-dishes', 'MealMenuPlanningController@addDishes')->name('mealmenu.addDishes');
+            Route::post('meal-menu/{id}/update-ingredients', 'MealMenuPlanningController@updateIngredients')->name('admin.meal_menu.updateIngredients');
+            
+
 
             Route::get('attendance/check-out/index', 'AttendancesController@checkout')->name('attendance.checkout');
             Route::get('attendance/summary-by-month/index', 'AttendancesController@attendanceSummaryByMonth')->name('attendance.summary_by_month');
@@ -175,7 +185,6 @@ Route::group(['namespace' => 'Admin'], function () {
             //TÍnh toán phí đầu năm
             Route::get('student/receipt/first_year', 'StudentController@viewCalculateReceiptStudentFirstYear')->name('view_calculate_receipt_first_year');
             Route::post('student/receipt/first_year', 'StudentController@calculateReceiptStudentFirstYear')->name('calculate_receipt_first_year');
-
 
             // ------
 
