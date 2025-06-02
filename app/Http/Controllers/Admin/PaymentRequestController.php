@@ -7,6 +7,7 @@ use App\Models\PaymentRequestDetail;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use App\Consts;
+use App\Helpers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Exception;
@@ -103,15 +104,15 @@ class PaymentRequestController extends Controller
       $this->responseData['total_money_vnd_before_vat'] = $total_money_vnd_before_vat;
       $this->responseData['total_money_euro_before_vat'] = $total_money_euro_before_vat;
 
-      $this->responseData['total_money_vnd_finally_word'] = $this->convertNumberToWords((int)$total_money_vnd_finally);
-      $this->responseData['total_money_euro_finally_word'] = $this->convertNumberToWords((int)$total_money_euro_finally);
+      $this->responseData['total_money_vnd_finally_word'] = Helpers::convert_number_to_words_vi((int)$total_money_vnd_finally);
+      $this->responseData['total_money_euro_finally_word'] = Helpers::convert_number_to_words_vi((int)$total_money_euro_finally);
     }
     if ($paymentRequest->is_entry == 0) return $this->responseView($this->viewPart . '.show');
     else {
       $this->responseData['entry_details'] = $paymentRequest->entry->entryDetails ?? null;
       $total_money_vnd_finally = ((int)$paymentRequest->total_money_vnd ?? 0) - ($paymentRequest->total_money_vnd_advance ?? 0);
       $this->responseData['total_money_vnd_finally'] = $total_money_vnd_finally;
-      $this->responseData['total_money_vnd_finally_word'] = $this->convertNumberToWords((int)$total_money_vnd_finally);
+      $this->responseData['total_money_vnd_finally_word'] = Helpers::convert_number_to_words_vi((int)$total_money_vnd_finally);
       return $this->responseView($this->viewPart . '.show_entry');
     }
   }
@@ -284,111 +285,5 @@ class PaymentRequestController extends Controller
       // throw $ex;
       abort(422, __($ex->getMessage()));
     }
-  }
-
-
-  public function convertNumberToWords($number)
-  {
-    $hyphen = ' ';
-    $conjunction = ' ';
-    $negative = 'âm ';
-    $decimal = ' phẩy ';
-    $dictionary = [
-      0 => 'không',
-      1 => 'một',
-      2 => 'hai',
-      3 => 'ba',
-      4 => 'bốn',
-      5 => 'năm',
-      6 => 'sáu',
-      7 => 'bảy',
-      8 => 'tám',
-      9 => 'chín',
-      10 => 'mười',
-      11 => 'mười một',
-      12 => 'mười hai',
-      13 => 'mười ba',
-      14 => 'mười bốn',
-      15 => 'mười lăm',
-      16 => 'mười sáu',
-      17 => 'mười bảy',
-      18 => 'mười tám',
-      19 => 'mười chín',
-      20 => 'hai mươi',
-      30 => 'ba mươi',
-      40 => 'bốn mươi',
-      50 => 'năm mươi',
-      60 => 'sáu mươi',
-      70 => 'bảy mươi',
-      80 => 'tám mươi',
-      90 => 'chín mươi',
-      100 => 'trăm',
-      1000 => 'nghìn',
-      1000000 => 'triệu',
-      1000000000 => 'tỷ'
-    ];
-
-    if (!is_numeric($number)) {
-      return false;
-    }
-
-    if ($number < 0) {
-      return $negative . $this->convertNumberToWords(abs($number));
-    }
-
-    $string = '';
-    $fraction = null;
-
-    if (strpos($number, '.') !== false) {
-      list($number, $fraction) = explode('.', $number);
-    }
-
-    switch (true) {
-      case $number < 21:
-        $string = $dictionary[$number];
-        break;
-      case $number < 100:
-        $tens = ((int) ($number / 10)) * 10;
-        $units = $number % 10;
-        $string = $dictionary[$tens];
-        if ($units) {
-          $string .= $hyphen . $dictionary[$units];
-        }
-        break;
-      case $number < 1000:
-        $hundreds = (int) ($number / 100);
-        $remainder = $number % 100;
-        $string = $dictionary[$hundreds] . ' ' . $dictionary[100];
-        if ($remainder) {
-          $string .= $hyphen . $this->convertNumberToWords($remainder);
-        }
-        break;
-      default:
-        $baseUnit = pow(1000, floor(log($number, 1000)));
-        $numBaseUnits = (int) ($number / $baseUnit);
-        $remainder = $number % $baseUnit;
-        $string = $this->convertNumberToWords($numBaseUnits) . ' ' . $dictionary[$baseUnit];
-
-        if ($remainder) {
-          // Thêm logic xử lý không trăm
-          if ($remainder < 1000) {
-            $string .= $hyphen . $this->convertNumberToWords($remainder);
-          } else {
-            $string .= ' ' . $this->convertNumberToWords($remainder);
-          }
-        }
-        break;
-    }
-
-    if (null !== $fraction && is_numeric($fraction)) {
-      $string .= $decimal;
-      $words = [];
-      foreach (str_split((string) $fraction) as $digit) {
-        $words[] = $dictionary[$digit];
-      }
-      $string .= implode(' ', $words);
-    }
-
-    return $string;
   }
 }

@@ -3,7 +3,8 @@
 @section('title')
     @lang($module_name)
 @endsection
-
+@push('style')
+@endpush
 @section('content-header')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -41,7 +42,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label>@lang('Area')</label>
                                 <select name="area_id" id="area_id" class="form-control select2" style="width: 100%;">
@@ -56,25 +57,26 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label>@lang('Lớp học ')</label>
-                                <select name="current_class_id"  class="form-control select2" style="width: 100%;">
+                                <select name="current_class_id" class="form-control select2" style="width: 100%;">
                                     <option value="">@lang('Please select')</option>
                                     @foreach ($list_class as $key => $value)
                                         <option value="{{ $value->id }}"
                                             {{ isset($params['current_class_id']) && $value->id == $params['current_class_id'] ? 'selected' : '' }}>
                                             {{ __($value->name) }}
+                                            - {{ optional($value->area)->name ?? '' }}
                                             (Mã: {{ $value->code }})
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label>@lang('Trạng thái ')</label>
-                                <select name="status"  class="form-control select2" style="width: 100%;">
+                                <select name="status" class="form-control select2" style="width: 100%;">
                                     <option value="">@lang('Please select')</option>
                                     @foreach ($list_status as $key => $value)
                                         <option value="{{ $key }}"
@@ -96,8 +98,8 @@
                                         @lang('Reset')
                                     </a>
 
-                                    <button type="button" data-toggle="modal" data-target="#create_crmdata_student"
-                                        class="btn btn-success btn-sm">@lang('Import Excel')</button>
+                                    {{-- <button type="button" data-toggle="modal" data-target="#create_crmdata_student"
+                                        class="btn btn-success btn-sm">@lang('Import Excel')</button> --}}
                                 </div>
                             </div>
                         </div>
@@ -217,17 +219,18 @@
                         <table class="table table-hover table-bordered ">
                             <thead>
                                 <tr>
-                                    <th>@lang('STT')</th>
-                                    <th>@lang('Avatar')</th>
-                                    <th>@lang('Student code')</th>
+                                    <th style="width:20px;">@lang('STT')</th>
+                                    <th style="width:100px;">@lang('Avatar')</th>
+                                    <th style="width:50px;">@lang('Mã HS')</th>
                                     <th>@lang('Full name')</th>
-                                    <th>@lang('Tên thường gọi')</th>
-                                    <th>@lang('Gender')</th>
-                                    <th>@lang('Area')</th>
+                                    <th style="width:60px;">@lang('Nickname')</th>
+                                    <th style="width:75px;">@lang('Gender')</th>
+                                    <th style="width:75px;">@lang('Area')</th>
                                     <th>@lang('Địa chỉ')</th>
-                                    <th>@lang('Trạng thái')</th>
-                                    <th>@lang('Lớp đang học')</th>
-                                    <th>@lang('Ngày nhập học chính thức')</th>
+                                    <th style="width:85px;">@lang('Trạng thái')</th>
+                                    <th style="width:80px;">@lang('Lớp học')</th>
+                                    <th style="width:80px;">@lang('Nhập học')</th>
+                                    <th>@lang('Phụ huynh')</th>
                                     <th>@lang('Action')</th>
                                 </tr>
                             </thead>
@@ -249,7 +252,7 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                   {{ $row->student_code }}
+                                                {{ $row->student_code }}
                                             </td>
                                             <td>
                                                 {{ $row->first_name ?? '' }} {{ $row->last_name ?? '' }}
@@ -277,9 +280,23 @@
                                             <td>
                                                 {{ isset($row->enrolled_at) && $row->enrolled_at != '' ? date('d-m-Y', strtotime($row->enrolled_at)) : '' }}
                                             </td>
-
                                             <td>
-                                                <a class="btn btn-sm btn-primary" href="{{ route(Request::segment(2) . '.show', $row->id) }}"
+                                                @isset($row->studentParents)
+                                                    <ul>
+                                                        @foreach ($row->studentParents as $entry)
+                                                            <li>
+                                                                {{ $entry->relationship->title ?? '' }}
+                                                                {{ $entry->parent->first_name ?? '' }}
+                                                                {{ $entry->parent->last_name ?? '' }}
+                                                                {{ $entry->parent->phone ?? '' }}
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
+                                                @endisset
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-sm btn-primary"
+                                                    href="{{ route(Request::segment(2) . '.show', $row->id) }}"
                                                     data-toggle="tooltip" title="@lang('Chi tiết học sinh')"
                                                     data-original-title="@lang('Chi tiết học sinh')"
                                                     onclick="return openCenteredPopup(this.href)">

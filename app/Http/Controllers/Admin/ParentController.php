@@ -16,7 +16,7 @@ class ParentController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
-     */ 
+     */
     public function __construct()
     {
         parent::__construct();
@@ -28,11 +28,11 @@ class ParentController extends Controller
 
     public function index(Request $request)
     {
-        $params = $request->all(); 
-        $rows = tbParent::getSqlParent($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
-
+        $params = $request->all();
         $params_area['id'] = DataPermissionService::getPermisisonAreas(Auth::guard('admin')->user()->id);
-        $this->responseData['list_area'] = Area::getsqlArea($params_area)->get();
+        $rows = tbParent::getSqlParent($params)->whereIn('tb_parents.area_id', $params_area['id'])->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
+
+        $this->responseData['list_area'] = Area::getsqlArea($params_area)->whereIn('tb_areas.id', $params_area['id'])->get();
         $this->responseData['list_status'] = Consts::STATUS;
         $this->responseData['rows'] = $rows;
         $this->responseData['params'] = $params;
@@ -116,7 +116,8 @@ class ParentController extends Controller
     }
 
     public function destroy(tbParent $parent)
-    {   $parent->parentStudents()->delete();
+    {
+        $parent->parentStudents()->delete();
         $parent->delete();
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Delete record successfully!'));
     }

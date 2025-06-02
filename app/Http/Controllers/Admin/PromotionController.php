@@ -6,6 +6,7 @@ use App\Consts;
 use App\Models\Promotion;
 use App\Models\Area;
 use App\Models\Service;
+use App\Models\PaymentCycle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +28,7 @@ class PromotionController extends Controller
      */
     public function index(Request $request)
     {
-        $params = $request->only(['keyword', 'status', 'area_id','promotion_type']);
+        $params = $request->only(['keyword', 'status', 'area_id', 'promotion_type']);
         $rows = Promotion::getSqlPromotion($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
         $this->responseData['rows'] = $rows;
         $this->responseData['areas'] = Area::all();
@@ -48,6 +49,8 @@ class PromotionController extends Controller
         $this->responseData['type'] = Consts::PROMOTION_TYPE;
         $this->responseData['areas'] = Area::all();
         $this->responseData['service'] = Service::getSqlService()->get();
+        $this->responseData['payment_cycle'] = PaymentCycle::getSqlPaymentCycle()->get();
+
         $this->responseData['module_name'] = "Thêm chương trình khuyến mãi";
         return $this->responseView($this->viewPart . '.create');
     }
@@ -95,15 +98,22 @@ class PromotionController extends Controller
     public function show(Promotion $promotion)
     {
         // $detail = Promotion::find($id);
+        $services = Service::getSqlService()->get();
+        $payment_cycle = PaymentCycle::getSqlPaymentCycle()->get();
         $detail = $promotion;
-        $serviceIds = collect(optional($detail->json_params)->services)->keys();
-        // Định nghĩa mối quan hệ tùy chỉnh
-        $services = Service::whereIn('id', $serviceIds)->get()->keyBy('id');
-        $data_service = collect($detail->json_params->services)->map(function ($val, $key) use ($services) {
-            $val->detail = $services->get($key);
-            return $val;
-        })->toArray();
-        $result['view'] = view($this->viewPart . '.show', compact('detail', 'data_service'))->render();
+        if (isset($detail->json_params->is_payment_cycle) && $detail->json_params->is_payment_cycle == 1) {
+
+            $data_service = null;
+        } else {
+            $serviceIds = collect(optional($detail->json_params)->services)->keys();
+            // Định nghĩa mối quan hệ tùy chỉnh
+            $services = Service::whereIn('id', $serviceIds)->get()->keyBy('id');
+            $data_service = collect($detail->json_params->services)->map(function ($val, $key) use ($services) {
+                $val->detail = $services->get($key);
+                return $val;
+            })->toArray();
+        }
+        $result['view'] = view($this->viewPart . '.show', compact('detail', 'data_service','services','payment_cycle'))->render();
         return $this->sendResponse($result, __('Lấy thông tin thành công!'));
     }
 
@@ -115,13 +125,13 @@ class PromotionController extends Controller
      */
     public function edit(Promotion $promotion)
     {
-        // $promotion = Promotion::find($id);
         $this->responseData['status'] = Consts::STATUS;
         $this->responseData['areas'] = Area::all();
         $this->responseData['type'] = Consts::PROMOTION_TYPE;
         $this->responseData['service'] = Service::getSqlService()->get();
-        $this->responseData['module_name'] = "Sửa chương trình khuyến mãi";
+        $this->responseData['payment_cycle'] = PaymentCycle::getSqlPaymentCycle()->get();
         $this->responseData['detail'] = $promotion;
+        $this->responseData['module_name'] = "Sửa chương trình khuyến mãi";
         return $this->responseView($this->viewPart . '.edit');
     }
 

@@ -105,4 +105,9 @@ class tbParent extends Model
     {
         return $this->belongsTo(Admin::class, 'admission_id', 'id');
     }
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'member_id', 'id');
+    }
 }

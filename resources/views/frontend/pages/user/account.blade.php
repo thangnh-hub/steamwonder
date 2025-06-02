@@ -98,7 +98,7 @@
                     <div class="box box-warning mb-3">
                         <div class="box-header with-border mb-3">
                             <h3 class="box-title">
-                                <i class="fa fa-user"></i> @lang('Thông tin sinh viên')
+                                <i class="fa fa-user"></i> @lang('Thông tin học sinh')
                                 <button class="btn btn-sm btn-info pull-right btn_update">
                                     <i class="fa fa-edit"></i>
                                     @lang('Cập nhật')
@@ -108,7 +108,11 @@
                         <div class="box-body">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <p><strong>@lang('Họ và tên'): </strong>{{ $detail->name }}</p>
+                                    <p>
+                                        <strong>@lang('Họ và tên'): </strong>
+                                        {{ $detail->first_name ?? '' }}
+                                        {{ $detail->last_name ?? '' }}
+                                    </p>
                                 </div>
                                 <div class="col-sm-6">
                                     <p><strong>@lang('CCCD'):
@@ -130,9 +134,6 @@
                                 <div class="col-sm-6">
                                     <p><strong>@lang('Mã học viên'): </strong>{{ $detail->admin_code ?? '' }}</p>
                                 </div>
-                                {{-- <div class="col-sm-6">
-                                    <p><strong>@lang('Khóa học'): </strong>ONLINE001</p>
-                                </div> --}}
 
                                 <div class="col-sm-12">
                                     <p><strong>@lang('Địa chỉ'):
