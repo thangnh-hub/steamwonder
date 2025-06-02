@@ -95,16 +95,7 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label for="status">@lang('Đơn vị chính')</label>
-                                                        <select name="default_unit_id" class="form-control select2">">
-                                                            @foreach($list_unit_id as $value)
-                                                                <option value="{{ $value->id }}" {{ old('default_unit_id', $detail->default_unit_id ?? 1) == $value->id ? 'selected' : '' }}>{{ $value->name ?? "" }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
+                                                
 
                                                 <div class="col-md-4">
                                                     <div class="form-group">
@@ -117,6 +108,22 @@
                                                     </div>
                                                 </div>
                                                 
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="status">@lang('Đơn vị chính')</label>
+                                                        <select name="default_unit_id" class="form-control select2">">
+                                                            @foreach($list_unit_id as $value)
+                                                                <option value="{{ $value->id }}" {{ old('default_unit_id', $detail->default_unit_id ?? 1) == $value->id ? 'selected' : '' }}>{{ $value->name ?? "" }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="convert_to_gram">@lang('Chuyển sang g (hoặc ml)') </label>
+                                                        <input placeholder="@lang('Chuyển sang g (hoặc ml)')" type="text" name="convert_to_gram" class="form-control" value="{{ old('convert_to_gram', $detail->convert_to_gram ?? '') }}" >
+                                                    </div>
+                                                </div>
 
                                                 <div class="col-md-12">
                                                     <div class="form-group">

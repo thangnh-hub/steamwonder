@@ -4,12 +4,22 @@
     <?php echo app('translator')->get($module_name); ?>
 <?php $__env->stopSection(); ?>
 
+<?php $__env->startSection('style'); ?>
+    <style>
+        .modal-header {
+            background-color: #3c8dbc;
+            color: white;
+        }
+    </style>
+<?php $__env->stopSection(); ?>
+
 <?php $__env->startSection('content-header'); ?>
     <section class="content-header">
         <h1>
             <?php echo app('translator')->get($module_name); ?>
-            <a class="btn btn-sm btn-warning pull-right" href="<?php echo e(route(Request::segment(2) . '.create')); ?>"><i
-                    class="fa fa-plus"></i> <?php echo app('translator')->get('Add'); ?></a>
+            <button type="button" class="btn btn-sm btn-warning pull-right" data-toggle="modal" data-target="#createDailyMenuModal">
+                <i class="fa fa-plus"></i> <?php echo app('translator')->get('Add'); ?>
+            </button>
         </h1>
     </section>
 <?php $__env->stopSection(); ?>
@@ -34,28 +44,15 @@
                             </div>
                         </div>
                         
+                        
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label><?php echo app('translator')->get('Loại món ăn'); ?></label>
-                                <select name="dishes_type" class="form-control select2"style="width: 100%;">
+                                <label><?php echo app('translator')->get('Nhóm tuổi'); ?></label>
+                                <select name="meal_age_id" class="form-control select2"style="width: 100%;">
                                     <option value=""><?php echo app('translator')->get('Please select'); ?></option>
-                                    <?php $__currentLoopData = $list_type; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($key); ?>"
-                                            <?php echo e(isset($params['dishes_type']) && $params['dishes_type'] == $key ? 'selected' : ''); ?>><?php echo e(__($item)); ?>
-
-                                        </option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Bữa áp dụng'); ?></label>
-                                <select name="dishes_time" class="form-control select2"style="width: 100%;">
-                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
-                                    <?php $__currentLoopData = $list_time; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($key); ?>"
-                                            <?php echo e(isset($params['dishes_time']) && $params['dishes_time'] == $key ? 'selected' : ''); ?>><?php echo e(__($item)); ?>
+                                    <?php $__currentLoopData = $list_meal_age; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($item->id); ?>"
+                                            <?php echo e(isset($params['meal_age_id']) && $params['meal_age_id'] == $item->id ? 'selected' : ''); ?>><?php echo e(__($item->name)); ?>
 
                                         </option>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -135,11 +132,10 @@
                     <thead>
                         <tr>
                             <th><?php echo app('translator')->get('STT'); ?></th>
-                            <th><?php echo app('translator')->get('Tên món ăn'); ?></th>
-                            <th><?php echo app('translator')->get('Mã món ăn'); ?></th>
-                            <th><?php echo app('translator')->get('Loại món ăn'); ?></th>
-                            <th><?php echo app('translator')->get('Bữa áp dụng'); ?></th>
-                            <th><?php echo app('translator')->get('Mô tả'); ?></th>
+                            <th><?php echo app('translator')->get('Mã thực đơn'); ?></th>
+                            <th><?php echo app('translator')->get('Tên thực đơn'); ?></th>
+                            <th><?php echo app('translator')->get('Các món ăn'); ?></th>
+                            <th style="width:350px;white-space: pre-line"><?php echo app('translator')->get('Mô tả'); ?></th>
                             <th><?php echo app('translator')->get('Trạng thái'); ?></th>
                             <th><?php echo app('translator')->get('Thao tác'); ?></th>
                         </tr>
@@ -151,31 +147,32 @@
                                     <?php echo e($loop->iteration + ($rows->currentPage() - 1) * $rows->perPage()); ?>
 
                                 </td>
+                                <td><?php echo e($row->code ?? ''); ?></td>
                                 <td><?php echo e($row->name ?? ''); ?></td>
                                 <td>
-                                    <?php echo e('MA' . str_pad($row->id, 5, '0', STR_PAD_LEFT)); ?>
-
+                                    <?php if(isset($row->menuDishes) && count($row->menuDishes) > 0): ?>
+                                        <ul >
+                                            <?php $__currentLoopData = $row->menuDishes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $dish): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <li><?php echo e($loop->iteration); ?>. <?php echo e($dish->dishes->name ?? ''); ?></li>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </ul>
+                                    <?php else: ?>
+                                        <?php echo app('translator')->get('Chưa có món ăn nào'); ?>
+                                    <?php endif; ?>
                                 </td>
                                 <td>
-                                    <?php echo e(__($row->dishes_type ?? '')); ?>
+                                    <?php echo nl2br(__($row->description ?? '')); ?>
 
                                 </td>
-                                <td>
-                                    <?php echo e(__($row->dishes_time ?? '')); ?>
-
-                                </td>
-                                <td>
-                                    <?php echo e($row->description ?? ""); ?>
-
-                                </td>
+                                
                                 <td><?php echo app('translator')->get($row->status); ?></td>
                                 <td>
                                     <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="<?php echo app('translator')->get('Update'); ?>"
-                                       href="<?php echo e(route('dishes.edit', $row->id)); ?>">
+                                       href="<?php echo e(route('menu_dailys.edit', $row->id)); ?>">
                                         <i class="fa fa-pencil-square-o"></i>
                                     </a>
                 
-                                    <form action="<?php echo e(route('dishes.destroy', $row->id)); ?>" method="POST"
+                                    <form action="<?php echo e(route('menu_dailys.destroy', $row->id)); ?>" method="POST"
                                           style="display:inline-block"
                                           onsubmit="return confirm('<?php echo app('translator')->get('confirm_action'); ?>')">
                                         <?php echo csrf_field(); ?>
@@ -207,11 +204,51 @@
 
         </div>
     </section>
+    <!-- Modal -->
+    <div class="modal fade" id="createDailyMenuModal" tabindex="-1" role="dialog" aria-labelledby="createMenuLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form action="<?php echo e(route('admin.meal-menu-daily.create-from-template')); ?>" method="POST">
+                <?php echo csrf_field(); ?>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="createMenuLabel">Tạo thực đơn hàng ngày</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Ngày áp dụng <small class="text-danger">*</small></label>
+                                    <input type="date" name="date" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Thực đơn mẫu <small class="text-danger">*</small></label>
+                                    <select style="width:100%" name="meal_menu_planning_id" class="form-control select2" required>
+                                        <?php $__currentLoopData = $menuPlannings; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $plan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($plan->id); ?>"><?php echo e($plan->name ?? ""); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Tạo</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('script'); ?>
     <script>
+       
     </script>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\steamwonder\resources\views/admin/pages/meal/dishes/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\steamwonder\resources\views/admin/pages/meal/menu_dailys/index.blade.php ENDPATH**/ ?>

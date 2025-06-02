@@ -33,4 +33,5 @@ class MealUnitConversion extends Model
     {
         return $this->belongsTo(MealUnit::class, 'to_unit_id', 'id');
     }
+   
 }

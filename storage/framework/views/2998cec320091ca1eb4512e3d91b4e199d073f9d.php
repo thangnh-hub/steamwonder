@@ -107,7 +107,12 @@
                                                     </select>
                                                 </div>
                                             </div>
-
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="convert_to_gram"><?php echo app('translator')->get('Chuyển sang g (hoặc ml)'); ?> </label>
+                                                    <input placeholder="<?php echo app('translator')->get('Chuyển sang g (hoặc ml)'); ?>" type="text" name="convert_to_gram" class="form-control" value="<?php echo e(old('convert_to_gram', $detail->convert_to_gram ?? '')); ?>" >
+                                                </div>
+                                            </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label><?php echo app('translator')->get('Loại'); ?></label>

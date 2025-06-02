@@ -90,7 +90,7 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="count_student"><?php echo app('translator')->get('Số lượng học sinh'); ?></label>
-                                                    <input type="number" name="count_student" class="form-control" value="<?php echo e(old('count_student', $detail->count_student ?? '')); ?>" min="0">
+                                                    <input required type="number" name="count_student" class="form-control" value="<?php echo e(old('count_student', $detail->count_student ?? '')); ?>" min="0">
                                                 </div>
                                             </div>
 

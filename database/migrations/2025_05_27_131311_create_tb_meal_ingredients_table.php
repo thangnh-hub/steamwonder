@@ -18,6 +18,7 @@ class CreateTbMealIngredientsTable extends Migration
             $table->string('name')->nullable()->comment('Tên nhà cung cấp');
             $table->string('description')->nullable()->comment('Mô tả');
             $table->foreignId('default_unit_id')->nullable()->constrained('tb_meal_units')->comment('Đơn vị tính mặc định');
+            $table->float('convert_to_gram')->nullable()->comment('Đơn vị tính mặc định');
             $table->foreignId('ingredient_category_id')->nullable()->constrained('tb_meal_ingredients_category')->comment('Danh mục thực phẩm');
             $table->string('type')->nullable()->comment('Lưu kho hay tươi');
             $table->json('json_params')->nullable();

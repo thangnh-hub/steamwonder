@@ -4,12 +4,22 @@
     @lang($module_name)
 @endsection
 
+@section('style')
+    <style>
+        .modal-header {
+            background-color: #3c8dbc;
+            color: white;
+        }
+    </style>
+@endsection
+
 @section('content-header')
     <section class="content-header">
         <h1>
             @lang($module_name)
-            <a class="btn btn-sm btn-warning pull-right" href="{{ route(Request::segment(2) . '.create') }}"><i
-                    class="fa fa-plus"></i> @lang('Add')</a>
+            <button type="button" class="btn btn-sm btn-warning pull-right" data-toggle="modal" data-target="#createDailyMenuModal">
+                <i class="fa fa-plus"></i> @lang('Add')
+            </button>
         </h1>
     </section>
 @endsection
@@ -34,10 +44,24 @@
                             </div>
                         </div>
                         
+                        
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>@lang('Nhóm tuổi')</label>
+                                <select name="meal_age_id" class="form-control select2"style="width: 100%;">
+                                    <option value="">@lang('Please select')</option>
+                                    @foreach ($list_meal_age as $key => $item)
+                                        <option value="{{ $item->id }}"
+                                            {{ isset($params['meal_age_id']) && $params['meal_age_id'] == $item->id ? 'selected' : '' }}>{{ __($item->name) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>@lang('Status')</label>
-                                <select name="status" class="form-control select2"style="width: 100%;">
+                                <select name="status" class="form-control select2" style="width: 100%;">
                                     <option value="">@lang('Please select')</option>
                                     @foreach ($list_status as $key => $item)
                                         <option value="{{ $key }}"
@@ -47,21 +71,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>@lang('Danh mục thực phẩm')</label>
-                                <select name="ingredient_category_id" class="form-control select2"style="width: 100%;">
-                                    <option value="">@lang('Please select')</option>
-                                    @foreach ($list_ingredient_categories as $item)
-                                        <option value="{{ $item->id }}"
-                                            {{ isset($params['ingredient_category_id']) && $params['ingredient_category_id'] == $item->id ? 'selected' : '' }}>{{ __($item->name??"") }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
                         
-
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label>@lang('Filter')</label>
@@ -118,12 +128,10 @@
                     <thead>
                         <tr>
                             <th>@lang('STT')</th>
-                            <th>@lang('Mã thực phẩm')</th>
-                            <th>@lang('Tên thực phẩm')</th>
-                            <th>@lang('Danh mục')</th>
-                            <th>@lang('Mô tả')</th>
-                            <th>@lang('Loại')</th>
-                            <th>@lang('ĐVT')</th>
+                            <th>@lang('Mã thực đơn')</th>
+                            <th>@lang('Tên thực đơn')</th>
+                            <th>@lang('Các món ăn')</th>
+                            <th style="width:350px;white-space: pre-line">@lang('Mô tả')</th>
                             <th>@lang('Trạng thái')</th>
                             <th>@lang('Thao tác')</th>
                         </tr>
@@ -134,28 +142,31 @@
                                 <td>
                                     {{ $loop->iteration + ($rows->currentPage() - 1) * $rows->perPage() }}
                                 </td>
-                                <td>
-                                    {{ 'TP' . str_pad($row->id, 5, '0', STR_PAD_LEFT) }}
-                                </td>
+                                <td>{{ $row->code ?? '' }}</td>
                                 <td>{{ $row->name ?? '' }}</td>
-                                <td>{{ $row->ingredientCategory->name ?? '' }}</td>
                                 <td>
-                                    {{ $row->description ?? '' }}
+                                    @if (isset($row->menuDishes) && count($row->menuDishes) > 0)
+                                        <ul >
+                                            @foreach ($row->menuDishes as $dish)
+                                                <li>{{ $loop->iteration }}. {{ $dish->dishes->name ?? '' }}</li>
+                                            @endforeach
+                                        </ul>
+                                    @else
+                                        @lang('Chưa có món ăn nào')
+                                    @endif
                                 </td>
                                 <td>
-                                    {{ __($row->type ?? "") }}
+                                    {!! nl2br(__($row->description ?? '')) !!}
                                 </td>
-                                <td>
-                                    {{ $row->unitDefault->name ?? '' }}
-                                </td>
+                                
                                 <td>@lang($row->status)</td>
                                 <td>
                                     <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="@lang('Update')"
-                                       href="{{ route('ingredients.edit', $row->id) }}">
+                                       href="{{ route('menu_dailys.edit', $row->id) }}">
                                         <i class="fa fa-pencil-square-o"></i>
                                     </a>
                 
-                                    <form action="{{ route('ingredients.destroy', $row->id) }}" method="POST"
+                                    <form action="{{ route('menu_dailys.destroy', $row->id) }}" method="POST"
                                           style="display:inline-block"
                                           onsubmit="return confirm('@lang('confirm_action')')">
                                         @csrf
@@ -186,12 +197,49 @@
 
         </div>
     </section>
+    <!-- Modal -->
+    <div class="modal fade" id="createDailyMenuModal" tabindex="-1" role="dialog" aria-labelledby="createMenuLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form action="{{ route('admin.meal-menu-daily.create-from-template') }}" method="POST">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="createMenuLabel">Tạo thực đơn hàng ngày</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Ngày áp dụng <small class="text-danger">*</small></label>
+                                    <input type="date" name="date" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Thực đơn mẫu <small class="text-danger">*</small></label>
+                                    <select style="width:100%" name="meal_menu_planning_id" class="form-control select2" required>
+                                        @foreach($menuPlannings as $plan)
+                                            <option value="{{ $plan->id }}">{{ $plan->name ?? "" }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Tạo</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
 @endsection
 @section('script')
     <script>
-        $(document).ready(function() {
-           
-        });
+       
     </script>
 @endsection

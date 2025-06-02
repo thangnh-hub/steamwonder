@@ -55,7 +55,7 @@
                                 <ul class="nav nav-tabs">
                                     <li class="active">
                                         <a href="#tab_1" data-toggle="tab">
-                                            <h5>Thông tin danh mục thực phẩm <span class="text-danger">*</span></h5>
+                                            <h5>Chi tiết chuyển đổi <span class="text-danger">*</span></h5>
                                         </a>
                                     </li>
                                     <button type="submit" class="btn btn-info btn-sm pull-right">
@@ -67,40 +67,33 @@
                                     <div class="tab-pane active" id="tab_1">
                                         <div class="d-flex-wap">
                                             <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="name"><?php echo app('translator')->get('Tên danh mục thực phẩm'); ?> <span class="text-danger">*</span></label>
-                                                    <input placeholder="<?php echo app('translator')->get('Tên danh mục thực phẩm'); ?>" type="text" name="name" class="form-control" value="<?php echo e(old('name', $detail->name ?? '')); ?>" required>
+                                                    <div class="form-group">
+                                                        <label>Đơn vị gốc <span class="text-danger">*</span></label>
+                                                        <select name="from_unit_id" class="form-control select2" required>
+                                                            <option value="">-- Chọn đơn vị --</option>
+                                                            <?php $__currentLoopData = $list_units; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <option value="<?php echo e($unit->id); ?>" <?php echo e(old('from_unit_id', $detail->from_unit_id ?? '') == $unit->id ? 'selected' : ''); ?>><?php echo e($unit->name ?? ""); ?></option>
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                        </select>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="status">Trạng thái</label>
-                                                    <select name="status" class="form-control">
-                                                        <?php $__currentLoopData = $list_status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                            <option value="<?php echo e($key); ?>" <?php echo e(old('status', $detail->status ?? 1) == $key ? 'selected' : ''); ?>><?php echo e($value); ?></option>
-                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                    </select>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>Đơn vị chuyển đổi sang <span class="text-danger">*</span></label>
+                                                        <select name="to_unit_id" class="form-control select2" required>
+                                                            <option value="">-- Chọn đơn vị --</option>
+                                                            <?php $__currentLoopData = $list_units; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <option value="<?php echo e($unit->id); ?>" <?php echo e(old('to_unit_id', $detail->to_unit_id ?? '') == $unit->id ? 'selected' : ''); ?>><?php echo e($unit->name ?? ""); ?></option>
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                        </select>
+                                                    </div>
                                                 </div>
-                                            </div>
-
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label><?php echo app('translator')->get('Loại'); ?></label>
-                                                    <select name="type" class="form-control select2">
-                                                        <?php $__currentLoopData = $list_type; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                            <option value="<?php echo e($key); ?>" <?php echo e(old('type', $detail->type ?? 1) == $key ? 'selected' : ''); ?>><?php echo e(__($value)); ?></option>
-                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                    </select>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>Hệ số chuyển đổi <span class="text-danger">*</span></label>
+                                                        <input type="number" step="0.0001" name="ratio" class="form-control" value="<?php echo e(old('ratio', $detail->ratio ?? '')); ?>" required>
+                                                    </div>
                                                 </div>
-                                            </div>
-
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for=""><?php echo app('translator')->get('Mô tả'); ?></label>
-                                                    <textarea name="description" rows="5" class="form-control" placeholder="Mô tả"><?php echo e($detail->description ?? ""); ?></textarea>
-                                                </div>
-                                            </div>
                                         </div>
                                     </div> <!-- tab-pane -->
                                 </div> <!-- tab-content -->
@@ -126,4 +119,4 @@
     </script>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\steamwonder\resources\views/admin/pages/meal/ingredients_category/edit.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\steamwonder\resources\views/admin/pages/meal/unit_conversions/edit.blade.php ENDPATH**/ ?>
