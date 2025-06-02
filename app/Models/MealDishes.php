@@ -34,7 +34,11 @@ class MealDishes extends Model
             })
             ;
 
-        $query->orderBy('id', 'desc')->groupBy('id');
+        if (!empty($params['order_by'])) {
+            $query->orderBy('tb_meal_dishes.' . $params['order_by'], 'asc');
+        } else {
+            $query->orderBy('id', 'desc');
+        }
 
         return $query;
     }

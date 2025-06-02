@@ -4,15 +4,21 @@ namespace App;
 
 class Consts
 {
+    const MEAL_SEASON = [
+        'spring' => 'spring', // Mùa xuân
+        'summer' => 'summer', // Mùa hè
+        'autumn' => 'autumn', // Mùa thu
+        'winter' => 'winter', // Mùa đông
+    ];
     const DISHES_TYPE = [
         'soup' => 'soup',//Canh
         'savory' => 'savory',//Mặn
         'boiled' => 'boiled', //luoc
     ];
     const DISHES_TIME = [
-        'morning' => 'morning',   // sáng
-        'noon' => 'noon',         // trưa
-        'afternoon' => 'afternoon',   // chiều
+        'breakfast' => 'breakfast',   // sáng
+        'lunch' => 'lunch',         // trưa
+        'brunch' => 'brunch',   // chiều
     ];
     const INGREDIENTS_TYPE = [
         'save_warehouse' => 'save_warehouse',
