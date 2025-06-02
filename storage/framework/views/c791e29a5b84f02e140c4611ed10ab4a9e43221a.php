@@ -7,6 +7,28 @@
             margin-bottom: 10px;
             align-items: center;
         }
+
+        .d-flex {
+            display: flex;
+        }
+
+        .justify-between {
+            justify-content: space-between
+        }
+
+        ul {
+            padding-inline-start: 5px;
+        }
+
+        .box_cycle {
+            overflow-x: auto
+        }
+
+        .item_cycle {
+            margin-right: 5px;
+            padding: 5px;
+            border: 1px solid #a9a9a9
+        }
     </style>
 <?php $__env->stopSection(); ?>
 
@@ -128,39 +150,91 @@
                         </div>
                         <hr>
                         <div class="col-md-12">
-                            <h4 class="box-title">Danh sách dịch vụ</h4>
-                            <ul class="mt-15">
-                                <?php $__currentLoopData = $service; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item_service): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <li class="d-flex-wap item_service">
-                                        <input class="item_check mr-10 checkService" type="checkbox"
-                                            <?php echo e(isset($detail->json_params->services->{$item_service->id}) ? 'checked' : ''); ?>
+                            <h4 class="box-title sw_featured">Danh sách dịch vụ (
+                                <span for="sw_featured"><?php echo app('translator')->get('Theo chu kỳ thanh toán'); ?></span>
+                                <span class="d-flex-al-center">
+                                    <label class="switch">
+                                        <input id="sw_featured" name="json_params[is_payment_cycle]" value="1"
+                                            type="checkbox"
+                                            <?php echo e(isset($detail->json_params->is_payment_cycle) && $detail->json_params->is_payment_cycle == 1 ? 'checked' : ''); ?>>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </span>
+                                )
+                            </h4>
+                            <div class="d-flex box_cycle"
+                                style="display: <?php echo e(isset($detail->json_params->is_payment_cycle) && $detail->json_params->is_payment_cycle == 1 ? 'flex' : 'none'); ?>">
+                                <?php $__currentLoopData = $payment_cycle; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item_cycle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <div class="item_cycle">
+                                        <h4 class="box-title"><?php echo e($item_cycle->name); ?></h4>
+                                        <ul class="mt-15">
+                                            <?php $__currentLoopData = $service; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item_service): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <li class="d-flex item_service">
+                                                    <input class="item_check mr-10 checkService" type="checkbox"
+                                                        <?php echo e(isset($detail->json_params->payment_cycle->{$item_cycle->id}->services->{$item_service->id}) ? 'checked' : ''); ?>
 
-                                            name="json_params[services][<?php echo e($item_service->id); ?>][service_id]"
-                                            value="<?php echo e($item_service->id); ?>">
-                                        <input placeholder="" class="item_value form-control mr-10 check_disable "
-                                            <?php echo e(isset($detail->json_params->services->{$item_service->id}) ? '' : 'disabled'); ?>
+                                                        name="json_params[payment_cycle][<?php echo e($item_cycle->id); ?>][services][<?php echo e($item_service->id); ?>][service_id]"
+                                                        value="<?php echo e($item_service->id); ?>">
+                                                    <input placeholder=""
+                                                        class="item_value form-control mr-10 check_disable "
+                                                        <?php echo e(isset($detail->json_params->payment_cycle->{$item_cycle->id}->services->{$item_service->id}) ? '' : 'disabled'); ?>
 
-                                            style="width:250px;"
-                                            name="json_params[services][<?php echo e($item_service->id); ?>][value]" type="number"
-                                            value="<?php echo e($detail->json_params->services->{$item_service->id}->value ?? ''); ?>">
-                                        <input placeholder="Số lần áp dụng theo dịch vụ"
-                                            class="item_apply form-control mr-10 check_disable "
-                                            <?php echo e(isset($detail->json_params->services->{$item_service->id}) ? '' : 'disabled'); ?>
+                                                        style="width:150px;"
+                                                        name="json_params[payment_cycle][<?php echo e($item_cycle->id); ?>][services][<?php echo e($item_service->id); ?>][value]"
+                                                        type="number"
+                                                        value="<?php echo e($detail->json_params->payment_cycle->{$item_cycle->id}->services->{$item_service->id}->value ?? ''); ?>">
+                                                    <input placeholder="Số lần áp dụng theo dịch vụ"
+                                                        class="item_apply form-control mr-10 check_disable "
+                                                        <?php echo e(isset($detail->json_params->payment_cycle->{$item_cycle->id}->services->{$item_service->id}) ? '' : 'disabled'); ?>
 
-                                            style="width:250px;"
-                                            name="json_params[services][<?php echo e($item_service->id); ?>][apply_count]"
-                                            type="number"
-                                            value="<?php echo e($detail->json_params->services->{$item_service->id}->apply_count ?? ''); ?>">
-                                        <span class="fw-bold ml-10"
-                                            style="min-width:200px;"><?php echo e($item_service->name ?? ''); ?>
+                                                        style="width:150px;"
+                                                        name="json_params[payment_cycle][<?php echo e($item_cycle->id); ?>][services][<?php echo e($item_service->id); ?>][apply_count]"
+                                                        type="number" value="<?php echo e($detail->json_params->payment_cycle->{$item_cycle->id}->services->{$item_service->id}->apply_count ?? ''); ?>">
+                                                    <span class="fw-bold ml-10"
+                                                        style="min-width:200px;"><?php echo e($item_service->name ?? ''); ?>
 
-                                        </span>
-                                    </li>
+                                                    </span>
+                                                </li>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </ul>
+                                    </div>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </div>
+                            <div class="box_default"
+                                style="display: <?php echo e(isset($detail->json_params->is_payment_cycle) && $detail->json_params->is_payment_cycle == 1 ? 'none' : 'flex'); ?>">
+                                <ul class="mt-15">
+                                    <?php $__currentLoopData = $service; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item_service): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <li class="d-flex item_service">
+                                            <input class="item_check mr-10 checkService" type="checkbox"
+                                                <?php echo e(isset($detail->json_params->services->{$item_service->id}) ? 'checked' : ''); ?>
 
-                            </ul>
+                                                name="json_params[services][<?php echo e($item_service->id); ?>][service_id]"
+                                                value="<?php echo e($item_service->id); ?>">
+                                            <input placeholder="" class="item_value form-control mr-10 check_disable "
+                                                <?php echo e(isset($detail->json_params->services->{$item_service->id}) ? '' : 'disabled'); ?>
+
+                                                style="width:250px;"
+                                                name="json_params[services][<?php echo e($item_service->id); ?>][value]"
+                                                type="number"
+                                                value="<?php echo e($detail->json_params->services->{$item_service->id}->value ?? ''); ?>">
+                                            <input placeholder="Số lần áp dụng theo dịch vụ"
+                                                class="item_apply form-control mr-10 check_disable "
+                                                <?php echo e(isset($detail->json_params->services->{$item_service->id}) ? '' : 'disabled'); ?>
+
+                                                style="width:250px;"
+                                                name="json_params[services][<?php echo e($item_service->id); ?>][apply_count]"
+                                                type="number"
+                                                value="<?php echo e($detail->json_params->services->{$item_service->id}->apply_count ?? ''); ?>">
+                                            <span class="fw-bold ml-10"
+                                                style="min-width:200px;"><?php echo e($item_service->name ?? ''); ?>
+
+                                            </span>
+                                        </li>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
+                                </ul>
+                            </div>
                         </div>
-
                     </div>
                 </div>
                 <div class="box-footer">
