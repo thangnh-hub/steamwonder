@@ -683,7 +683,7 @@
                                                                         <?php
                                                                             $payment_cycle = $list_payment_cycle->firstWhere(
                                                                                 'id',
-                                                                                (int) $key_cycle,
+                                                                                (int) $key_cycle
                                                                             );
                                                                         ?>
                                                                         <div class="box-title">
@@ -692,7 +692,7 @@
                                                                             <?php
                                                                                 $service_detail = $services->firstWhere(
                                                                                     'id',
-                                                                                    $val->service_id,
+                                                                                    $val->service_id
                                                                                 );
                                                                             ?>
                                                                             <ul>
@@ -712,11 +712,12 @@
                                                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                                 <?php else: ?>
+                                                                    <?php if(isset($row->json_params->services)): ?>
                                                                     <?php $__currentLoopData = $row->json_params->services; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                                         <?php
                                                                             $service_detail = $services->firstWhere(
                                                                                 'id',
-                                                                                $val->service_id,
+                                                                                $val->service_id
                                                                             );
                                                                         ?>
 
@@ -735,6 +736,7 @@
                                                                             </li>
                                                                         </ul>
                                                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                                    <?php endif; ?>
                                                                 <?php endif; ?>
                                                             </td>
                                                             <td class="status">
@@ -787,7 +789,7 @@
                                                                         <?php
                                                                             $payment_cycle = $list_payment_cycle->firstWhere(
                                                                                 'id',
-                                                                                (int) $key_cycle,
+                                                                                (int) $key_cycle
                                                                             );
                                                                         ?>
                                                                         <div class="box-title">
@@ -796,7 +798,7 @@
                                                                             <?php
                                                                                 $service_detail = $services->firstWhere(
                                                                                     'id',
-                                                                                    $val->service_id,
+                                                                                    $val->service_id
                                                                                 );
                                                                             ?>
                                                                             <ul>
@@ -820,7 +822,7 @@
                                                                         <?php
                                                                             $service_detail = $services->firstWhere(
                                                                                 'id',
-                                                                                $val->service_id,
+                                                                                $val->service_id
                                                                             );
                                                                         ?>
 
@@ -902,7 +904,7 @@
                                             $isChecked = in_array($parent->id, $studentParentIds);
                                             $existingRelation = $detail->studentParents->firstWhere(
                                                 'parent_id',
-                                                $parent->id,
+                                                $parent->id
                                             );
                                         ?>
                                         <tr>
