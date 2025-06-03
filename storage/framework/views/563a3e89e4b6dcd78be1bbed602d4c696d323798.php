@@ -988,5 +988,11 @@
         padding: 3px 10px;
         display: flex;
     }
+
+    ol,
+    ul {
+        padding-inline-start: 15px;
+        margin-bottom: 0px;
+    }
 </style>
 <?php /**PATH C:\laragon\www\steamwonder\resources\views/admin/panels/styles.blade.php ENDPATH**/ ?>

@@ -70,18 +70,20 @@ class MealMenuPlanningController extends Controller
         $this->responseData['detail'] = $mealmenu;
 
         $this->responseData['dishes_by_type'] = $mealmenu->menuDishes->groupBy('type');
-
         $icons = [
             'breakfast' => '🍳',
+            'demo_breakfast' => '🍳',
             'lunch'     => '🍛',
             'brunch'    => '🍲',
+            'demo_brunch'    => '🍲',
         ];
-
         $this->responseData['mealTypes'] = collect(Consts::DISHES_TIME)->mapWithKeys(function ($value, $key) use ($icons) {
             $labels = [
                 'breakfast' => 'Bữa sáng',
+                'demo_breakfast' => 'Bữa phụ sáng',
                 'lunch'     => 'Bữa trưa',
                 'brunch'    => 'Bữa chiều',
+                'demo_brunch' => 'Bữa phụ chiều', // Thêm bữa phụ chiều
             ];
             return [$value => ($icons[$key] ?? '') . ' ' . ($labels[$key] ?? ucfirst($key))];
         });
