@@ -143,30 +143,60 @@
                         <div class="box-header">
                         </div>
                         <div class="box-body no-padding">
-                            <table class="table table-hover sticky">
-                                <thead>
-                                    <tr>
-                                        <th>@lang('Tên dịch vụ')</th>
-                                        <th>@lang('Loại dịch vụ')</th>
-                                        <th>@lang('Loại giảm trừ')</th>
-                                        <th>@lang('Giảm trừ')</th>
-                                        <th>@lang('Số lần áp dụng')</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="box_policies">
-                                    @isset($data_service)
-                                        @foreach ($data_service as $item)
-                                            <tr class="item_policies">
-                                                <td>{{ $item->detail->name ?? '' }}</td>
-                                                <td>{{ __($item->detail->service_type) ?? '' }}</td>
-                                                <td>{{ __($detail->promotion_type) }}</td>
-                                                <td>{{ $item->value ?? 0 }}</td>
-                                                <td>{{ $item->apply_count ?? 0 }}</td>
-                                            </tr>
+                            @if (isset($detail->json_params->is_payment_cycle) && $detail->json_params->is_payment_cycle == 1)
+                                <table class="table table-hover sticky">
+                                    <thead>
+                                        <tr>
+
+                                            <th>@lang('Chu kỳ thanh toán')</th>
+                                            <th>@lang('Tên dịch vụ')</th>
+                                            <th>@lang('Loại dịch vụ')</th>
+                                            <th>@lang('Loại giảm trừ')</th>
+                                            <th>@lang('Giảm trừ')</th>
+                                            <th>@lang('Số lần áp dụng')</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="box_policies">
+                                        @foreach ($detail->json_params->payment_cycle as $key => $item)
+                                            @foreach ($item->services as $val)
+                                                <tr class="item_policies">
+                                                    <td>{{ $payment_cycle->firstWhere('id',(int) $key)->name }}</td>
+                                                    <td>{{ $services->firstWhere('id',(int) $val->service_id)->name }}</td>
+                                                    <td>{{ __($services->firstWhere('id',(int) $val->service_id)->service_type) ?? '' }}</td>
+                                                    <td>{{ __($detail->promotion_type) }}</td>
+                                                    <td>{{ $val->value ?? 0 }}</td>
+                                                    <td>{{ $val->apply_count ?? 0 }}</td>
+                                                </tr>
+                                            @endforeach
                                         @endforeach
-                                    @endisset
-                                </tbody>
-                            </table>
+                                    </tbody>
+                                </table>
+                            @else
+                                <table class="table table-hover sticky">
+                                    <thead>
+                                        <tr>
+                                            <th>@lang('Tên dịch vụ')</th>
+                                            <th>@lang('Loại dịch vụ')</th>
+                                            <th>@lang('Loại giảm trừ')</th>
+                                            <th>@lang('Giảm trừ')</th>
+                                            <th>@lang('Số lần áp dụng')</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="box_policies">
+                                        @isset($data_service)
+                                            @foreach ($data_service as $item)
+                                                <tr class="item_policies">
+                                                    <td>{{ $item->detail->name ?? '' }}</td>
+                                                    <td>{{ __($item->detail->service_type) ?? '' }}</td>
+                                                    <td>{{ __($detail->promotion_type) }}</td>
+                                                    <td>{{ $item->value ?? 0 }}</td>
+                                                    <td>{{ $item->apply_count ?? 0 }}</td>
+                                                </tr>
+                                            @endforeach
+                                        @endisset
+                                    </tbody>
+                                </table>
+                            @endif
                         </div>
                     </div>
                 </div>

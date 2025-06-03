@@ -98,16 +98,7 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label for="status"><?php echo app('translator')->get('Đơn vị chính'); ?></label>
-                                                        <select name="default_unit_id" class="form-control select2">">
-                                                            <?php $__currentLoopData = $list_unit_id; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                <option value="<?php echo e($value->id); ?>" <?php echo e(old('default_unit_id', $detail->default_unit_id ?? 1) == $value->id ? 'selected' : ''); ?>><?php echo e($value->name ?? ""); ?></option>
-                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
+                                                
 
                                                 <div class="col-md-4">
                                                     <div class="form-group">
@@ -120,6 +111,22 @@
                                                     </div>
                                                 </div>
                                                 
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="status"><?php echo app('translator')->get('Đơn vị chính'); ?></label>
+                                                        <select name="default_unit_id" class="form-control select2">">
+                                                            <?php $__currentLoopData = $list_unit_id; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <option value="<?php echo e($value->id); ?>" <?php echo e(old('default_unit_id', $detail->default_unit_id ?? 1) == $value->id ? 'selected' : ''); ?>><?php echo e($value->name ?? ""); ?></option>
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="convert_to_gram"><?php echo app('translator')->get('Chuyển sang g (hoặc ml)'); ?> </label>
+                                                        <input placeholder="<?php echo app('translator')->get('Chuyển sang g (hoặc ml)'); ?>" type="text" name="convert_to_gram" class="form-control" value="<?php echo e(old('convert_to_gram', $detail->convert_to_gram ?? '')); ?>" >
+                                                    </div>
+                                                </div>
 
                                                 <div class="col-md-12">
                                                     <div class="form-group">

@@ -2,18 +2,22 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\MealMenuPlanning;
+use App\Models\MealMenuDaily;
 use App\Models\MealAges;
-use App\Models\MealMenuIngredient;
-use App\Models\MealMenuDishes;
-use App\Http\Services\MenuPlanningService;
 use App\Models\MealDishes;
+use App\Models\MealMenuDishes;
+use App\Models\MealMenuDishesDaily;
+use App\Models\MealMenuPlanning; 
+use App\Models\MealMenuIngredient;
+use App\Models\MealMenuIngredientDaily;
+use App\Http\Services\MenuPlanningService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Consts;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
-class MealMenuPlanningController extends Controller
+class MealMenuDailyController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -22,61 +26,103 @@ class MealMenuPlanningController extends Controller
      */
     public function __construct()
     {
-        $this->routeDefault = 'menu_plannings';
-        $this->viewPart = 'admin.pages.meal.menu_plannings';
-        $this->responseData['module_name'] = 'Quản lý thực đơn mẫu';
+        $this->routeDefault = 'menu_dailys';
+        $this->viewPart = 'admin.pages.meal.menu_dailys';
+        $this->responseData['module_name'] = 'Quản lý thực đơn hàng ngày';
     }
 
     public function index(Request $request)
     {
         $params = $request->all();
-        $rows = MealMenuPlanning::getSqlMenuPlanning($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
+        $rows = MealMenuDaily::getSqlMenuDaily($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
         $this->responseData['rows'] = $rows;
         $this->responseData['list_status'] = Consts::STATUS;
         $this->responseData['list_meal_age'] = MealAges::getSqlMealAge(Consts::STATUS['active'])->get();
+        $this->responseData['menuPlannings'] = MealMenuPlanning::getSqlMenuPlanning(Consts::STATUS['active'])->get();
         $this->responseData['params'] = $params;
 
         return $this->responseView($this->viewPart . '.index');
     }
 
-    public function create()
+    public function createFromTemplate(Request $request)
     {
-        $this->responseData['list_status'] = Consts::STATUS;
-        $this->responseData['list_season'] = Consts::MEAL_SEASON;
-        $this->responseData['list_meal_age'] = MealAges::getSqlMealAge(Consts::STATUS['active'])->get();
-        return  $this->responseView($this->viewPart . '.create');
-    }
+        DB::beginTransaction();
+        try {
+            // 1. Tạo thực đơn hàng ngày
+            $template = MealMenuPlanning::findOrFail($request->meal_menu_planning_id);
+            Carbon::setLocale('vi');
+            $date = Carbon::parse($request->date);
+            $weekday = ucfirst($date->translatedFormat('l')); // VD: "Thứ hai"
+            $name = 'Thực đơn ' . $weekday . ' - ' . $date->format('d/m/Y');
+            $dailyMenu = MealMenuDaily::create([
+                'meal_menu_planning_id'   => $template->id,
+                'date'               => $request->date,
+                'name'              => $name,
+                'description'        => $template->description,
+                'count_student'      => $template->count_student,
+                'meal_age_id'        => $template->meal_age_id,
+                'season'            => $template->season,
+                'status'             => Consts::STATUS['active'],
+                'admin_created_id'   => Auth::guard('admin')->id(),
+            ]);
+            $dailyMenu->code = 'TD' . str_pad($dailyMenu->id, 5, '0', STR_PAD_LEFT);
+            $dailyMenu->save();
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'count_student' => 'required',
-        ]);
-        $params = $request->all();
-        $params['admin_created_id'] = Auth::guard('admin')->id();
-        $menu_planning = MealMenuPlanning::create($params);
-        $menu_planning->code = 'TDM' . str_pad($menu_planning->id, 5, '0', STR_PAD_LEFT);
-        $menu_planning->save();
-        return redirect()->route($this->routeDefault . '.edit',$menu_planning->id)->with('successMessage', __('Add new successfully!'));
+            // 2. Lấy danh sách món ăn từ thực đơn mẫu
+            $templateDishes = MealMenuDishes::where('menu_id', $request->meal_menu_planning_id)->get();
+            $insertDishes = [];
+            foreach ($templateDishes as $dish) {
+                $insertDishes[] = [
+                    'menu_daily_id'     => $dailyMenu->id,
+                    'dishes_id'         => $dish->dishes_id,
+                    'type'              => $dish->type,
+                    'status'            => $dish->status,
+                    'admin_created_id'  => Auth::guard('admin')->id(),
+                    'created_at'        => now(),
+                    'updated_at'        => now(),
+                ];
+            }
+            MealMenuDishesDaily::insert($insertDishes);
+
+            // 3. Lấy danh sách nguyên liệu từ thực đơn mẫu
+            $templateIngredients = MealMenuIngredient::where('menu_id', $request->meal_menu_planning_id)->get();
+            $insertIngredientData = [];
+            foreach ($templateIngredients as $ingredient) {
+                $insertIngredientData[] = [
+                    'menu_daily_id'     => $dailyMenu->id,
+                    'ingredient_id'     => $ingredient->ingredient_id,
+                    'value'             => $ingredient->value,
+                    'status'            => $ingredient->status,
+                    'admin_created_id'  => Auth::guard('admin')->id(),
+                    'created_at'        => now(),
+                    'updated_at'        => now(),
+                ];
+            }
+            MealMenuIngredientDaily::insert($insertIngredientData);
+
+            DB::commit();
+
+            return redirect()->back()->with('successMessage', 'Tạo thực đơn hàng ngày thành công.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('errorMessage', 'Có lỗi xảy ra: ' . $e->getMessage());
+        }
     }
 
     public function edit($id)
     {
-        $mealmenu = MealMenuPlanning::findOrFail($id);
+        $mealmenu = MealMenuDaily::findOrFail($id);
+
         $this->responseData['list_status'] = Consts::STATUS;
         $this->responseData['list_season'] = Consts::MEAL_SEASON;
         $this->responseData['list_meal_age'] = MealAges::getSqlMealAge(Consts::STATUS['active'])->get();
         $this->responseData['detail'] = $mealmenu;
-
         $this->responseData['dishes_by_type'] = $mealmenu->menuDishes->groupBy('type');
-
         $icons = [
             'breakfast' => '🍳',
             'lunch'     => '🍛',
             'brunch'    => '🍲',
         ];
-
         $this->responseData['mealTypes'] = collect(Consts::DISHES_TIME)->mapWithKeys(function ($value, $key) use ($icons) {
             $labels = [
                 'breakfast' => 'Bữa sáng',
@@ -85,31 +131,25 @@ class MealMenuPlanningController extends Controller
             ];
             return [$value => ($icons[$key] ?? '') . ' ' . ($labels[$key] ?? ucfirst($key))];
         });
-
         return $this->responseView($this->viewPart . '.edit' );
     }
+
     //xóa món khỏi thực đơn
     public function deleteDish(Request $request)
     {
-        $dish = MealMenuDishes::findOrFail($request->dish_id);
+        $dish = MealMenuDishesDaily::findOrFail($request->dish_id);
         $dish->delete();
         // Tính toán lại nguyên liệu cho thực đơn
         $menuPlanningService = new MenuPlanningService();
-        $menuPlanningService->recalculateIngredients($dish->menu_id);
+        $menuPlanningService->recalculateIngredientsDaily($dish->menu_daily_id);
         return redirect()->back()->with('successMessage', 'Xoá món ăn khỏi thực đơn thành công!');
     }
 
     public function moveDish(Request $request)
     {
-        $request->validate([
-            'dish_id' => 'required|exists:tb_meal_menu_dishes,id',
-            'new_meal_type' => 'required|in:' . implode(',', array_keys(Consts::DISHES_TIME)),
-        ]);
-
-        $dish = MealMenuDishes::findOrFail($request->dish_id);
-
+        $dish = MealMenuDishesDaily::findOrFail($request->dish_id);
         // Kiểm tra xem món ăn đã có trong bữa mới chưa
-        $exists = MealMenuDishes::where('menu_id', $dish->menu_id)
+        $exists = MealMenuDishesDaily::where('menu_daily_id', $dish->menu_daily_id)
         ->where('dishes_id', $dish->dishes_id)
         ->where('type', $request->new_meal_type)
         ->where('id', '!=', $dish->id)
@@ -134,18 +174,13 @@ class MealMenuPlanningController extends Controller
 
     public function addDishes(Request $request, MenuPlanningService $menuPlanningService)
     {
-        $request->validate([
-            'menu_id' => 'required|exists:tb_meal_menu_planning,id',
-            'dishes_ids' => 'required|array',
-            'type' => 'required|in:' . implode(',', array_keys(Consts::DISHES_TIME)),
-        ]);
         DB::beginTransaction();
         try {
             $duplicates = [];
             $addedCount = 0;
 
             foreach ($request->dishes_ids as $dish_id) {
-                $exists = MealMenuDishes::where('menu_id', $request->menu_id)
+                $exists = MealMenuDishesDaily::where('menu_daily_id', $request->menu_daily_id)
                             ->where('dishes_id', $dish_id)
                             ->where('type', $request->type)
                             ->exists();
@@ -156,8 +191,8 @@ class MealMenuPlanningController extends Controller
                     continue;
                 }
 
-                MealMenuDishes::create([
-                    'menu_id' => $request->menu_id,
+                MealMenuDishesDaily::create([
+                    'menu_daily_id' => $request->menu_daily_id,
                     'dishes_id' => $dish_id,
                     'type' => $request->type,
                     'status' => 'active',
@@ -173,7 +208,7 @@ class MealMenuPlanningController extends Controller
             }
 
             // Tính toán lại nguyên liệu cho thực đơn
-            $menuPlanningService->recalculateIngredients($request->menu_id);
+            $menuPlanningService->recalculateIngredientsDaily($request->menu_daily_id);
             DB::commit();
             return redirect()->back()->with('successMessage', $message);
         } catch (\Exception $e) {
@@ -184,14 +219,14 @@ class MealMenuPlanningController extends Controller
 
     public function updateIngredients(Request $request, $menuId)
     {
-        $menu = MealMenuPlanning::findOrFail($menuId);
+        $menu = MealMenuDaily::findOrFail($menuId);
         $countStudent = max($menu->count_student, 1);
         $input = $request->input('ingredients', []);
 
         foreach ($input as $id => $valuePerOne) {
-            $ingredient = MealMenuIngredient::find($id);
+            $ingredient = MealMenuIngredientDaily::find($id);
 
-            if ($ingredient && $ingredient->menu_id == $menu->id) {
+            if ($ingredient && $ingredient->menu_daily_id == $menu->id) {
                 $ingredient->value = round(floatval($valuePerOne) * $countStudent, 2);
                 $ingredient->admin_updated_id = auth('admin')->id();
                 $ingredient->save();
@@ -203,7 +238,7 @@ class MealMenuPlanningController extends Controller
 
     public function update(Request $request, $id)
     {
-        $mealmenu = MealMenuPlanning::findOrFail($id);
+        $mealmenu = MealMenuDaily::findOrFail($id);
         $request->validate([
             'name' => 'required',
             'count_student' => 'required',
@@ -214,28 +249,25 @@ class MealMenuPlanningController extends Controller
         $mealmenu->update($params);
         // Tính toán lại nguyên liệu cho thực đơn
         $menuPlanningService = new MenuPlanningService();
-        $menuPlanningService->recalculateIngredients($mealmenu->id);
+        $menuPlanningService->recalculateIngredientsDaily($mealmenu->id);
         return redirect()->back()->with('successMessage', __('Update successfully!'));
     }
 
     public function destroy($id)
     {
-        DB::beginTransaction();
         try {
-            $menu = MealMenuPlanning::with('dailyMenus')->findOrFail($id);
-
-            if ($menu->dailyMenus->count() > 0) {
-                throw new \Exception('Không thể xóa vì thực đơn đã được áp dụng cho thực đơn hàng ngày.');
-            }
-            $menu->menuDishes()->delete();
-            $menu->menuIngredients()->delete();
-            $menu->delete();
+            DB::beginTransaction();
+            $dailyMenu = MealMenuDaily::findOrFail($id);
+            $dailyMenu->menuDishes()->delete();
+            $dailyMenu->menuIngredients()->delete();
+            $dailyMenu->delete();
             DB::commit();
-            return redirect()->back()->with('successMessage', 'Đã xóa thực đơn mẫu thành công.');
+            return redirect()->back()->with('successMessage', 'Xóa thực đơn hàng ngày thành công.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('errorMessage', 'Lỗi khi xóa: ' . $e->getMessage());
+            return redirect()->back()->with('errorMessage', 'Đã xảy ra lỗi: ' . $e->getMessage());
         }
     }
+
 
 }
