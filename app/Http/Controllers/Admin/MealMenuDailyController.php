@@ -52,8 +52,8 @@ class MealMenuDailyController extends Controller
             $template = MealMenuPlanning::findOrFail($request->meal_menu_planning_id);
             Carbon::setLocale('vi');
             $date = Carbon::parse($request->date);
-            $weekday = ucfirst($date->translatedFormat('l')); // VD: "Thứ hai"
-            $name = 'Thực đơn ' . $weekday . ' - ' . $date->format('d/m/Y');
+            $weekday = ucfirst($date->translatedFormat('l'));
+            $name = 'Thực đơn ' . $weekday . ' - ' . $date->format('d/m/Y'). ' - ' . $template->mealAge->name ?? "";
             $dailyMenu = MealMenuDaily::create([
                 'meal_menu_planning_id'   => $template->id,
                 'date'               => $request->date,
@@ -120,14 +120,18 @@ class MealMenuDailyController extends Controller
         $this->responseData['dishes_by_type'] = $mealmenu->menuDishes->groupBy('type');
         $icons = [
             'breakfast' => '🍳',
+            'demo_breakfast' => '🍳',
             'lunch'     => '🍛',
             'brunch'    => '🍲',
+            'demo_brunch'    => '🍲',
         ];
         $this->responseData['mealTypes'] = collect(Consts::DISHES_TIME)->mapWithKeys(function ($value, $key) use ($icons) {
             $labels = [
                 'breakfast' => 'Bữa sáng',
+                'demo_breakfast' => 'Bữa phụ sáng',
                 'lunch'     => 'Bữa trưa',
                 'brunch'    => 'Bữa chiều',
+                'demo_brunch' => 'Bữa phụ chiều', // Thêm bữa phụ chiều
             ];
             return [$value => ($icons[$key] ?? '') . ' ' . ($labels[$key] ?? ucfirst($key))];
         });
@@ -268,6 +272,72 @@ class MealMenuDailyController extends Controller
             return redirect()->back()->with('errorMessage', 'Đã xảy ra lỗi: ' . $e->getMessage());
         }
     }
+    public function reportByDay(Request $request)
+    {
+        $params = $request->all();
+        if (!empty($params['month'])) {
+            $selectedDate = Carbon::createFromFormat('Y-m', $params['month']);
+            $month = $selectedDate->month;
+            $year = $selectedDate->year;
+        } else {
+            $month = now()->month;
+            $year = now()->year;
+        }
 
+        // Lọc dữ liệu theo tháng và năm
+        $menusGroupedByDate = MealMenuDaily::with('mealAge')
+            ->where('status', Consts::STATUS['active'])
+            ->whereMonth('date', $month)
+            ->whereYear('date', $year)
+            ->orderBy('date', 'asc')
+            ->get()
+            ->groupBy('date');
+        $this->responseData['menusGroupedByDate'] = $menusGroupedByDate;
+        return $this->responseView($this->viewPart . '.report_by_day');
+    }
+
+    //Hamf show thực đơn theo ngày
+    public function showByDate($date)
+    {
+        $menus = MealMenuDaily::with([
+            'mealAge',
+            'menuDishes.dishes',
+            'menuIngredients.ingredients'
+        ])
+        ->whereDate('date', $date)
+        ->get();
+
+        if ($menus->isEmpty()) {
+            return redirect()->back()->with('error', 'Không có thực đơn cho ngày này');
+        }
+
+        $groupedIngredients = [];
+        foreach ($menus as $menu) {
+            foreach ($menu->menuIngredients as $item) {
+                if (!$item->ingredients) continue;
+
+                $ingredient = $item->ingredients;
+                $type = $ingredient->type ?? 'Chưa xác định';
+                $id = $ingredient->id;
+
+                if (!isset($groupedIngredients[$type][$id])) {
+                    $groupedIngredients[$type][$id] = [
+                        'ingredient' => $ingredient,
+                        'total' => 0,
+                        'count_student' => 0,
+                    ];
+                }
+
+                $groupedIngredients[$type][$id]['total'] += $item->value;
+                $groupedIngredients[$type][$id]['count_student'] += $menu->count_student;
+            }
+        }
+        $this->responseData['date'] = $date;
+        $this->responseData['menus'] = $menus;
+        $this->responseData['groupedIngredients'] = $groupedIngredients;
+        $this->responseData['module_name'] = "Tổng hợp thực phẩm ngày " . Carbon::parse($date)->format('d/m/Y');
+
+        return $this->responseView($this->viewPart . '.show_by_date');
+    }
 
 }

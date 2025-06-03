@@ -211,12 +211,24 @@
                                         <th>Tên nguyên liệu</th>
                                         <th>Định lượng cho 1 người</th>
                                         <th>Định lượng tổng (x {{ $detail->count_student }} người)</th>
+                                        <th>Tính theo KG</th>
+                                        <th>Tính theo đơn vị chính</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($detail->menuIngredients as $item)
                                         @php
                                             $valuePerOne = $item->value / max($detail->count_student, 1);
+                                            $ingredient = $item->ingredients;
+                                            $defaultUnit = $ingredient->unitDefault->name ?? '';
+                                            // Tính theo KG
+                                            $valueInKg = $item->value / 1000;
+                                            // Tính theo đơn vị chính
+                                            $convertedValue = null;
+                                            if ($ingredient->convert_to_gram) {
+                                                $ratio = $ingredient->convert_to_gram ;
+                                                $convertedValue = $ratio ? $item->value / $ratio : null;
+                                            }
                                         @endphp
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
@@ -235,6 +247,17 @@
                                                 <span class="total-value" id="total-{{ $item->id }}">
                                                     {{ number_format($item->value, 2) }}
                                                 </span>
+                                            </td>
+                                            <td>
+                                                {{ rtrim(rtrim(number_format($valueInKg, 2, '.', ''), '0'), '.') }} kg
+                                            </td>
+
+                                            <td>
+                                                @if($convertedValue)
+                                                {{ rtrim(rtrim(number_format($convertedValue, 2, '.', ''), '0'), '.') }} {{ $defaultUnit }}
+                                                @else
+                                                {{ rtrim(rtrim(number_format($valueInKg, 2, '.', ''), '0'), '.') }} kg
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach

@@ -133,6 +133,11 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::delete('meal_dishes_delete_daily', 'MealMenuDailyController@deleteDish')->name('mealmenu.deleteDish.daily');
             Route::post('/mealmenu/add-dishes-daily', 'MealMenuDailyController@addDishes')->name('mealmenu.addDishes.daily');
             Route::post('meal-menu/{id}/update-ingredients-daily', 'MealMenuDailyController@updateIngredients')->name('admin.meal_menu.updateIngredients.daily');
+            // Thống kê thực đơn theo ngày
+            Route::get('report-meal-menu-daily', 'MealMenuDailyController@reportByDay')->name('mealmenu.daily.report');
+            Route::get('menu-dailys/date/{date}', 'MealMenuDailyController@showByDate')->name('menu_dailys.showByDate');
+            
+
 
             Route::get('attendance/check-out/index', 'AttendancesController@checkout')->name('attendance.checkout');
             Route::get('attendance/summary-by-month/index', 'AttendancesController@attendanceSummaryByMonth')->name('attendance.summary_by_month');

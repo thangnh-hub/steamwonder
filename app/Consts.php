@@ -17,8 +17,10 @@ class Consts
     ];
     const DISHES_TIME = [
         'breakfast' => 'breakfast',   // sáng
+        'demo_breakfast' => 'demo_breakfast',   // sáng
         'lunch' => 'lunch',         // trưa
         'brunch' => 'brunch',   // chiều
+        'demo_brunch' => 'demo_brunch',   // chiều
     ];
     const INGREDIENTS_TYPE = [
         'save_warehouse' => 'save_warehouse',
