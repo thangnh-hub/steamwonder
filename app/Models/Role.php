@@ -28,4 +28,9 @@ class Role extends Model
     protected $casts = [
         'json_access' => 'object',
     ];
+
+    public function admins()
+    {
+        return $this->hasMany(Admin::class, 'role', 'id');
+    }
 }

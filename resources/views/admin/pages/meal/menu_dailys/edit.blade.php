@@ -194,7 +194,7 @@
                     </div>
                 </form>
 
-                <form action="{{ route('admin.meal_menu.updateIngredients', $detail->id) }}" method="POST">
+                <form action="{{ route('admin.meal_menu.updateIngredients.daily', $detail->id) }}" method="POST">
                 @csrf
 
                 <div class="box box-primary">
@@ -210,7 +210,7 @@
                                         <th>STT</th>
                                         <th>Tên nguyên liệu</th>
                                         <th>Định lượng cho 1 người</th>
-                                        <th>Định lượng tổng (x {{ $detail->count_student }} người)</th>
+                                        <th>Định lượng tổng (x{{ $detail->count_student }} người) g</th>
                                         <th>Tính theo KG</th>
                                         <th>Tính theo đơn vị chính</th>
                                     </tr>
@@ -283,7 +283,7 @@
     {{-- di chuyển --}}
     <div class="modal fade" id="exchangeDishes" tabindex="-1" role="dialog" aria-labelledby="exchangeDishesLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm" role="document">
-            <form method="POST" action="{{ route('mealmenu.moveDish') }}" id="moveDishForm">
+            <form method="POST" action="{{ route('mealmenu.moveDish.daily') }}" id="moveDishForm">
                 @csrf
                 <input type="hidden" name="dish_id" id="modal_dish_id" value="">
                 <div class="modal-content">
@@ -314,7 +314,7 @@
     {{-- Xóa món ăn --}}
     <div class="modal fade" id="deleteDishModal" tabindex="-1" role="dialog" aria-labelledby="deleteDishModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm" role="document">
-            <form method="POST" action="{{ route('mealmenu.deleteDish') }}" id="deleteDishForm">
+            <form method="POST" action="{{ route('mealmenu.deleteDish.daily') }}" id="deleteDishForm">
                 @csrf
                 @method('DELETE')
                 <input type="hidden" name="dish_id" id="delete_dish_id" value="">
@@ -346,9 +346,9 @@
     {{-- Thêm món ăn --}}
     <div class="modal fade" id="addDishModal" tabindex="-1" role="dialog" aria-labelledby="addDishModalLabel">
         <div class="modal-dialog modal-lg" role="document">
-            <form method="POST" action="{{ route('mealmenu.addDishes') }}" id="addDishForm">
+            <form method="POST" action="{{ route('mealmenu.addDishes.daily') }}" id="addDishForm">
                 @csrf
-                <input type="hidden" name="menu_id" value="{{ $detail->id }}">
+                <input type="hidden" name="menu_daily_id" value="{{ $detail->id }}">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title">Thêm món ăn vào thực đơn</h4>

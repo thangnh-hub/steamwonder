@@ -214,12 +214,24 @@
                                         <th>Tên nguyên liệu</th>
                                         <th>Định lượng cho 1 người</th>
                                         <th>Định lượng tổng (x <?php echo e($detail->count_student); ?> người)</th>
+                                        <th>Tính theo KG</th>
+                                        <th>Tính theo đơn vị chính</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php $__currentLoopData = $detail->menuIngredients; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <?php
                                             $valuePerOne = $item->value / max($detail->count_student, 1);
+                                            $ingredient = $item->ingredients;
+                                            $defaultUnit = $ingredient->unitDefault->name ?? '';
+                                            // Tính theo KG
+                                            $valueInKg = $item->value / 1000;
+                                            // Tính theo đơn vị chính
+                                            $convertedValue = null;
+                                            if ($ingredient->convert_to_gram) {
+                                                $ratio = $ingredient->convert_to_gram ;
+                                                $convertedValue = $ratio ? $item->value / $ratio : null;
+                                            }
                                         ?>
                                         <tr>
                                             <td><?php echo e($loop->iteration); ?></td>
@@ -239,6 +251,18 @@
                                                     <?php echo e(number_format($item->value, 2)); ?>
 
                                                 </span>
+                                            </td>
+                                            <td>
+                                                <?php echo e(rtrim(rtrim(number_format($valueInKg, 2, '.', ''), '0'), '.')); ?> kg
+                                            </td>
+
+                                            <td>
+                                                <?php if($convertedValue): ?>
+                                                <?php echo e(rtrim(rtrim(number_format($convertedValue, 2, '.', ''), '0'), '.')); ?> <?php echo e($defaultUnit); ?>
+
+                                                <?php else: ?>
+                                                <?php echo e(rtrim(rtrim(number_format($valueInKg, 2, '.', ''), '0'), '.')); ?> kg
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

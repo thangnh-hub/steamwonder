@@ -24,7 +24,7 @@ class MealMenuPlanningController extends Controller
     {
         $this->routeDefault = 'menu_plannings';
         $this->viewPart = 'admin.pages.meal.menu_plannings';
-        $this->responseData['module_name'] = 'Quản lý thực đơn';
+        $this->responseData['module_name'] = 'Quản lý thực đơn mẫu';
     }
 
     public function index(Request $request)
@@ -56,7 +56,7 @@ class MealMenuPlanningController extends Controller
         $params = $request->all();
         $params['admin_created_id'] = Auth::guard('admin')->id();
         $menu_planning = MealMenuPlanning::create($params);
-        $menu_planning->code = 'TD' . str_pad($menu_planning->id, 5, '0', STR_PAD_LEFT);
+        $menu_planning->code = 'TDM' . str_pad($menu_planning->id, 5, '0', STR_PAD_LEFT);
         $menu_planning->save();
         return redirect()->route($this->routeDefault . '.edit',$menu_planning->id)->with('successMessage', __('Add new successfully!'));
     }
@@ -70,18 +70,20 @@ class MealMenuPlanningController extends Controller
         $this->responseData['detail'] = $mealmenu;
 
         $this->responseData['dishes_by_type'] = $mealmenu->menuDishes->groupBy('type');
-
         $icons = [
             'breakfast' => '🍳',
+            'demo_breakfast' => '🍳',
             'lunch'     => '🍛',
             'brunch'    => '🍲',
+            'demo_brunch'    => '🍲',
         ];
-
         $this->responseData['mealTypes'] = collect(Consts::DISHES_TIME)->mapWithKeys(function ($value, $key) use ($icons) {
             $labels = [
                 'breakfast' => 'Bữa sáng',
+                'demo_breakfast' => 'Bữa phụ sáng',
                 'lunch'     => 'Bữa trưa',
                 'brunch'    => 'Bữa chiều',
+                'demo_brunch' => 'Bữa phụ chiều', // Thêm bữa phụ chiều
             ];
             return [$value => ($icons[$key] ?? '') . ' ' . ($labels[$key] ?? ucfirst($key))];
         });
@@ -212,14 +214,30 @@ class MealMenuPlanningController extends Controller
         $params = $request->all();
         $params['admin_updated_id'] = Auth::guard('admin')->id();
         $mealmenu->update($params);
-
+        // Tính toán lại nguyên liệu cho thực đơn
+        $menuPlanningService = new MenuPlanningService();
+        $menuPlanningService->recalculateIngredients($mealmenu->id);
         return redirect()->back()->with('successMessage', __('Update successfully!'));
     }
 
     public function destroy($id)
     {
-        $mealIngredient = MealDishes::findOrFail($id);
-        $mealIngredient->delete();
-        return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Delete record successfully!'));
+        DB::beginTransaction();
+        try {
+            $menu = MealMenuPlanning::with('dailyMenus')->findOrFail($id);
+
+            if ($menu->dailyMenus->count() > 0) {
+                throw new \Exception('Không thể xóa vì thực đơn đã được áp dụng cho thực đơn hàng ngày.');
+            }
+            $menu->menuDishes()->delete();
+            $menu->menuIngredients()->delete();
+            $menu->delete();
+            DB::commit();
+            return redirect()->back()->with('successMessage', 'Đã xóa thực đơn mẫu thành công.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('errorMessage', 'Lỗi khi xóa: ' . $e->getMessage());
+        }
     }
+
 }

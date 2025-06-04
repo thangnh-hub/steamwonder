@@ -26,7 +26,7 @@
             <form action="<?php echo e(route(Request::segment(2) . '.index')); ?>" method="GET">
                 <div class="box-body">
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Keyword'); ?> </label>
                                 <input type="text" class="form-control" name="keyword" placeholder="<?php echo app('translator')->get('keyword_note'); ?>"
@@ -34,50 +34,8 @@
                             </div>
                         </div>
                         
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Loại món ăn'); ?></label>
-                                <select name="dishes_type" class="form-control select2"style="width: 100%;">
-                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
-                                    <?php $__currentLoopData = $list_type; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($key); ?>"
-                                            <?php echo e(isset($params['dishes_type']) && $params['dishes_type'] == $key ? 'selected' : ''); ?>><?php echo e(__($item)); ?>
 
-                                        </option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Bữa áp dụng'); ?></label>
-                                <select name="dishes_time" class="form-control select2"style="width: 100%;">
-                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
-                                    <?php $__currentLoopData = $list_time; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($key); ?>"
-                                            <?php echo e(isset($params['dishes_time']) && $params['dishes_time'] == $key ? 'selected' : ''); ?>><?php echo e(__($item)); ?>
-
-                                        </option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Status'); ?></label>
-                                <select name="status" class="form-control select2" style="width: 100%;">
-                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
-                                    <?php $__currentLoopData = $list_status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($key); ?>"
-                                            <?php echo e(isset($params['status']) && $params['status'] == $key ? 'selected' : ''); ?>><?php echo e(__($item)); ?>
-
-                                        </option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-2">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Filter'); ?></label>
                                 <div style="display:flex;jsutify-content:space-between;">
@@ -135,12 +93,8 @@
                     <thead>
                         <tr>
                             <th><?php echo app('translator')->get('STT'); ?></th>
-                            <th><?php echo app('translator')->get('Tên món ăn'); ?></th>
-                            <th><?php echo app('translator')->get('Mã món ăn'); ?></th>
-                            <th><?php echo app('translator')->get('Loại món ăn'); ?></th>
-                            <th><?php echo app('translator')->get('Bữa áp dụng'); ?></th>
-                            <th><?php echo app('translator')->get('Mô tả'); ?></th>
-                            <th><?php echo app('translator')->get('Trạng thái'); ?></th>
+                            <th><?php echo app('translator')->get('Tên đơn vị'); ?></th>
+                            <th><?php echo app('translator')->get('Đơn vị chính'); ?></th>
                             <th><?php echo app('translator')->get('Thao tác'); ?></th>
                         </tr>
                     </thead>
@@ -151,31 +105,25 @@
                                     <?php echo e($loop->iteration + ($rows->currentPage() - 1) * $rows->perPage()); ?>
 
                                 </td>
+                                
                                 <td><?php echo e($row->name ?? ''); ?></td>
                                 <td>
-                                    <?php echo e('MA' . str_pad($row->id, 5, '0', STR_PAD_LEFT)); ?>
+                                    <div class="sw_featured d-flex-al-center">
+                                        <label class="switch ">
+                                            <input id="sw_featured" value="1" type="checkbox" disabled
+                                                <?php echo e($row->is_base && $row->is_base == 1 ? 'checked' : ''); ?>>
+                                            <span class="slider round"></span>
+                                        </label>
 
+                                    </div>
                                 </td>
-                                <td>
-                                    <?php echo e(__($row->dishes_type ?? '')); ?>
-
-                                </td>
-                                <td>
-                                    <?php echo e(__($row->dishes_time ?? '')); ?>
-
-                                </td>
-                                <td>
-                                    <?php echo e($row->description ?? ""); ?>
-
-                                </td>
-                                <td><?php echo app('translator')->get($row->status); ?></td>
                                 <td>
                                     <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="<?php echo app('translator')->get('Update'); ?>"
-                                       href="<?php echo e(route('dishes.edit', $row->id)); ?>">
+                                       href="<?php echo e(route('units.edit', $row->id)); ?>">
                                         <i class="fa fa-pencil-square-o"></i>
                                     </a>
                 
-                                    <form action="<?php echo e(route('dishes.destroy', $row->id)); ?>" method="POST"
+                                    <form action="<?php echo e(route('units.destroy', $row->id)); ?>" method="POST"
                                           style="display:inline-block"
                                           onsubmit="return confirm('<?php echo app('translator')->get('confirm_action'); ?>')">
                                         <?php echo csrf_field(); ?>
@@ -211,7 +159,10 @@
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('script'); ?>
     <script>
+        $(document).ready(function() {
+           
+        });
     </script>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\steamwonder\resources\views/admin/pages/meal/dishes/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\steamwonder\resources\views/admin/pages/meal/units/index.blade.php ENDPATH**/ ?>

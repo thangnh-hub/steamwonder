@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MealMenuPlanning extends Model
+class MealMenuDaily extends Model
 {
-    protected $table = 'tb_meal_menu_planning';
+    protected $table = 'tb_meal_menu_daily';
 
     protected $guarded = [];
 
@@ -14,9 +14,9 @@ class MealMenuPlanning extends Model
         'json_params' => 'object',
     ];
 
-    public static function getSqlMenuPlanning($params = [])
+    public static function getSqlMenuDaily($params = [])
     {
-        $query = MealMenuPlanning::select('tb_meal_menu_planning.*')
+        $query = MealMenuDaily::select('tb_meal_menu_daily.*')
             ->when(!empty($params['keyword']), function ($query) use ($params) {
                 $keyword = $params['keyword'];
                 return $query->where(function ($where) use ($keyword) {
@@ -32,7 +32,7 @@ class MealMenuPlanning extends Model
             });
 
         if (!empty($params['order_by'])) {
-            $query->orderBy('tb_meal_menu_planning.' . $params['order_by'], 'asc');
+            $query->orderBy('tb_meal_menu_daily.' . $params['order_by'], 'asc');
         } else {
             $query->orderBy('id', 'desc');
         }
@@ -56,15 +56,11 @@ class MealMenuPlanning extends Model
     }
     public function menuDishes()
     {
-        return $this->hasMany(MealMenuDishes::class, 'menu_id', 'id');
+        return $this->hasMany(MealMenuDishesDaily::class, 'menu_daily_id', 'id');
     }
     public function menuIngredients()
     {
-        return $this->hasMany(MealMenuIngredient::class, 'menu_id', 'id');
-    }
-    public function dailyMenus()
-    {
-        return $this->hasMany(MealMenuDaily::class, 'meal_menu_planning_id');
+        return $this->hasMany(MealMenuIngredientDaily::class, 'menu_daily_id', 'id');
     }
 
 }

@@ -127,6 +127,7 @@
                             <th><?php echo app('translator')->get('Danh mục'); ?></th>
                             <th><?php echo app('translator')->get('Mô tả'); ?></th>
                             <th><?php echo app('translator')->get('Loại'); ?></th>
+                            <th><?php echo app('translator')->get('ĐVT'); ?></th>
                             <th><?php echo app('translator')->get('Trạng thái'); ?></th>
                             <th><?php echo app('translator')->get('Thao tác'); ?></th>
                         </tr>
@@ -150,6 +151,10 @@
                                 </td>
                                 <td>
                                     <?php echo e(__($row->type ?? "")); ?>
+
+                                </td>
+                                <td>
+                                    <?php echo e($row->unitDefault->name ?? ''); ?>
 
                                 </td>
                                 <td><?php echo app('translator')->get($row->status); ?></td>

@@ -1,10 +1,10 @@
-@extends('admin.layouts.app')
 
-@section('title')
-    @lang($module_name)
-@endsection
 
-@section('style')
+<?php $__env->startSection('title'); ?>
+    <?php echo app('translator')->get($module_name); ?>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('style'); ?>
 
     <style>
         .modal-sm {
@@ -21,45 +21,47 @@
             color: white;
         }
     </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <section class="content-header">
         <h1>
-            @lang($module_name)
+            <?php echo app('translator')->get($module_name); ?>
         </h1>
     </section>
 
     <!-- Main content -->
     <section class="content">
-        @if (session('errorMessage'))
+        <?php if(session('errorMessage')): ?>
             <div class="alert alert-warning alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                {{ session('errorMessage') }}
+                <?php echo e(session('errorMessage')); ?>
+
             </div>
-        @endif
-        @if (session('successMessage'))
+        <?php endif; ?>
+        <?php if(session('successMessage')): ?>
             <div class="alert alert-success alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                {{ session('successMessage') }}
-            </div>
-        @endif
+                <?php echo e(session('successMessage')); ?>
 
-        @if ($errors->any())
+            </div>
+        <?php endif; ?>
+
+        <?php if($errors->any()): ?>
             <div class="alert alert-danger alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 
-                @foreach ($errors->all() as $error)
-                    <p>{{ $error }}</p>
-                @endforeach
+                <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <p><?php echo e($error); ?></p>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
             </div>
-        @endif
+        <?php endif; ?>
         <div class="row">
             <div class="col-lg-3">
                 <div class="box box-primary">
                     <div class="box-header with-border">
-                        <h3 class="box-title">@lang('Món ăn')</h3>
+                        <h3 class="box-title"><?php echo app('translator')->get('Món ăn'); ?></h3>
                         <button type="button" class="btn btn-warning btn-sm pull-right" 
                                 data-toggle="modal" data-target="#addDishModal">
                                 <i class="fa fa-plus"></i> Thêm món vào thực đơn
@@ -68,156 +70,157 @@
                     
                     <div class="box-body">
                         <div class="form-group">
-                            @foreach($mealTypes as $key => $label)
+                            <?php $__currentLoopData = $mealTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
-                                        <strong>{{ $label }}</strong>
+                                        <strong><?php echo e($label); ?></strong>
                                     </div>
                                     <div class="panel-body">
                                         <ul class="list-group">
-                                            @foreach($dishes_by_type[$key] ?? [] as $dish)
+                                            <?php $__currentLoopData = $dishes_by_type[$key] ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $dish): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <li class="list-group-item clearfix">
-                                                    {{ $loop->iteration }}. {{ $dish->dishes->name }}
+                                                    <?php echo e($loop->iteration); ?>. <?php echo e($dish->dishes->name); ?>
+
                                                     <div class="pull-right">
                                                         <button type="button" class="btn btn-xs btn-default btn-move-dish" 
                                                                 data-toggle="modal" data-target="#exchangeDishes"
-                                                                data-dish-id="{{ $dish->id }}" 
-                                                                data-dish-name="{{ $dish->dishes->name }}"
+                                                                data-dish-id="<?php echo e($dish->id); ?>" 
+                                                                data-dish-name="<?php echo e($dish->dishes->name); ?>"
                                                                 title="Di chuyển sang bữa khác">
                                                             <i class="fa fa-exchange"></i>
                                                         </button>
                                                         <button type="button" class="btn btn-xs btn-danger btn-delete-dish"
                                                                 data-toggle="modal" data-target="#deleteDishModal"
-                                                                data-dish-id="{{ $dish->id }}"
-                                                                data-dish-name="{{ $dish->dishes->name }}"
+                                                                data-dish-id="<?php echo e($dish->id); ?>"
+                                                                data-dish-name="<?php echo e($dish->dishes->name); ?>"
                                                                 title="Xóa món ăn">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </div>
                                                 </li>
-                                            @endforeach
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-                                            @if(empty($dishes_by_type[$key]) || count($dishes_by_type[$key]) == 0)
+                                            <?php if(empty($dishes_by_type[$key]) || count($dishes_by_type[$key]) == 0): ?>
                                                 <li class="list-group-item text-muted">Không có món ăn</li>
-                                            @endif
+                                            <?php endif; ?>
                                         </ul>
                                     </div>
                                 </div>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
                     </div>
                 </div>
             </div>
             
             <div class="col-lg-9">
-                <form action="{{ route(Request::segment(2) . '.update', $detail->id) }}" method="POST">
-                    @csrf
-                    @method('PUT')
+                <form action="<?php echo e(route(Request::segment(2) . '.update', $detail->id)); ?>" method="POST">
+                    <?php echo csrf_field(); ?>
+                    <?php echo method_field('PUT'); ?>
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title">@lang('Cập nhật thông tin thực đơn')</h3>
+                            <h3 class="box-title"><?php echo app('translator')->get('Cập nhật thông tin thực đơn'); ?></h3>
                         </div>
                         
                         <div class="box-body">
                             <div class="d-flex-wap">
-                                {{-- Tên thực đơn --}}
+                                
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="name">@lang('Tên thực đơn') <span class="text-danger">*</span></label>
-                                        <input placeholder="@lang('Tên thực đơn')" type="text" name="name" class="form-control" value="{{ old('name', $detail->name ?? '') }}" required>
+                                        <label for="name"><?php echo app('translator')->get('Tên thực đơn'); ?> <span class="text-danger">*</span></label>
+                                        <input placeholder="<?php echo app('translator')->get('Tên thực đơn'); ?>" type="text" name="name" class="form-control" value="<?php echo e(old('name', $detail->name ?? '')); ?>" required>
                                     </div>
                                 </div>
 
-                                {{-- Độ tuổi áp dụng --}}
+                                
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>@lang('Nhóm đối tượng') <span class="text-danger">*</span></label>
+                                        <label><?php echo app('translator')->get('Nhóm đối tượng'); ?> <span class="text-danger">*</span></label>
                                         <select name="meal_age_id" class="form-control select2" required>
-                                            <option value="">@lang('Chọn')</option>
-                                            @foreach($list_meal_age as $item)
-                                                <option value="{{ $item->id }}" {{ (old('meal_age_id', $detail->meal_age_id ?? '') == $item->id) ? 'selected' : '' }}>{{ $item->name ?? "" }}</option>
-                                            @endforeach
+                                            <option value=""><?php echo app('translator')->get('Chọn'); ?></option>
+                                            <?php $__currentLoopData = $list_meal_age; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($item->id); ?>" <?php echo e((old('meal_age_id', $detail->meal_age_id ?? '') == $item->id) ? 'selected' : ''); ?>><?php echo e($item->name ?? ""); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </select>
                                     </div>
                                 </div>
 
-                                {{-- Số lượng học sinh --}}
+                                
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="count_student">@lang('Số lượng học sinh')</label>
-                                        <input type="number" name="count_student" class="form-control" value="{{ old('count_student', $detail->count_student ?? '') }}" min="0">
+                                        <label for="count_student"><?php echo app('translator')->get('Số lượng học sinh'); ?></label>
+                                        <input type="number" name="count_student" class="form-control" value="<?php echo e(old('count_student', $detail->count_student ?? '')); ?>" min="0">
                                     </div>
                                 </div>
 
-                                {{-- Mùa áp dụng --}}
+                                
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label>@lang('Mùa áp dụng')</label>
+                                        <label><?php echo app('translator')->get('Mùa áp dụng'); ?></label>
                                         <select name="season" class="form-control select2">
-                                            <option value="">@lang('Chọn')</option>
-                                            @foreach($list_season as $key => $value)
-                                                <option value="{{ $key }}" {{ (old('season', $detail->season ?? '') == $key) ? 'selected' : '' }}>{{ $value }}</option>
-                                            @endforeach
+                                            <option value=""><?php echo app('translator')->get('Chọn'); ?></option>
+                                            <?php $__currentLoopData = $list_season; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($key); ?>" <?php echo e((old('season', $detail->season ?? '') == $key) ? 'selected' : ''); ?>><?php echo e($value); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </select>
                                     </div>
                                 </div>
 
-                                {{-- Trạng thái --}}
+                                
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="status">@lang('Trạng thái')</label>
+                                        <label for="status"><?php echo app('translator')->get('Trạng thái'); ?></label>
                                         <select name="status" class="form-control select2">
-                                            @foreach($list_status as $key => $value)
-                                                <option value="{{ $key }}" {{ old('status', $detail->status ?? 1) == $key ? 'selected' : '' }}>{{ __($value) }}</option>
-                                            @endforeach
+                                            <?php $__currentLoopData = $list_status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($key); ?>" <?php echo e(old('status', $detail->status ?? 1) == $key ? 'selected' : ''); ?>><?php echo e(__($value)); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </select>
                                     </div>
                                 </div>
 
-                                {{-- Mô tả --}}
+                                
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="description">@lang('Mô tả')</label>
-                                        <textarea name="description" rows="4" class="form-control" placeholder="@lang('Nhập mô tả')">{{ old('description', $detail->description ?? '') }}</textarea>
+                                        <label for="description"><?php echo app('translator')->get('Mô tả'); ?></label>
+                                        <textarea name="description" rows="4" class="form-control" placeholder="<?php echo app('translator')->get('Nhập mô tả'); ?>"><?php echo e(old('description', $detail->description ?? '')); ?></textarea>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="box-footer">
-                            <a href="{{ route(Request::segment(2) . '.index') }}">
+                            <a href="<?php echo e(route(Request::segment(2) . '.index')); ?>">
                                 <button type="button" class="btn btn-sm btn-success">Danh sách</button>
                             </a>
                             <button type="submit" class="btn btn-info btn-sm pull-right">
-                                <i class="fa fa-save"></i> @lang('Save')
+                                <i class="fa fa-save"></i> <?php echo app('translator')->get('Save'); ?>
                             </button>
                         </div>
                     </div>
                 </form>
 
-                <form action="{{ route('admin.meal_menu.updateIngredients', $detail->id) }}" method="POST">
-                @csrf
+                <form action="<?php echo e(route('admin.meal_menu.updateIngredients.daily', $detail->id)); ?>" method="POST">
+                <?php echo csrf_field(); ?>
 
                 <div class="box box-primary">
                     <div class="box-header with-border">
-                        <h3 class="box-title">@lang('Thực phẩm trong thực đơn')</h3>
+                        <h3 class="box-title"><?php echo app('translator')->get('Thực phẩm trong thực đơn'); ?></h3>
                     </div>
 
                     <div class="box-body">
-                        @if($detail->menuIngredients->count())
+                        <?php if($detail->menuIngredients->count()): ?>
                             <table class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th>STT</th>
                                         <th>Tên nguyên liệu</th>
                                         <th>Định lượng cho 1 người</th>
-                                        <th>Định lượng tổng (x {{ $detail->count_student }} người)</th>
+                                        <th>Định lượng tổng (x<?php echo e($detail->count_student); ?> người) g</th>
                                         <th>Tính theo KG</th>
                                         <th>Tính theo đơn vị chính</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($detail->menuIngredients as $item)
-                                        @php
+                                    <?php $__currentLoopData = $detail->menuIngredients; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <?php
                                             $valuePerOne = $item->value / max($detail->count_student, 1);
                                             $ingredient = $item->ingredients;
                                             $defaultUnit = $ingredient->unitDefault->name ?? '';
@@ -229,48 +232,50 @@
                                                 $ratio = $ingredient->convert_to_gram ;
                                                 $convertedValue = $ratio ? $item->value / $ratio : null;
                                             }
-                                        @endphp
+                                        ?>
                                         <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $item->ingredients->name ?? '' }}</td>
+                                            <td><?php echo e($loop->iteration); ?></td>
+                                            <td><?php echo e($item->ingredients->name ?? ''); ?></td>
                                             <td>
                                                 <input 
                                                     type="number" 
                                                     step="0.01" 
                                                     min="0" 
-                                                    name="ingredients[{{ $item->id }}]" 
+                                                    name="ingredients[<?php echo e($item->id); ?>]" 
                                                     class="form-control input-per-one" 
-                                                    data-id="{{ $item->id }}" 
-                                                    value="{{ number_format($valuePerOne, 2, '.', '') }}">
+                                                    data-id="<?php echo e($item->id); ?>" 
+                                                    value="<?php echo e(number_format($valuePerOne, 2, '.', '')); ?>">
                                             </td>
                                             <td>
-                                                <span class="total-value" id="total-{{ $item->id }}">
-                                                    {{ number_format($item->value, 2) }}
+                                                <span class="total-value" id="total-<?php echo e($item->id); ?>">
+                                                    <?php echo e(number_format($item->value, 2)); ?>
+
                                                 </span>
                                             </td>
                                             <td>
-                                                {{ rtrim(rtrim(number_format($valueInKg, 2, '.', ''), '0'), '.') }} kg
+                                                <?php echo e(rtrim(rtrim(number_format($valueInKg, 2, '.', ''), '0'), '.')); ?> kg
                                             </td>
 
                                             <td>
-                                                @if($convertedValue)
-                                                {{ rtrim(rtrim(number_format($convertedValue, 2, '.', ''), '0'), '.') }} {{ $defaultUnit }}
-                                                @else
-                                                {{ rtrim(rtrim(number_format($valueInKg, 2, '.', ''), '0'), '.') }} kg
-                                                @endif
+                                                <?php if($convertedValue): ?>
+                                                <?php echo e(rtrim(rtrim(number_format($convertedValue, 2, '.', ''), '0'), '.')); ?> <?php echo e($defaultUnit); ?>
+
+                                                <?php else: ?>
+                                                <?php echo e(rtrim(rtrim(number_format($valueInKg, 2, '.', ''), '0'), '.')); ?> kg
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </tbody>
                             </table>
-                        @else
+                        <?php else: ?>
                             <p>Không có nguyên liệu nào được tính toán cho thực đơn này.</p>
-                        @endif
+                        <?php endif; ?>
                     </div>
 
                     <div class="box-footer">
                         <button type="submit" class="btn btn-info btn-sm pull-right">
-                            <i class="fa fa-save"></i> @lang('Save')
+                            <i class="fa fa-save"></i> <?php echo app('translator')->get('Save'); ?>
                         </button>
                     </div>
                 </div>
@@ -280,11 +285,11 @@
         </div>
     </section>
 
-    {{-- di chuyển --}}
+    
     <div class="modal fade" id="exchangeDishes" tabindex="-1" role="dialog" aria-labelledby="exchangeDishesLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm" role="document">
-            <form method="POST" action="{{ route('mealmenu.moveDish') }}" id="moveDishForm">
-                @csrf
+            <form method="POST" action="<?php echo e(route('mealmenu.moveDish.daily')); ?>" id="moveDishForm">
+                <?php echo csrf_field(); ?>
                 <input type="hidden" name="dish_id" id="modal_dish_id" value="">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -296,9 +301,9 @@
                             <label for="new_meal_type">Chọn bữa khác</label>
                             <select style="width:100%" class="form-control select2" name="new_meal_type" id="new_meal_type" required>
                                 <option value="">Chọn bữa</option>
-                                @foreach($mealTypes as $key => $label)
-                                    <option value="{{ $key }}">{{ $label }}</option>
-                                @endforeach
+                                <?php $__currentLoopData = $mealTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($key); ?>"><?php echo e($label); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                     </div>
@@ -311,12 +316,12 @@
         </div>
     </div>
 
-    {{-- Xóa món ăn --}}
+    
     <div class="modal fade" id="deleteDishModal" tabindex="-1" role="dialog" aria-labelledby="deleteDishModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm" role="document">
-            <form method="POST" action="{{ route('mealmenu.deleteDish') }}" id="deleteDishForm">
-                @csrf
-                @method('DELETE')
+            <form method="POST" action="<?php echo e(route('mealmenu.deleteDish.daily')); ?>" id="deleteDishForm">
+                <?php echo csrf_field(); ?>
+                <?php echo method_field('DELETE'); ?>
                 <input type="hidden" name="dish_id" id="delete_dish_id" value="">
                 <div class="modal-content">
                     <div class="modal-header bg-danger text-white">
@@ -343,12 +348,12 @@
         </div>
     </div>
 
-    {{-- Thêm món ăn --}}
+    
     <div class="modal fade" id="addDishModal" tabindex="-1" role="dialog" aria-labelledby="addDishModalLabel">
         <div class="modal-dialog modal-lg" role="document">
-            <form method="POST" action="{{ route('mealmenu.addDishes') }}" id="addDishForm">
-                @csrf
-                <input type="hidden" name="menu_id" value="{{ $detail->id }}">
+            <form method="POST" action="<?php echo e(route('mealmenu.addDishes.daily')); ?>" id="addDishForm">
+                <?php echo csrf_field(); ?>
+                <input type="hidden" name="menu_daily_id" value="<?php echo e($detail->id); ?>">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title">Thêm món ăn vào thực đơn</h4>
@@ -360,23 +365,23 @@
                                     <label>Bữa ăn: </label>
                                     <select style="width:100%" name="type" id="dish_type" class="form-control select2" required>
                                         <option value="">-- Chọn bữa --</option>
-                                        @foreach($mealTypes as $key => $label)
-                                            <option value="{{ $key }}">{{ $label }}</option>
-                                        @endforeach
+                                        <?php $__currentLoopData = $mealTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($key); ?>"><?php echo e($label); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>@lang('Từ khóa'): </label>
+                                    <label><?php echo app('translator')->get('Từ khóa'); ?>: </label>
                                     <input type="text" id="searchKeyword" class="form-control ml-2" placeholder="Tìm món ăn...">
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label>@lang('Filter')</label>
+                                    <label><?php echo app('translator')->get('Filter'); ?></label>
                                     <div style="display:flex;jsutify-content:space-between;">
                                         <button  type="button" id="btnSearchDishes" class="btn btn-primary ">
                                             <i class="fa fa-search"></i> Tìm
@@ -410,9 +415,9 @@
         </div>
     </div>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('script')
+<?php $__env->startSection('script'); ?>
     <script>
         $(document).ready(function(){
             $('.btn-move-dish').click(function(){
@@ -447,7 +452,7 @@
             $('#addDishForm button[type="submit"]').prop('disabled', true); // Disable submit
 
             $.ajax({
-                url: '{{ route("mealmenu.searchDishes") }}',
+                url: '<?php echo e(route("mealmenu.searchDishes")); ?>',
                 method: 'GET',
                 data: { keyword: keyword },
                 success: function (data) {
@@ -482,7 +487,7 @@
         
         // Cập nhật giá trị tổng khi thay đổi định lượng cho 1 người
          $(document).ready(function () {
-            const countStudent = {{ $detail->count_student }};
+            const countStudent = <?php echo e($detail->count_student); ?>;
 
             $('.input-per-one').on('input', function () {
                 const id = $(this).data('id');
@@ -495,4 +500,6 @@
 
     </script>
     
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\steamwonder\resources\views/admin/pages/meal/menu_dailys/edit.blade.php ENDPATH**/ ?>
