@@ -79,6 +79,12 @@ class ReceiptService
                 $deductions = $this->getDeductions();
                 $details = $this->generateReceiptDetailsYearly($policies, $promotions, $deductions, $data['student_services'], $startDate);
             }
+            if ($receipt->type_receipt == Consts::TYPE_RECEIPT['new_student']) {
+                $deductions = $this->getDeductions();
+                $includeCurrent = $data['include_current_month'] ?? false;
+                $details = $this->generateReceiptDetails($policies, $promotions, $deductions, $data['student_services'], $startDate, $includeCurrent);
+            }
+
             return $this->updateReceipt($receipt, $student, $details, $data);
         });
     }

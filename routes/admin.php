@@ -120,13 +120,13 @@ Route::group(['namespace' => 'Admin'], function () {
                 'menu_plannings' => 'MealMenuPlanningController',
 
             ]);
-            //Thực đơn 
+            //Thực đơn
             Route::post('meal_dishes_move_to_meal', 'MealMenuPlanningController@moveDish')->name('mealmenu.moveDish');
             Route::delete('meal_dishes_delete', 'MealMenuPlanningController@deleteDish')->name('mealmenu.deleteDish');
             Route::get('/mealmenu/search-dishes', 'MealMenuPlanningController@searchDishes')->name('mealmenu.searchDishes');
             Route::post('/mealmenu/add-dishes', 'MealMenuPlanningController@addDishes')->name('mealmenu.addDishes');
             Route::post('meal-menu/{id}/update-ingredients', 'MealMenuPlanningController@updateIngredients')->name('admin.meal_menu.updateIngredients');
-            
+
 
 
             Route::get('attendance/check-out/index', 'AttendancesController@checkout')->name('attendance.checkout');

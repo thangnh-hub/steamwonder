@@ -13,6 +13,7 @@
             return $item->parent_id == $block->id;
         });
     @endphp
+
     <div class="join py-5">
         <div class="container">
             <div class="row">
@@ -23,7 +24,7 @@
                     <div class="section_subtitle">{{ $brief }}</div>
                 </div>
             </div>
-            <div class="row loaders_container">
+            {{-- <div class="row loaders_container">
                 @if ($block_childs)
                     @foreach ($block_childs as $item)
                         @php
@@ -45,10 +46,10 @@
                         </div>
                     @endforeach
                 @endif
-            </div>
+            </div> --}}
         </div>
-        @if ($url_link != '' && $url_link_title != '')
-            <div class="button join_button"><a href="{{ $url_link }}">{{ $url_link_title }}<div
+        @if (!$user_auth && $url_link != '' && $url_link_title != '')
+            <div class="button join_button"><a href="{{ $url_link }}" data-toggle="modal">{{ $url_link_title }}<div
                         class="button_arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></div></a></div>
         @endif
     </div>
