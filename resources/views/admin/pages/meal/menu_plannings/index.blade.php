@@ -121,6 +121,7 @@
                             <th>@lang('Mã thực đơn')</th>
                             <th>@lang('Tên thực đơn')</th>
                             <th>@lang('Các món ăn')</th>
+                            <th>@lang('Nhóm tuổi')</th>
                             <th style="width:350px;white-space: pre-line">@lang('Mô tả')</th>
                             <th>@lang('Trạng thái')</th>
                             <th>@lang('Thao tác')</th>
@@ -144,6 +145,9 @@
                                     @else
                                         @lang('Chưa có món ăn nào')
                                     @endif
+                                </td>
+                                <td>
+                                    {{ $row->mealAge->name ?? '' }}
                                 </td>
                                 <td>
                                     {!! nl2br(__($row->description ?? '')) !!}

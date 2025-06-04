@@ -27,6 +27,18 @@ class MealMenuDaily extends Model
             ->when(!empty($params['status']), function ($query) use ($params) {
                 return $query->where('status', $params['status']);
             })
+            ->when(!empty($params['area_id']), function ($query) use ($params) {
+                return $query->where('area_id', $params['area_id']);
+            })
+            ->when(!empty($params['date']), function ($query) use ($params) {
+                return $query->where('date', $params['date']);
+            })
+            ->when(!empty($params['permisson_area_id']), function ($query) use ($params) {
+                if (is_array($params['permisson_area_id'])) {
+                    return $query->whereIn('tb_meal_menu_daily.area_id', $params['permisson_area_id']);
+                }
+                return $query->where('tb_meal_menu_daily.area_id',  $params['permisson_area_id']);
+            })
             ->when(!empty($params['meal_age_id']), function ($query) use ($params) {
                 return $query->where('meal_age_id', $params['meal_age_id']);
             });
@@ -53,6 +65,10 @@ class MealMenuDaily extends Model
     public function mealAge()
     {
         return $this->belongsTo(MealAges::class, 'meal_age_id');
+    }
+    public function area()
+    {
+        return $this->belongsTo(Area::class, 'area_id');
     }
     public function menuDishes()
     {
