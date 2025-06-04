@@ -39,12 +39,14 @@ class ReceiptService
         $existing = ReceiptDetail::where('student_id', $student->id)
             ->whereIn('service_id', $serviceIds)
             ->whereYear('month', $year)
-            ->whereMonth('month', '>=', 6)
+            ->where(function ($q){
+                    return $q->whereMonth('month', '>=', 6)
+                        ->orwhereMonth('month', '<=', 5);
+                })
             ->whereHas('services_receipt', function ($query) {
                 $query->where('service_type', 'yearly');
             })
             ->exists();
-
         return $existing;
     }
 
@@ -565,7 +567,7 @@ class ReceiptService
 
     // Phần ĐẦU NĂM
 
-    public function ReceiptForStudentYearly(Student $student, array $data)
+    public function createReceiptForStudentYearly(Student $student, array $data)
     {
         return DB::transaction(function () use ($student, $data) {
             $policies = $student->studentPolicies->pluck('policy');

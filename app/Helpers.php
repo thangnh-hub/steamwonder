@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Support\Str;
 use Hashids\Hashids;
 use Carbon\Carbon;
+use App\Consts;
 
 
 class Helpers
@@ -112,5 +113,16 @@ class Helpers
         }
 
         return ucfirst(trim($result));
+    }
+
+
+    public static function getYearDefault()
+    {
+        $year = (int)Carbon::now()->format('Y');
+        $school_year = [];
+        for ($i = -2; $i <= 2; $i++) {
+            $school_year[$year + (int)($i)] = ($year + (int)($i)) . ' - ' . ($year + (int)($i + 1));
+        }
+        return $school_year;
     }
 }

@@ -1,12 +1,10 @@
-
-
 <?php $__env->startSection('title'); ?>
     <?php echo app('translator')->get($module_name); ?>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('style'); ?>
-<style>
-    .table-wrapper {
+    <style>
+        .table-wrapper {
             max-height: 560px;
             overflow-y: auto;
             display: block;
@@ -18,7 +16,7 @@
             background-color: white;
             z-index: 2;
         }
-</style>
+    </style>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content-header'); ?>
@@ -52,7 +50,7 @@
                                     value="<?php echo e(isset($params['keyword']) ? $params['keyword'] : ''); ?>">
                             </div>
                         </div>
-                       
+
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Area'); ?></label>
@@ -72,7 +70,8 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Lớp'); ?></label>
-                                <select name="current_class_id" id="area_id" class="form-control select2" style="width: 100%;">
+                                <select name="current_class_id" id="area_id" class="form-control select2"
+                                    style="width: 100%;">
                                     <option value=""><?php echo app('translator')->get('Please select'); ?></option>
                                     <?php $__currentLoopData = $list_class; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <option value="<?php echo e($value->id); ?>"
@@ -84,13 +83,27 @@
                                 </select>
                             </div>
                         </div>
-                        
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label><?php echo app('translator')->get('Năm học'); ?></label>
+                                <select name="school_year" class="form-control select2" style="width: 100%;">
+                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
+                                    <?php $__currentLoopData = $school_year; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($key); ?>"
+                                            <?php echo e(isset($params['school_year']) && $key == $params['school_year'] ? 'selected' : ''); ?>>
+                                            <?php echo e(__($value)); ?>
+
+                                        </option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Filter'); ?></label>
                                 <div>
-                                    <button type="submit"
-                                        class="btn btn-primary btn-sm mr-10"><?php echo app('translator')->get('Submit'); ?></button>
+                                    <button type="submit" class="btn btn-primary btn-sm mr-10"><?php echo app('translator')->get('Submit'); ?></button>
                                     <a class="btn btn-default btn-sm mr-10"
                                         href="<?php echo e(route('view_calculate_receipt_first_year')); ?>">
                                         <?php echo app('translator')->get('Reset'); ?>
@@ -138,53 +151,57 @@
                         <?php echo app('translator')->get('Vui lòng tìm kiếm theo từ khóa, khu vực hoặc lớp để xem danh sách học viên'); ?>
                     </div>
                 <?php else: ?>
-                <form action="<?php echo e(route('calculate_receipt_first_year')); ?>" method="POST">
-                    <?php echo csrf_field(); ?>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Ngày bắt đầu chu kỳ thu'); ?></label>
-                                <?php
-                                    $defaultDate = date('Y') . '-06-01';
-                                ?>
-                                <input class="form-control" type="date" name="enrolled_at" value="<?php echo e(old('enrolled_at', $defaultDate)); ?>" required>
+                    <form action="<?php echo e(route('calculate_receipt_first_year')); ?>" method="POST">
+                        <?php echo csrf_field(); ?>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label><?php echo app('translator')->get('Ngày bắt đầu chu kỳ thu'); ?></label>
+                                    <?php
+                                        $defaultDate = ($params['school_year'] ?? date('Y')) . '-06-01';
+                                    ?>
+                                    <input class="form-control" type="date" name="enrolled_at" min="<?php echo e($defaultDate); ?>"
+                                        value="<?php echo e(old('enrolled_at', $defaultDate)); ?>" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <button style="margin-top: 29px" type="submit" class="btn btn-primary">Tính toán đầu
+                                    năm</button>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <button style="margin-top: 29px" type="submit" class="btn btn-primary">Tính toán đầu năm</button>
-                        </div>
-                    </div>
-                    
-                    <div class="table-wrapper table-responsive">
-                        <table class="table table-hover table-bordered ">
-                            <thead>
-                                <tr>
-                                    <th><?php echo app('translator')->get('STT'); ?></th>
-                                    <th><?php echo app('translator')->get('Avatar'); ?></th>
-                                    <th><?php echo app('translator')->get('Student code'); ?></th>
-                                    <th><?php echo app('translator')->get('Full name'); ?></th>
-                                    <th><?php echo app('translator')->get('Tên thường gọi'); ?></th>
-                                    <th><?php echo app('translator')->get('Gender'); ?></th>
-                                    <th><?php echo app('translator')->get('Area'); ?></th>
-                                    <th><?php echo app('translator')->get('Địa chỉ'); ?></th>
-                                    <th><?php echo app('translator')->get('Trạng thái'); ?></th>
-                                    <th><?php echo app('translator')->get('Lớp đang học'); ?></th>
-                                    <th><?php echo app('translator')->get('Ngày nhập học chính thức'); ?></th>
-                                    <th>
-                                        <label class="form-check-label" for="check_all"><?php echo app('translator')->get('Chọn'); ?></label>
-                                        <input type="checkbox" class="form-check-input" id="check_all"  value="">
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
+
+                        <div class="table-wrapper table-responsive">
+                            <table class="table table-hover table-bordered ">
+                                <thead>
+                                    <tr>
+                                        <th><?php echo app('translator')->get('STT'); ?></th>
+                                        <th><?php echo app('translator')->get('Avatar'); ?></th>
+                                        <th><?php echo app('translator')->get('Student code'); ?></th>
+                                        <th><?php echo app('translator')->get('Full name'); ?></th>
+                                        <th><?php echo app('translator')->get('Tên thường gọi'); ?></th>
+                                        <th><?php echo app('translator')->get('Gender'); ?></th>
+                                        <th><?php echo app('translator')->get('Area'); ?></th>
+                                        <th><?php echo app('translator')->get('Địa chỉ'); ?></th>
+                                        <th><?php echo app('translator')->get('Trạng thái'); ?></th>
+                                        <th><?php echo app('translator')->get('Lớp đang học'); ?></th>
+                                        <th><?php echo app('translator')->get('Ngày nhập học chính thức'); ?></th>
+                                        <th>
+                                            <label class="form-check-label" for="check_all"><?php echo app('translator')->get('Chọn'); ?></label>
+                                            <input type="checkbox" class="form-check-input" id="check_all" value="">
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     <?php $__currentLoopData = $rows; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <tr class="valign-middle">
                                             <td><?php echo e($loop->index + 1); ?></td>
 
                                             <td>
                                                 <?php if(!empty($row->avatar)): ?>
-                                                    <a href="<?php echo e(asset($row->avatar)); ?>" target="_blank" class="image-popup">
-                                                        <img src="<?php echo e(asset($row->avatar)); ?>" alt="Avatar" width="100" height="100" style="object-fit: cover;">
+                                                    <a href="<?php echo e(asset($row->avatar)); ?>" target="_blank"
+                                                        class="image-popup">
+                                                        <img src="<?php echo e(asset($row->avatar)); ?>" alt="Avatar" width="100"
+                                                            height="100" style="object-fit: cover;">
                                                     </a>
                                                 <?php else: ?>
                                                     <span class="text-muted">No image</span>
@@ -201,11 +218,12 @@
                                                 </a>
                                             </td>
                                             <td>
-                                                    <?php echo e($row->first_name ?? ''); ?> <?php echo e($row->last_name ?? ''); ?>
+                                                <?php echo e($row->first_name ?? ''); ?> <?php echo e($row->last_name ?? ''); ?>
 
                                             </td>
                                             <td>
-                                                <?php echo e($row->nickname ?? ''); ?> 
+                                                <?php echo e($row->nickname ?? ''); ?>
+
                                             </td>
                                             <td>
                                                 <?php echo app('translator')->get($row->sex); ?>
@@ -229,44 +247,47 @@
                                             </td>
 
                                             <td>
-                                                <?php echo e(isset($row->enrolled_at) &&  $row->enrolled_at !="" ?date("d-m-Y", strtotime($row->enrolled_at)): ''); ?>
+                                                <?php echo e(isset($row->enrolled_at) && $row->enrolled_at != '' ? date('d-m-Y', strtotime($row->enrolled_at)) : ''); ?>
 
                                             </td>
-                                        
+
                                             <td>
                                                 <?php if($row->is_calculate_year == 1): ?>
-                                                    <span class="badge badge-success">Đã tồn tại biểu phí hàng năm trong năm nay</span>
+                                                    <span class="badge badge-success">Đã tồn tại biểu phí hàng năm trong
+                                                        năm nay</span>
                                                 <?php else: ?>
-                                                    <input type="checkbox" class="form-check-input" name="student[]" id="check_<?php echo e($row->id); ?>"  value="<?php echo e($row->id); ?>">
+                                                    <input type="checkbox" class="form-check-input" name="student[]"
+                                                        id="check_<?php echo e($row->id); ?>" value="<?php echo e($row->id); ?>">
                                                 <?php endif; ?>
                                             </td>
                                         </tr>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </form>
-                            </tbody>
-                        </table>
-                    </div>
-<br>
-                    <button type="submit" class="btn btn-primary">Tính toán đầu năm</button>
-
-                </form>
-                <?php endif; ?>
+                    </form>
+                    </tbody>
+                    </table>
             </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Tính toán đầu năm</button>
+
+            </form>
+            <?php endif; ?>
+        </div>
         </div>
     </section>
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('script'); ?>
     <script>
-        $(document).ready(function () {
-            $('#check_all').on('change', function () {
+        $(document).ready(function() {
+            $('#check_all').on('change', function() {
                 $('.form-check-input:not(#check_all)').prop('checked', $(this).is(':checked'));
             });
 
-            $('.form-check-input:not(#check_all)').on('change', function () {
+            $('.form-check-input:not(#check_all)').on('change', function() {
                 if (!$(this).is(':checked')) {
                     $('#check_all').prop('checked', false);
                 } else {
-                    const allChecked = $('.form-check-input:not(#check_all)').length === $('.form-check-input:not(#check_all):checked').length;
+                    const allChecked = $('.form-check-input:not(#check_all)').length === $(
+                        '.form-check-input:not(#check_all):checked').length;
                     $('#check_all').prop('checked', allChecked);
                 }
             });
