@@ -43,8 +43,27 @@
                                     value="{{ isset($params['keyword']) ? $params['keyword'] : '' }}">
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>@lang('Ngày') </label>
+                                <input type="date" class="form-control" name="date" 
+                                    value="{{ isset($params['date']) ? $params['date'] : '' }}">
+                            </div>
+                        </div>
                         
-                        
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>@lang('Khu vực')</label>
+                                <select name="area_id" class="form-control select2"style="width: 100%;">
+                                    <option value="">@lang('Please select')</option>
+                                    @foreach ($list_area as $key => $item)
+                                        <option value="{{ $item->id }}"
+                                            {{ isset($params['area_id']) && $params['area_id'] == $item->id ? 'selected' : '' }}>{{ __($item->name) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>@lang('Nhóm tuổi')</label>
@@ -128,9 +147,12 @@
                     <thead>
                         <tr>
                             <th>@lang('STT')</th>
+                            <th>@lang('Khu vực')</th>
                             <th>@lang('Mã thực đơn')</th>
                             <th>@lang('Tên thực đơn')</th>
+                            <th>@lang('Ngày áp dụng')</th>
                             <th>@lang('Các món ăn')</th>
+                            <th>@lang('Nhóm tuổi')</th>
                             <th style="width:350px;white-space: pre-line">@lang('Mô tả')</th>
                             <th>@lang('Trạng thái')</th>
                             <th>@lang('Thao tác')</th>
@@ -142,8 +164,14 @@
                                 <td>
                                     {{ $loop->iteration + ($rows->currentPage() - 1) * $rows->perPage() }}
                                 </td>
+                                <td>
+                                    {{ $row->area->name ?? '' }}
+                                </td>
                                 <td>{{ $row->code ?? '' }}</td>
                                 <td>{{ $row->name ?? '' }}</td>
+                                <td>
+                                    {{ isset($row->date) ? \Carbon\Carbon::parse($row->date)->format('d/m/Y') : '' }}
+                                </td>
                                 <td>
                                     @if (isset($row->menuDishes) && count($row->menuDishes) > 0)
                                         <ul >
@@ -154,6 +182,9 @@
                                     @else
                                         @lang('Chưa có món ăn nào')
                                     @endif
+                                </td>
+                                <td>
+                                    {{ isset($row->mealAge) ? $row->mealAge->name : '' }}
                                 </td>
                                 <td>
                                     {!! nl2br(__($row->description ?? '')) !!}
@@ -209,13 +240,24 @@
 
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Ngày áp dụng <small class="text-danger">*</small></label>
-                                    <input type="date" name="date" class="form-control" required>
+                                    <input type="date" name="date" class="form-control" value="" required>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Khu vực <small class="text-danger">*</small></label>
+                                    <select style="width:100%" name="area_id" class="form-control select2" required>
+                                        @foreach($list_area as $area)
+                                            <option value="{{ $area->id }}">{{ $area->name ?? "" }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Thực đơn mẫu <small class="text-danger">*</small></label>
                                     <select style="width:100%" name="meal_menu_planning_id" class="form-control select2" required>

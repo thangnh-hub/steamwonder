@@ -6,6 +6,7 @@ use App\Models\MealMenuPlanning;
 use App\Models\MealAges;
 use App\Models\MealMenuIngredient;
 use App\Models\MealMenuDishes;
+use App\Models\MealIngredient;
 use App\Http\Services\MenuPlanningService;
 use App\Models\MealDishes;
 use Illuminate\Http\Request;
@@ -182,6 +183,55 @@ class MealMenuPlanningController extends Controller
             DB::rollBack();
             return redirect()->back()->with('errorMessage', 'Đã xảy ra lỗi khi thêm món ăn: ' . $e->getMessage());
         }
+    }
+
+    //Tìm và thêm nguyên liệu vào thực đơn
+    public function searchIngredients(Request $request)
+    {
+        $params['keyword']= $request->input('keyword');
+        $params['status'] = Consts::STATUS['active'];
+        $query = MealIngredient::getSqlIngredient($params);
+
+        return response()->json($query->get(['id', 'name']));
+    }
+
+    public function addIngredients(Request $request, MenuPlanningService $menuPlanningService)
+    {
+        $request->validate([
+            'menu_id' => 'required|exists:tb_meal_menu_planning,id',
+            'ingredient_ids' => 'required|array',
+        ]);
+
+        $menuId = $request->menu_id;
+        $countStudent = MealMenuPlanning::find($menuId)->count_student ?? 1;
+
+        DB::beginTransaction();
+        try {
+            foreach ($request->ingredient_ids as $ingredientId) {
+                $perChild = floatval($request->ingredient_values[$ingredientId]);
+                $totalValue = $perChild * $countStudent;
+
+                // Kiểm tra trùng
+                $exists = MealMenuIngredient::where('menu_id', $menuId)
+                            ->where('ingredient_id', $ingredientId)
+                            ->exists();
+                if ($exists) continue;
+
+                MealMenuIngredient::create([
+                    'menu_id' => $menuId,
+                    'ingredient_id' => $ingredientId,
+                    'value' => $totalValue,
+                    'admin_created_id' => auth('admin')->id(),
+                ]);
+            }
+
+            DB::commit();
+            return redirect()->back()->with('successMessage', 'Đã thêm nguyên liệu vào thực đơn.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('errorMessage', 'Lỗi: ' . $e->getMessage());
+        }
+
     }
 
     public function updateIngredients(Request $request, $menuId)

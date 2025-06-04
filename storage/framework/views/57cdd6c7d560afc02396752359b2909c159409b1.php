@@ -5,8 +5,20 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('style'); ?>
-
     <style>
+        .table-wrapper {
+            max-height: 450px;
+            overflow-y: auto;
+            display: block;
+        }
+
+        .table-wrapper thead {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            z-index: 2;
+        }
+
         .modal-sm {
             width: 30%;
         }
@@ -203,11 +215,16 @@
                 <div class="box box-primary">
                     <div class="box-header with-border">
                         <h3 class="box-title"><?php echo app('translator')->get('Thực phẩm trong thực đơn'); ?></h3>
+                        <button type="button" class="btn btn-warning btn-sm pull-right"
+                                data-toggle="modal" data-target="#addIngredientModal">
+                            <i class="fa fa-plus"></i> Thêm thực phẩm vào thực đơn
+                        </button>
                     </div>
 
                     <div class="box-body">
                         <?php if($detail->menuIngredients->count()): ?>
-                            <table class="table table-bordered table-striped">
+                        <div class=" table-responsive">
+                            <table class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>STT</th>
@@ -268,6 +285,7 @@
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </tbody>
                             </table>
+                        </div>
                         <?php else: ?>
                             <p>Không có nguyên liệu nào được tính toán cho thực đơn này.</p>
                         <?php endif; ?>
@@ -393,18 +411,19 @@
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-bordered table-hover" id="ingredient-table">
-                            <thead>
-                                <tr>
-                                    <th>Chọn</th>
-                                    <th>Tên món ăn</th>
-                                    <th>Mã món</th>
-                                </tr>
-                            </thead>
-                            <tbody id="dishesResult">
-                            </tbody>
-                        </table>
-
+                        <div class="table-wrapper table-responsive">
+                            <table class="table table-bordered table-hover" id="ingredient-table">
+                                <thead>
+                                    <tr>
+                                        <th>Chọn</th>
+                                        <th>Tên món ăn</th>
+                                        <th>Mã món</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dishesResult">
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-success">Thêm món</button>
@@ -414,6 +433,66 @@
             </form>
         </div>
     </div>
+
+
+    
+    <div class="modal fade" id="addIngredientModal" tabindex="-1" role="dialog" aria-labelledby="addIngredientModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <form method="POST" action="<?php echo e(route('mealmenu.addIngredients')); ?>" id="addIngredientForm">
+                <?php echo csrf_field(); ?>
+                <input type="hidden" name="menu_id" value="<?php echo e($detail->id); ?>">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Thêm nguyên liệu vào thực đơn</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Tìm nguyên liệu:</label>
+                                    <input type="text" id="ingredientKeyword" class="form-control" placeholder="Từ khóa tìm kiếm...">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label><?php echo app('translator')->get('Tìm kiếm'); ?>: </label>
+                                    <div style="display:flex;jsutify-content:space-between;">
+                                        <button type="button" class="btn btn-primary mt-4" id="btnSearchIngredients">
+                                            <i class="fa fa-search"></i> Tìm kiếm
+                                        </button>
+                                        <span id="ingredient-loading-spinner" style="display: none;">
+                                            <i class="fa fa-spinner fa-spin text-info"></i> Đang tìm...
+                                        </span>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-wrapper table-responsive">
+                            <table class="table table-bordered mt-3">
+                                <thead>
+                                    <tr>
+                                        <th>Chọn</th>
+                                        <th>Tên nguyên liệu</th>
+                                        <th>Định lượng cho 1 suất (g)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ingredientsResult">
+                                    <!-- Kết quả AJAX -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Thêm nguyên liệu</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
 <?php $__env->stopSection(); ?>
 
@@ -497,6 +576,49 @@
                 $('#total-' + id).text(total);
             });
         });
+
+        // Ajax search for ingredients
+        $('#btnSearchIngredients').click(function () {
+            let keyword = $('#ingredientKeyword').val();
+            $('#ingredient-loading-spinner').show();
+            $('#ingredientsResult').html('');
+
+            $.ajax({
+                url: '<?php echo e(route("mealmenu.searchIngredients")); ?>',
+                method: 'GET',
+                data: { keyword: keyword },
+                success: function (data) {
+                    $('#ingredient-loading-spinner').hide();
+                    let html = '';
+                    if (data.length === 0) {
+                        html = `
+                            <tr>
+                                <td colspan="3" class="text-center text-muted">Không tìm thấy nguyên liệu nào.</td>
+                            </tr>
+                        `;
+                        $('#ingredientsResult').html(html);
+                        return;
+                    }
+                    data.forEach(function (ingredient) {
+                        html += `
+                            <tr>
+                                <td><input type="checkbox" name="ingredient_ids[]" value="${ingredient.id}"></td>
+                                <td>${ingredient.name}</td>
+                                <td>
+                                    <input type="number" name="ingredient_values[${ingredient.id}]" step="0.01" min="0" class="form-control">
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    $('#ingredientsResult').html(html);
+                },
+                error: function () {
+                    $('#ingredient-loading-spinner').hide();
+                    alert('Lỗi tìm kiếm nguyên liệu.');
+                }
+            });
+        });
+
 
     </script>
     

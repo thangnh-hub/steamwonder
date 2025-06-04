@@ -17,6 +17,7 @@ class CreateTbMealMenuDailyTable extends Migration
             $table->id();
             $table->foreignId('meal_menu_planning_id')->nullable()->constrained('tb_meal_menu_planning')->comment('Thực đơn mẫu');
             $table->foreignId('meal_age_id')->nullable()->constrained('tb_meal_ages')->comment('Nhóm tuổi');
+            $table->foreignId('area_id')->nullable()->constrained('tb_areas')->comment('Cơ sở');
             $table->date('date')->nullable()->comment('Ngày áp dụng thực đơn');
             $table->string('name')->nullable()->comment('Tên thực đơn');
             $table->string('code')->nullable()->comment('Mã thực đơn');

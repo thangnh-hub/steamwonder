@@ -6,6 +6,10 @@
 
 <?php $__env->startSection('style'); ?>
     <style>
+        .content-header{
+            display: flex;
+            justify-content: space-between;
+        }
         .box-body {
             margin-bottom: 0px;
         }
@@ -24,9 +28,12 @@
 
 <?php $__env->startSection('content'); ?>
     <section class="content-header">
-        <h1>
-            <?php echo app('translator')->get($module_name); ?>
-        </h1>
+            <h1>
+                <?php echo app('translator')->get($module_name); ?>
+            </h1>
+            <a class="pull-right" href="<?php echo e(route( 'mealmenu.daily.report')); ?>">
+                <button type="button" class="btn btn-sm btn-success"><?php echo app('translator')->get('Danh sách thống kê'); ?></button>
+            </a>
     </section>
 
     <!-- Main content -->
@@ -68,12 +75,11 @@
                 <div class="box-body">
                     <?php $__currentLoopData = $groupedIngredients; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type => $items): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <label><strong>Loại: <?php echo e(ucfirst(__($type))); ?></strong></label>
-                        <table class="table table-bordered table-striped" style="margin-bottom: 20px">
+                        <table class="table table-bordered " style="margin-bottom: 20px">
                             <thead>
                                 <tr>
                                     <th>STT</th>
                                     <th>Tên nguyên liệu</th>
-                                    <th>Định lượng cho 1 suất</th>
                                     <th>Định lượng tổng</th>
                                     <th>KG</th>
                                     <th>Đơn vị chính</th>
@@ -96,7 +102,6 @@
                                     <tr>
                                         <td><?php echo e($loop->iteration); ?></td>
                                         <td><?php echo e($ingredient->name); ?></td>
-                                        <td><?php echo e(rtrim(rtrim(number_format($valuePerOne, 2, '.', ''), '0'), '.')); ?> g</td>
                                         <td><?php echo e(rtrim(rtrim(number_format($item['total'], 2, '.', ''), '0'), '.')); ?> g</td>
                                         <td><?php echo e(rtrim(rtrim(number_format($valueInKg, 2, '.', ''), '0'), '.')); ?> kg</td>
                                         <td>
@@ -118,7 +123,7 @@
 
 
         <?php $__currentLoopData = $menus; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $menu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-            <div style="margin-bottom: 30px;" class="box">
+            <div style="margin-bottom: 30px;" class="box collapsed-box">
                 <div class="box-header with-border">
                     <h3 class="box-title"><?php echo app('translator')->get('Nguyên liệu cho nhóm tuổi'); ?>: <?php echo e($menu->mealAge->name ?? '-'); ?>
 
@@ -126,12 +131,12 @@
                     </h3>
                     
                     <div class="box-tools pull-right">
-                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
                     </div>
                 </div>
-                <div class="box-body">
+                <div class="box-body" >
                     <?php if($menu->menuIngredients->count()): ?>
-                        <table class="table table-bordered table-striped">
+                        <table class="table table-bordered ">
                             <thead>
                                 <tr>
                                     <th><?php echo app('translator')->get('STT'); ?></th>
