@@ -48,7 +48,7 @@
                                 <div class="top_bar_login ml-auto">
                                     <div class="button">
                                         <a href="{{ route('frontend.login') }}" class="text-white" data-toggle="modal"
-                                        data-target="#loginModal">
+                                            data-target="#loginModal">
                                             @lang('Đăng nhập')
                                             <div class="button_arrow"><i class="fa fa-sign-in" aria-hidden="true"></i>
                                             </div>
@@ -72,7 +72,8 @@
                         <div class="logo_container">
                             <a href="{{ route('home') }}">
                                 <div class="logo_content d-flex flex-row align-items-end justify-content-start">
-                                    <div class="logo_img"><img src="{{ $setting->logo_header }}" alt="{{ $setting->site_title }}"></div>
+                                    <div class="logo_img"><img src="{{ $setting->logo_header }}"
+                                            alt="{{ $setting->site_title }}"></div>
                                     {{-- <div class="logo_text">learn</div> --}}
                                 </div>
                             </a>
@@ -80,16 +81,22 @@
 
                         <nav class="main_nav_contaner ml-auto">
                             <ul class="main_nav">
-                                @foreach ($menu_childs as $val_menu1)
-                                    <li
-                                        class="{{ (parse_url(url()->full(), PHP_URL_PATH) == '' && $val_menu1->url_link == '/') || $val_menu1->url_link == parse_url(url()->full(), PHP_URL_PATH) ? 'active' : '' }}">
-                                        <a
-                                            href="{{ $val_menu1->url_link ?? 'javascript:void(0)' }}">{{ $val_menu1->json_params->name->$locale ?? $val_menu1->name }}</a>
+                                @if (isset($menu_childs) && count($menu_childs) > 0)
+                                    @foreach ($menu_childs as $val_menu1)
+                                        <li
+                                            class="{{ (parse_url(url()->full(), PHP_URL_PATH) == '' && $val_menu1->url_link == '/') || $val_menu1->url_link == parse_url(url()->full(), PHP_URL_PATH) ? 'active' : '' }}">
+                                            <a
+                                                href="{{ $val_menu1->url_link ?? 'javascript:void(0)' }}">{{ $val_menu1->json_params->name->$locale ?? $val_menu1->name }}</a>
+                                        </li>
+                                    @endforeach
+                                @endif
+                                @if (isset($user_auth))
+                                    <li class="">
+                                        <a href="{{ route('frontend.logout') }}">@lang('Đăng xuất')</a>
                                     </li>
-                                @endforeach
+                                @endif
                             </ul>
-                            <div class="search_button"><i class="fa fa-search" aria-hidden="true"></i></div>
-
+                            {{-- <div class="search_button"><i class="fa fa-search" aria-hidden="true"></i></div> --}}
                             <!-- Hamburger -->
 
                             <div class="hamburger menu_mm">
@@ -104,7 +111,7 @@
     </div>
 
     <!-- Header Search Panel -->
-    <div class="header_search_container">
+    {{-- <div class="header_search_container">
         <div class="container">
             <div class="row">
                 <div class="col">
@@ -120,7 +127,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <!-- Header Search Panel -->
     <div class="menu d-flex flex-column align-items-end justify-content-start text-right menu_mm trans_400">
@@ -130,7 +137,7 @@
                 <div></div>
             </div>
         </div>
-        <div class="search">
+        {{-- <div class="search">
             <form action="#" class="header_search_form menu_mm">
                 <input type="search" class="search_input menu_mm" placeholder="Search" required="required">
                 <button
@@ -138,15 +145,23 @@
                     <i class="fa fa-search menu_mm" aria-hidden="true"></i>
                 </button>
             </form>
-        </div>
+        </div> --}}
         <nav class="menu_nav">
             <ul class="menu_mm">
-                @foreach ($menu_childs as $val_menu1)
-                    <li class="menu_mm">
-                        <a
-                            href="{{ $val_menu1->url_link ?? 'javascript:void(0)' }}">{{ $val_menu1->json_params->name->$locale ?? $val_menu1->name }}</a>
+                @if (isset($menu_childs) && count($menu_childs) > 0)
+
+                    @foreach ($menu_childs as $val_menu1)
+                        <li class="menu_mm">
+                            <a
+                                href="{{ $val_menu1->url_link ?? 'javascript:void(0)' }}">{{ $val_menu1->json_params->name->$locale ?? $val_menu1->name }}</a>
+                        </li>
+                    @endforeach
+                @endif
+                @if (isset($user_auth))
+                    <li class="">
+                        <a href="{{ route('frontend.logout') }}">@lang('Đăng xuất')</a>
                     </li>
-                @endforeach
+                @endif
             </ul>
         </nav>
         <div class="menu_extra">

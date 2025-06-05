@@ -67,17 +67,18 @@ class StudentBalanceReceiptImport implements ToCollection
                     continue;
                 }
 
-                // Kiểm tra TBP của học sinh
-                $receipt = Receipt::where('student_id', $student->id)->first();
+                // Kiểm tra TBP loại renew của học sinh
+                $receipt = Receipt::where('student_id', $student->id)->where('type_receipt', 'renew')->first();
                 if (empty($receipt)) {
-                    $this->rowError++;
-                    array_push($this->arrErrorMessage, 'Vị trí ' . $key . ': ' . $student->id . ' Chưa có TBP!');
-                    continue;
+                    // Kiểm tra TBP loại yearly của học sinh
+                    $receipt = Receipt::where('student_id', $student->id)->where('type_receipt', 'yearly')->first();
+                    if (empty($receipt)) {
+                        $this->rowError++;
+                        array_push($this->arrErrorMessage, 'Vị trí ' . $key . ': ' . $student->id . ' Chưa có TBP!');
+                        continue;
+                    }
                 }
-
-
                 // Cập nhật TBP
-
                 $data = [
                     'value' => trim($row[2]),
                     'content' => trim($row[3]),

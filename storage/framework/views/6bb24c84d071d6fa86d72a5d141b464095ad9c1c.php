@@ -379,10 +379,8 @@
                                                     data-target="#addServiceModal">
                                                     <i class="fa fa-plus"></i> <?php echo app('translator')->get('Đăng ký dịch vụ'); ?>
                                                 </button>
-                                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
-                                                    data-target="#reincarnationModal">
-                                                    <i class="fa fa-recycle"></i> <?php echo app('translator')->get('Xử lý tái tục dịch vụ'); ?>
-                                                </button>
+                                                
+                                                
                                             </div>
                                             <br>
                                             <div class="table-responsive">
@@ -712,7 +710,6 @@
                                                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                                 <?php else: ?>
-                                                                    <?php if(isset($row->json_params->services)): ?>
                                                                     <?php $__currentLoopData = $row->json_params->services; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                                         <?php
                                                                             $service_detail = $services->firstWhere(
@@ -736,7 +733,6 @@
                                                                             </li>
                                                                         </ul>
                                                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                                    <?php endif; ?>
                                                                 <?php endif; ?>
                                                             </td>
                                                             <td class="status">

@@ -93,8 +93,10 @@ class StudentReceiptImport implements ToCollection
                     continue;
                 }
 
-
-                $reseipt = Receipt::where('student_id', $student->id)->first();
+                // Kiểm tra học sinh đã có phí tái tục chưa
+                $reseipt = Receipt::where('student_id', $student->id)
+                ->where('type_receipt','renew')
+                ->first();
                 if (!empty($reseipt)) {
                     $this->rowError++;
                     array_push($this->arrErrorMessage, 'Vị trí ' . $key . ': Học sinh đã có TBP !');

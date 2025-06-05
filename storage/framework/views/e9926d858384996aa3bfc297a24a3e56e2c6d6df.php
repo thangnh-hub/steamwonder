@@ -1,6 +1,3 @@
-
-
-
 <?php $__env->startSection('title'); ?>
     <?php echo app('translator')->get($module_name); ?>
 <?php $__env->stopSection(); ?>
@@ -43,6 +40,28 @@
         td ul {
             margin-block-start: 0px !important;
             padding-inline-start: 10px !important;
+        }
+        input[type="radio"] {
+            transform: scale(1.5);
+        }
+
+        td.service {
+            cursor: pointer;
+        }
+
+        .service {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 6;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+        }
+
+        td.service.expanded {
+            display: table-cell;
+            -webkit-line-clamp: unset;
+            overflow: visible;
         }
     </style>
 <?php $__env->stopSection(); ?>
@@ -662,27 +681,64 @@
 
                                                             </td>
                                                             <td class="service">
-                                                                <?php $__currentLoopData = $row->json_params->services; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                    <?php
-                                                                        $service_detail = $row
-                                                                            ->getServices()
-                                                                            ->find($val->service_id);
-                                                                    ?>
-                                                                    <ul>
-                                                                        <li>Dịch vụ:
-                                                                            <?php echo e($service_detail->name ?? ''); ?>
+                                                                <?php if(isset($row->json_params->is_payment_cycle) && $row->json_params->is_payment_cycle == 1): ?>
+                                                                    <?php $__currentLoopData = $row->json_params->payment_cycle; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key_cycle => $item_cycle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                        <?php
+                                                                            $payment_cycle = $list_payment_cycle->firstWhere(
+                                                                                'id',
+                                                                                (int) $key_cycle
+                                                                            );
+                                                                        ?>
+                                                                        <div class="box-title">
+                                                                            <?php echo e($payment_cycle->name ?? ''); ?></div>
+                                                                        <?php $__currentLoopData = $item_cycle->services; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                            <?php
+                                                                                $service_detail = $services->firstWhere(
+                                                                                    'id',
+                                                                                    $val->service_id
+                                                                                );
+                                                                            ?>
+                                                                            <ul>
+                                                                                <li>Dịch vụ:
+                                                                                    <?php echo e($service_detail->name ?? ''); ?>
 
-                                                                        </li>
-                                                                        <li>Giá trị áp dụng:
-                                                                            <?php echo e(number_format($val->value, 0, ',', '.')); ?>
+                                                                                </li>
+                                                                                <li>Giá trị áp dụng:
+                                                                                    <?php echo e(number_format($val->value, 0, ',', '.')); ?>
 
-                                                                        </li>
-                                                                        <li>Số lần áp dụng:
-                                                                            <?php echo e($val->apply_count ?? ''); ?>
+                                                                                </li>
+                                                                                <li>Số lần áp dụng:
+                                                                                    <?php echo e($val->apply_count ?? '1'); ?>
 
-                                                                        </li>
-                                                                    </ul>
-                                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                                                </li>
+                                                                            </ul>
+                                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                                <?php else: ?>
+                                                                    <?php $__currentLoopData = $row->json_params->services; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                        <?php
+                                                                            $service_detail = $services->firstWhere(
+                                                                                'id',
+                                                                                $val->service_id
+                                                                            );
+                                                                        ?>
+
+                                                                        <ul>
+                                                                            <li>Dịch vụ:
+                                                                                <?php echo e($service_detail->name ?? ''); ?>
+
+                                                                            </li>
+                                                                            <li>Giá trị áp dụng:
+                                                                                <?php echo e(number_format($val->value, 0, ',', '.')); ?>
+
+                                                                            </li>
+                                                                            <li>Số lần áp dụng:
+                                                                                <?php echo e($val->apply_count ?? '1'); ?>
+
+                                                                            </li>
+                                                                        </ul>
+                                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                                <?php endif; ?>
                                                             </td>
                                                             <td class="status">
                                                                 <?php echo e(__($row->status)); ?>
@@ -729,29 +785,65 @@
                                                                 <?php echo e(\Carbon\Carbon::parse($row->time_end)->format('Y-m-d') ?? ''); ?>
 
                                                             </td>
-                                                            <td>
-                                                                <?php $__currentLoopData = $row->promotion->json_params->services; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                    <?php
+                                                            <td class="service">
+                                                                <?php if(isset($row->promotion->json_params->is_payment_cycle) && $row->promotion->json_params->is_payment_cycle == 1): ?>
+                                                                    <?php $__currentLoopData = $row->promotion->json_params->payment_cycle; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key_cycle => $item_cycle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                        <?php
+                                                                            $payment_cycle = $list_payment_cycle->firstWhere(
+                                                                                'id',
+                                                                                (int) $key_cycle
+                                                                            );
+                                                                        ?>
+                                                                        <div class="box-title">
+                                                                            <?php echo e($payment_cycle->name ?? ''); ?></div>
+                                                                        <?php $__currentLoopData = $item_cycle->services; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                            <?php
+                                                                                $service_detail = $services->firstWhere(
+                                                                                    'id',
+                                                                                    $val->service_id
+                                                                                );
+                                                                            ?>
+                                                                            <ul>
+                                                                                <li>Dịch vụ:
+                                                                                    <?php echo e($service_detail->name ?? ''); ?>
 
-                                                                        $service_detail = $row->promotion
-                                                                            ->getServices()
-                                                                            ->find($val->service_id);
-                                                                    ?>
-                                                                    <ul>
-                                                                        <li>Dịch vụ:
-                                                                            <?php echo e($service_detail->name ?? ''); ?>
+                                                                                </li>
+                                                                                <li>Giá trị áp dụng:
+                                                                                    <?php echo e(number_format($val->value, 0, ',', '.')); ?>
 
-                                                                        </li>
-                                                                        <li>Giá trị áp dụng:
-                                                                            <?php echo e(number_format($val->value, 0, ',', '.')); ?>
+                                                                                </li>
+                                                                                <li>Số lần áp dụng:
+                                                                                    <?php echo e($val->apply_count ?? '1'); ?>
 
-                                                                        </li>
-                                                                        <li>Số lần áp dụng:
-                                                                            <?php echo e($val->apply_count ?? ''); ?>
+                                                                                </li>
+                                                                            </ul>
+                                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                                <?php else: ?>
+                                                                    <?php $__currentLoopData = $row->promotion->json_params->services; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                        <?php
+                                                                            $service_detail = $services->firstWhere(
+                                                                                'id',
+                                                                                $val->service_id
+                                                                            );
+                                                                        ?>
 
-                                                                        </li>
-                                                                    </ul>
-                                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                                        <ul>
+                                                                            <li>Dịch vụ:
+                                                                                <?php echo e($service_detail->name ?? ''); ?>
+
+                                                                            </li>
+                                                                            <li>Giá trị áp dụng:
+                                                                                <?php echo e(number_format($val->value, 0, ',', '.')); ?>
+
+                                                                            </li>
+                                                                            <li>Số lần áp dụng:
+                                                                                <?php echo e($val->apply_count ?? '1'); ?>
+
+                                                                            </li>
+                                                                        </ul>
+                                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                                <?php endif; ?>
                                                             </td>
                                                             <td>
                                                                 <?php echo e(__($row->status)); ?>
@@ -1292,6 +1384,10 @@
         });
 
         $(document).ready(function() {
+            $("td.service").on("click", function() {
+                $(this).toggleClass("expanded");
+            });
+
             var activeTab = localStorage.getItem('activeTab');
             if (activeTab) {
                 // Bỏ class active hiện tại

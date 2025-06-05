@@ -8,6 +8,7 @@ use App\Http\Services\VietQrService;
 use App\Http\Services\DataPermissionService;
 use App\Http\Services\ReceiptService;
 use App\Models\Receipt;
+use App\Models\ReceiptDetail;
 use App\Models\ReceiptTransaction;
 use App\Models\Area;
 use App\Models\Service;
@@ -17,6 +18,7 @@ use App\Models\StudentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Exception;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
@@ -142,10 +144,17 @@ class ReceiptController extends Controller
             $json_params['due_date'] = $request->input('due_date');
             if ($receipt->total_paid >= $receipt->total_final) {
                 $receipt->status = Consts::STATUS_RECEIPT['paid'];
+                if ($receipt->receiptDetail->isNotEmpty()) {
+                    $receipt->receiptDetail()->update([
+                        'status' => Consts::STATUS_RECEIPT['paid'],
+                        'admin_updated_id' => $admin->id,
+                    ]);
+                }
             }
             $receipt->cashier_id = $admin->id;
             $receipt->admin_updated_id = $admin->id;
             $receipt->json_params = $json_params;
+
             // Cập nhật trạng thái của prev_receipt nếu tồn tại
             if ($receipt->prev_receipt) {
                 $receipt->prev_receipt->status = Consts::STATUS_RECEIPT['completed'];
@@ -168,12 +177,11 @@ class ReceiptController extends Controller
             $receipt->status = Consts::STATUS_RECEIPT['approved'];
             $receipt->admin_updated_id = $admin->id;
             // Cập nhật trạng thái của receiptDetail nếu tồn tại
-            if ($receipt->receiptDetail->count() > 0) {
-                foreach ($receipt->receiptDetail as $item) {
-                    $item->status = Consts::STATUS_RECEIPT['approved'];
-                    $item->admin_updated_id = $admin->id;
-                    $item->save();
-                }
+            if ($receipt->receiptDetail->isNotEmpty()) {
+                $receipt->receiptDetail()->update([
+                    'status' => Consts::STATUS_RECEIPT['approved'],
+                    'admin_updated_id' => $admin->id,
+                ]);
             }
             $receipt->save();
             DB::commit();
@@ -333,13 +341,19 @@ class ReceiptController extends Controller
         $receipt_id = $request->input('receipt_id');
         $type = $request->input('type');
         $result = $message = '';
+        $receipt = Receipt::find($receipt_id);
+        if(empty($receipt)){
+            return $this->sendResponse('error', 'Không tìm thấy TBP!');
+        }
+        if($this->checkStatusReceipt($receipt_id) == false){
+            return $this->sendResponse('warning', 'TBP đã thanh toán!');
+        }
         switch ($type) {
             case 'create':
                 $params['cashier'] = $admin->id;
                 $params['admin_created_id'] = $admin->id;
                 ReceiptTransaction::create($params);
                 // Cập nhật lại số tiền trong bảng receipt
-                $receipt = Receipt::find($receipt_id);
                 // Lấy tổng tiền receipt_transaction
                 $total_paid = $receipt->receiptTransaction->sum('paid_amount');
                 $receipt->total_paid = $total_paid;
@@ -358,6 +372,16 @@ class ReceiptController extends Controller
         return $this->sendResponse($result, $message);
     }
 
+    public function checkStatusReceipt($id)
+    {
+        $result = false;
+        $receipt = Receipt::find($id);
+        if ($receipt->status == Consts::STATUS_RECEIPT['pending'] || $receipt->status == Consts::STATUS_RECEIPT['approved']) {
+            $result = true;
+        }
+        return $result;
+    }
+
     public function exportReceipt(Request $request)
     {
         $params = $request->all();
@@ -365,5 +389,35 @@ class ReceiptController extends Controller
         $params['permission_area'] = DataPermissionService::getPermisisonAreas($auth->id);
 
         return Excel::download(new ReceiptExport($params), 'Receipt.xlsx');
+    }
+    public function deletePaymentDetailsAndRecalculate(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $auth = Auth::guard('admin')->user();
+            $receipt_id = $request->input('receipt_id');
+            $detail_id = $request->input('detail_id');
+            // Xóa receipt detail
+            $detail = ReceiptDetail::where('id', $detail_id)->where('receipt_id', $receipt_id)->first();
+            if (empty($detail)) {
+                return $this->sendResponse('error', __('Không tìm thấy dư liệu!'));
+            }
+            $detail->delete();
+            // Cập nhật lại  giá của receipt
+            $receipt = Receipt::find($receipt_id);
+            $receipt->total_amount = $receipt->receiptDetail()->sum('amount');
+            $receipt->total_discount = $receipt->receiptDetail()->sum('discount_amount');
+
+            $receipt->total_final = $receipt->receiptDetail()->sum('final_amount') - $receipt->prev_balance;
+            $receipt->total_due = $receipt->total_final - $receipt->total_paid;
+            $receipt->admin_updated_id = $auth->id;
+            $receipt->save();
+            DB::commit();
+            Session::flash('successMessage', 'Cập nhật thông tin thành công!');
+            return $this->sendResponse('success', __('Cập nhật thông tin thành công!'));
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            return $this->sendResponse('error', __('Lỗi kết nối!'));
+        }
     }
 }

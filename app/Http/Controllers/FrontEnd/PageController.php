@@ -40,7 +40,12 @@ class PageController extends Controller
 
     public function index(Request $request, $taxonomy = null, $alias = null)
     {
-
+        if (Auth::guard('web')->check()) {
+            $user = Auth::guard('web')->user();
+            $this->responseData['students'] = optional($user->parent)->parentStudents
+                ? optional($user->parent)->parentStudents->map(fn($val) => $val->student)
+                : [];
+        }
         $seo_title = ($this->responseData['locale'] == $this->responseData['lang_default']) ? $this->responseData['setting']->seo_title : $this->responseData['setting']->{$this->responseData['locale'] . '-seo_title'} ?? '';
         $seo_keyword = ($this->responseData['locale'] == $this->responseData['lang_default']) ? $this->responseData['setting']->seo_keyword : $this->responseData['setting']->{$this->responseData['locale'] . '-seo_keyword'} ?? '';
         $seo_description = ($this->responseData['locale'] == $this->responseData['lang_default']) ? $this->responseData['setting']->seo_description : $this->responseData['setting']->{$this->responseData['locale'] . '-seo_description'} ?? '';
@@ -104,7 +109,7 @@ class PageController extends Controller
 
                 // lấy danh mục nổi bật
                 $feature_taxonomy = collect($this->responseData['taxonomys'])->filter(function ($item,  $key) {
-                    return isset($item->json_params->is_featured) && $item->json_params->is_featured == true && $item->taxonomy == Consts::TAXONOMY['post'] ;
+                    return isset($item->json_params->is_featured) && $item->json_params->is_featured == true && $item->taxonomy == Consts::TAXONOMY['post'];
                 })->take(Consts::LIMIT_TAXONOMY['post']);
                 // lấy bài viết xem nhiều
                 $params_visited_post['order_by'] = ['count_visited' => 'DESC'];
@@ -181,14 +186,14 @@ class PageController extends Controller
                         $this->responseData['feature_taxonomy'] = $feature_taxonomy;
                         $this->responseData['featured_post'] = $featured_post;
 
-                        $taxonomy_detail = collect($this->responseData['taxonomys'])->first(function ($item,  $key) use($detail){
+                        $taxonomy_detail = collect($this->responseData['taxonomys'])->first(function ($item,  $key) use ($detail) {
                             return collect(explode(',', $detail->list_taxonomy_id))->contains($item->id);
                         });
                         $this->responseData['taxonomy_detail'] = $taxonomy_detail;
                         break;
 
                     default:
-                    return redirect()->route('home')->with('errorMessage', __('Page không tồn tại'));
+                        return redirect()->route('home')->with('errorMessage', __('Page không tồn tại'));
                         break;
                 }
                 $this->responseData['meta']['seo_title'] = $detail->json_params->name->{$this->responseData['locale']} ?? ($detail->name ?? $seo_title);
@@ -238,7 +243,6 @@ class PageController extends Controller
             $this->responseData['blocks_selected'] = $blocks_selected;
             return $this->responseData;
         }
-
     }
 
     public function buildPage($json_params)

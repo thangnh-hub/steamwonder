@@ -39,12 +39,14 @@ class ReceiptService
         $existing = ReceiptDetail::where('student_id', $student->id)
             ->whereIn('service_id', $serviceIds)
             ->whereYear('month', $year)
-            ->whereMonth('month', '>=', 6)
+            ->where(function ($q){
+                    return $q->whereMonth('month', '>=', 6)
+                        ->orwhereMonth('month', '<=', 5);
+                })
             ->whereHas('services_receipt', function ($query) {
                 $query->where('service_type', 'yearly');
             })
             ->exists();
-
         return $existing;
     }
 
@@ -79,6 +81,12 @@ class ReceiptService
                 $deductions = $this->getDeductions();
                 $details = $this->generateReceiptDetailsYearly($policies, $promotions, $deductions, $data['student_services'], $startDate);
             }
+            if ($receipt->type_receipt == Consts::TYPE_RECEIPT['new_student']) {
+                $deductions = $this->getDeductions();
+                $includeCurrent = $data['include_current_month'] ?? false;
+                $details = $this->generateReceiptDetails($policies, $promotions, $deductions, $data['student_services'], $startDate, $includeCurrent);
+            }
+
             return $this->updateReceipt($receipt, $student, $details, $data);
         });
     }
@@ -478,12 +486,14 @@ class ReceiptService
             $checkMonth = Carbon::parse($month)->startOfMonth();
             if ($checkMonth->between($start, $end)) {
                 $json_params = $pro->promotion->json_params;
+
                 if (isset($json_params->is_payment_cycle) && $json_params->is_payment_cycle == 1) {
                     $discount_promotion_value = $json_params->payment_cycle->{$cycle->id}->services->{$service_info['id']}->value ?? 0;
                 } else {
                     $discount_promotion_value = $json_params->services->{$service_info['id']}->value ?? 0;
                 }
                 $discount_promotion_type = $pro->promotion->promotion_type ?? null;
+
                 if ($discount_promotion_type == Consts::TYPE_POLICIES['percent'] && $discount_promotion_value > 0) {
                     $has_valid_promotion = true;
                     $discount_notes[] = "{$pro->promotion->promotion_name} giảm ({$discount_promotion_value}%)";
@@ -559,7 +569,7 @@ class ReceiptService
 
     // Phần ĐẦU NĂM
 
-    public function ReceiptForStudentYearly(Student $student, array $data)
+    public function createReceiptForStudentYearly(Student $student, array $data)
     {
         return DB::transaction(function () use ($student, $data) {
             $policies = $student->studentPolicies->pluck('policy');

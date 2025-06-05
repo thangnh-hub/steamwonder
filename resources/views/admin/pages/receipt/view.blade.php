@@ -10,6 +10,11 @@
                 <h5 class="fw-bold">Dịch vụ kèm theo</h5>
             </a>
         </li>
+        <li class="">
+            <a href="#tab_duno" data-toggle="tab">
+                <h5 class="fw-bold">Số dư kỳ trước</h5>
+            </a>
+        </li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_thongtin">
@@ -103,7 +108,7 @@
                                 <label class="control-label"><strong>@lang('Tổng tiền thực tế')</strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p>{{ number_format($detail->total_final , 0, ',', '.') ?? '' }}
+                                <p>{{ number_format($detail->total_final, 0, ',', '.') ?? '' }}
                                 </p>
                             </div>
                         </div>
@@ -239,6 +244,36 @@
                                                 </tr>
                                             @endforeach
                                         @endisset
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane " id="tab_duno">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box" style="border-top: 3px solid #d2d6de;">
+                        <div class="box-body no-padding">
+                            <div class="table-responsive table-wrapper">
+                                <table class="table table-hover sticky ">
+                                    <thead>
+                                        <tr>
+                                            <th>@lang('Tên phí')</th>
+                                            <th>@lang('Số tiền còn phải thu (+) hoặc thừa (-)') </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="box_explanation">
+                                        @if (isset($detail->json_params->explanation))
+                                            @foreach ($detail->json_params->explanation as $key => $item)
+                                                <tr class="item_explanation">
+                                                    <td>{{ $item->content ?? '' }}</td>
+                                                    <td>{{ number_format($item->value, 0, ',', '.') }}</td>
+                                                </tr>
+                                            @endforeach
+                                        @endif
                                     </tbody>
                                 </table>
                             </div>

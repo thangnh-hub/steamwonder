@@ -69,10 +69,10 @@ class Controller extends BaseController
         $this->responseData['locale'] = App::getLocale();
         $this->responseData['lang_default'] = $lang->lang_code;
         // thông tin seo chung
-        $this->responseData['seo_title'] = (App::getLocale() == $lang->lang_code) ? $setting->seo_title : $setting->{App::getLocale() . '-seo_title'} ?? '';
-        $this->responseData['seo_keyword'] = (App::getLocale() == $lang->lang_code) ? $setting->seo_keyword : $setting->{App::getLocale() . '-seo_keyword'} ?? '';
-        $this->responseData['seo_description'] = (App::getLocale() == $lang->lang_code) ? $setting->seo_description : $setting->{App::getLocale() . '-seo_description'} ?? '';
-        $this->responseData['seo_image'] = $setting->seo_og_image ?? '';
+        $this->responseData['meta']['seo_title'] = (App::getLocale() == $lang->lang_code) ? $setting->seo_title : $setting->{App::getLocale() . '-seo_title'} ?? '';
+        $this->responseData['meta']['seo_keyword'] = (App::getLocale() == $lang->lang_code) ? $setting->seo_keyword : $setting->{App::getLocale() . '-seo_keyword'} ?? '';
+        $this->responseData['meta']['seo_description'] = (App::getLocale() == $lang->lang_code) ? $setting->seo_description : $setting->{App::getLocale() . '-seo_description'} ?? '';
+        $this->responseData['meta']['seo_image'] = $setting->seo_og_image ?? '';
     }
     /**
      * Xử lý các thông tin hệ thống trước khi đổ ra view
