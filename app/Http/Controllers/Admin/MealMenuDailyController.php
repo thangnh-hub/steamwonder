@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Models\Area;
 use App\Http\Services\DataPermissionService;
+use Carbon\CarbonPeriod;
 
 class MealMenuDailyController extends Controller
 {
@@ -392,6 +393,84 @@ class MealMenuDailyController extends Controller
         $this->responseData['module_name'] = "Tổng hợp thực phẩm ngày " . Carbon::parse($date)->format('d/m/Y'). ' - ' . ($area_id ? Area::find($area_id)->name : '');
 
         return $this->responseView($this->viewPart . '.show_by_date');
+    }
+
+    
+    public function reportByWeek(Request $request)
+    {
+        $week = $request->input('week') ?? now()->format('o-\WW');
+        [$year, $weekNumber] = explode('-W', $week);
+        $startOfWeek = Carbon::now()->setISODate($year, $weekNumber)->startOfWeek();
+        $endOfWeek = (clone $startOfWeek)->endOfWeek();
+
+        // Lấy khu vực theo quyền
+        $permisson_area_id = DataPermissionService::getPermisisonAreas(Auth::guard('admin')->user()->id);
+        if (empty($permisson_area_id)) $permisson_area_id = [-1];
+        $params_area['id'] = $permisson_area_id;
+        $params_area['status'] = Consts::STATUS['active'];
+        $this->responseData['list_area'] = Area::getsqlArea($params_area)->get();
+
+        // Lấy thực đơn trong tuần
+        $query = MealMenuDaily::with(['menuDishes.dishes', 'mealAge', 'area'])
+            ->whereBetween('date', [$startOfWeek->toDateString(), $endOfWeek->toDateString()])
+            ->whereIn('area_id', $permisson_area_id);
+
+        if ($request->filled('area_id')) {
+            $query->where('area_id', $request->area_id);
+        }
+
+        $menus = $query->get();
+        // Group dữ liệu dạng: date → area_id → [name, data → age → type → dishes]
+        $menusGrouped = $menus->groupBy('date')->map(function ($dailyMenus) {
+            return $dailyMenus->groupBy(function ($menu) {
+                return optional($menu->mealAge)->name; // group theo nhóm tuổi
+            })->map(function ($ageGroup) {
+                $mealTypes = [];
+
+                foreach ($ageGroup as $menu) {
+                    foreach ($menu->menuDishes as $menuDish) {
+                        $type = $menuDish->type ?? 'unknown';
+                        $mealTypes[$type][] = $menuDish->dishes;
+                    }
+                }
+
+                return collect($mealTypes);
+            });
+        });
+
+        //Xử lý view theo age
+        $menusGroupedByAge = [];
+        $dishesTime = Consts::DISHES_TIME;
+        foreach ($menus as $menu) {
+            $ageName = optional($menu->mealAge)->name ?? 'Không rõ';
+            $date = $menu->date;
+
+            foreach ($dishesTime as $type) {
+                $menusGroupedByAge[$ageName][$type][$date] = []; 
+            }
+
+            foreach ($menu->menuDishes as $menuDish) {
+                $type = $menuDish->type ?? 'unknown';
+                if (!in_array($type, $dishesTime)) continue;
+
+                $menusGroupedByAge[$ageName][$type][$date][] = $menuDish->dishes;
+            }
+        }
+
+        ksort($menusGroupedByAge); // Sắp xếp theo tên nhóm tuổi
+
+        $this->responseData['menusGroupedByAge'] = $menusGroupedByAge;
+        $this->responseData['dishesTime'] = $dishesTime;
+
+        $daysInWeek = CarbonPeriod::create($startOfWeek, $endOfWeek);
+        $this->responseData['params'] = $request->all();
+        $this->responseData['menusGrouped'] = $menusGrouped;
+        $this->responseData['daysInWeek'] = $daysInWeek;
+        $this->responseData['week'] = $week;
+
+        $this->responseData['module_name'] = "Báo cáo thực đơn theo tuần: (Từ " . $startOfWeek->format('d/m/Y') . " đến " . $endOfWeek->format('d/m/Y') . ")";
+
+        return $this->responseView($this->viewPart . '.report_by_week');
     }
 
 }

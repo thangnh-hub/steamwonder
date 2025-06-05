@@ -156,7 +156,12 @@
                                         </select>
                                     </div>
                                 </div>
-
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="date"><?php echo app('translator')->get('Ngày áp dụng'); ?></label>
+                                        <input type="date" name="date" class="form-control" value="<?php echo e(old('date', $detail->date ?? '')); ?>" >
+                                    </div>
+                                </div>
                                 
                                 <div class="col-md-12">
                                     <div class="form-group">
