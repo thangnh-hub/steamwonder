@@ -133,7 +133,6 @@
                                                     value="{{ (int) $detail->prev_balance }}">
                                             </th>
                                         </tr>
-
                                     </thead>
                                     <tbody>
                                         @if (isset($detail->prev_receipt_detail) && count($detail->prev_receipt_detail) > 0)

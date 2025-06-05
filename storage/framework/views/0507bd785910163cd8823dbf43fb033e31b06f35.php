@@ -136,7 +136,6 @@
                                                     value="<?php echo e((int) $detail->prev_balance); ?>">
                                             </th>
                                         </tr>
-
                                     </thead>
                                     <tbody>
                                         <?php if(isset($detail->prev_receipt_detail) && count($detail->prev_receipt_detail) > 0): ?>

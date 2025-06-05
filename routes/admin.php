@@ -174,6 +174,8 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('admissions/students/edit/{id}', 'AdmissionStudentController@edit')->name('admission.student.edit');
             Route::put('admissions/students/update/{id}', 'AdmissionStudentController@update')->name('admission.student.update');
             Route::delete('admissions/students/delete/{id}', 'AdmissionStudentController@destroy')->name('admission.student.destroy');
+            Route::get('admissions/receipt', 'AdmissionStudentController@receipt')->name('admission.receipt');
+
             // Import Class và StudentClass
             Route::post('import_class', 'ClassController@importClassStudent')->name('class.import_class');
 
