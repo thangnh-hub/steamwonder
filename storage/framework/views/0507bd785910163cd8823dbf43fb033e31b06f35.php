@@ -495,7 +495,7 @@
                                             <tr>
                                                 <td><?php echo e($loop->index + 1); ?></td>
                                                 <td><?php echo e(number_format($item->paid_amount, 0, ',', '.') ?? ''); ?></td>
-                                                <td><?php echo e(date('d-m-Y', strtotime($item->created_at))); ?></td>
+                                                <td><?php echo e(date('d-m-Y', strtotime($item->payment_date))); ?></td>
                                                 <td><?php echo e($item->json_params->note ?? ''); ?></td>
                                                 <td><?php echo e($item->user_cashier->name ?? ''); ?></td>
                                             </tr>
@@ -521,7 +521,7 @@
                                     <div class="form-group">
                                         <label><?php echo app('translator')->get('Ngày thanh toán'); ?> <small class="text-red">*</small></label>
                                         <input type="date" class="form-control" name="payment_date"
-                                            value="<?php echo e(old('payment_date') ?? date('Y-m-d', time())); ?>" required>
+                                            value="" required>
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-md-12">
