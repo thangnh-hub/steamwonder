@@ -158,9 +158,12 @@ Route::group(['namespace' => 'Admin'], function () {
             // Cập nhật dịch vụ đầu năm cho học sinh
             Route::get('student/add_service_yearly', 'StudentController@addYearlyServicesForStudent')->name('student.add_service_yearly');
 
-            // Cập nhật lại service cho học sinh và tính lại phí, tính phí đầu năm
+            // TBP
             Route::post('receipt/update_student_service_and_fee', 'ReceiptController@updateStudentServiceAndFee')->name('receipt.update_student_service_and_fee');
             Route::post('receipt/CRUD_receipt_transaction', 'ReceiptController@CrudReceiptTransaction')->name('receipt.crud_receipt_transaction');
+            Route::post('receipt/payment/{id}', 'ReceiptController@payment')->name('receipt.payment');
+            Route::post('receipt/approved/{id}', 'ReceiptController@approved')->name('receipt.approved');
+            Route::post('receipt/delete_receipt_detail_and_recalculate', 'ReceiptController@deletePaymentDetailsAndRecalculate')->name('receipt.deletePaymentDetailsAndRecalculate');
 
             //CBTS
             Route::get('admissions/students', 'AdmissionStudentController@index')->name('admission.student.index');
@@ -170,11 +173,9 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('admissions/students/edit/{id}', 'AdmissionStudentController@edit')->name('admission.student.edit');
             Route::put('admissions/students/update/{id}', 'AdmissionStudentController@update')->name('admission.student.update');
             Route::delete('admissions/students/delete/{id}', 'AdmissionStudentController@destroy')->name('admission.student.destroy');
-
             // Import Class và StudentClass
             Route::post('import_class', 'ClassController@importClassStudent')->name('class.import_class');
-            Route::post('receipt/payment/{id}', 'ReceiptController@payment')->name('receipt.payment');
-            Route::post('receipt/approved/{id}', 'ReceiptController@approved')->name('receipt.approved');
+
             Route::post('data_crms_log_store', 'DataCrmController@storeCRMLOG')->name('data_crms_log_store');
 
             // --- PHẦN HỌC SINH---

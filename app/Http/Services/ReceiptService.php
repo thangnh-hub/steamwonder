@@ -486,12 +486,14 @@ class ReceiptService
             $checkMonth = Carbon::parse($month)->startOfMonth();
             if ($checkMonth->between($start, $end)) {
                 $json_params = $pro->promotion->json_params;
+
                 if (isset($json_params->is_payment_cycle) && $json_params->is_payment_cycle == 1) {
                     $discount_promotion_value = $json_params->payment_cycle->{$cycle->id}->services->{$service_info['id']}->value ?? 0;
                 } else {
                     $discount_promotion_value = $json_params->services->{$service_info['id']}->value ?? 0;
                 }
                 $discount_promotion_type = $pro->promotion->promotion_type ?? null;
+
                 if ($discount_promotion_type == Consts::TYPE_POLICIES['percent'] && $discount_promotion_value > 0) {
                     $has_valid_promotion = true;
                     $discount_notes[] = "{$pro->promotion->promotion_name} giảm ({$discount_promotion_value}%)";
