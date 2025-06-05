@@ -210,8 +210,8 @@
                                 <table class="table table-bordered table-hover no-footer no-padding">
                                     <thead>
                                         <tr>
-                                            <th colspan="7" class="text-left"><b>2. Phí dự kiến</b></th>
-                                            <th class="text-right">
+                                            <th colspan="6" class="text-left"><b>2. Phí dự kiến</b></th>
+                                            <th colspan="3"class="text-right">
                                                 @if ($detail->status == 'pending')
                                                     <button data-toggle="modal" data-target="#modal_show_service"
                                                         class="btn btn-warning">@lang('Thay đổi kỳ tính phí cho HS')</button>
@@ -228,9 +228,10 @@
                                             <th>Số lượng</span></th>
                                             <th>Tạm tính</th>
                                             <th>Giảm trừ</th>
-                                            {{-- <th>Hoàn trả / phát sinh</th> --}}
                                             <th>Tổng tiền</th>
                                             <th>Ghi chú</th>
+                                            <th></th>
+
                                         </tr>
                                         @foreach ($detail->receiptDetail as $item)
                                             <tr>
@@ -240,9 +241,19 @@
                                                 <td>{{ number_format($item->by_number, 0, ',', '.') ?? '' }}</td>
                                                 <td>{{ number_format($item->amount, 0, ',', '.') ?? '' }}</td>
                                                 <td>{{ number_format($item->discount_amount, 0, ',', '.') ?? '' }}</td>
-                                                {{-- <td>{{ number_format($item->adjustment_amount, 0, ',', '.') ?? '' }}</td> --}}
                                                 <td>{{ number_format($item->final_amount, 0, ',', '.') ?? '' }}</td>
                                                 <td>{!! $item->note ?? '' !!}</td>
+                                                <td>
+                                                    @if ($detail->status == 'pending')
+                                                        <button
+                                                            class="btn btn-sm btn-danger delete_receipt_detail_and_recalculate"
+                                                            data-receipt="{{ $detail->id }}"
+                                                            data-id = "{{ $item->id }}" type="button"
+                                                            data-toggle="tooltip" title="@lang('Xóa')">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    @endif
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -670,7 +681,7 @@
             });
         });
 
-
+        // Thay đổi kỳ thanh toán
         $('#form_receipt_transaction').on('submit', function(event) {
             event.preventDefault();
             var _url = $(this).prop('action')
@@ -714,6 +725,56 @@
                 }
             });
         });
+
+        $('.delete_receipt_detail_and_recalculate').click(function() {
+            if (confirm('{{ __('confirm_action') }}')) {
+                var receipt_id = $(this).data('receipt');
+                var detail_id = $(this).data('id');
+                show_loading_notification();
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('receipt.deletePaymentDetailsAndRecalculate') }}",
+                    data: {
+                        receipt_id: receipt_id,
+                        detail_id: detail_id,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        hide_loading_notification();
+                        if (response) {
+                            hide_loading_notification();
+                            var _html = `<div class="alert alert-${response.data} alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            ${response.message}
+                            </div>`;
+                            $('.box_alert').prepend(_html);
+                            setTimeout(function() {
+                                $(".alert").fadeOut(3000, function() {});
+                            }, 800);
+                            if (response.data == 'success') {
+                                location.reload();
+                            }
+
+                        } else {
+                            hide_loading_notification();
+                            var _html = `<div class="alert alert-warning alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            Bạn không có quyền thao tác chức năng này!
+                            </div>`;
+                            $('.box_alert').prepend(_html);
+                            setTimeout(function() {
+                                $(".alert").fadeOut(3000, function() {});
+                            }, 800);
+                        }
+                    },
+                    error: function(data) {
+                        hide_loading_notification();
+                        var errors = data.responseJSON.message;
+                        alert(data);
+                    }
+                });
+            }
+        })
 
 
         // Hàm cập nhật giải trình lưu lại trong JSON và tính lại số tiền

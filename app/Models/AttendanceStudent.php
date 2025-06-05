@@ -44,6 +44,22 @@ class AttendanceStudent extends Model
     {
         return $this->belongsTo(Student::class, 'student_id', 'id');
     }
+    public function checkinParent()
+    {
+        return $this->belongsTo(tbParent::class, 'checkin_parent_id', 'id');
+    }
+    public function checkinTeacher()
+    {
+        return $this->belongsTo(Teacher::class, 'checkin_teacher_id', 'id');
+    }
+    public function checkoutParent()
+    {
+        return $this->belongsTo(tbParent::class, 'checkout_parent_id', 'id');
+    }
+    public function checkoutTeacher()
+    {
+        return $this->belongsTo(Teacher::class, 'checkout_teacher_id', 'id');
+    }
     public function adminCreated()
     {
         return $this->belongsTo(Admin::class, 'admin_created_id', 'id');

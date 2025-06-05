@@ -12,7 +12,10 @@ use App\Models\Page;
 use App\Models\Order;
 use App\Models\Menu;
 use App\Models\Area;
+use App\Models\User;
 use App\Models\LessonUser;
+use App\Models\Attendances;
+use App\Models\AttendanceStudent;
 use Exception;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
@@ -26,12 +29,22 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->responseData['menu'] = Menu::getSqlMenu(['status' => 'active', 'order_by' => ['iorder' => 'ASC']])->get();
+    }
 
+    public function setSessionUser($id)
+    {
+        session(['user' => $id]);
+        return redirect()->back()->with('successMessage', __('Thay đổi thành công!'));
+    }
     public function index()
     {
         if (Auth::guard('web')->check()) {
-            $user = Auth::guard('web');
-            $this->responseData['detail'] = $user->user();
+            $user = Auth::guard('web')->user();
+            $this->responseData['detail'] = $user;
             $seo_title = ($this->responseData['locale'] == $this->responseData['lang_default']) ? $this->responseData['setting']->seo_title : $this->responseData['setting']->{$this->responseData['locale'] . '-seo_title'} ?? '';
             $seo_keyword = ($this->responseData['locale'] == $this->responseData['lang_default']) ? $this->responseData['setting']->seo_keyword : $this->responseData['setting']->{$this->responseData['locale'] . '-seo_keyword'} ?? '';
             $seo_description = ($this->responseData['locale'] == $this->responseData['lang_default']) ? $this->responseData['setting']->seo_description : $this->responseData['setting']->{$this->responseData['locale'] . '-seo_description'} ?? '';
@@ -42,6 +55,9 @@ class UserController extends Controller
             $this->responseData['meta']['seo_image'] = $seo_image;
             $this->responseData['menu'] = Menu::getSqlMenu(['status' => 'active', 'order_by' => ['iorder' => 'ASC']])->get();
             $this->responseData['gender'] = Consts::GENDER;
+            $this->responseData['students'] = optional($user->parent)->parentStudents
+                ? optional($user->parent)->parentStudents->map(fn($val) => $val->student)
+                : [];
             return $this->responseView('frontend.pages.user.account');
         }
         return redirect()->route('home')->with('errorMessage', __('Yêu cầu đăng nhập!'));
@@ -140,12 +156,12 @@ class UserController extends Controller
     public function verifyAccount(Request $request)
     {
         try {
-            $user = Admin::where('code', $request->code)->first();
+            $user = User::where('email_verification_code', $request->code)->first();
 
             if (empty($user)) {
                 throw new Exception(__('Account verification failed'));
             }
-            $user->code = null;
+            $user->email_verification_code = null;
             $user->status = Consts::STATUS['active'];
             $user->save();
 
@@ -170,7 +186,7 @@ class UserController extends Controller
     public function forgotPassword(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:admins',
+            'email' => 'required|email|exists:users',
         ]);
         try {
             $token = Str::random(64);
@@ -179,7 +195,6 @@ class UserController extends Controller
                 'token' => $token,
                 'created_at' => Carbon::now()
             ]);
-
             Mail::send('emails.forget_password_frontend', ['token' => $token], function ($message) use ($request) {
                 $message->to($request->email);
                 $message->subject(__('Reset Password'));
@@ -207,7 +222,7 @@ class UserController extends Controller
     public function resetPassword(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:admins',
+            'email' => 'required|email|exists:users',
             'password' => 'required|string|min:6|confirmed',
             'password_confirmation' => 'required|string|min:6'
         ]);
@@ -223,7 +238,7 @@ class UserController extends Controller
             if (!$updatePassword) {
                 return back()->with('errorMessage', __('Mã token hết hạn!'));
             }
-            $user = Admin::where('email', $params['email'])
+            $user = User::where('email', $params['email'])
                 ->update(['password' => bcrypt($params['password'])]);
 
             DB::table('password_resets')->where(['email' => $params['email']])->delete();
@@ -305,5 +320,117 @@ class UserController extends Controller
             DB::rollBack();
             abort(422, __($ex->getMessage()));
         }
-    } 
+    }
+
+    public function myStudent()
+    {
+        if (!Auth::guard('web')->check()) {
+            return redirect()->route('home')->with('errorMessage', __('Yêu cầu đăng nhập!'));
+        }
+
+        $student = $this->getStudent();
+        $parents = collect($student->studentParents)->map(function ($val) {
+            return [
+                'parent' => $val->parent,
+                'relationship' => $val->relationship,
+            ];
+        });
+        $this->responseData['parents'] = $parents;
+
+        $this->responseData['student'] = $student;
+        return $this->responseView('frontend.pages.user.student');
+    }
+
+    /**
+     * Xem theo dạng lịch là dạng ngày
+     * Ngày hiện tại và lịch
+     * Chỉ xem thông tin
+     * Màn hình thống kê(ăn muộn, đón muộn, nghỉ học)
+     */
+    public function myAttendance()
+    {
+        if (!Auth::guard('web')->check()) {
+            return redirect()->route('home')->with('errorMessage', __('Yêu cầu đăng nhập!'));
+        }
+        $student = $this->getStudent();
+        // Lấy thông tin điểm danh của học sinh của ngày hôm nay
+        $class_id = $student->currentClass->id;
+        $date = Carbon::now()->format('Y-m-d');
+        $attendance = Attendances::where('class_id', $class_id)
+            ->whereDate('tracked_at', $date)->first();
+        $detail = null;
+        if ($attendance) {
+            $detail = AttendanceStudent::where('class_attendance_id', $attendance->id)
+                ->where('student_id', $student->id)
+                ->first();
+        }
+        // Lấy thông tin điểm danh để xem theo tháng
+        $attendance_student = AttendanceStudent::whereHas('attendance', fn($q) => $q->where('class_id', $class_id))
+            ->where('student_id', $student->id)
+            ->get();
+
+
+        $events = [];
+        foreach ($attendance_student as $val) {
+            switch ($val->status) {
+                case 'checkin':
+                    $events[] = [
+                        'title' => 'Giờ đến: ' . Carbon::parse($val->checkin_at)->format('H:i'),
+                        'start' => Carbon::parse($val->attendance->tracked_at)->format('Y-m-d'),
+                    ];
+                    if ($val->checkout_at != null) {
+                        $events[] = [
+                            'title' => 'Giờ vể: ' . Carbon::parse($val->checkout_at)->format('H:i'),
+                            'start' => Carbon::parse($val->attendance->tracked_at)->format('Y-m-d'),
+                        ];
+                    }
+                    break;
+                case 'absent_unexcused':
+                    $events[] = [
+                        'title' => 'Nghỉ không phép',
+                        'start' => Carbon::parse($val->attendance->tracked_at)->format('Y-m-d'),
+                    ];
+                    break;
+                case 'absent_excused':
+                    $events[] = [
+                        'title' => 'Nghỉ có phép',
+                        'start' => Carbon::parse($val->attendance->tracked_at)->format('Y-m-d'),
+                    ];
+                    break;
+                default:
+                    break;
+            }
+        }
+        $this->responseData['detail'] = $detail;
+        $this->responseData['events'] = $events;
+        return $this->responseView('frontend.pages.user.attendance');
+    }
+
+    /**
+     * tài chính: Lịch sử thông báo phí và lịch sử thanh toán
+     */
+    public function myReceipt()
+    {
+        if (!Auth::guard('web')->check()) {
+            return redirect()->route('home')->with('errorMessage', __('Yêu cầu đăng nhập!'));
+        }
+
+        return $this->responseView('frontend.pages.user.attendance');
+    }
+    /**
+     * Thực đơn hàng ngày
+     */
+
+    public function getStudent()
+    {
+        $user = Auth::guard('web')->user();
+        $id_student = session('user') ?? 0;
+        $students = optional($user->parent)->parentStudents
+            ? optional($user->parent)->parentStudents->map(fn($val) => $val->student)
+            : collect();
+        $student = $students->firstWhere('id', $id_student) ?? $students->first();
+        session(['user' => $student->id]);
+        $this->responseData['students'] = $students;
+        return $student;
+    }
 }
