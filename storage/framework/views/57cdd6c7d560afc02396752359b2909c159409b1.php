@@ -485,7 +485,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Thêm nguyên liệu</button>
+                        <button type="submit" class="btn btn-success">Thêm nguyên liệu</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Huỷ</button>
                     </div>
                 </div>

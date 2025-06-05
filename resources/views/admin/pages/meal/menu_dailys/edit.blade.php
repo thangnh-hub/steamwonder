@@ -153,7 +153,12 @@
                                         </select>
                                     </div>
                                 </div>
-
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="date">@lang('Ngày áp dụng')</label>
+                                        <input type="date" name="date" class="form-control" value="{{ old('date', $detail->date ?? '') }}" >
+                                    </div>
+                                </div>
                                 {{-- Mô tả --}}
                                 <div class="col-md-12">
                                     <div class="form-group">
