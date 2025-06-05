@@ -124,9 +124,10 @@ Route::group(['namespace' => 'Admin'], function () {
             //Thực đơn mẫu
             Route::post('meal_dishes_move_to_meal', 'MealMenuPlanningController@moveDish')->name('mealmenu.moveDish');
             Route::delete('meal_dishes_delete', 'MealMenuPlanningController@deleteDish')->name('mealmenu.deleteDish');
-            Route::get('/mealmenu/search-dishes', 'MealMenuPlanningController@searchDishes')->name('mealmenu.searchDishes');
             Route::post('/mealmenu/add-dishes', 'MealMenuPlanningController@addDishes')->name('mealmenu.addDishes');
             Route::post('meal-menu/{id}/update-ingredients', 'MealMenuPlanningController@updateIngredients')->name('admin.meal_menu.updateIngredients');
+            Route::post('/mealmenu/add-ingredients', 'MealMenuPlanningController@addIngredients')->name('mealmenu.addIngredients');
+
             //Thực đơn hàng ngày
             Route::post('meal-menu-daily/create-from-template', 'MealMenuDailyController@createFromTemplate')->name('admin.meal-menu-daily.create-from-template');
             Route::post('meal_dishes_move_to_meal_daily', 'MealMenuDailyController@moveDish')->name('mealmenu.moveDish.daily');
@@ -135,7 +136,7 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::post('meal-menu/{id}/update-ingredients-daily', 'MealMenuDailyController@updateIngredients')->name('admin.meal_menu.updateIngredients.daily');
             // Thống kê thực đơn theo ngày
             Route::get('report-meal-menu-daily', 'MealMenuDailyController@reportByDay')->name('mealmenu.daily.report');
-            Route::get('menu-dailys/date/{date}', 'MealMenuDailyController@showByDate')->name('menu_dailys.showByDate');
+            Route::get('menu-dailys/date/{date}/area/{area_id}', 'MealMenuDailyController@showByDate')->name('menu_dailys.showByDate');
 
 
 
@@ -307,6 +308,11 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('leave_balances/create', 'LeaveController@createLeaveBalance')->name('leave.balance.create');
             Route::post('leave_balances/store', 'LeaveController@storeLeaveBalance')->name('leave.balance.store');
         });
+
+        //tìm món và thực đơn
+        Route::get('/mealmenu/search-ingredients', 'MealMenuPlanningController@searchIngredients')->name('mealmenu.searchIngredients');
+        Route::get('/mealmenu/search-dishes', 'MealMenuPlanningController@searchDishes')->name('mealmenu.searchDishes');
+
         Route::get('attendance/summary-by-month/show', 'AttendancesController@showSummaryByMonth')->name('attendance.summary_by_month.show');
 
         Route::get('receipt_view/{id}', 'ReceiptController@viewIndex')->name('receipt.view');

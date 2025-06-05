@@ -125,6 +125,7 @@
                             <th><?php echo app('translator')->get('Mã thực đơn'); ?></th>
                             <th><?php echo app('translator')->get('Tên thực đơn'); ?></th>
                             <th><?php echo app('translator')->get('Các món ăn'); ?></th>
+                            <th><?php echo app('translator')->get('Nhóm tuổi'); ?></th>
                             <th style="width:350px;white-space: pre-line"><?php echo app('translator')->get('Mô tả'); ?></th>
                             <th><?php echo app('translator')->get('Trạng thái'); ?></th>
                             <th><?php echo app('translator')->get('Thao tác'); ?></th>
@@ -149,6 +150,10 @@
                                     <?php else: ?>
                                         <?php echo app('translator')->get('Chưa có món ăn nào'); ?>
                                     <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php echo e($row->mealAge->name ?? ''); ?>
+
                                 </td>
                                 <td>
                                     <?php echo nl2br(__($row->description ?? '')); ?>
