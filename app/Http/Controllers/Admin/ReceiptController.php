@@ -337,7 +337,7 @@ class ReceiptController extends Controller
     public function CrudReceiptTransaction(Request $request)
     {
         $admin = Auth::guard('admin')->user();
-        $params = $request->only(['receipt_id', 'paid_amount', 'json_params']);
+        $params = $request->only(['receipt_id', 'paid_amount', 'json_params','payment_date']);
         $receipt_id = $request->input('receipt_id');
         $type = $request->input('type');
         $result = $message = '';

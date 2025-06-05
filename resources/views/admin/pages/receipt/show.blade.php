@@ -480,14 +480,14 @@
                                             <tr>
                                                 <td>{{ $loop->index + 1 }}</td>
                                                 <td>{{ number_format($item->paid_amount, 0, ',', '.') ?? '' }}</td>
-                                                <td>{{ date('d-m-Y', strtotime($item->created_at)) }}</td>
+                                                <td>{{ date('d-m-Y', strtotime($item->payment_date)) }}</td>
                                                 <td>{{ $item->json_params->note ?? '' }}</td>
                                                 <td>{{ $item->user_cashier->name ?? '' }}</td>
                                             </tr>
                                         @endforeach
                                     @else
                                         <tr>
-                                            <td colspan="4" class="text-center">@lang('Chưa có giao dịch nào')</td>
+                                            <td colspan="5" class="text-center">@lang('Chưa có giao dịch nào')</td>
                                         </tr>
                                     @endif
                                 </tbody>
@@ -506,7 +506,7 @@
                                     <div class="form-group">
                                         <label>@lang('Ngày thanh toán') <small class="text-red">*</small></label>
                                         <input type="date" class="form-control" name="payment_date"
-                                            value="{{ old('payment_date') ?? date('Y-m-d', time()) }}" required>
+                                            value="" required>
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-md-12">
