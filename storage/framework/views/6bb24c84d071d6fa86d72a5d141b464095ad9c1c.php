@@ -379,10 +379,8 @@
                                                     data-target="#addServiceModal">
                                                     <i class="fa fa-plus"></i> <?php echo app('translator')->get('Đăng ký dịch vụ'); ?>
                                                 </button>
-                                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
-                                                    data-target="#reincarnationModal">
-                                                    <i class="fa fa-recycle"></i> <?php echo app('translator')->get('Xử lý tái tục dịch vụ'); ?>
-                                                </button>
+                                                
+                                                
                                             </div>
                                             <br>
                                             <div class="table-responsive">

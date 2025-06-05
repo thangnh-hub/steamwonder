@@ -371,10 +371,11 @@
                                                     data-target="#addServiceModal">
                                                     <i class="fa fa-plus"></i> @lang('Đăng ký dịch vụ')
                                                 </button>
-                                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
+                                                {{-- Tạm ẩn do tái tục chạy auto theo tháng--}}
+                                                {{-- <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
                                                     data-target="#reincarnationModal">
                                                     <i class="fa fa-recycle"></i> @lang('Xử lý tái tục dịch vụ')
-                                                </button>
+                                                </button> --}}
                                             </div>
                                             <br>
                                             <div class="table-responsive">
