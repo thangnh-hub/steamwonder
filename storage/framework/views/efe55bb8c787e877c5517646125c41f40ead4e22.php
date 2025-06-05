@@ -23,20 +23,20 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <label class="control-label"><strong>@lang('Mã TBP')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Mã TBP'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p>{{ $detail->receipt_code ?? '' }}</p>
+                                <p><?php echo e($detail->receipt_code ?? ''); ?></p>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <label class="control-label"><strong>@lang('Tên TBP')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Tên TBP'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p>{{ $detail->receipt_name ?? '' }}</p>
+                                <p><?php echo e($detail->receipt_name ?? ''); ?></p>
                             </div>
                         </div>
                     </div>
@@ -44,20 +44,20 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <label class="control-label"><strong>@lang('Khu vực')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Khu vực'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p>{{ $detail->area->name ?? '' }}</p>
+                                <p><?php echo e($detail->area->name ?? ''); ?></p>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <label class="control-label"><strong>@lang('Hoc sinh')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Hoc sinh'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p>{{ $detail->student->student_code ?? ('' . ' - ' . $detail->student->first_name ?? ('' . ' ' . $detail->student->last_name ?? '')) }}({{ $detail->student->nickname }})
+                                <p><?php echo e($detail->student->student_code ?? ('' . ' - ' . $detail->student->first_name ?? ('' . ' ' . $detail->student->last_name ?? ''))); ?>(<?php echo e($detail->student->nickname); ?>)
                                 </p>
                             </div>
                         </div>
@@ -65,50 +65,51 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <label class="control-label"><strong>@lang('Chu kỳ thanh toán')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Chu kỳ thanh toán'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p>{{ $detail->payment_cycle->name ?? '' }}</p>
+                                <p><?php echo e($detail->payment_cycle->name ?? ''); ?></p>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <label class="control-label"><strong>@lang('Số tiên cần thu')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Số tiên cần thu'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p>{{ number_format($detail->total_amount, 0, ',', '.') ?? '' }}</p>
+                                <p><?php echo e(number_format($detail->total_amount, 0, ',', '.') ?? ''); ?></p>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <label class="control-label"><strong>@lang('Tổng giảm trừ')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Tổng giảm trừ'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p>{{ number_format($detail->total_discount, 0, ',', '.') ?? '' }}</p>
+                                <p><?php echo e(number_format($detail->total_discount, 0, ',', '.') ?? ''); ?></p>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <label class="control-label"><strong>@lang('Số dư kỳ trước')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Số dư kỳ trước'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p>{{ number_format($detail->prev_balance, 0, ',', '.') ?? '' }}</p>
+                                <p><?php echo e(number_format($detail->prev_balance, 0, ',', '.') ?? ''); ?></p>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <label class="control-label"><strong>@lang('Tổng tiền thực tế')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Tổng tiền thực tế'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p>{{ number_format($detail->total_final, 0, ',', '.') ?? '' }}
+                                <p><?php echo e(number_format($detail->total_final, 0, ',', '.') ?? ''); ?>
+
                                 </p>
                             </div>
                         </div>
@@ -116,40 +117,40 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <label class="control-label"><strong>@lang('Đã thu')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Đã thu'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p>{{ number_format($detail->total_paid, 0, ',', '.') ?? '' }}</p>
+                                <p><?php echo e(number_format($detail->total_paid, 0, ',', '.') ?? ''); ?></p>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <label class="control-label"><strong>@lang('Số tiền còn phải thu (+) hoặc thừa (-)')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Số tiền còn phải thu (+) hoặc thừa (-)'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p>{{ number_format($detail->total_due, 0, ',', '.') ?? '' }}</p>
+                                <p><?php echo e(number_format($detail->total_due, 0, ',', '.') ?? ''); ?></p>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <label class="control-label"><strong>@lang('Trạng thái')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Trạng thái'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p>{{ __($detail->status) }}</p>
+                                <p><?php echo e(__($detail->status)); ?></p>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                                <label class="control-label"><strong>@lang('Ghi chú')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Ghi chú'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-                                <p>{{ $detail->note }}</p>
+                                <p><?php echo e($detail->note); ?></p>
                             </div>
                         </div>
                     </div>
@@ -159,21 +160,10 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <label class="control-label"><strong>@lang('Ngày tạo')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Ngày tạo'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <p>{{ date('H:i - d/m/Y', strtotime($detail->created_at)) }}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <div class="form-group">
-                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <label class="control-label"><strong>@lang('Người tạo')</strong></label>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <p>{{ $detail->admin_created->name ?? '' }}</p>
+                                <p><?php echo e(date('H:i - d/m/Y', strtotime($detail->created_at))); ?></p>
                             </div>
                         </div>
                     </div>
@@ -181,10 +171,10 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <label class="control-label"><strong>@lang('Ngày cập nhật')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Người tạo'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <p>{{ date('H:i - d/m/Y', strtotime($detail->updated_at)) }}</p>
+                                <p><?php echo e($detail->admin_created->name ?? ''); ?></p>
                             </div>
                         </div>
                     </div>
@@ -192,10 +182,21 @@
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="form-group">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <label class="control-label"><strong>@lang('Người cập nhật')</strong></label>
+                                <label class="control-label"><strong><?php echo app('translator')->get('Ngày cập nhật'); ?></strong></label>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <p>{{ $detail->admin_updated->name ?? '' }}</p>
+                                <p><?php echo e(date('H:i - d/m/Y', strtotime($detail->updated_at))); ?></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <label class="control-label"><strong><?php echo app('translator')->get('Người cập nhật'); ?></strong></label>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <p><?php echo e($detail->admin_updated->name ?? ''); ?></p>
                             </div>
                         </div>
                     </div>
@@ -211,39 +212,39 @@
                                 <table class="table table-hover sticky ">
                                     <thead>
                                         <tr>
-                                            <th>@lang('Tên dịch vụ')</th>
-                                            <th>@lang('Loại dịch vụ')</th>
-                                            <th>@lang('Tháng áp dụng')</th>
-                                            <th>@lang('Số lượng ')</th>
-                                            {{-- <th>@lang('Số lượng thực tế')</th> --}}
-                                            <th>@lang('Đơn giá')</th>
-                                            <th>@lang('Thành tiền')</th>
-                                            <th>@lang('Giảm trừ')</th>
-                                            {{-- <th>@lang('Truy thu (+) / Hoàn trả (-)')</th> --}}
-                                            <th>@lang('Tổng tiền cuối cùng')</th>
-                                            {{-- <th>@lang('Trạng thái')</th> --}}
-                                            <th style="width:250px">@lang('Ghi chú')</th>
+                                            <th><?php echo app('translator')->get('Tên dịch vụ'); ?></th>
+                                            <th><?php echo app('translator')->get('Loại dịch vụ'); ?></th>
+                                            <th><?php echo app('translator')->get('Tháng áp dụng'); ?></th>
+                                            <th><?php echo app('translator')->get('Số lượng '); ?></th>
+                                            
+                                            <th><?php echo app('translator')->get('Đơn giá'); ?></th>
+                                            <th><?php echo app('translator')->get('Thành tiền'); ?></th>
+                                            <th><?php echo app('translator')->get('Giảm trừ'); ?></th>
+                                            
+                                            <th><?php echo app('translator')->get('Tổng tiền cuối cùng'); ?></th>
+                                            
+                                            <th style="width:250px"><?php echo app('translator')->get('Ghi chú'); ?></th>
                                         </tr>
                                     </thead>
                                     <tbody class="box_policies">
-                                        @isset($detail->receiptDetail)
-                                            @foreach ($detail->receiptDetail as $item)
+                                        <?php if(isset($detail->receiptDetail)): ?>
+                                            <?php $__currentLoopData = $detail->receiptDetail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <tr class="item_policies">
-                                                    <td>{{ $item->services_receipt->name ?? '' }}</td>
-                                                    <td>{{ __($item->services_receipt->service_type) ?? '' }}</td>
-                                                    <td>{{ date('m-Y', strtotime($item->month)) }}</td>
-                                                    <td>{{ $item->by_number ?? 0 }}</td>
-                                                    {{-- <td>{{ $item->spent_number ?? 0 }}</td> --}}
-                                                    <td>{{ number_format($item->unit_price, 0, ',', '.') }}</td>
-                                                    <td>{{ number_format($item->amount, 0, ',', '.') }}</td>
-                                                    <td>{{ number_format($item->discount_amount, 0, ',', '.') }}</td>
-                                                    {{-- <td>{{ number_format($item->adjustment_amount, 0, ',', '.') }}</td> --}}
-                                                    <td>{{ number_format($item->final_amount, 0, ',', '.') }}</td>
-                                                    {{-- <td>{{ __($item->status) }}</td> --}}
-                                                    <td>{!! $item->note !!}</td>
+                                                    <td><?php echo e($item->services_receipt->name ?? ''); ?></td>
+                                                    <td><?php echo e(__($item->services_receipt->service_type) ?? ''); ?></td>
+                                                    <td><?php echo e(date('m-Y', strtotime($item->month))); ?></td>
+                                                    <td><?php echo e($item->by_number ?? 0); ?></td>
+                                                    
+                                                    <td><?php echo e(number_format($item->unit_price, 0, ',', '.')); ?></td>
+                                                    <td><?php echo e(number_format($item->amount, 0, ',', '.')); ?></td>
+                                                    <td><?php echo e(number_format($item->discount_amount, 0, ',', '.')); ?></td>
+                                                    
+                                                    <td><?php echo e(number_format($item->final_amount, 0, ',', '.')); ?></td>
+                                                    
+                                                    <td><?php echo $item->note; ?></td>
                                                 </tr>
-                                            @endforeach
-                                        @endisset
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        <?php endif; ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -261,19 +262,19 @@
                                 <table class="table table-hover sticky ">
                                     <thead>
                                         <tr>
-                                            <th>@lang('Tên phí')</th>
-                                            <th>@lang('Số tiền còn phải thu (+) hoặc thừa (-)') </th>
+                                            <th><?php echo app('translator')->get('Tên phí'); ?></th>
+                                            <th><?php echo app('translator')->get('Số tiền còn phải thu (+) hoặc thừa (-)'); ?> </th>
                                         </tr>
                                     </thead>
                                     <tbody class="box_explanation">
-                                        @if (isset($detail->json_params->explanation))
-                                            @foreach ($detail->json_params->explanation as $key => $item)
+                                        <?php if(isset($detail->json_params->explanation)): ?>
+                                            <?php $__currentLoopData = $detail->json_params->explanation; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <tr class="item_explanation">
-                                                    <td>{{ $item->content ?? '' }}</td>
-                                                    <td>{{ number_format($item->value, 0, ',', '.') }}</td>
+                                                    <td><?php echo e($item->content ?? ''); ?></td>
+                                                    <td><?php echo e(number_format($item->value, 0, ',', '.')); ?></td>
                                                 </tr>
-                                            @endforeach
-                                        @endif
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        <?php endif; ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -284,3 +285,4 @@
         </div>
     </div>
 </div>
+<?php /**PATH C:\xampp\htdocs\steamwonder\resources\views/admin/pages/receipt/view.blade.php ENDPATH**/ ?>
