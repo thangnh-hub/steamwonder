@@ -329,10 +329,9 @@
                                         <td>
                                             <div class="box-flex-between">
                                                 <span><?php echo app('translator')->get('Đã thu'); ?></span>
-                                                <?php if($detail->status == 'approved'): ?>
+                                                <?php if($detail->status != 'pending'): ?>
                                                     <button type="button" class="btn btn-warning btn-sm"
-                                                        data-toggle="modal" data-target="#modal_receipt_transaction">Chi
-                                                        tiết</button>
+                                                        data-toggle="modal" data-target="#modal_receipt_transaction">Chi tiết</button>
                                                 <?php endif; ?>
                                             </div>
                                         </td>

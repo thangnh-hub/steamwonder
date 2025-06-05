@@ -321,10 +321,9 @@
                                         <td>
                                             <div class="box-flex-between">
                                                 <span>@lang('Đã thu')</span>
-                                                @if ($detail->status == 'approved')
+                                                @if ($detail->status != 'pending')
                                                     <button type="button" class="btn btn-warning btn-sm"
-                                                        data-toggle="modal" data-target="#modal_receipt_transaction">Chi
-                                                        tiết</button>
+                                                        data-toggle="modal" data-target="#modal_receipt_transaction">Chi tiết</button>
                                                 @endif
                                             </div>
                                         </td>
