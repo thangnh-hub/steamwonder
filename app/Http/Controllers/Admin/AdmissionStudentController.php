@@ -124,6 +124,8 @@ class AdmissionStudentController extends Controller
         if (!in_array($student->id, $permittedStudentIds)) {
             return redirect()->route($this->routeDefault . '.index')->with('errorMessage', __('Bạn không có quyền sửa học sinh này!'));
         }
+        $this->responseData['list_payment_cycle'] = PaymentCycle::getSqlPaymentCycle()->get();
+        $this->responseData['services'] = Service::where('status', 'active')->get();
 
         $this->responseData['detail'] = $student;
         $this->responseData['module_name'] = "Chi tiết học sinh";
