@@ -385,7 +385,7 @@
                                                                     <td><?php echo e($loop->index + 1); ?></td>
                                                                     <td><?php echo e($row->receipt_code ?? ''); ?></td>
                                                                     <td><?php echo e($row->receipt_name ?? ''); ?></td>
-                                                                    
+
                                                                     <td><?php echo e(format_currency($row->prev_balance)); ?></td>
                                                                     <td><?php echo e(format_currency($row->total_amount)); ?></td>
                                                                     <td><?php echo e(format_currency($row->total_discount)); ?></td>
@@ -408,7 +408,7 @@
                                                                             data-original-title="<?php echo app('translator')->get('Show'); ?>">
                                                                             <i class="fa fa-eye"></i> Xem
                                                                         </button>
-                                                                        
+
                                                                         <a href="<?php echo e(route('receipt.show', $row->id)); ?>">
                                                                             <button type="button"
                                                                                 class="btn btn-sm btn-warning  mr-10"
@@ -417,7 +417,7 @@
                                                                                 <i class="fa fa-money"></i> Cập nhật
                                                                             </button>
                                                                         </a>
-                                                                    
+
                                                                     </td>
                                                                 </tr>
                                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -460,13 +460,38 @@
 
                                                                 </td>
                                                                 <td>
-                                                                    <?php $__currentLoopData = $row->promotion->json_params->services; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                        <?php
+                                                                    <?php if(isset($row->promotion->json_params->is_payment_cycle) && $row->promotion->json_params->is_payment_cycle == 1): ?>
+                                                                        <?php $__currentLoopData = $row->promotion->json_params->payment_cycle; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key_cycle => $item_cycle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                            <?php
+                                                                                $payment_cycle = $list_payment_cycle->firstWhere('id',(int)$key_cycle);
+                                                                            ?>
+                                                                            <div class="box-title">
+                                                                                <?php echo e($payment_cycle->name ?? ''); ?></div>
+                                                                            <?php $__currentLoopData = $item_cycle->services; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                                <?php
+                                                                                    $service_detail = $services->firstWhere('id',$val->service_id);
+                                                                                ?>
+                                                                                <ul>
+                                                                                    <li>Dịch vụ:
+                                                                                        <?php echo e($service_detail->name ?? ''); ?>
 
-                                                                            $service_detail = $row->promotion
-                                                                                ->getServices()
-                                                                                ->find($val->service_id);
-                                                                        ?>
+                                                                                    </li>
+                                                                                    <li>Giá trị áp dụng:
+                                                                                        <?php echo e(number_format($val->value, 0, ',', '.')); ?>
+
+                                                                                    </li>
+                                                                                    <li>Số lần áp dụng:
+                                                                                        <?php echo e($val->apply_count ?? '1'); ?>
+
+                                                                                    </li>
+                                                                                </ul>
+                                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                                    <?php else: ?>
+                                                                        <?php $__currentLoopData = $row->promotion->json_params->services; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                            <?php
+                                                                                $service_detail = $services->firstWhere('id',$val->service_id);
+                                                                            ?>
                                                                         <ul>
                                                                             <li>Dịch vụ:
                                                                                 <?php echo e($service_detail->name ?? ''); ?>
@@ -477,11 +502,12 @@
 
                                                                             </li>
                                                                             <li>Số lần áp dụng:
-                                                                                <?php echo e($val->apply_count ?? ''); ?>
+                                                                                <?php echo e($val->apply_count ?? '1'); ?>
 
                                                                             </li>
                                                                         </ul>
                                                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                                    <?php endif; ?>
                                                                 </td>
                                                                 <td>
                                                                     <?php echo e(__($row->status)); ?>

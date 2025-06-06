@@ -149,29 +149,40 @@
                                     <td>{{ $row->first_name ?? '' }} {{ $row->last_name ?? '' }}</td>
                                     <td>
                                         @isset($row->parentStudents)
-                                            @foreach ($row->parentStudents as $student)
-                                                <a href="{{ route('students.show', optional($student->student)->id) }}"
-                                                    data-toggle="tooltip" title="@lang('Chi tiết học sinh')"
-                                                    data-original-title="@lang('Chi tiết học sinh')"
-                                                    onclick="return openCenteredPopup(this.href)">
-                                                    {{ optional($student->student)->student_code ?? '' }}
-                                                    {{ optional($student->student)->first_name ?? '' }}
-                                                    {{ optional($student->student)->last_name ?? '' }}
-                                                    <i class="fa fa-eye"></i>
-                                                </a>
-                                            @endforeach
+                                            <ul>
+                                                @foreach ($row->parentStudents as $student)
+                                                    <li>
+                                                        <a href="{{ route('students.show', optional($student->student)->id) }}"
+                                                            data-toggle="tooltip" title="@lang('Chi tiết học sinh')"
+                                                            data-original-title="@lang('Chi tiết học sinh')"
+                                                            onclick="return openCenteredPopup(this.href)">
+                                                            {{ optional($student->student)->student_code ?? '' }}
+                                                            {{ optional($student->student)->first_name ?? '' }}
+                                                            {{ optional($student->student)->last_name ?? '' }}
+                                                            <i class="fa fa-eye"></i>
+                                                        </a>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
                                         @endisset
                                     </td>
                                     <td>{{ $row->identity_card ?? '' }}</td>
                                     <td>{{ $row->phone ?? '' }}</td>
                                     <td>{{ $row->email ?? '' }}</td>
                                     <td>
-                                        @isset($row->user)
-                                            <a href="{{ route('users.edit', optional($row->user)->id) }}" data-toggle="tooltip"
-                                                title="@lang('Chi tiết tài khoản')" onclick="return openCenteredPopup(this.href)">
+                                        @if ($row->user)
+                                            <a href="{{ route('users.edit', optional($row->user)->id) }}"
+                                                data-toggle="tooltip" title="@lang('Chi tiết tài khoản')"
+                                                onclick="return openCenteredPopup(this.href)">
                                                 {{ optional($row->user)->username ?? '' }}
                                             </a>
-                                        @endisset
+                                        @else
+                                            <a target="_blank"
+                                                href="{{ route('users.create', ['member_id' => $row->id]) }}"
+                                                data-toggle="tooltip" title="@lang('Tạo tài khoản')">
+                                                <i class="fa fa-plus"></i> @lang('Tạo tài khoản')
+                                            </a>
+                                        @endif
                                     </td>
                                     <td>{{ $row->address ?? '' }}</td>
                                     <td>{{ $row->area->name ?? '' }}</td>

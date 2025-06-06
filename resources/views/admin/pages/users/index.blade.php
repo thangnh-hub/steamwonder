@@ -118,6 +118,7 @@
                                 <th style="width:100px;">@lang('Avatar')</th>
                                 <th>@lang('Email')</th>
                                 <th>@lang('Phone')</th>
+                                <th>@lang('Phụ huynh HS')</th>
                                 <th>@lang('Created at')</th>
                                 <th>@lang('Status')</th>
                                 <th>@lang('Action')</th>
@@ -149,6 +150,27 @@
                                             </td>
                                             <td>
                                                 {{ $row->phone }}
+                                            </td>
+                                            <td>
+                                                @isset($row->parent)
+                                                    @isset($row->parent->parentStudents)
+                                                        <ul>
+                                                            @foreach ($row->parent->parentStudents as $student)
+                                                                <li>
+                                                                    <a href="{{ route('students.show', optional($student->student)->id) }}"
+                                                                        data-toggle="tooltip" title="@lang('Chi tiết học sinh')"
+                                                                        data-original-title="@lang('Chi tiết học sinh')"
+                                                                        onclick="return openCenteredPopup(this.href)">
+                                                                        {{ optional($student->student)->student_code ?? '' }}
+                                                                        {{ optional($student->student)->first_name ?? '' }}
+                                                                        {{ optional($student->student)->last_name ?? '' }}
+                                                                        <i class="fa fa-eye"></i>
+                                                                    </a>
+                                                                </li>
+                                                            @endforeach
+                                                        </ul>
+                                                    @endisset
+                                                @endisset
                                             </td>
                                             <td>
                                                 {{ $row->created_at }}

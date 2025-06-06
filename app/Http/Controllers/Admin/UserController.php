@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Consts;
 use App\Models\Area;
+use App\Models\tbParent;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,9 +33,10 @@ class UserController extends Controller
         return $this->responseView($this->viewPart . '.index');
     }
 
-    public function create()
+    public function create(Request $request)
     {
-
+        $member_id = $request->input('member_id', null);
+        $this->responseData['member'] = tbParent::find($member_id);
         return $this->responseView($this->viewPart . '.create');
     }
 
@@ -57,7 +59,8 @@ class UserController extends Controller
             'address',
             'email',
             'avatar',
-            'status'
+            'status',
+            'member_id'
         ]);
         $params['email'] = (!empty($params['email'])) ? $params['email'] : $params['username'] . '@example.com';
         $params['admin_created_id'] = $admin->id;
@@ -78,8 +81,9 @@ class UserController extends Controller
         $request->validate([
             'first_name' => 'required',
             'last_name' => 'required',
-            'phone' => "required",
+            'phone' => 'required',
             'password_new' => 'nullable|min:8',
+            'username' => "required|max:255|unique:users,username," . $user->id,
         ]);
         DB::beginTransaction();
         try {
@@ -90,7 +94,8 @@ class UserController extends Controller
                 'address',
                 'email',
                 'avatar',
-                'status'
+                'status',
+                'username'
             ]);
 
             if ($request->filled('password_new')) {
