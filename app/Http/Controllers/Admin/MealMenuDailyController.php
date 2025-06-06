@@ -16,6 +16,9 @@ use App\Consts;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Models\Area;
+use App\Http\Services\DataPermissionService;
+use Carbon\CarbonPeriod;
 
 class MealMenuDailyController extends Controller
 {
@@ -33,7 +36,14 @@ class MealMenuDailyController extends Controller
 
     public function index(Request $request)
     {
+        $permisson_area_id = DataPermissionService::getPermisisonAreas(Auth::guard('admin')->user()->id);
+        if (empty($permisson_area_id)) {
+            $permisson_area_id = [-1];
+        }
         $params = $request->all();
+        $params['status'] = Consts::STATUS['active'];
+        $params['permisson_area_id'] = $permisson_area_id;
+        $params['order_by'] = 'area_id';
         $rows = MealMenuDaily::getSqlMenuDaily($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
         $this->responseData['rows'] = $rows;
         $this->responseData['list_status'] = Consts::STATUS;
@@ -41,6 +51,8 @@ class MealMenuDailyController extends Controller
         $this->responseData['menuPlannings'] = MealMenuPlanning::getSqlMenuPlanning(Consts::STATUS['active'])->get();
         $this->responseData['params'] = $params;
 
+        $params_area['id'] = $permisson_area_id;
+        $this->responseData['list_area'] = Area::getsqlArea($params_area)->get();
         return $this->responseView($this->viewPart . '.index');
     }
 
@@ -57,6 +69,7 @@ class MealMenuDailyController extends Controller
             $dailyMenu = MealMenuDaily::create([
                 'meal_menu_planning_id'   => $template->id,
                 'date'               => $request->date,
+                'area_id'               => $request->area_id,
                 'name'              => $name,
                 'description'        => $template->description,
                 'count_student'      => $template->count_student,
@@ -112,6 +125,11 @@ class MealMenuDailyController extends Controller
     public function edit($id)
     {
         $mealmenu = MealMenuDaily::findOrFail($id);
+        $admin = Auth::guard('admin')->user();
+        $permittedAreaIds = DataPermissionService::getPermisisonAreas($admin->id);
+        if (!in_array($mealmenu->area_id, $permittedAreaIds)) {
+            return redirect()->route($this->routeDefault . '.index')->with('errorMessage', __('Thực đơn không thuộc khu vực quản lý!'));
+        }
 
         $this->responseData['list_status'] = Consts::STATUS;
         $this->responseData['list_season'] = Consts::MEAL_SEASON;
@@ -220,10 +238,15 @@ class MealMenuDailyController extends Controller
             return redirect()->back()->with('errorMessage', 'Đã xảy ra lỗi khi thêm món ăn: ' . $e->getMessage());
         }
     }
-
+    
     public function updateIngredients(Request $request, $menuId)
     {
         $menu = MealMenuDaily::findOrFail($menuId);
+        $admin = Auth::guard('admin')->user();
+        $permittedAreaIds = DataPermissionService::getPermisisonAreas($admin->id);
+        if (!in_array($menu->area_id, $permittedAreaIds)) {
+            return redirect()->route($this->routeDefault . '.index')->with('errorMessage', __('Thực đơn không thuộc khu vực quản lý!'));
+        }
         $countStudent = max($menu->count_student, 1);
         $input = $request->input('ingredients', []);
 
@@ -243,17 +266,21 @@ class MealMenuDailyController extends Controller
     public function update(Request $request, $id)
     {
         $mealmenu = MealMenuDaily::findOrFail($id);
+        $admin = Auth::guard('admin')->user();
+        $permittedAreaIds = DataPermissionService::getPermisisonAreas($admin->id);
+        if (!in_array($mealmenu->area_id, $permittedAreaIds)) {
+            return redirect()->route($this->routeDefault . '.index')->with('errorMessage', __('Thực đơn không thuộc khu vực quản lý!'));
+        }
         $request->validate([
             'name' => 'required',
-            'count_student' => 'required',
+            // 'count_student' => 'required',
         ]);
 
         $params = $request->all();
         $params['admin_updated_id'] = Auth::guard('admin')->id();
         $mealmenu->update($params);
-        // Tính toán lại nguyên liệu cho thực đơn
-        $menuPlanningService = new MenuPlanningService();
-        $menuPlanningService->recalculateIngredientsDaily($mealmenu->id);
+        // $menuPlanningService = new MenuPlanningService();
+        // $menuPlanningService->recalculateIngredientsDaily($mealmenu->id);
         return redirect()->back()->with('successMessage', __('Update successfully!'));
     }
 
@@ -262,6 +289,11 @@ class MealMenuDailyController extends Controller
         try {
             DB::beginTransaction();
             $dailyMenu = MealMenuDaily::findOrFail($id);
+            $admin = Auth::guard('admin')->user();
+            $permittedAreaIds = DataPermissionService::getPermisisonAreas($admin->id);
+            if (!in_array($dailyMenu->area_id, $permittedAreaIds)) {
+                return redirect()->route($this->routeDefault . '.index')->with('errorMessage', __('Thực đơn không thuộc khu vực quản lý!'));
+            }
             $dailyMenu->menuDishes()->delete();
             $dailyMenu->menuIngredients()->delete();
             $dailyMenu->delete();
@@ -283,30 +315,53 @@ class MealMenuDailyController extends Controller
             $month = now()->month;
             $year = now()->year;
         }
+        //Lấy danh sách khu vực theo quyền của người dùng
+        $permisson_area_id = DataPermissionService::getPermisisonAreas(Auth::guard('admin')->user()->id);
+        if (empty($permisson_area_id)) $permisson_area_id = [-1];
+        $params_area['id'] = $permisson_area_id;
+        $params_area['status'] = Consts::STATUS['active'];
+        $this->responseData['list_area'] = Area::getsqlArea($params_area)->get();
+
+        // Nếu người dùng chọn khu vực cụ thể, chỉ lấy khu vực đó
+        $filter_area_ids = $permisson_area_id;
+        if (!empty($params['area_id'])) {
+            $filter_area_ids = [$params['area_id']];
+        }
 
         // Lọc dữ liệu theo tháng và năm
-        $menusGroupedByDate = MealMenuDaily::with('mealAge')
+        $menus = MealMenuDaily::with(['mealAge', 'area'])
             ->where('status', Consts::STATUS['active'])
             ->whereMonth('date', $month)
             ->whereYear('date', $year)
+            ->whereIn('area_id', $filter_area_ids)
             ->orderBy('date', 'asc')
-            ->get()
-            ->groupBy('date');
-        $this->responseData['menusGroupedByDate'] = $menusGroupedByDate;
+            ->get();
+
+        // Group theo ngày → theo khu vực
+        $menusGrouped = $menus->groupBy([
+            fn($item) => $item->date,
+            fn($item) => $item->area_id,
+        ]);
+
+        $this->responseData['menusGrouped'] = $menusGrouped;
+        $this->responseData['params'] = $params;
         return $this->responseView($this->viewPart . '.report_by_day');
     }
 
     //Hamf show thực đơn theo ngày
-    public function showByDate($date)
+    public function showByDate($date, $area_id)
     {
-        $menus = MealMenuDaily::with([
+        $query = MealMenuDaily::with([
             'mealAge',
             'menuDishes.dishes',
-            'menuIngredients.ingredients'
+            'menuIngredients.ingredients',
+            'area'
         ])
-        ->whereDate('date', $date)
-        ->get();
-
+        ->whereDate('date', $date);
+        if ($area_id) {
+            $query->where('area_id', $area_id);
+        }
+        $menus = $query->get();
         if ($menus->isEmpty()) {
             return redirect()->back()->with('error', 'Không có thực đơn cho ngày này');
         }
@@ -335,9 +390,87 @@ class MealMenuDailyController extends Controller
         $this->responseData['date'] = $date;
         $this->responseData['menus'] = $menus;
         $this->responseData['groupedIngredients'] = $groupedIngredients;
-        $this->responseData['module_name'] = "Tổng hợp thực phẩm ngày " . Carbon::parse($date)->format('d/m/Y');
+        $this->responseData['module_name'] = "Tổng hợp thực phẩm ngày " . Carbon::parse($date)->format('d/m/Y'). ' - ' . ($area_id ? Area::find($area_id)->name : '');
 
         return $this->responseView($this->viewPart . '.show_by_date');
+    }
+
+    
+    public function reportByWeek(Request $request)
+    {
+        $week = $request->input('week') ?? now()->format('o-\WW');
+        [$year, $weekNumber] = explode('-W', $week);
+        $startOfWeek = Carbon::now()->setISODate($year, $weekNumber)->startOfWeek();
+        $endOfWeek = (clone $startOfWeek)->endOfWeek();
+
+        // Lấy khu vực theo quyền
+        $permisson_area_id = DataPermissionService::getPermisisonAreas(Auth::guard('admin')->user()->id);
+        if (empty($permisson_area_id)) $permisson_area_id = [-1];
+        $params_area['id'] = $permisson_area_id;
+        $params_area['status'] = Consts::STATUS['active'];
+        $this->responseData['list_area'] = Area::getsqlArea($params_area)->get();
+
+        // Lấy thực đơn trong tuần
+        $query = MealMenuDaily::with(['menuDishes.dishes', 'mealAge', 'area'])
+            ->whereBetween('date', [$startOfWeek->toDateString(), $endOfWeek->toDateString()])
+            ->whereIn('area_id', $permisson_area_id);
+
+        if ($request->filled('area_id')) {
+            $query->where('area_id', $request->area_id);
+        }
+
+        $menus = $query->get();
+        // Group dữ liệu dạng: date → area_id → [name, data → age → type → dishes]
+        $menusGrouped = $menus->groupBy('date')->map(function ($dailyMenus) {
+            return $dailyMenus->groupBy(function ($menu) {
+                return optional($menu->mealAge)->name; // group theo nhóm tuổi
+            })->map(function ($ageGroup) {
+                $mealTypes = [];
+
+                foreach ($ageGroup as $menu) {
+                    foreach ($menu->menuDishes as $menuDish) {
+                        $type = $menuDish->type ?? 'unknown';
+                        $mealTypes[$type][] = $menuDish->dishes;
+                    }
+                }
+
+                return collect($mealTypes);
+            });
+        });
+
+        //Xử lý view theo age
+        $menusGroupedByAge = [];
+        $dishesTime = Consts::DISHES_TIME;
+        foreach ($menus as $menu) {
+            $ageName = optional($menu->mealAge)->name ?? 'Không rõ';
+            $date = $menu->date;
+
+            foreach ($dishesTime as $type) {
+                $menusGroupedByAge[$ageName][$type][$date] = []; 
+            }
+
+            foreach ($menu->menuDishes as $menuDish) {
+                $type = $menuDish->type ?? 'unknown';
+                if (!in_array($type, $dishesTime)) continue;
+
+                $menusGroupedByAge[$ageName][$type][$date][] = $menuDish->dishes;
+            }
+        }
+
+        ksort($menusGroupedByAge); // Sắp xếp theo tên nhóm tuổi
+
+        $this->responseData['menusGroupedByAge'] = $menusGroupedByAge;
+        $this->responseData['dishesTime'] = $dishesTime;
+
+        $daysInWeek = CarbonPeriod::create($startOfWeek, $endOfWeek);
+        $this->responseData['params'] = $request->all();
+        $this->responseData['menusGrouped'] = $menusGrouped;
+        $this->responseData['daysInWeek'] = $daysInWeek;
+        $this->responseData['week'] = $week;
+
+        $this->responseData['module_name'] = "Báo cáo thực đơn theo tuần: (Từ " . $startOfWeek->format('d/m/Y') . " đến " . $endOfWeek->format('d/m/Y') . ")";
+
+        return $this->responseView($this->viewPart . '.report_by_week');
     }
 
 }

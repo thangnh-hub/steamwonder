@@ -7,7 +7,7 @@
 @endphp
 <footer class="footer">
     <div class="container">
-        <div class="row">
+        <div class="row justify-content-between">
 
             <!-- About -->
             <div class="col-lg-3 footer_col">

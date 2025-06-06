@@ -48,7 +48,7 @@ class AdmissionStudentController extends Controller
             $params['permisson_area_id'] = [-1];
         }
         // Get list post with filter params
-        $rows = Student::getSqlStudent($params)->orderBy('id','desc')->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
+        $rows = Student::getSqlStudent($params)->orderBy('id', 'desc')->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
 
         $this->responseData['rows'] =  $rows;
         $this->responseData['params'] = $params;
@@ -57,7 +57,7 @@ class AdmissionStudentController extends Controller
         $params_area['status'] = Consts::STATUS_ACTIVE;
         $this->responseData['area'] = Area::getsqlArea($params_area)->get();
 
-        $params_area['permisson_area_id'] = $params['permisson_area_id'] ;
+        $params_area['permisson_area_id'] = $params['permisson_area_id'];
         $this->responseData['list_class'] =  tbClass::getSqlClass($params_area)->get();
         $this->responseData['list_status'] =  Consts::STATUS_STUDY;
 
@@ -106,7 +106,7 @@ class AdmissionStudentController extends Controller
         $student->student_code = 'HS' . str_pad($student->id, 3, '0', STR_PAD_LEFT);
         $student->save();
 
-        return redirect()->route($this->routeDefault . '.edit',$student->id)->with('successMessage', __('Add new successfully!'));
+        return redirect()->route($this->routeDefault . '.edit', $student->id)->with('successMessage', __('Add new successfully!'));
     }
 
     /**
@@ -124,6 +124,8 @@ class AdmissionStudentController extends Controller
         if (!in_array($student->id, $permittedStudentIds)) {
             return redirect()->route($this->routeDefault . '.index')->with('errorMessage', __('Bạn không có quyền sửa học sinh này!'));
         }
+        $this->responseData['list_payment_cycle'] = PaymentCycle::getSqlPaymentCycle()->get();
+        $this->responseData['services'] = Service::where('status', 'active')->get();
 
         $this->responseData['detail'] = $student;
         $this->responseData['module_name'] = "Chi tiết học sinh";
@@ -177,7 +179,7 @@ class AdmissionStudentController extends Controller
         //list promotion
         $this->responseData['status'] = Consts::STATUS;
         $this->responseData['services'] = Service::where('status', 'active')->get();
-        $this->responseData['promotion_active'] = StudentPromotion::where('student_id',$student->id)->where('status', 'active')->get();
+        $this->responseData['promotion_active'] = StudentPromotion::where('student_id', $student->id)->where('status', 'active')->get();
         $this->responseData['list_promotion'] = Promotion::getSqlPromotion($params_active)->get();
         return $this->responseView($this->viewPart . '.edit');
     }
@@ -226,7 +228,7 @@ class AdmissionStudentController extends Controller
             }
 
             // CT Khuyến mãi
-            if ($request->has('promotion_student')){
+            if ($request->has('promotion_student')) {
                 $params_promotion = $request->input('promotion_student');
                 $params_promotion['student_id'] = $student->id;
                 $params_promotion['promotion_id'] = $request->input('radio_promotion');
@@ -234,7 +236,7 @@ class AdmissionStudentController extends Controller
             }
 
 
-            return redirect()->route($this->routeDefault . '.edit',$student->id)->with('successMessage', __('Update successfully!'));
+            return redirect()->route($this->routeDefault . '.edit', $student->id)->with('successMessage', __('Update successfully!'));
         } catch (\Exception $e) {
             return back()->with('errorMessage', __('Có lỗi xảy ra: ') . $e->getMessage());
         }
@@ -421,8 +423,8 @@ class AdmissionStudentController extends Controller
             $student = Student::findOrFail($params['student_id']);
 
             $studentServices = $student->studentServices()
-            ->where('status', 'active')
-            ->get();
+                ->where('status', 'active')
+                ->get();
 
             $serviceIds = $studentServices->pluck('service_id')->toArray();
 
@@ -449,8 +451,8 @@ class AdmissionStudentController extends Controller
             $student = Student::findOrFail($params['student_id']);
 
             $studentServices = $student->studentServices()
-            ->where('status', 'active')
-            ->get();
+                ->where('status', 'active')
+                ->get();
 
             $data['student_services'] = $studentServices;
             $data['enrolled_at'] = $request->input('enrolled_at', null);
@@ -463,4 +465,20 @@ class AdmissionStudentController extends Controller
         }
     }
 
+    // Danh sách TBP
+    public function receipt(Request $request)
+    {
+        $auth = Auth::guard('admin')->user();
+        $params = $request->only(['keyword', 'status', 'area_id', 'type_receipt', 'student_id', 'created_at']);
+        $params['permission_student'] = DataPermissionService::getPermissionStudents($auth->id);
+        $rows = Receipt::getSqlReceipt($params)->whereIn('tb_receipt.student_id', $params['permission_student'])->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
+        $this->responseData['rows'] = $rows;
+        $this->responseData['areas'] = Area::all();
+        $this->responseData['students'] = Student::getSqlStudent()->get();
+        $this->responseData['status'] = Consts::STATUS_RECEIPT;
+        $this->responseData['type_receipt'] = Consts::TYPE_RECEIPT;
+        $this->responseData['params'] = $params;
+        $this->responseData['module_name'] = __('Quản lý TBP học sinh');
+        return $this->responseView($this->viewPart . '.receipt_index');
+    }
 }

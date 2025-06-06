@@ -98,11 +98,8 @@
                     <div class="box box-warning mb-3">
                         <div class="box-header with-border mb-3">
                             <h3 class="box-title">
-                                <i class="fa fa-user"></i> @lang('Thông tin học sinh')
-                                <button class="btn btn-sm btn-info pull-right btn_update">
-                                    <i class="fa fa-edit"></i>
-                                    @lang('Cập nhật')
-                                </button>
+                                <i class="fa fa-user"></i> @lang('Thông tin tài khoản')
+
                             </h3>
                         </div>
                         <div class="box-body">
@@ -115,8 +112,14 @@
                                     </p>
                                 </div>
                                 <div class="col-sm-6">
-                                    <p><strong>@lang('CCCD'):
-                                        </strong>{{ $detail->json_params->cccd ?? 'Chưa cập nhật' }}</p>
+                                    <p><strong>@lang('SĐT'): </strong>{{ $detail->phone ?? 'Chưa cập nhật' }}</p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p><strong>@lang('Email'): </strong>{{ $detail->email ?? '' }}</p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p><strong>@lang('Giới tính'):
+                                        </strong>{{ __($detail->sex) ?? 'Chưa cập nhật' }}</p>
                                 </div>
                                 <div class="col-sm-6">
                                     <p><strong>@lang('Ngày sinh'):
@@ -124,112 +127,18 @@
                                     </p>
                                 </div>
 
-                                <div class="col-sm-6">
-                                    <p><strong>@lang('SĐT'): </strong>{{ $detail->phone ?? 'Chưa cập nhật' }}</p>
-                                </div>
-                                <div class="col-sm-6">
-                                    <p><strong>@lang('Email'): </strong>{{ $detail->email ?? '' }}</p>
-                                </div>
-
-                                <div class="col-sm-6">
-                                    <p><strong>@lang('Mã học viên'): </strong>{{ $detail->admin_code ?? '' }}</p>
-                                </div>
 
                                 <div class="col-sm-12">
                                     <p><strong>@lang('Địa chỉ'):
                                         </strong>{{ $detail->json_params->address ?? 'Chưa cập nhật' }}</p>
                                 </div>
-
                             </div>
                         </div>
                     </div>
 
                 </div>
-                <div class="col-lg-8 update_information" style="display: none">
-                    <div class="box box-warning mb-3">
-                        <div class="box-header with-border mb-3">
-                            <h3 class="box-title">
-                                <i class="fa fa-user"></i> @lang('Cập nhật thông tin')
-                            </h3>
-                        </div>
-                        <div class="box-body">
-                            <form action="{{ route('frontend.update.account') }}" method="post" class="form-update"
-                                name="form-account-update">
-                                @csrf
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>@lang('Họ và tên') <small class="text-red">*</small></label>
-                                            <input type="text" class="form-control" name="name"
-                                                placeholder="@lang('Họ và tên')" value="{{ $detail->name ?? '' }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>@lang('Ngày sinh') <small class="text-red">*</small></label>
-                                            <input type="date" class="form-control" name="birthday"
-                                                placeholder="@lang('Ngày sinh')"
-                                                value="{{ $detail->birthday != '' ? date('Y-m-d', strtotime($detail->birthday)) : null }}">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>@lang('SĐT') <small class="text-red">*</small></label>
-                                            <input type="text" class="form-control" name="phone"
-                                                placeholder="@lang('SĐT')" value="{{ $detail->phone ?? '' }}"
-                                                autocomplete="off">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>@lang('Giới tính') <small class="text-red">*</small></label>
-                                            <select name="gender" class="form-control">
-                                                <option value="" disabled>@lang('Chọn giới tính')</option>
-                                                @foreach ($gender as $key => $val)
-                                                    <option value="{{ $key }}"
-                                                        {{ $detail->gender == $val ? 'selected' : '' }}>
-                                                        {{ __($val) }}</option>
-                                                @endforeach
-                                            </select>
-
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label>@lang('Địa chỉ')</label>
-                                            <textarea rows="3" class="form-control" name="address">{{ $detail->json_params->address ?? '' }}</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="form-group password-wrapper">
-                                            <label>@lang('Mật khẩu') <small class="text-muted"><i>(Bỏ qua nếu bạn
-                                                        không
-                                                        muốn đổi mật khẩu)</i></small></label>
-                                            <input class="form-control single-input" type="password" name="password"
-                                                value="" autocomplete="off">
-                                            <span class="toggle-password">
-                                                <i class="eye-icon fa fa-eye"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <button type="button"
-                                            class="btn btn-danger btn-sm text-white text-uppercase btn_cancel">
-                                            Hủy</button>
-                                        <button type="submit"
-                                            class="btn btn-success btn-sm text-white text-uppercase">
-                                            <i class="fa fa-save"></i> Lưu thông tin</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                </div>
-
                 <!-- Sidebar -->
-                @include('frontend.components.sticky.sidebar')
+                {{-- @include('frontend.components.sticky.sidebar') --}}
 
             </div>
 

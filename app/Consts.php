@@ -4,6 +4,8 @@ namespace App;
 
 class Consts
 {
+    const FIRST_MONTH_DEFAULT = 6;
+
     const MEAL_SEASON = [
         'spring' => 'spring', // Mùa xuân
         'summer' => 'summer', // Mùa hè

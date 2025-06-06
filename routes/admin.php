@@ -119,14 +119,15 @@ Route::group(['namespace' => 'Admin'], function () {
                 'dishes' => 'MealDishesController',
                 'menu_plannings' => 'MealMenuPlanningController',
                 'menu_dailys' => 'MealMenuDailyController',
-
             ]);
+            
             //Thực đơn mẫu
             Route::post('meal_dishes_move_to_meal', 'MealMenuPlanningController@moveDish')->name('mealmenu.moveDish');
             Route::delete('meal_dishes_delete', 'MealMenuPlanningController@deleteDish')->name('mealmenu.deleteDish');
-            Route::get('/mealmenu/search-dishes', 'MealMenuPlanningController@searchDishes')->name('mealmenu.searchDishes');
             Route::post('/mealmenu/add-dishes', 'MealMenuPlanningController@addDishes')->name('mealmenu.addDishes');
             Route::post('meal-menu/{id}/update-ingredients', 'MealMenuPlanningController@updateIngredients')->name('admin.meal_menu.updateIngredients');
+            Route::post('/mealmenu/add-ingredients', 'MealMenuPlanningController@addIngredients')->name('mealmenu.addIngredients');
+
             //Thực đơn hàng ngày
             Route::post('meal-menu-daily/create-from-template', 'MealMenuDailyController@createFromTemplate')->name('admin.meal-menu-daily.create-from-template');
             Route::post('meal_dishes_move_to_meal_daily', 'MealMenuDailyController@moveDish')->name('mealmenu.moveDish.daily');
@@ -135,10 +136,12 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::post('meal-menu/{id}/update-ingredients-daily', 'MealMenuDailyController@updateIngredients')->name('admin.meal_menu.updateIngredients.daily');
             // Thống kê thực đơn theo ngày
             Route::get('report-meal-menu-daily', 'MealMenuDailyController@reportByDay')->name('mealmenu.daily.report');
-            Route::get('menu-dailys/date/{date}', 'MealMenuDailyController@showByDate')->name('menu_dailys.showByDate');
+            Route::get('menu-dailys/date/{date}/area/{area_id}', 'MealMenuDailyController@showByDate')->name('menu_dailys.showByDate');
+            // Thống kê thực đơn theo tuần
+            Route::get('mealmenu/report-by-week', 'MealMenuDailyController@reportByWeek')->name('mealmenu.week.report');
             
-
-
+            
+            
             Route::get('attendance/check-out/index', 'AttendancesController@checkout')->name('attendance.checkout');
             Route::get('attendance/summary-by-month/index', 'AttendancesController@attendanceSummaryByMonth')->name('attendance.summary_by_month');
             Route::post('attendance/summary-by-month/update_or_store', 'AttendancesController@updateOrstoreAttendance')->name('attendance.summary_by_month.update_or_store');
@@ -158,9 +161,12 @@ Route::group(['namespace' => 'Admin'], function () {
             // Cập nhật dịch vụ đầu năm cho học sinh
             Route::get('student/add_service_yearly', 'StudentController@addYearlyServicesForStudent')->name('student.add_service_yearly');
 
-            // Cập nhật lại service cho học sinh và tính lại phí, tính phí đầu năm
+            // TBP
             Route::post('receipt/update_student_service_and_fee', 'ReceiptController@updateStudentServiceAndFee')->name('receipt.update_student_service_and_fee');
             Route::post('receipt/CRUD_receipt_transaction', 'ReceiptController@CrudReceiptTransaction')->name('receipt.crud_receipt_transaction');
+            Route::post('receipt/payment/{id}', 'ReceiptController@payment')->name('receipt.payment');
+            Route::post('receipt/approved/{id}', 'ReceiptController@approved')->name('receipt.approved');
+            Route::post('receipt/delete_receipt_detail_and_recalculate', 'ReceiptController@deletePaymentDetailsAndRecalculate')->name('receipt.deletePaymentDetailsAndRecalculate');
 
             //CBTS
             Route::get('admissions/students', 'AdmissionStudentController@index')->name('admission.student.index');
@@ -170,11 +176,11 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('admissions/students/edit/{id}', 'AdmissionStudentController@edit')->name('admission.student.edit');
             Route::put('admissions/students/update/{id}', 'AdmissionStudentController@update')->name('admission.student.update');
             Route::delete('admissions/students/delete/{id}', 'AdmissionStudentController@destroy')->name('admission.student.destroy');
+            Route::get('admissions/receipt', 'AdmissionStudentController@receipt')->name('admission.receipt');
 
             // Import Class và StudentClass
             Route::post('import_class', 'ClassController@importClassStudent')->name('class.import_class');
-            Route::post('receipt/payment/{id}', 'ReceiptController@payment')->name('receipt.payment');
-            Route::post('receipt/approved/{id}', 'ReceiptController@approved')->name('receipt.approved');
+
             Route::post('data_crms_log_store', 'DataCrmController@storeCRMLOG')->name('data_crms_log_store');
 
             // --- PHẦN HỌC SINH---
@@ -306,6 +312,11 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('leave_balances/create', 'LeaveController@createLeaveBalance')->name('leave.balance.create');
             Route::post('leave_balances/store', 'LeaveController@storeLeaveBalance')->name('leave.balance.store');
         });
+
+        //tìm món và thực đơn
+        Route::get('/mealmenu/search-ingredients', 'MealMenuPlanningController@searchIngredients')->name('mealmenu.searchIngredients');
+        Route::get('/mealmenu/search-dishes', 'MealMenuPlanningController@searchDishes')->name('mealmenu.searchDishes');
+
         Route::get('attendance/summary-by-month/show', 'AttendancesController@showSummaryByMonth')->name('attendance.summary_by_month.show');
 
         Route::get('receipt_view/{id}', 'ReceiptController@viewIndex')->name('receipt.view');

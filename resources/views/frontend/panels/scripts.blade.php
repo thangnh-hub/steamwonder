@@ -32,6 +32,7 @@
 
 <script src="{{ asset('themes/frontend/dwn/js/lazysizes.min.js') }}"></script>
 <script src="{{ asset('themes/frontend/dwn/js/sweetalert2.all.min.js') }}"></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
 <script>
     (function($) {
         // Form ajax default

@@ -62,10 +62,6 @@
                 <div class="box box-primary">
                     <div class="box-header with-border">
                         <h3 class="box-title"><?php echo app('translator')->get('Món ăn'); ?></h3>
-                        <button type="button" class="btn btn-warning btn-sm pull-right" 
-                                data-toggle="modal" data-target="#addDishModal">
-                                <i class="fa fa-plus"></i> Thêm món vào thực đơn
-                        </button>
                     </div>
                     
                     <div class="box-body">
@@ -81,22 +77,6 @@
                                                 <li class="list-group-item clearfix">
                                                     <?php echo e($loop->iteration); ?>. <?php echo e($dish->dishes->name); ?>
 
-                                                    <div class="pull-right">
-                                                        <button type="button" class="btn btn-xs btn-default btn-move-dish" 
-                                                                data-toggle="modal" data-target="#exchangeDishes"
-                                                                data-dish-id="<?php echo e($dish->id); ?>" 
-                                                                data-dish-name="<?php echo e($dish->dishes->name); ?>"
-                                                                title="Di chuyển sang bữa khác">
-                                                            <i class="fa fa-exchange"></i>
-                                                        </button>
-                                                        <button type="button" class="btn btn-xs btn-danger btn-delete-dish"
-                                                                data-toggle="modal" data-target="#deleteDishModal"
-                                                                data-dish-id="<?php echo e($dish->id); ?>"
-                                                                data-dish-name="<?php echo e($dish->dishes->name); ?>"
-                                                                title="Xóa món ăn">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-                                                    </div>
                                                 </li>
                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
@@ -135,7 +115,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label><?php echo app('translator')->get('Nhóm đối tượng'); ?> <span class="text-danger">*</span></label>
-                                        <select name="meal_age_id" class="form-control select2" required>
+                                        <select disabled class="form-control select2" required>
                                             <option value=""><?php echo app('translator')->get('Chọn'); ?></option>
                                             <?php $__currentLoopData = $list_meal_age; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <option value="<?php echo e($item->id); ?>" <?php echo e((old('meal_age_id', $detail->meal_age_id ?? '') == $item->id) ? 'selected' : ''); ?>><?php echo e($item->name ?? ""); ?></option>
@@ -148,7 +128,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="count_student"><?php echo app('translator')->get('Số lượng học sinh'); ?></label>
-                                        <input type="number" name="count_student" class="form-control" value="<?php echo e(old('count_student', $detail->count_student ?? '')); ?>" min="0">
+                                        <input type="number" disabled class="form-control" value="<?php echo e(old('count_student', $detail->count_student ?? '')); ?>" min="0">
                                     </div>
                                 </div>
 
@@ -156,7 +136,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label><?php echo app('translator')->get('Mùa áp dụng'); ?></label>
-                                        <select name="season" class="form-control select2">
+                                        <select  name="season" class="form-control select2">
                                             <option value=""><?php echo app('translator')->get('Chọn'); ?></option>
                                             <?php $__currentLoopData = $list_season; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <option value="<?php echo e($key); ?>" <?php echo e((old('season', $detail->season ?? '') == $key) ? 'selected' : ''); ?>><?php echo e($value); ?></option>
@@ -176,7 +156,12 @@
                                         </select>
                                     </div>
                                 </div>
-
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="date"><?php echo app('translator')->get('Ngày áp dụng'); ?></label>
+                                        <input type="date" name="date" class="form-control" value="<?php echo e(old('date', $detail->date ?? '')); ?>" >
+                                    </div>
+                                </div>
                                 
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -197,17 +182,13 @@
                     </div>
                 </form>
 
-                <form action="<?php echo e(route('admin.meal_menu.updateIngredients.daily', $detail->id)); ?>" method="POST">
-                <?php echo csrf_field(); ?>
-
                 <div class="box box-primary">
                     <div class="box-header with-border">
                         <h3 class="box-title"><?php echo app('translator')->get('Thực phẩm trong thực đơn'); ?></h3>
                     </div>
-
                     <div class="box-body">
                         <?php if($detail->menuIngredients->count()): ?>
-                            <table class="table table-bordered table-striped">
+                            <table class="table table-bordered ">
                                 <thead>
                                     <tr>
                                         <th>STT</th>
@@ -237,20 +218,10 @@
                                             <td><?php echo e($loop->iteration); ?></td>
                                             <td><?php echo e($item->ingredients->name ?? ''); ?></td>
                                             <td>
-                                                <input 
-                                                    type="number" 
-                                                    step="0.01" 
-                                                    min="0" 
-                                                    name="ingredients[<?php echo e($item->id); ?>]" 
-                                                    class="form-control input-per-one" 
-                                                    data-id="<?php echo e($item->id); ?>" 
-                                                    value="<?php echo e(number_format($valuePerOne, 2, '.', '')); ?>">
+                                               <?php echo e(rtrim(rtrim(  number_format($valuePerOne, 2, '.', ''), '0'), '.')); ?> g
                                             </td>
                                             <td>
-                                                <span class="total-value" id="total-<?php echo e($item->id); ?>">
-                                                    <?php echo e(number_format($item->value, 2)); ?>
-
-                                                </span>
+                                                <?php echo e(rtrim(rtrim( number_format($item->value, 2), '0'), '.')); ?> g
                                             </td>
                                             <td>
                                                 <?php echo e(rtrim(rtrim(number_format($valueInKg, 2, '.', ''), '0'), '.')); ?> kg
@@ -272,14 +243,7 @@
                             <p>Không có nguyên liệu nào được tính toán cho thực đơn này.</p>
                         <?php endif; ?>
                     </div>
-
-                    <div class="box-footer">
-                        <button type="submit" class="btn btn-info btn-sm pull-right">
-                            <i class="fa fa-save"></i> <?php echo app('translator')->get('Save'); ?>
-                        </button>
-                    </div>
                 </div>
-            </form>
 
             </div>
         </div>
@@ -417,89 +381,5 @@
 
 <?php $__env->stopSection(); ?>
 
-<?php $__env->startSection('script'); ?>
-    <script>
-        $(document).ready(function(){
-            $('.btn-move-dish').click(function(){
-                let dishId = $(this).data('dish-id');
-                let dishName = $(this).data('dish-name');
-                $('#modal_dish_id').val(dishId);
-                $('#modal_dish_name').text(dishName);
-                $('#new_meal_type').val('');
-            });
-
-            $('.btn-delete-dish').on('click', function () {
-                var dishId = $(this).data('dish-id');
-                var dishName = $(this).data('dish-name');
-
-                $('#delete_dish_id').val(dishId);
-                $('#delete_dish_name').text(dishName);
-            });
-        });
-
-        //Ajax search for dishes
-        $('#btnSearchDishes').click(function () {
-            var keyword = $('#searchKeyword').val();
-            var type = $('#dish_type').val();
-
-            if (!type) {
-                alert('Vui lòng chọn bữa ăn trước.');
-                return;
-            }
-
-            $('#loading-spinner').show();
-            $('#dishesResult').html('');
-            $('#addDishForm button[type="submit"]').prop('disabled', true); // Disable submit
-
-            $.ajax({
-                url: '<?php echo e(route("mealmenu.searchDishes")); ?>',
-                method: 'GET',
-                data: { keyword: keyword },
-                success: function (data) {
-                    $('#loading-spinner').hide();
-                    if (data.length === 0) {
-                        alert('Không tìm thấy món ăn nào.');
-                        return;
-                    }
-                    let html = '';
-                    data.forEach(function (dish) {
-                        html += `
-                            <tr>
-                                <td><input type="checkbox" class="dish-checkbox" name="dishes_ids[]" value="${dish.id}"></td>
-                                <td>${dish.name}</td>
-                                <td>${'MA' + String(dish.id).padStart(5, '0')}</td>
-                            </tr>
-                        `;
-                    });
-                    $('#dishesResult').html(html);
-                },
-                error: function () {
-                    $('#loading-spinner').hide();
-                    alert('Lỗi khi tìm kiếm.');
-                }
-            });
-        });
-        $(document).on('change', '.dish-checkbox', function () {
-            let anyChecked = $('.dish-checkbox:checked').length > 0;
-            $('#addDishForm button[type="submit"]').prop('disabled', !anyChecked);
-        });
-        $('#addDishForm button[type="submit"]').prop('disabled', true);
-        
-        // Cập nhật giá trị tổng khi thay đổi định lượng cho 1 người
-         $(document).ready(function () {
-            const countStudent = <?php echo e($detail->count_student); ?>;
-
-            $('.input-per-one').on('input', function () {
-                const id = $(this).data('id');
-                const perOne = parseFloat($(this).val()) || 0;
-                const total = (perOne * countStudent).toFixed(2);
-
-                $('#total-' + id).text(total);
-            });
-        });
-
-    </script>
-    
-<?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\steamwonder\resources\views/admin/pages/meal/menu_dailys/edit.blade.php ENDPATH**/ ?>

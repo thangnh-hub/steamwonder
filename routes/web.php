@@ -50,12 +50,17 @@ Route::namespace('FrontEnd')->group(function () {
             Route::get('', 'UserController@index')->name('frontend.user');
             Route::get('/logout', 'UserController@logout')->name('frontend.logout');
             Route::get('/my-course', 'UserController@myCourse')->name('frontend.user.course');
-            Route::get('/my-education', 'UserController@myEducation')->name('frontend.user.education');
+            Route::get('/my-student', 'UserController@myStudent')->name('frontend.user.student');
+            Route::get('/my-class', 'UserController@myClass')->name('frontend.user.class');
+            Route::get('/my-parent', 'UserController@myParent')->name('frontend.user.parent');
+            Route::get('/my-attendance', 'UserController@myAttendance')->name('frontend.user.attendance');
             Route::post('/update-account', 'UserController@changeAccount')->name('frontend.update.account');
             Route::post('/update-password', 'UserController@changePassword')->name('frontend.update.password');
         });
     });
     Route::group(['middleware' => ['auth:web']], function () {
+        // Set session user
+        Route::get('set-session-user/{id}', 'UserController@setSessionUser')->name('frontend.setSessionUser');
         // Route::get('khoa-hoc/{alias}/lesson/{id}', 'CourseController@lesson')->name('frontend.lesson.detail');
         Route::get('learning/{alias}', 'CourseController@lesson')->name('frontend.lesson.detail');
         Route::post('/lesson-user', 'CourseController@activeLessonUser')->name('lesson.user');

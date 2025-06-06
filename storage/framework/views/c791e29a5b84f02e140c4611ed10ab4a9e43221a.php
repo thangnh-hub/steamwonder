@@ -29,6 +29,10 @@
             padding: 5px;
             border: 1px solid #a9a9a9
         }
+
+        .d-none {
+            display: none;
+        }
     </style>
 <?php $__env->stopSection(); ?>
 
@@ -162,8 +166,8 @@
                                 </span>
                                 )
                             </h4>
-                            <div class="d-flex box_cycle"
-                                style="display: <?php echo e(isset($detail->json_params->is_payment_cycle) && $detail->json_params->is_payment_cycle == 1 ? 'flex' : 'none'); ?>">
+                            <div
+                                class="d-flex box_cycle <?php echo e(isset($detail->json_params->is_payment_cycle) && $detail->json_params->is_payment_cycle == 1 ? 'd-flex' : 'd-none'); ?>">
                                 <?php $__currentLoopData = $payment_cycle; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item_cycle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <div class="item_cycle">
                                         <h4 class="box-title"><?php echo e($item_cycle->name); ?></h4>
@@ -189,7 +193,8 @@
 
                                                         style="width:150px;"
                                                         name="json_params[payment_cycle][<?php echo e($item_cycle->id); ?>][services][<?php echo e($item_service->id); ?>][apply_count]"
-                                                        type="number" value="<?php echo e($detail->json_params->payment_cycle->{$item_cycle->id}->services->{$item_service->id}->apply_count ?? ''); ?>">
+                                                        type="number"
+                                                        value="<?php echo e($detail->json_params->payment_cycle->{$item_cycle->id}->services->{$item_service->id}->apply_count ?? ''); ?>">
                                                     <span class="fw-bold ml-10"
                                                         style="min-width:200px;"><?php echo e($item_service->name ?? ''); ?>
 
@@ -200,8 +205,8 @@
                                     </div>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </div>
-                            <div class="box_default"
-                                style="display: <?php echo e(isset($detail->json_params->is_payment_cycle) && $detail->json_params->is_payment_cycle == 1 ? 'none' : 'flex'); ?>">
+                            <div
+                                class="box_default <?php echo e(isset($detail->json_params->is_payment_cycle) && $detail->json_params->is_payment_cycle == 1 ? 'd-none' : 'd-flex'); ?>">
                                 <ul class="mt-15">
                                     <?php $__currentLoopData = $service; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item_service): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <li class="d-flex item_service">
@@ -279,10 +284,23 @@
                 $(this).parents('.item_service').find('.check_disable').attr('disabled', !check)
             })
             $('#form_promotion').on('submit', function(e) {
+                $(this).find(':input').filter(function() {
+                    return $(this).closest('.d-none').length > 0;
+                }).prop('disabled', true);
+
                 // Kiểm tra xem có ít nhất một checkbox được chọn hay không
                 if ($('.checkService:checked').length === 0) {
                     e.preventDefault(); // Ngăn form submit
                     alert('Vui lòng chọn ít nhất một dịch vụ!');
+                }
+            });
+            $('#sw_featured').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $('.box_cycle').addClass('d-flex').removeClass('d-none');
+                    $('.box_default').addClass('d-none').removeClass('d-flex');
+                } else {
+                    $('.box_cycle').addClass('d-none').removeClass('d-flex');
+                    $('.box_default').addClass('d-flex').removeClass('d-none');
                 }
             });
 

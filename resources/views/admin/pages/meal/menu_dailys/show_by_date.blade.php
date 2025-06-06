@@ -6,6 +6,10 @@
 
 @section('style')
     <style>
+        .content-header{
+            display: flex;
+            justify-content: space-between;
+        }
         .box-body {
             margin-bottom: 0px;
         }
@@ -24,9 +28,12 @@
 
 @section('content')
     <section class="content-header">
-        <h1>
-            @lang($module_name)
-        </h1>
+            <h1>
+                @lang($module_name)
+            </h1>
+            <a class="pull-right" href="{{ route( 'mealmenu.daily.report') }}">
+                <button type="button" class="btn btn-sm btn-success">@lang('Danh sách thống kê')</button>
+            </a>
     </section>
 
     <!-- Main content -->
@@ -66,12 +73,11 @@
                 <div class="box-body">
                     @foreach($groupedIngredients as $type => $items)
                         <label><strong>Loại: {{ ucfirst(__($type)) }}</strong></label>
-                        <table class="table table-bordered table-striped" style="margin-bottom: 20px">
+                        <table class="table table-bordered " style="margin-bottom: 20px">
                             <thead>
                                 <tr>
                                     <th>STT</th>
                                     <th>Tên nguyên liệu</th>
-                                    <th>Định lượng cho 1 suất</th>
                                     <th>Định lượng tổng</th>
                                     <th>KG</th>
                                     <th>Đơn vị chính</th>
@@ -94,7 +100,6 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $ingredient->name }}</td>
-                                        <td>{{ rtrim(rtrim(number_format($valuePerOne, 2, '.', ''), '0'), '.') }} g</td>
                                         <td>{{ rtrim(rtrim(number_format($item['total'], 2, '.', ''), '0'), '.') }} g</td>
                                         <td>{{ rtrim(rtrim(number_format($valueInKg, 2, '.', ''), '0'), '.') }} kg</td>
                                         <td>
@@ -115,19 +120,19 @@
 
 
         @foreach($menus as $menu)
-            <div style="margin-bottom: 30px;" class="box">
+            <div style="margin-bottom: 30px;" class="box collapsed-box">
                 <div class="box-header with-border">
                     <h3 class="box-title">@lang('Nguyên liệu cho nhóm tuổi'): {{ $menu->mealAge->name ?? '-' }}
                         <span>({{ $menu->count_student ?? 0 }} suất)</span>
                     </h3>
                     
                     <div class="box-tools pull-right">
-                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
                     </div>
                 </div>
-                <div class="box-body">
+                <div class="box-body" >
                     @if($menu->menuIngredients->count())
-                        <table class="table table-bordered table-striped">
+                        <table class="table table-bordered ">
                             <thead>
                                 <tr>
                                     <th>@lang('STT')</th>

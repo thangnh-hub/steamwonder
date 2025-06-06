@@ -1,7 +1,8 @@
 <?php $__env->startSection('title'); ?>
     <?php echo app('translator')->get($module_name); ?>
 <?php $__env->stopSection(); ?>
-
+<?php $__env->startPush('style'); ?>
+<?php $__env->stopPush(); ?>
 <?php $__env->startSection('content-header'); ?>
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -38,7 +39,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Area'); ?></label>
                                 <select name="area_id" id="area_id" class="form-control select2" style="width: 100%;">
@@ -54,15 +55,17 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Lớp học '); ?></label>
-                                <select name="current_class_id"  class="form-control select2" style="width: 100%;">
+                                <select name="current_class_id" class="form-control select2" style="width: 100%;">
                                     <option value=""><?php echo app('translator')->get('Please select'); ?></option>
                                     <?php $__currentLoopData = $list_class; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <option value="<?php echo e($value->id); ?>"
                                             <?php echo e(isset($params['current_class_id']) && $value->id == $params['current_class_id'] ? 'selected' : ''); ?>>
                                             <?php echo e(__($value->name)); ?>
+
+                                            - <?php echo e(optional($value->area)->name ?? ''); ?>
 
                                             (Mã: <?php echo e($value->code); ?>)
                                         </option>
@@ -70,10 +73,10 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Trạng thái '); ?></label>
-                                <select name="status"  class="form-control select2" style="width: 100%;">
+                                <select name="status" class="form-control select2" style="width: 100%;">
                                     <option value=""><?php echo app('translator')->get('Please select'); ?></option>
                                     <?php $__currentLoopData = $list_status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <option value="<?php echo e($key); ?>"
@@ -96,8 +99,7 @@
                                         <?php echo app('translator')->get('Reset'); ?>
                                     </a>
 
-                                    <button type="button" data-toggle="modal" data-target="#create_crmdata_student"
-                                        class="btn btn-success btn-sm"><?php echo app('translator')->get('Import Excel'); ?></button>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -178,17 +180,18 @@
                         <table class="table table-hover table-bordered ">
                             <thead>
                                 <tr>
-                                    <th><?php echo app('translator')->get('STT'); ?></th>
-                                    <th><?php echo app('translator')->get('Avatar'); ?></th>
-                                    <th><?php echo app('translator')->get('Student code'); ?></th>
+                                    <th style="width:20px;"><?php echo app('translator')->get('STT'); ?></th>
+                                    <th style="width:100px;"><?php echo app('translator')->get('Avatar'); ?></th>
+                                    <th style="width:50px;"><?php echo app('translator')->get('Mã HS'); ?></th>
                                     <th><?php echo app('translator')->get('Full name'); ?></th>
-                                    <th><?php echo app('translator')->get('Tên thường gọi'); ?></th>
-                                    <th><?php echo app('translator')->get('Gender'); ?></th>
-                                    <th><?php echo app('translator')->get('Area'); ?></th>
+                                    <th style="width:60px;"><?php echo app('translator')->get('Nickname'); ?></th>
+                                    <th style="width:75px;"><?php echo app('translator')->get('Gender'); ?></th>
+                                    <th style="width:75px;"><?php echo app('translator')->get('Area'); ?></th>
                                     <th><?php echo app('translator')->get('Địa chỉ'); ?></th>
-                                    <th><?php echo app('translator')->get('Trạng thái'); ?></th>
-                                    <th><?php echo app('translator')->get('Lớp đang học'); ?></th>
-                                    <th><?php echo app('translator')->get('Ngày nhập học chính thức'); ?></th>
+                                    <th style="width:85px;"><?php echo app('translator')->get('Trạng thái'); ?></th>
+                                    <th style="width:80px;"><?php echo app('translator')->get('Lớp học'); ?></th>
+                                    <th style="width:80px;"><?php echo app('translator')->get('Nhập học'); ?></th>
+                                    <th><?php echo app('translator')->get('Phụ huynh'); ?></th>
                                     <th><?php echo app('translator')->get('Action'); ?></th>
                                 </tr>
                             </thead>
@@ -210,7 +213,7 @@
                                                 <?php endif; ?>
                                             </td>
                                             <td>
-                                                   <?php echo e($row->student_code); ?>
+                                                <?php echo e($row->student_code); ?>
 
                                             </td>
                                             <td>
@@ -246,9 +249,27 @@
                                                 <?php echo e(isset($row->enrolled_at) && $row->enrolled_at != '' ? date('d-m-Y', strtotime($row->enrolled_at)) : ''); ?>
 
                                             </td>
-
                                             <td>
-                                                <a class="btn btn-sm btn-primary" href="<?php echo e(route(Request::segment(2) . '.show', $row->id)); ?>"
+                                                <?php if(isset($row->studentParents)): ?>
+                                                    <ul>
+                                                        <?php $__currentLoopData = $row->studentParents; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $entry): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                            <li>
+                                                                <?php echo e($entry->relationship->title ?? ''); ?>
+
+                                                                <?php echo e($entry->parent->first_name ?? ''); ?>
+
+                                                                <?php echo e($entry->parent->last_name ?? ''); ?>
+
+                                                                <?php echo e($entry->parent->phone ?? ''); ?>
+
+                                                            </li>
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    </ul>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-sm btn-primary"
+                                                    href="<?php echo e(route(Request::segment(2) . '.show', $row->id)); ?>"
                                                     data-toggle="tooltip" title="<?php echo app('translator')->get('Chi tiết học sinh'); ?>"
                                                     data-original-title="<?php echo app('translator')->get('Chi tiết học sinh'); ?>"
                                                     onclick="return openCenteredPopup(this.href)">

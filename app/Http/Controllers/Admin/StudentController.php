@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Consts;
+use App\Helpers;
+use Carbon\Carbon;
 use App\Models\Student;
 use App\Models\tbParent;
 use App\Models\Policies;
@@ -442,7 +444,7 @@ class StudentController extends Controller
             return $value !== null && $value !== '';
         });
         $rows = collect(); // khởi tạo rỗng mặc định
-        $year = now()->year;
+        $year = $request->input('school_year') ?? Carbon::now()->format('Y');
         if ($searchParams->isNotEmpty()) {
             $rows = Student::getSqlStudent($params)
                 ->whereHas('currentClass', fn($q) => $q->where('is_lastyear', false))
@@ -454,6 +456,7 @@ class StudentController extends Controller
             }
         }
 
+        $this->responseData['school_year'] =  Helpers::getYearDefault();
         $this->responseData['rows'] = $rows;
         $this->responseData['params'] = $params;
         $this->responseData['list_class'] =  tbClass::orderBy('id', 'desc')->get();
@@ -468,20 +471,9 @@ class StudentController extends Controller
         $list_student_ids = $request->input('student', []);
         //Lọc danh sách id học sinh gửi lên chỉ lấy thằng có ít nhất 1 dịch vụ là active và là loại yearly thì mới tính hóa đơn
         $students = Student::whereIn('id', $list_student_ids)
-            ->whereHas('studentServices', function ($query) {
-                $query->where('status', 'active')
-                    ->whereHas('services', function ($q) {
-                        $q->where('service_type', 'yearly');
-                    });
-            })
             ->get();
-
-
         $serviceYear = Service::where('service_type', 'yearly')->get();
         foreach ($students as $student) {
-            // Thêm dịch vụ năm nếu chưa có
-            $this->addYearlyServicesForStudent($student, $serviceYear);
-
 
             $data['student_services'] = $student->studentServices()
                 ->where('status', 'active')
@@ -490,7 +482,7 @@ class StudentController extends Controller
             $data['include_current_month'] = false;
             $data['enrolled_at'] = $request->input('enrolled_at', null);
 
-            $receiptService->ReceiptForStudentYearly($student, $data);
+            $receiptService->createReceiptForStudentYearly($student, $data);
         }
         return redirect()->back()->with('successMessage', __('Tạo hóa đơn thành công!'));
     }
@@ -667,6 +659,7 @@ class StudentController extends Controller
         $students = Student::where('status', Consts::STATUS_STUDY['dang_hoc'])
             ->whereHas('currentClass', fn($q) => $q->where('is_lastyear', false))
             ->get();
+
         // Chạy phí cho từng học sinh
         $students->chunk(50)->each(function ($chunkedStudents) use ($auth, $serviceYear) {
             foreach ($chunkedStudents as $student) {

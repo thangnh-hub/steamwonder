@@ -27,11 +27,49 @@
 </head>
 
 <body>
-
     @if (\View::exists('frontend.widgets.header.default'))
         @include('frontend.widgets.header.default')
     @else
         {{ 'View: frontend.widgets.header.default  do not exists!' }}
+    @endif
+
+    @if (isset($user_auth))
+        @if (isset($students))
+            <div class="feature py-5">
+                <div class="container">
+                    <div class="row">
+                        @foreach ($students as $student)
+                            <div class="item col-6 col-lg-3">
+                                <a href="{{ route('frontend.setSessionUser', $student->id) }}" class="btn btn {{Session::get('user') == $student->id?'btn-success':'btn-light'}}">
+                                    <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                                    {{ $student->first_name ?? '' }} {{ $student->last_name ?? '' }}
+                                </a>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            <div class="mb-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="item col-6 col-lg-3">
+                            <a href="{{ route('frontend.user.student') }}"
+                                class="btn btn {{ parse_url(route('frontend.user.student'), PHP_URL_PATH) == parse_url(url()->full(), PHP_URL_PATH) ? 'btn-success' : 'btn-light' }} ">
+                                <i class="fa fa-address-card" aria-hidden="true"></i>
+                                @lang('Thông tin học sinh')
+                            </a>
+                        </div>
+                        <div class="item col-6 col-lg-3">
+                            <a href="{{ route('frontend.user.attendance') }}"
+                                class="btn btn {{ parse_url(route('frontend.user.attendance'), PHP_URL_PATH) == parse_url(url()->full(), PHP_URL_PATH) ? 'btn-success' : 'btn-light' }} ">
+                                <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
+                                @lang('Thông tin điểm danh')
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
     @endif
 
     @if (isset($blocks_selected))
@@ -43,7 +81,7 @@
             @endif
         @endforeach
     @endif
-
+    @yield('content')
     @if (\View::exists('frontend.widgets.footer.default '))
         @include('frontend.widgets.footer.default ')
     @else

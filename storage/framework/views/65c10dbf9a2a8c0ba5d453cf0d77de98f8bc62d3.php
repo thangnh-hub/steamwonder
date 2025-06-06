@@ -43,8 +43,28 @@
                                     value="<?php echo e(isset($params['keyword']) ? $params['keyword'] : ''); ?>">
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label><?php echo app('translator')->get('Ngày'); ?> </label>
+                                <input type="date" class="form-control" name="date" 
+                                    value="<?php echo e(isset($params['date']) ? $params['date'] : ''); ?>">
+                            </div>
+                        </div>
                         
-                        
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label><?php echo app('translator')->get('Khu vực'); ?></label>
+                                <select name="area_id" class="form-control select2"style="width: 100%;">
+                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
+                                    <?php $__currentLoopData = $list_area; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($item->id); ?>"
+                                            <?php echo e(isset($params['area_id']) && $params['area_id'] == $item->id ? 'selected' : ''); ?>><?php echo e(__($item->name)); ?>
+
+                                        </option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
+                            </div>
+                        </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Nhóm tuổi'); ?></label>
@@ -132,9 +152,12 @@
                     <thead>
                         <tr>
                             <th><?php echo app('translator')->get('STT'); ?></th>
+                            <th><?php echo app('translator')->get('Khu vực'); ?></th>
                             <th><?php echo app('translator')->get('Mã thực đơn'); ?></th>
                             <th><?php echo app('translator')->get('Tên thực đơn'); ?></th>
+                            <th><?php echo app('translator')->get('Ngày áp dụng'); ?></th>
                             <th><?php echo app('translator')->get('Các món ăn'); ?></th>
+                            <th><?php echo app('translator')->get('Nhóm tuổi'); ?></th>
                             <th style="width:350px;white-space: pre-line"><?php echo app('translator')->get('Mô tả'); ?></th>
                             <th><?php echo app('translator')->get('Trạng thái'); ?></th>
                             <th><?php echo app('translator')->get('Thao tác'); ?></th>
@@ -147,8 +170,16 @@
                                     <?php echo e($loop->iteration + ($rows->currentPage() - 1) * $rows->perPage()); ?>
 
                                 </td>
+                                <td>
+                                    <?php echo e($row->area->name ?? ''); ?>
+
+                                </td>
                                 <td><?php echo e($row->code ?? ''); ?></td>
                                 <td><?php echo e($row->name ?? ''); ?></td>
+                                <td>
+                                    <?php echo e(isset($row->date) ? \Carbon\Carbon::parse($row->date)->format('d/m/Y') : ''); ?>
+
+                                </td>
                                 <td>
                                     <?php if(isset($row->menuDishes) && count($row->menuDishes) > 0): ?>
                                         <ul >
@@ -159,6 +190,10 @@
                                     <?php else: ?>
                                         <?php echo app('translator')->get('Chưa có món ăn nào'); ?>
                                     <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php echo e(isset($row->mealAge) ? $row->mealAge->name : ''); ?>
+
                                 </td>
                                 <td>
                                     <?php echo nl2br(__($row->description ?? '')); ?>
@@ -216,13 +251,24 @@
 
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Ngày áp dụng <small class="text-danger">*</small></label>
-                                    <input type="date" name="date" class="form-control" required>
+                                    <input type="date" name="date" class="form-control" value="" required>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Khu vực <small class="text-danger">*</small></label>
+                                    <select style="width:100%" name="area_id" class="form-control select2" required>
+                                        <?php $__currentLoopData = $list_area; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $area): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($area->id); ?>"><?php echo e($area->name ?? ""); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label>Thực đơn mẫu <small class="text-danger">*</small></label>
                                     <select style="width:100%" name="meal_menu_planning_id" class="form-control select2" required>

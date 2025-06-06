@@ -1,0 +1,16 @@
+<?php if($block): ?>
+  <?php
+    $layout = isset($block->json_params->layout) && $block->json_params->layout != '' ? $block->json_params->layout : 'default';
+  ?>
+
+
+  <?php if(\View::exists('frontend.blocks.' . $block->block_code . '.layout.' . $layout)): ?>
+
+    <?php echo $__env->make('frontend.blocks.' . $block->block_code . '.layout.' . $layout, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+  <?php else: ?>
+    <?php echo e('Style: frontend.blocks.' . $block->block_code . '.layout.' . $layout . ' do not exists!'); ?>
+
+  <?php endif; ?>
+
+<?php endif; ?>
+<?php /**PATH C:\xampp\htdocs\steamwonder\resources\views/frontend/blocks/banner/index.blade.php ENDPATH**/ ?>

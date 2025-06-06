@@ -17,9 +17,6 @@
     <section class="content-header">
         <h1>
             @lang($module_name)
-            <button type="button" class="btn btn-sm btn-warning pull-right" data-toggle="modal" data-target="#createDailyMenuModal">
-                <i class="fa fa-plus"></i> @lang('Add')
-            </button>
         </h1>
     </section>
 @endsection
@@ -44,6 +41,20 @@
                             </div>
                         </div>
                         
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>@lang('Area')</label>
+                                <select class="form-control select2" name="area_id">
+                                    <option value="">@lang('Chọn')</option>
+                                    @foreach($list_area as $area)
+                                        <option value="{{ $area->id }}" {{ isset($params['area_id']) && $params['area_id'] == $area->id ? 'selected' : '' }}>
+                                            {{ $area->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label>@lang('Filter')</label>
@@ -90,7 +101,7 @@
 
                     </div>
                 @endif
-                @if (count($menusGroupedByDate) == 0)
+                @if (count($menusGrouped) == 0)
                     <div class="alert alert-warning alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                         @lang('not_found')
@@ -101,6 +112,7 @@
                         <tr>
                             <th>@lang('STT')</th>
                             <th>@lang('Ngày')</th>
+                            <th>@lang('Khu vực')</th>
                             <th>@lang('Nhóm trẻ')</th>
                             <th>@lang('Tên thực đơn theo nhóm')</th>
                             <th>@lang('Tổng số suất')</th>
@@ -108,54 +120,45 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($menusGroupedByDate as $date => $menus)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}</td>
-                                <td>
-                                    <ul>
-                                        @foreach($menus as $menu)
-                                        <li>
-                                            {{ $menu->mealAge ? $menu->mealAge->name : '-' }}
-                                        </li>
-                                        @endforeach
-                                    </ul>
-                                </td>
-                                <td>
-                                    <ul>
-                                        @foreach($menus as $menu)
-                                        <li>
-                                            <a class="" href="{{ route('menu_dailys.edit',  $menu->id) }}"
-                                                data-toggle="tooltip" title="@lang('Chi tiết thực đơn')"
-                                                data-original-title="@lang('Chi tiết thực đơn')"
-                                                onclick="return openCenteredPopup(this.href)">
-                                                {{ $menu->name ?? '-' }} 
-                                            </a>
-                                        </li>
-                                        @endforeach
-                                    </ul>
-                                </td>
-                                <td>
-                                    {{ $menus->sum('count_student') }}
-                                </td>
-                                <td>
-                                    <a href="{{ route('menu_dailys.showByDate', ['date' => $date]) }}">Chi tiết</a>
-                                </td>
-                            </tr>
+                        @foreach($menusGrouped as $date => $areas)
+                            @foreach($areas as $areaId => $menus)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}</td>
+                                    <td>{{ $menus->first()->area->name ?? '-' }}</td>
+                                    <td>
+                                        <ul>
+                                            @foreach($menus as $menu)
+                                                <li>{{ $menu->mealAge->name ?? '-' }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <ul>
+                                            @foreach($menus as $menu)
+                                                <li>
+                                                    <a href="{{ route('menu_dailys.edit', $menu->id) }}"
+                                                    onclick="return openCenteredPopup(this.href)">
+                                                    {{ $menu->name ?? '-' }}
+                                                    </a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </td>
+                                    <td>{{ $menus->sum('count_student') }}</td>
+                                    <td>
+                                        <a class="btn btn-primary btn-sm" href="{{ route('menu_dailys.showByDate', ['date' => $date, 'area_id' => $areaId]) }}">
+                                            <i class="fa fa-eye"></i> Chi tiết
+                                        </a>
+                                    </td>
+                                </tr>
                             @endforeach
+                        @endforeach
                     </tbody>
                 </table>
-                
                 @endif
             </div>
-
-
         </div>
     </section>
 
-@endsection
-@section('script')
-    <script>
-       
-    </script>
 @endsection

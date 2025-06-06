@@ -61,7 +61,7 @@ class tbParent extends Model
                 return $query->where('tb_parents.id', $params['id']);
             });
 
-        
+
         if (!empty($params['order_by'])) {
             if (is_array($params['order_by'])) {
                 foreach ($params['order_by'] as $key => $value) {

@@ -60,10 +60,6 @@
                 <div class="box box-primary">
                     <div class="box-header with-border">
                         <h3 class="box-title">@lang('Món ăn')</h3>
-                        <button type="button" class="btn btn-warning btn-sm pull-right" 
-                                data-toggle="modal" data-target="#addDishModal">
-                                <i class="fa fa-plus"></i> Thêm món vào thực đơn
-                        </button>
                     </div>
                     
                     <div class="box-body">
@@ -78,22 +74,6 @@
                                             @foreach($dishes_by_type[$key] ?? [] as $dish)
                                                 <li class="list-group-item clearfix">
                                                     {{ $loop->iteration }}. {{ $dish->dishes->name }}
-                                                    <div class="pull-right">
-                                                        <button type="button" class="btn btn-xs btn-default btn-move-dish" 
-                                                                data-toggle="modal" data-target="#exchangeDishes"
-                                                                data-dish-id="{{ $dish->id }}" 
-                                                                data-dish-name="{{ $dish->dishes->name }}"
-                                                                title="Di chuyển sang bữa khác">
-                                                            <i class="fa fa-exchange"></i>
-                                                        </button>
-                                                        <button type="button" class="btn btn-xs btn-danger btn-delete-dish"
-                                                                data-toggle="modal" data-target="#deleteDishModal"
-                                                                data-dish-id="{{ $dish->id }}"
-                                                                data-dish-name="{{ $dish->dishes->name }}"
-                                                                title="Xóa món ăn">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-                                                    </div>
                                                 </li>
                                             @endforeach
 
@@ -132,7 +112,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>@lang('Nhóm đối tượng') <span class="text-danger">*</span></label>
-                                        <select name="meal_age_id" class="form-control select2" required>
+                                        <select disabled class="form-control select2" required>
                                             <option value="">@lang('Chọn')</option>
                                             @foreach($list_meal_age as $item)
                                                 <option value="{{ $item->id }}" {{ (old('meal_age_id', $detail->meal_age_id ?? '') == $item->id) ? 'selected' : '' }}>{{ $item->name ?? "" }}</option>
@@ -145,7 +125,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="count_student">@lang('Số lượng học sinh')</label>
-                                        <input type="number" name="count_student" class="form-control" value="{{ old('count_student', $detail->count_student ?? '') }}" min="0">
+                                        <input type="number" disabled class="form-control" value="{{ old('count_student', $detail->count_student ?? '') }}" min="0">
                                     </div>
                                 </div>
 
@@ -153,7 +133,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>@lang('Mùa áp dụng')</label>
-                                        <select name="season" class="form-control select2">
+                                        <select  name="season" class="form-control select2">
                                             <option value="">@lang('Chọn')</option>
                                             @foreach($list_season as $key => $value)
                                                 <option value="{{ $key }}" {{ (old('season', $detail->season ?? '') == $key) ? 'selected' : '' }}>{{ $value }}</option>
@@ -173,7 +153,12 @@
                                         </select>
                                     </div>
                                 </div>
-
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="date">@lang('Ngày áp dụng')</label>
+                                        <input type="date" name="date" class="form-control" value="{{ old('date', $detail->date ?? '') }}" >
+                                    </div>
+                                </div>
                                 {{-- Mô tả --}}
                                 <div class="col-md-12">
                                     <div class="form-group">
@@ -194,17 +179,13 @@
                     </div>
                 </form>
 
-                <form action="{{ route('admin.meal_menu.updateIngredients.daily', $detail->id) }}" method="POST">
-                @csrf
-
                 <div class="box box-primary">
                     <div class="box-header with-border">
                         <h3 class="box-title">@lang('Thực phẩm trong thực đơn')</h3>
                     </div>
-
                     <div class="box-body">
                         @if($detail->menuIngredients->count())
-                            <table class="table table-bordered table-striped">
+                            <table class="table table-bordered ">
                                 <thead>
                                     <tr>
                                         <th>STT</th>
@@ -234,19 +215,10 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $item->ingredients->name ?? '' }}</td>
                                             <td>
-                                                <input 
-                                                    type="number" 
-                                                    step="0.01" 
-                                                    min="0" 
-                                                    name="ingredients[{{ $item->id }}]" 
-                                                    class="form-control input-per-one" 
-                                                    data-id="{{ $item->id }}" 
-                                                    value="{{ number_format($valuePerOne, 2, '.', '') }}">
+                                               {{ rtrim(rtrim(  number_format($valuePerOne, 2, '.', ''), '0'), '.') }} g
                                             </td>
                                             <td>
-                                                <span class="total-value" id="total-{{ $item->id }}">
-                                                    {{ number_format($item->value, 2) }}
-                                                </span>
+                                                {{ rtrim(rtrim( number_format($item->value, 2), '0'), '.') }} g
                                             </td>
                                             <td>
                                                 {{ rtrim(rtrim(number_format($valueInKg, 2, '.', ''), '0'), '.') }} kg
@@ -267,14 +239,7 @@
                             <p>Không có nguyên liệu nào được tính toán cho thực đơn này.</p>
                         @endif
                     </div>
-
-                    <div class="box-footer">
-                        <button type="submit" class="btn btn-info btn-sm pull-right">
-                            <i class="fa fa-save"></i> @lang('Save')
-                        </button>
-                    </div>
                 </div>
-            </form>
 
             </div>
         </div>
@@ -412,87 +377,3 @@
 
 @endsection
 
-@section('script')
-    <script>
-        $(document).ready(function(){
-            $('.btn-move-dish').click(function(){
-                let dishId = $(this).data('dish-id');
-                let dishName = $(this).data('dish-name');
-                $('#modal_dish_id').val(dishId);
-                $('#modal_dish_name').text(dishName);
-                $('#new_meal_type').val('');
-            });
-
-            $('.btn-delete-dish').on('click', function () {
-                var dishId = $(this).data('dish-id');
-                var dishName = $(this).data('dish-name');
-
-                $('#delete_dish_id').val(dishId);
-                $('#delete_dish_name').text(dishName);
-            });
-        });
-
-        //Ajax search for dishes
-        $('#btnSearchDishes').click(function () {
-            var keyword = $('#searchKeyword').val();
-            var type = $('#dish_type').val();
-
-            if (!type) {
-                alert('Vui lòng chọn bữa ăn trước.');
-                return;
-            }
-
-            $('#loading-spinner').show();
-            $('#dishesResult').html('');
-            $('#addDishForm button[type="submit"]').prop('disabled', true); // Disable submit
-
-            $.ajax({
-                url: '{{ route("mealmenu.searchDishes") }}',
-                method: 'GET',
-                data: { keyword: keyword },
-                success: function (data) {
-                    $('#loading-spinner').hide();
-                    if (data.length === 0) {
-                        alert('Không tìm thấy món ăn nào.');
-                        return;
-                    }
-                    let html = '';
-                    data.forEach(function (dish) {
-                        html += `
-                            <tr>
-                                <td><input type="checkbox" class="dish-checkbox" name="dishes_ids[]" value="${dish.id}"></td>
-                                <td>${dish.name}</td>
-                                <td>${'MA' + String(dish.id).padStart(5, '0')}</td>
-                            </tr>
-                        `;
-                    });
-                    $('#dishesResult').html(html);
-                },
-                error: function () {
-                    $('#loading-spinner').hide();
-                    alert('Lỗi khi tìm kiếm.');
-                }
-            });
-        });
-        $(document).on('change', '.dish-checkbox', function () {
-            let anyChecked = $('.dish-checkbox:checked').length > 0;
-            $('#addDishForm button[type="submit"]').prop('disabled', !anyChecked);
-        });
-        $('#addDishForm button[type="submit"]').prop('disabled', true);
-        
-        // Cập nhật giá trị tổng khi thay đổi định lượng cho 1 người
-         $(document).ready(function () {
-            const countStudent = {{ $detail->count_student }};
-
-            $('.input-per-one').on('input', function () {
-                const id = $(this).data('id');
-                const perOne = parseFloat($(this).val()) || 0;
-                const total = (perOne * countStudent).toFixed(2);
-
-                $('#total-' + id).text(total);
-            });
-        });
-
-    </script>
-    
-@endsection

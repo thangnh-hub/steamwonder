@@ -17,9 +17,6 @@
     <section class="content-header">
         <h1>
             <?php echo app('translator')->get($module_name); ?>
-            <button type="button" class="btn btn-sm btn-warning pull-right" data-toggle="modal" data-target="#createDailyMenuModal">
-                <i class="fa fa-plus"></i> <?php echo app('translator')->get('Add'); ?>
-            </button>
         </h1>
     </section>
 <?php $__env->stopSection(); ?>
@@ -44,6 +41,21 @@
                             </div>
                         </div>
                         
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label><?php echo app('translator')->get('Area'); ?></label>
+                                <select class="form-control select2" name="area_id">
+                                    <option value=""><?php echo app('translator')->get('Chọn'); ?></option>
+                                    <?php $__currentLoopData = $list_area; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $area): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($area->id); ?>" <?php echo e(isset($params['area_id']) && $params['area_id'] == $area->id ? 'selected' : ''); ?>>
+                                            <?php echo e($area->name); ?>
+
+                                        </option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Filter'); ?></label>
@@ -92,7 +104,7 @@
 
                     </div>
                 <?php endif; ?>
-                <?php if(count($menusGroupedByDate) == 0): ?>
+                <?php if(count($menusGrouped) == 0): ?>
                     <div class="alert alert-warning alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                         <?php echo app('translator')->get('not_found'); ?>
@@ -103,6 +115,7 @@
                         <tr>
                             <th><?php echo app('translator')->get('STT'); ?></th>
                             <th><?php echo app('translator')->get('Ngày'); ?></th>
+                            <th><?php echo app('translator')->get('Khu vực'); ?></th>
                             <th><?php echo app('translator')->get('Nhóm trẻ'); ?></th>
                             <th><?php echo app('translator')->get('Tên thực đơn theo nhóm'); ?></th>
                             <th><?php echo app('translator')->get('Tổng số suất'); ?></th>
@@ -110,58 +123,48 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php $__currentLoopData = $menusGroupedByDate; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $date => $menus): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <tr>
-                                <td><?php echo e($loop->iteration); ?></td>
-                                <td><?php echo e(\Carbon\Carbon::parse($date)->format('d/m/Y')); ?></td>
-                                <td>
-                                    <ul>
-                                        <?php $__currentLoopData = $menus; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $menu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <li>
-                                            <?php echo e($menu->mealAge ? $menu->mealAge->name : '-'); ?>
+                        <?php $__currentLoopData = $menusGrouped; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $date => $areas): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php $__currentLoopData = $areas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $areaId => $menus): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <tr>
+                                    <td><?php echo e($loop->iteration); ?></td>
+                                    <td><?php echo e(\Carbon\Carbon::parse($date)->format('d/m/Y')); ?></td>
+                                    <td><?php echo e($menus->first()->area->name ?? '-'); ?></td>
+                                    <td>
+                                        <ul>
+                                            <?php $__currentLoopData = $menus; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $menu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <li><?php echo e($menu->mealAge->name ?? '-'); ?></li>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <ul>
+                                            <?php $__currentLoopData = $menus; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $menu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <li>
+                                                    <a href="<?php echo e(route('menu_dailys.edit', $menu->id)); ?>"
+                                                    onclick="return openCenteredPopup(this.href)">
+                                                    <?php echo e($menu->name ?? '-'); ?>
 
-                                        </li>
-                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                    </ul>
-                                </td>
-                                <td>
-                                    <ul>
-                                        <?php $__currentLoopData = $menus; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $menu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <li>
-                                            <a class="" href="<?php echo e(route('menu_dailys.edit',  $menu->id)); ?>"
-                                                data-toggle="tooltip" title="<?php echo app('translator')->get('Chi tiết thực đơn'); ?>"
-                                                data-original-title="<?php echo app('translator')->get('Chi tiết thực đơn'); ?>"
-                                                onclick="return openCenteredPopup(this.href)">
-                                                <?php echo e($menu->name ?? '-'); ?> 
-                                            </a>
-                                        </li>
-                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                    </ul>
-                                </td>
-                                <td>
-                                    <?php echo e($menus->sum('count_student')); ?>
-
-                                </td>
-                                <td>
-                                    <a href="<?php echo e(route('menu_dailys.showByDate', ['date' => $date])); ?>">Chi tiết</a>
-                                </td>
-                            </tr>
+                                                    </a>
+                                                </li>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </ul>
+                                    </td>
+                                    <td><?php echo e($menus->sum('count_student')); ?></td>
+                                    <td>
+                                        <a class="btn btn-primary btn-sm" href="<?php echo e(route('menu_dailys.showByDate', ['date' => $date, 'area_id' => $areaId])); ?>">
+                                            <i class="fa fa-eye"></i> Chi tiết
+                                        </a>
+                                    </td>
+                                </tr>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </tbody>
                 </table>
-                
                 <?php endif; ?>
             </div>
-
-
         </div>
     </section>
 
-<?php $__env->stopSection(); ?>
-<?php $__env->startSection('script'); ?>
-    <script>
-       
-    </script>
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\steamwonder\resources\views/admin/pages/meal/menu_dailys/report_by_day.blade.php ENDPATH**/ ?>
