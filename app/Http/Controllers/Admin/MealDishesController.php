@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\MealDishes;
+use App\Imports\DishesImport;
 use App\Models\MealAges;
 use App\Models\MealIngredient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Consts;
 
 class MealDishesController extends Controller
@@ -95,4 +97,36 @@ class MealDishesController extends Controller
         $mealIngredient->delete();
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Delete record successfully!'));
     }
+
+    public function importDataDishes(Request $request)
+    {
+        $params = $request->all();
+        // Kiểm tra và validate file đầu vào
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv',
+        ]);
+ 
+        if (!isset($params['file'])) {
+            return redirect()->back()->with('errorMessage', __('Cần chọn file để Import!'));
+        }
+
+        try {
+            // Import file
+            $import = new DishesImport($params);
+            Excel::import($import, request()->file('file'));
+
+            return redirect()->back()->with('successMessage', 'Import data thành công');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            $errorMessages = [];
+            foreach ($failures as $failure) {
+                $errorMessages[] = "Lỗi tại dòng " . $failure->row() . ": " . implode(", ", $failure->errors());
+            }
+            return redirect()->back()->with('errorMessage', implode("<br>", $errorMessages));
+        } catch (\Exception $e) {
+            // Bắt lỗi chung khác
+            return redirect()->back()->with('errorMessage', 'Lỗi khi import: ' . $e->getMessage());
+        }
+    }
+    
 }

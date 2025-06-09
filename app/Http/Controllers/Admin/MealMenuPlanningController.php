@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Consts;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\MenuesImport;
 
 class MealMenuPlanningController extends Controller
 {
@@ -287,6 +289,37 @@ class MealMenuPlanningController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('errorMessage', 'Lỗi khi xóa: ' . $e->getMessage());
+        }
+    }
+
+    public function importDataMenues(Request $request)
+    {
+        $params = $request->all();
+        // Kiểm tra và validate file đầu vào
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv',
+        ]);
+ 
+        if (!isset($params['file'])) {
+            return redirect()->back()->with('errorMessage', __('Cần chọn file để Import!'));
+        }
+
+        try {
+            // Import file
+            $import = new MenuesImport($params);
+            Excel::import($import, request()->file('file'));
+
+            return redirect()->back()->with('successMessage', 'Import data thành công');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            $errorMessages = [];
+            foreach ($failures as $failure) {
+                $errorMessages[] = "Lỗi tại dòng " . $failure->row() . ": " . implode(", ", $failure->errors());
+            }
+            return redirect()->back()->with('errorMessage', implode("<br>", $errorMessages));
+        } catch (\Exception $e) {
+            // Bắt lỗi chung khác
+            return redirect()->back()->with('errorMessage', 'Lỗi khi import: ' . $e->getMessage());
         }
     }
 

@@ -15,6 +15,7 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
+    
     <section class="content">
         <div class="box box-default">
             <div class="box-header with-border">

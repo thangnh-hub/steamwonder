@@ -4,10 +4,12 @@ namespace App\Http\Services;
 
 use App\Models\MealMenuIngredient;
 use App\Models\MealMenuIngredientDaily;
+use App\Models\MealWarehouseIngredient;
 use App\Models\MealMenuPlanning;
 use App\Models\MealMenuDaily;
 use App\Models\MealMenuDishes;
 use App\Models\MealMenuDishesDaily;
+use App\Models\MealWareHouseEntry;
 use Illuminate\Support\Facades\DB;
 
 class MenuPlanningService
@@ -114,5 +116,34 @@ class MenuPlanningService
             throw $e;
         }
     }
+    //hàm tính toán tồn kho của thực phẩm
+    public function calculateIngredientStock($ingredientId, $areaId)
+    {
+        try {
+            $totalStock = MealWarehouseIngredient::where('ingredient_id', $ingredientId)
+                ->where('area_id', $areaId)
+                ->sum('quantity');
 
+            return $totalStock;
+        } catch (\Exception $e) {
+            throw new \Exception('Lỗi khi tính toán tồn kho: ' . $e->getMessage());
+        }
+    }
+    public static function autoUpdateCode($id, $type)
+    {
+        // demo NK-152451
+        $date = date('my');
+        $code = $type . '-' . $date . $id;
+
+        $warehouseEntryTypes = ['NK', 'XK'];
+
+        if (in_array($type, $warehouseEntryTypes)) {
+            $warehouse_entry = MealWareHouseEntry::find($id);
+            if ($warehouse_entry) {
+                $warehouse_entry->code = $code;
+                return $warehouse_entry->save();
+            }
+        }
+        return false; // Trả về false nếu không cập nhật được
+    }
 }

@@ -94,8 +94,8 @@
                                         @lang('Reset')
                                     </a>
 
-                                    <button type="button" data-toggle="modal" data-target="#create_crmdata_student"
-                                        class="btn btn-success btn-sm">@lang('Import Excel')</button>
+                                    {{-- <button type="button" data-toggle="modal" data-target="#create_crmdata_student"
+                                        class="btn btn-success btn-sm">@lang('Import Excel')</button> --}}
                                 </div>
                             </div>
                         </div>
