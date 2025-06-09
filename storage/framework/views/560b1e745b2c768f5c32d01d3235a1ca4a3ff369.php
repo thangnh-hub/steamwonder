@@ -120,13 +120,13 @@
                                 <th style="width:100px;"><?php echo app('translator')->get('Avatar'); ?></th>
                                 <th><?php echo app('translator')->get('Email'); ?></th>
                                 <th><?php echo app('translator')->get('Phone'); ?></th>
+                                <th><?php echo app('translator')->get('Phụ huynh HS'); ?></th>
                                 <th><?php echo app('translator')->get('Created at'); ?></th>
                                 <th><?php echo app('translator')->get('Status'); ?></th>
                                 <th><?php echo app('translator')->get('Action'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
-
                             <?php $__currentLoopData = $rows; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $t => $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <?php if($row->parent_id == 0 || $row->parent_id == null): ?>
                                     <form action="<?php echo e(route(Request::segment(2) . '.destroy', $row->id)); ?>" method="POST"
@@ -157,6 +157,30 @@
                                             <td>
                                                 <?php echo e($row->phone); ?>
 
+                                            </td>
+                                            <td>
+                                                <?php if(isset($row->parent)): ?>
+                                                    <?php if(isset($row->parent->parentStudents)): ?>
+                                                        <ul>
+                                                            <?php $__currentLoopData = $row->parent->parentStudents; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $student): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <li>
+                                                                    <a href="<?php echo e(route('students.show', optional($student->student)->id)); ?>"
+                                                                        data-toggle="tooltip" title="<?php echo app('translator')->get('Chi tiết học sinh'); ?>"
+                                                                        data-original-title="<?php echo app('translator')->get('Chi tiết học sinh'); ?>"
+                                                                        onclick="return openCenteredPopup(this.href)">
+                                                                        <?php echo e(optional($student->student)->student_code ?? ''); ?>
+
+                                                                        <?php echo e(optional($student->student)->first_name ?? ''); ?>
+
+                                                                        <?php echo e(optional($student->student)->last_name ?? ''); ?>
+
+                                                                        <i class="fa fa-eye"></i>
+                                                                    </a>
+                                                                </li>
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                        </ul>
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
                                             </td>
                                             <td>
                                                 <?php echo e($row->created_at); ?>

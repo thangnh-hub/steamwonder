@@ -73,8 +73,8 @@
                                                 <div class="form-group">
                                                     <label><?php echo app('translator')->get('Username'); ?> <small class="text-red">*</small></label>
                                                     <input type="text" class="form-control"
-                                                        placeholder="<?php echo app('translator')->get('Username'); ?>"
-                                                        value="<?php echo e($detail->username ?? ''); ?>" disabled readonly>
+                                                        placeholder="<?php echo app('translator')->get('Username'); ?>" name="username"
+                                                        value="<?php echo e($detail->username ?? ''); ?>" required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -136,22 +136,6 @@
                 </div>
 
                 <div class="col-lg-4">
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title"><?php echo app('translator')->get('Publish'); ?></h3>
-                        </div>
-                        <div class="box-body">
-                            <div class="btn-set">
-                                <button type="submit" class="btn btn-info">
-                                    <i class="fa fa-save"></i> <?php echo app('translator')->get('Save'); ?>
-                                </button>
-                                &nbsp;&nbsp;
-                                <a class="btn btn-success " href="<?php echo e(route(Request::segment(2) . '.index')); ?>">
-                                    <i class="fa fa-bars"></i> <?php echo app('translator')->get('List'); ?>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
                             <h3 class="box-title"><?php echo app('translator')->get('Status'); ?></h3>

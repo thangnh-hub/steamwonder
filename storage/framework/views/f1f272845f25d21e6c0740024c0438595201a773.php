@@ -1,9 +1,9 @@
-@extends('admin.layouts.app')
 
-@section('title')
-    @lang($module_name)
-@endsection
-@section('style')
+
+<?php $__env->startSection('title'); ?>
+    <?php echo app('translator')->get($module_name); ?>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('style'); ?>
     <style>
         .modal-dialog.modal-custom {
             max-width: 80%;
@@ -26,60 +26,62 @@
             justify-content: space-between;
         }
     </style>
-@endsection
-@section('content-header')
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('content-header'); ?>
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
-            @lang($module_name)
-            <a class="btn btn-success pull-right " href="{{ route(Request::segment(2) . '.index') }}">
-                <i class="fa fa-bars"></i> @lang('List')
+            <?php echo app('translator')->get($module_name); ?>
+            <a class="btn btn-success pull-right " href="<?php echo e(route(Request::segment(2) . '.index')); ?>">
+                <i class="fa fa-bars"></i> <?php echo app('translator')->get('List'); ?>
             </a>
             <a class="btn btn-warning pull-right mr-10" target="_blank"
-                href="{{ route(Request::segment(2) . '.print', $detail->id) }}" onclick="return openCenteredPopup(this.href)">
-                <i class="fa fa-print"></i> @lang('In TBP')
+                href="<?php echo e(route(Request::segment(2) . '.print', $detail->id)); ?>" onclick="return openCenteredPopup(this.href)">
+                <i class="fa fa-print"></i> <?php echo app('translator')->get('In TBP'); ?>
             </a>
         </h1>
 
     </section>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 
     <!-- Main content -->
     <section class="content">
         <div id="loading-notification" class="loading-notification">
-            <p>@lang('Please wait')...</p>
+            <p><?php echo app('translator')->get('Please wait'); ?>...</p>
         </div>
 
         <div class="box">
             <div class="box-header">
-                {{-- <h3 class="box-title">@lang('List')</h3> --}}
+                
             </div>
             <div class="box-body box_alert">
-                @if (session('errorMessage'))
+                <?php if(session('errorMessage')): ?>
                     <div class="alert alert-warning alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        {{ session('errorMessage') }}
+                        <?php echo e(session('errorMessage')); ?>
+
                     </div>
-                @endif
-                @if (session('successMessage'))
+                <?php endif; ?>
+                <?php if(session('successMessage')): ?>
                     <div class="alert alert-success alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                        {{ session('successMessage') }}
-                    </div>
-                @endif
+                        <?php echo e(session('successMessage')); ?>
 
-                @if ($errors->any())
+                    </div>
+                <?php endif; ?>
+
+                <?php if($errors->any()): ?>
                     <div class="alert alert-danger alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 
-                        @foreach ($errors->all() as $error)
-                            <p>{{ $error }}</p>
-                        @endforeach
+                        <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <p><?php echo e($error); ?></p>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                     </div>
-                @endif
+                <?php endif; ?>
 
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
@@ -96,22 +98,24 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td><b>{{ $detail->student->student_code ?? '' }}</b></td>
-                                        <td><b>{{ $detail->student->first_name ?? '' }}
-                                                {{ $detail->student->last_name ?? '' }}</b></td>
-                                        <td>{{ $detail->student->nickname ?? '' }}</td>
-                                        <td>{{ isset($detail->student->birthday) && $detail->student->birthday != '' ? date('d-m-Y', strtotime($detail->student->birthday)) : '' }}
+                                        <td><b><?php echo e($detail->student->student_code ?? ''); ?></b></td>
+                                        <td><b><?php echo e($detail->student->first_name ?? ''); ?>
+
+                                                <?php echo e($detail->student->last_name ?? ''); ?></b></td>
+                                        <td><?php echo e($detail->student->nickname ?? ''); ?></td>
+                                        <td><?php echo e(isset($detail->student->birthday) && $detail->student->birthday != '' ? date('d-m-Y', strtotime($detail->student->birthday)) : ''); ?>
+
                                         </td>
-                                        <td>{{ $detail->student->address ?? '' }}</td>
+                                        <td><?php echo e($detail->student->address ?? ''); ?></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                         <div class="custom-scroll table-responsive">
                             <form method="post"
-                                action="{{ route(Request::segment(2) . '.update_json_explanation', $detail->id) }}"
+                                action="<?php echo e(route(Request::segment(2) . '.update_json_explanation', $detail->id)); ?>"
                                 id="form_update_explanation">
-                                @csrf
+                                <?php echo csrf_field(); ?>
                                 <table class="table table-bordered table-hover no-footer no-padding">
                                     <thead>
                                         <tr>
@@ -126,16 +130,18 @@
                                             </th>
                                             <th class="text-right">
                                                 <input type="number" name="prev_balance"
-                                                    {{ $detail->status == 'pending' ? '' : 'disabled' }}
+                                                    <?php echo e($detail->status == 'pending' ? '' : 'disabled'); ?>
+
                                                     class="form-control pull-right prev_balance" style="max-width: 200px;"
                                                     placeholder="Nhập số dư kỳ trước" data-toggle="tooltip"
                                                     title="Tổng số dư kỳ trước của học sinh này, nếu có"
-                                                    value="{{ (int) $detail->prev_balance }}">
+                                                    value="<?php echo e((int) $detail->prev_balance); ?>">
                                             </th>
                                         </tr>
+
                                     </thead>
                                     <tbody>
-                                        @if (isset($detail->prev_receipt_detail) && count($detail->prev_receipt_detail) > 0)
+                                        <?php if(isset($detail->prev_receipt_detail) && count($detail->prev_receipt_detail) > 0): ?>
                                             <tr>
                                                 <th>Tháng</th>
                                                 <th>Dịch vụ</th>
@@ -146,75 +152,81 @@
                                                 <th>Truy thu (+) / Hoàn trả (-)</th>
                                                 <th>Tổng tiền</th>
                                             </tr>
-                                            @foreach ($detail->prev_receipt_detail as $item_prev)
+                                            <?php $__currentLoopData = $detail->prev_receipt_detail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item_prev): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <tr>
-                                                    <td>{{ date('d-m-Y', strtotime($item_prev->month)) }}</td>
-                                                    <td>{{ $item_prev->service->name ?? '' }}</td>
-                                                    <td>{{ number_format($item_prev->unit_price, 0, ',', '.') ?? '' }}</td>
-                                                    <td>{{ number_format($item_prev->spent_number, 0, ',', '.') ?? '' }}
+                                                    <td><?php echo e(date('d-m-Y', strtotime($item_prev->month))); ?></td>
+                                                    <td><?php echo e($item_prev->service->name ?? ''); ?></td>
+                                                    <td><?php echo e(number_format($item_prev->unit_price, 0, ',', '.') ?? ''); ?></td>
+                                                    <td><?php echo e(number_format($item_prev->spent_number, 0, ',', '.') ?? ''); ?>
+
                                                     </td>
-                                                    <td>{{ number_format($item_prev->amount, 0, ',', '.') ?? '' }}</td>
-                                                    <td>{{ number_format($item_prev->discount_amount, 0, ',', '.') ?? '' }}
+                                                    <td><?php echo e(number_format($item_prev->amount, 0, ',', '.') ?? ''); ?></td>
+                                                    <td><?php echo e(number_format($item_prev->discount_amount, 0, ',', '.') ?? ''); ?>
+
                                                     </td>
-                                                    <td>{{ number_format($item_prev->adjustment_amount, 0, ',', '.') ?? '' }}
+                                                    <td><?php echo e(number_format($item_prev->adjustment_amount, 0, ',', '.') ?? ''); ?>
+
                                                     </td>
-                                                    <td>{{ number_format($item_prev->final_amount, 0, ',', '.') ?? '' }}
+                                                    <td><?php echo e(number_format($item_prev->final_amount, 0, ',', '.') ?? ''); ?>
+
                                                     </td>
                                                 </tr>
-                                            @endforeach
-                                        @endif
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        <?php endif; ?>
                                     </tbody>
                                     <tbody class="box_explanation">
-                                        @if (isset($detail->json_params->explanation))
-                                            @foreach ($detail->json_params->explanation as $key => $item)
+                                        <?php if(isset($detail->json_params->explanation)): ?>
+                                            <?php $__currentLoopData = $detail->json_params->explanation; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <tr class="item_explanation">
                                                     <td colspan="6">
                                                         <input type="text"
-                                                            {{ $detail->status == 'pending' ? '' : 'disabled' }}
-                                                            name="explanation[{{ $key }}][content]"
-                                                            class="form-control action_change" value="{{ $item->content }}"
+                                                            <?php echo e($detail->status == 'pending' ? '' : 'disabled'); ?>
+
+                                                            name="explanation[<?php echo e($key); ?>][content]"
+                                                            class="form-control action_change" value="<?php echo e($item->content); ?>"
                                                             placeholder="Nội dung Truy thu/Hoàn trả">
                                                     </td>
                                                     <td>
                                                         <input type="number"
-                                                            {{ $detail->status == 'pending' ? '' : 'disabled' }}
-                                                            name="explanation[{{ $key }}][value]"
-                                                            class="form-control action_change" value="{{ $item->value }}"
+                                                            <?php echo e($detail->status == 'pending' ? '' : 'disabled'); ?>
+
+                                                            name="explanation[<?php echo e($key); ?>][value]"
+                                                            class="form-control action_change" value="<?php echo e($item->value); ?>"
                                                             placeholder="Giá trị tương ứng">
                                                     </td>
 
                                                     <td>
-                                                        @if ($detail->status == 'pending')
+                                                        <?php if($detail->status == 'pending'): ?>
                                                             <button class="btn btn-sm btn-danger" type="button"
                                                                 data-toggle="tooltip"
                                                                 onclick="$(this).closest('tr').remove();updateBalance()"
-                                                                title="@lang('Xóa giải trình')"
-                                                                data-original-title="@lang('Xóa giải trình')">
+                                                                title="<?php echo app('translator')->get('Xóa giải trình'); ?>"
+                                                                data-original-title="<?php echo app('translator')->get('Xóa giải trình'); ?>">
                                                                 <i class="fa fa-trash"></i>
                                                             </button>
-                                                        @endif
+                                                        <?php endif; ?>
                                                     </td>
                                                 </tr>
-                                            @endforeach
-                                        @endif
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        <?php endif; ?>
                                     </tbody>
                                 </table>
                             </form>
-                            @if ($detail->status == 'pending')
-                                <button class="btn btn-warning btn_explanation mt-10">@lang('Thêm giải trình')</button>
-                            @endif
+                            <?php if($detail->status == 'pending'): ?>
+                                <button class="btn btn-warning btn_explanation mt-10"><?php echo app('translator')->get('Thêm giải trình'); ?></button>
+                            <?php endif; ?>
                         </div>
                         <div class="custom-scroll table-responsive mt-15">
-                            @if (isset($detail->receiptDetail) && count($detail->receiptDetail) > 0)
+                            <?php if(isset($detail->receiptDetail) && count($detail->receiptDetail) > 0): ?>
                                 <table class="table table-bordered table-hover no-footer no-padding">
                                     <thead>
                                         <tr>
-                                            <th colspan="6" class="text-left"><b>2. Phí dự kiến</b></th>
-                                            <th colspan="3"class="text-right">
-                                                @if ($detail->status == 'pending')
+                                            <th colspan="7" class="text-left"><b>2. Phí dự kiến</b></th>
+                                            <th class="text-right">
+                                                <?php if($detail->status == 'pending'): ?>
                                                     <button data-toggle="modal" data-target="#modal_show_service"
-                                                        class="btn btn-warning">@lang('Thay đổi kỳ tính phí cho HS')</button>
-                                                @endif
+                                                        class="btn btn-warning"><?php echo app('translator')->get('Thay đổi kỳ tính phí cho HS'); ?></button>
+                                                <?php endif; ?>
                                             </th>
                                         </tr>
                                     </thead>
@@ -227,137 +239,129 @@
                                             <th>Số lượng</span></th>
                                             <th>Tạm tính</th>
                                             <th>Giảm trừ</th>
+                                            
                                             <th>Tổng tiền</th>
                                             <th>Ghi chú</th>
-                                            <th></th>
-
                                         </tr>
-                                        @foreach ($detail->receiptDetail as $item)
+                                        <?php $__currentLoopData = $detail->receiptDetail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr>
-                                                <td>{{ date('m-Y', strtotime($item->month)) }}</td>
-                                                <td>{{ $item->services_receipt->name ?? '' }}</td>
-                                                <td>{{ number_format($item->unit_price, 0, ',', '.') ?? '' }}</td>
-                                                <td>{{ number_format($item->by_number, 0, ',', '.') ?? '' }}</td>
-                                                <td>{{ number_format($item->amount, 0, ',', '.') ?? '' }}</td>
-                                                <td>{{ number_format($item->discount_amount, 0, ',', '.') ?? '' }}</td>
-                                                <td>{{ number_format($item->final_amount, 0, ',', '.') ?? '' }}</td>
-                                                <td>{!! $item->note ?? '' !!}</td>
-                                                <td>
-                                                    @if ($detail->status == 'pending')
-                                                        <button
-                                                            class="btn btn-sm btn-danger delete_receipt_detail_and_recalculate"
-                                                            data-receipt="{{ $detail->id }}"
-                                                            data-id = "{{ $item->id }}" type="button"
-                                                            data-toggle="tooltip" title="@lang('Xóa')">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-                                                    @endif
-                                                </td>
+                                                <td><?php echo e(date('m-Y', strtotime($item->month))); ?></td>
+                                                <td><?php echo e($item->services_receipt->name ?? ''); ?></td>
+                                                <td><?php echo e(number_format($item->unit_price, 0, ',', '.') ?? ''); ?></td>
+                                                <td><?php echo e(number_format($item->by_number, 0, ',', '.') ?? ''); ?></td>
+                                                <td><?php echo e(number_format($item->amount, 0, ',', '.') ?? ''); ?></td>
+                                                <td><?php echo e(number_format($item->discount_amount, 0, ',', '.') ?? ''); ?></td>
+                                                
+                                                <td><?php echo e(number_format($item->final_amount, 0, ',', '.') ?? ''); ?></td>
+                                                <td><?php echo $item->note ?? ''; ?></td>
                                             </tr>
-                                        @endforeach
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </tbody>
                                 </table>
-                            @endif
+                            <?php endif; ?>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-                        <form method="post" action="{{ route(Request::segment(2) . '.payment', $detail->id) }}"
-                            onsubmit="return confirm('@lang('confirm_action')')">
-                            @csrf
-                            <input type="hidden" name="id" value="{{ $detail->id }}">
+                        <form method="post" action="<?php echo e(route(Request::segment(2) . '.payment', $detail->id)); ?>"
+                            onsubmit="return confirm('<?php echo app('translator')->get('confirm_action'); ?>')">
+                            <?php echo csrf_field(); ?>
+                            <input type="hidden" name="id" value="<?php echo e($detail->id); ?>">
                             <table class="table table-bordered table-hover no-footer no-padding table_paid">
                                 <tbody>
                                     <tr>
-                                        <td>@lang('Mã TBP')</td>
-                                        <td class="text-right"> {{ $detail->receipt_code }} </td>
+                                        <td><?php echo app('translator')->get('Mã TBP'); ?></td>
+                                        <td class="text-right"> <?php echo e($detail->receipt_code); ?> </td>
                                     </tr>
                                     <tr>
-                                        <td>@lang('Tên TBP')</td>
-                                        <td class="text-right"> {{ $detail->receipt_name }} </td>
+                                        <td><?php echo app('translator')->get('Tên TBP'); ?></td>
+                                        <td class="text-right"> <?php echo e($detail->receipt_name); ?> </td>
                                     </tr>
                                     <tr>
-                                        <td>@lang('Trạng thái thanh toán')</td>
+                                        <td><?php echo app('translator')->get('Trạng thái thanh toán'); ?></td>
                                         <td class="text-right"><span
-                                                class="label {{ $detail->status == 'pending' ? 'label-warning' : 'label-success' }}">{{ __($detail->status) }}</span>
+                                                class="label <?php echo e($detail->status == 'pending' ? 'label-warning' : 'label-success'); ?>"><?php echo e(__($detail->status)); ?></span>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            @lang('Tổng tiền')
+                                            <?php echo app('translator')->get('Tổng tiền'); ?>
                                         </td>
                                         <td class="text-right">
-                                            {{ number_format($detail->total_amount, 0, ',', '.') ?? '' }}
+                                            <?php echo e(number_format($detail->total_amount, 0, ',', '.') ?? ''); ?>
+
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>@lang('Tổng giảm trừ')</td>
+                                        <td><?php echo app('translator')->get('Tổng giảm trừ'); ?></td>
                                         <td class="text-right">
-                                            {{ number_format($detail->total_discount, 0, ',', '.') ?? '' }}
+                                            <?php echo e(number_format($detail->total_discount, 0, ',', '.') ?? ''); ?>
+
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>@lang('Số dư kỳ trước')</td>
+                                        <td><?php echo app('translator')->get('Số dư kỳ trước'); ?></td>
                                         <td class="text-right total_prev_balance"
-                                            data-balance="{{ $detail->prev_balance }}">
-                                            {{ number_format($detail->prev_balance, 0, ',', '.') ?? '' }}
+                                            data-balance="<?php echo e($detail->prev_balance); ?>">
+                                            <?php echo e(number_format($detail->prev_balance, 0, ',', '.') ?? ''); ?>
+
                                         </td>
                                     </tr>
-                                    {{-- <tr>
-                                        <td>Tổng cộng các truy thu (+) / hoàn trả (-)</td>
-                                        <td class="text-right">
-                                            {{ number_format($detail->total_adjustment, 0, ',', '.') ?? '' }}
-                                        </td>
-                                    </tr> --}}
+                                    
                                     <tr>
-                                        <td>@lang('Tổng tiền thực tế sau đối soát tất cả dịch vụ') <span data-html="true" data-toggle="tooltip"
+                                        <td><?php echo app('translator')->get('Tổng tiền thực tế sau đối soát tất cả dịch vụ'); ?> <span data-html="true" data-toggle="tooltip"
                                                 title="= [Tổng tiền] - [Giảm trừ] - [Số dư kỳ trước]">
                                                 <i class="fa fa-question-circle-o" aria-hidden="true"></i></span>
                                         </td>
-                                        <td class="text-right total_final" data-final="{{ $detail->total_final }}">
-                                            {{ number_format($detail->total_final, 0, ',', '.') ?? '' }}
+                                        <td class="text-right total_final" data-final="<?php echo e($detail->total_final); ?>">
+                                            <?php echo e(number_format($detail->total_final, 0, ',', '.') ?? ''); ?>
+
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
                                             <div class="box-flex-between">
-                                                <span>@lang('Đã thu')</span>
-                                                @if ($detail->status != 'pending')
+                                                <span><?php echo app('translator')->get('Đã thu'); ?></span>
+                                                <?php if($detail->status == 'approved'): ?>
                                                     <button type="button" class="btn btn-warning btn-sm"
-                                                        data-toggle="modal" data-target="#modal_receipt_transaction">Chi tiết</button>
-                                                @endif
+                                                        data-toggle="modal" data-target="#modal_receipt_transaction">Chi
+                                                        tiết</button>
+                                                <?php endif; ?>
                                             </div>
                                         </td>
                                         <td class="text-right">
-                                            {{ number_format($detail->total_paid, 0, ',', '.') ?? '' }}
+                                            <?php echo e(number_format($detail->total_paid, 0, ',', '.') ?? ''); ?>
+
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>@lang('Số tiền còn phải thu (+) hoặc thừa (-)')</td>
-                                        <td class="text-right total_due" data-due="{{ $detail->total_due }}">
-                                            {{ number_format($detail->total_due, 0, ',', '.') ?? '' }}
+                                        <td><?php echo app('translator')->get('Số tiền còn phải thu (+) hoặc thừa (-)'); ?></td>
+                                        <td class="text-right total_due" data-due="<?php echo e($detail->total_due); ?>">
+                                            <?php echo e(number_format($detail->total_due, 0, ',', '.') ?? ''); ?>
+
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>@lang('Hạn thanh toán')</td>
+                                        <td><?php echo app('translator')->get('Hạn thanh toán'); ?></td>
                                         <td class="text-right">
                                             <input type="date" name="due_date" class="form-control"
-                                                {{ $detail->status == 'approved' ? '' : 'disabled' }}
-                                                value="{{ $detail->json_params->due_date ?? $due_date }}">
+                                                <?php echo e($detail->status == 'approved' ? '' : 'disabled'); ?>
+
+                                                value="<?php echo e($detail->json_params->due_date ?? $due_date); ?>">
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
 
-                            @if ($detail->status == 'pending')
+                            <?php if($detail->status == 'pending'): ?>
                                 <button type="button" class="btn btn-success btn_approved">
-                                    @lang('Duyệt TBP')
+                                    <?php echo app('translator')->get('Duyệt TBP'); ?>
                                 </button>
-                            @endif
-                            @if ($detail->status == 'approved')
+                            <?php endif; ?>
+                            <?php if($detail->status == 'approved'): ?>
                                 <button type="submit" class="btn btn-success">
-                                    <i class="fa fa-usd" aria-hidden="true" title="Thanh toán"></i> @lang('Xác nhận đã thanh toán')
+                                    <i class="fa fa-usd" aria-hidden="true" title="Thanh toán"></i> <?php echo app('translator')->get('Xác nhận đã thanh toán'); ?>
                                 </button>
-                            @endif
+                            <?php endif; ?>
 
                         </form>
                     </div>
@@ -369,79 +373,83 @@
             <div class="modal-dialog modal-custom" role="document">
                 <div class="modal-content">
                     <div class="modal-header ">
-                        <h3 class="modal-title text-center col-md-12">@lang('Thay đổi kỳ tính phí cho học sinh')</h3>
+                        <h3 class="modal-title text-center col-md-12"><?php echo app('translator')->get('Thay đổi kỳ tính phí cho học sinh'); ?></h3>
                         </h3>
                     </div>
-                    <form action="{{ route('receipt.update_student_service_and_fee') }}" method="POST"
+                    <form action="<?php echo e(route('receipt.update_student_service_and_fee')); ?>" method="POST"
                         class="form_detail_service">
-                        @csrf
-                        <input type="hidden" name="receipt_id" value="{{ $detail->id }}">
-                        <input type="hidden" name="student_id" value="{{ $detail->student->id }}">
+                        <?php echo csrf_field(); ?>
+                        <input type="hidden" name="receipt_id" value="<?php echo e($detail->id); ?>">
+                        <input type="hidden" name="student_id" value="<?php echo e($detail->student->id); ?>">
                         <div class="modal-body show_detail_service">
                             <div class="modal-alert"></div>
                             <table class="table table-bordered table-hover no-footer no-padding">
                                 <thead>
                                     <tr>
-                                        <th>@lang('Tên dịch vụ')</th>
-                                        <th>@lang('Nhóm dịch vụ')</th>
-                                        <th>@lang('Hệ đào tạo')</th>
-                                        <th>@lang('Loại dịch vụ')</th>
-                                        <th>@lang('Biểu phí')</th>
-                                        <th>@lang('Chu kỳ thu')</th>
+                                        <th><?php echo app('translator')->get('Tên dịch vụ'); ?></th>
+                                        <th><?php echo app('translator')->get('Nhóm dịch vụ'); ?></th>
+                                        <th><?php echo app('translator')->get('Hệ đào tạo'); ?></th>
+                                        <th><?php echo app('translator')->get('Loại dịch vụ'); ?></th>
+                                        <th><?php echo app('translator')->get('Biểu phí'); ?></th>
+                                        <th><?php echo app('translator')->get('Chu kỳ thu'); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody class="box_service">
-                                    @if (isset($detail->student->studentServices) && count($detail->student->studentServices) > 0)
-                                        @foreach ($detail->student->studentServices as $item)
+                                    <?php if(isset($detail->student->studentServices) && count($detail->student->studentServices) > 0): ?>
+                                        <?php $__currentLoopData = $detail->student->studentServices; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr>
-                                                <td>{{ $item->services->name ?? '' }}</td>
-                                                <td>{{ $item->services->service_category->name ?? '' }}</td>
-                                                <td>{{ $item->services->education_program->name ?? '' }}</td>
-                                                <td>{{ __($item->services->service_type ?? '') }}</td>
+                                                <td><?php echo e($item->services->name ?? ''); ?></td>
+                                                <td><?php echo e($item->services->service_category->name ?? ''); ?></td>
+                                                <td><?php echo e($item->services->education_program->name ?? ''); ?></td>
+                                                <td><?php echo e(__($item->services->service_type ?? '')); ?></td>
                                                 <td>
-                                                    @if (isset($item->services->serviceDetail) && $item->services->serviceDetail->count() > 0)
-                                                        @foreach ($item->services->serviceDetail as $detail_service)
+                                                    <?php if(isset($item->services->serviceDetail) && $item->services->serviceDetail->count() > 0): ?>
+                                                        <?php $__currentLoopData = $item->services->serviceDetail; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $detail_service): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                             <ul>
-                                                                <li>@lang('Số tiền'):
-                                                                    {{ isset($detail_service->price) && is_numeric($detail_service->price) ? number_format($detail_service->price, 0, ',', '.') . ' đ' : '' }}
+                                                                <li><?php echo app('translator')->get('Số tiền'); ?>:
+                                                                    <?php echo e(isset($detail_service->price) && is_numeric($detail_service->price) ? number_format($detail_service->price, 0, ',', '.') . ' đ' : ''); ?>
+
                                                                 </li>
-                                                                <li>@lang('Số lượng'):
-                                                                    {{ $detail_service->quantity ?? '' }}
+                                                                <li><?php echo app('translator')->get('Số lượng'); ?>:
+                                                                    <?php echo e($detail_service->quantity ?? ''); ?>
+
                                                                 </li>
-                                                                <li>@lang('Từ'):
-                                                                    {{ isset($detail_service->start_at) ? \Carbon\Carbon::parse($detail_service->start_at)->format('d-m-Y') : '' }}
+                                                                <li><?php echo app('translator')->get('Từ'); ?>:
+                                                                    <?php echo e(isset($detail_service->start_at) ? \Carbon\Carbon::parse($detail_service->start_at)->format('d-m-Y') : ''); ?>
+
                                                                 </li>
-                                                                <li>@lang('Đến'):
-                                                                    {{ isset($detail_service->end_at) ? \Carbon\Carbon::parse($detail_service->end_at)->format('d-m-Y') : '' }}
+                                                                <li><?php echo app('translator')->get('Đến'); ?>:
+                                                                    <?php echo e(isset($detail_service->end_at) ? \Carbon\Carbon::parse($detail_service->end_at)->format('d-m-Y') : ''); ?>
+
                                                                 </li>
                                                             </ul>
-                                                        @endforeach
-                                                    @endif
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    <?php endif; ?>
                                                 </td>
                                                 <td>
                                                     <select class="form-control select2 w-100"
-                                                        name="student_services[{{ $item->id }}][payment_cycle_id]">
-                                                        @if (isset($payment_cycle) && count($payment_cycle) > 0)
-                                                            @foreach ($payment_cycle as $val)
-                                                                <option value="{{ $val->id }}"
-                                                                    {{ $item->payment_cycle_id == $val->id ? 'selected' : '' }}>
-                                                                    {{ $val->name ?? '' }}</option>
-                                                            @endforeach
-                                                        @endif
+                                                        name="student_services[<?php echo e($item->id); ?>][payment_cycle_id]">
+                                                        <?php if(isset($payment_cycle) && count($payment_cycle) > 0): ?>
+                                                            <?php $__currentLoopData = $payment_cycle; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <option value="<?php echo e($val->id); ?>"
+                                                                    <?php echo e($item->payment_cycle_id == $val->id ? 'selected' : ''); ?>>
+                                                                    <?php echo e($val->name ?? ''); ?></option>
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                        <?php endif; ?>
                                                     </select>
                                                 </td>
                                             </tr>
-                                        @endforeach
-                                    @endif
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-success">
-                                <i class="fa fa-save"></i> @lang('Lưu và chạy lại phí')
+                                <i class="fa fa-save"></i> <?php echo app('translator')->get('Lưu và chạy lại phí'); ?>
                             </button>
                             <button type="button" class="btn btn-danger" data-dismiss="modal">
-                                <i class="fa fa-remove"></i> @lang('Close')
+                                <i class="fa fa-remove"></i> <?php echo app('translator')->get('Close'); ?>
                             </button>
                         </div>
                     </form>
@@ -454,64 +462,64 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header ">
-                        <h3 class="modal-title text-center col-md-12">@lang('Danh sách khoản thu của TBP')</h3>
+                        <h3 class="modal-title text-center col-md-12"><?php echo app('translator')->get('Danh sách khoản thu của TBP'); ?></h3>
                         </h3>
                     </div>
-                    <form action="{{ route('receipt.crud_receipt_transaction') }}" method="POST"
+                    <form action="<?php echo e(route('receipt.crud_receipt_transaction')); ?>" method="POST"
                         id="form_receipt_transaction">
-                        @csrf
-                        <input type="hidden" name="receipt_id" value="{{ $detail->id }}">
+                        <?php echo csrf_field(); ?>
+                        <input type="hidden" name="receipt_id" value="<?php echo e($detail->id); ?>">
                         <input type="hidden" name="type" value="create">
                         <div class="modal-body show_receipt_transaction">
                             <div class="modal-alert"></div>
                             <table class="table table-bordered table-hover no-footer no-padding">
                                 <thead>
                                     <tr>
-                                        <th>@lang('STT')</th>
-                                        <th>@lang('Số tiền thanh toán')</th>
-                                        <th>@lang('Ngày thanh toán')</th>
-                                        <th>@lang('Ghi chú')</th>
-                                        <th>@lang('Thu ngân')</th>
+                                        <th><?php echo app('translator')->get('STT'); ?></th>
+                                        <th><?php echo app('translator')->get('Số tiền thanh toán'); ?></th>
+                                        <th><?php echo app('translator')->get('Ngày thanh toán'); ?></th>
+                                        <th><?php echo app('translator')->get('Ghi chú'); ?></th>
+                                        <th><?php echo app('translator')->get('Thu ngân'); ?></th>
                                     </tr>
                                 </thead>
                                 <tbody class="box_service">
-                                    @if (isset($detail->receiptTransaction) && count($detail->receiptTransaction) > 0)
-                                        @foreach ($detail->receiptTransaction as $key => $item)
+                                    <?php if(isset($detail->receiptTransaction) && count($detail->receiptTransaction) > 0): ?>
+                                        <?php $__currentLoopData = $detail->receiptTransaction; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr>
-                                                <td>{{ $loop->index + 1 }}</td>
-                                                <td>{{ number_format($item->paid_amount, 0, ',', '.') ?? '' }}</td>
-                                                <td>{{ date('d-m-Y', strtotime($item->payment_date)) }}</td>
-                                                <td>{{ $item->json_params->note ?? '' }}</td>
-                                                <td>{{ $item->user_cashier->name ?? '' }}</td>
+                                                <td><?php echo e($loop->index + 1); ?></td>
+                                                <td><?php echo e(number_format($item->paid_amount, 0, ',', '.') ?? ''); ?></td>
+                                                <td><?php echo e(date('d-m-Y', strtotime($item->created_at))); ?></td>
+                                                <td><?php echo e($item->json_params->note ?? ''); ?></td>
+                                                <td><?php echo e($item->user_cashier->name ?? ''); ?></td>
                                             </tr>
-                                        @endforeach
-                                    @else
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php else: ?>
                                         <tr>
-                                            <td colspan="5" class="text-center">@lang('Chưa có giao dịch nào')</td>
+                                            <td colspan="4" class="text-center"><?php echo app('translator')->get('Chưa có giao dịch nào'); ?></td>
                                         </tr>
-                                    @endif
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
 
                             <div class="row">
-                                <h4 class="text-center form-group col-md-12">@lang('Thông tin thanh toán cho kỳ này')</h4>
+                                <h4 class="text-center form-group col-md-12"><?php echo app('translator')->get('Thông tin thanh toán cho kỳ này'); ?></h4>
                                 <div class="col-xs-12 col-md-6">
                                     <div class="form-group">
-                                        <label>@lang('Nhập số tiền thanh toán') <small class="text-red">*</small></label>
+                                        <label><?php echo app('translator')->get('Nhập số tiền thanh toán'); ?> <small class="text-red">*</small></label>
                                         <input type="number" class="form-control" name="paid_amount"
-                                            placeholder="@lang('Nhập số tiền thanh toán')" value="{{ old('paid_amount') }}" required>
+                                            placeholder="<?php echo app('translator')->get('Nhập số tiền thanh toán'); ?>" value="<?php echo e(old('paid_amount')); ?>" required>
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-md-6">
                                     <div class="form-group">
-                                        <label>@lang('Ngày thanh toán') <small class="text-red">*</small></label>
+                                        <label><?php echo app('translator')->get('Ngày thanh toán'); ?> <small class="text-red">*</small></label>
                                         <input type="date" class="form-control" name="payment_date"
-                                            value="" required>
+                                            value="<?php echo e(old('payment_date') ?? date('Y-m-d', time())); ?>" required>
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-md-12">
                                     <div class="form-group">
-                                        <label>@lang('Ghi chú')</label>
+                                        <label><?php echo app('translator')->get('Ghi chú'); ?></label>
                                         <textarea name="json_params[note]" class="form-control" cols="5"></textarea>
                                     </div>
                                 </div>
@@ -520,10 +528,10 @@
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-success btn_save_transaction">
-                                <i class="fa fa-save"></i> @lang('Lưu lại')
+                                <i class="fa fa-save"></i> <?php echo app('translator')->get('Lưu lại'); ?>
                             </button>
                             <button type="button" class="btn btn-danger" data-dismiss="modal">
-                                <i class="fa fa-remove"></i> @lang('Đóng')
+                                <i class="fa fa-remove"></i> <?php echo app('translator')->get('Đóng'); ?>
                             </button>
                         </div>
                     </form>
@@ -533,8 +541,8 @@
 
 
     </section>
-@endsection
-@section('script')
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('script'); ?>
     <script>
         $(document).on('change keyup', '.prev_balance', function() {
             var _balance = parseInt($(this).val(), 10);
@@ -574,7 +582,7 @@
                 <td>
                     <button class="btn btn-sm btn-danger" type="button" data-toggle="tooltip"
                     onclick="$(this).closest('tr').remove();updateBalance()"
-                        title="@lang('Delete')" data-original-title="@lang('Delete')">
+                        title="<?php echo app('translator')->get('Delete'); ?>" data-original-title="<?php echo app('translator')->get('Delete'); ?>">
                         <i class="fa fa-trash"></i>
                     </button>
                 </td>
@@ -591,8 +599,8 @@
 
         // Xử lý sự kiện click nút duyệt TBP
         $('.btn_approved').click(function() {
-            if (confirm('{{ __('confirm_action') }}')) {
-                var _url = "{{ route(Request::segment(2) . '.approved', $detail->id) }}";
+            if (confirm('<?php echo e(__('confirm_action')); ?>')) {
+                var _url = "<?php echo e(route(Request::segment(2) . '.approved', $detail->id)); ?>";
                 var formData = $('#form_update_explanation').serialize();
                 show_loading_notification();
                 $.ajax({
@@ -644,11 +652,11 @@
             show_loading_notification();
             $.ajax({
                 type: "POST",
-                url: "{{ route('student.updateService.ajax') }}",
+                url: "<?php echo e(route('student.updateService.ajax')); ?>",
                 data: {
                     id: _id,
                     payment_cycle_id: _payment_cycle_id,
-                    _token: '{{ csrf_token() }}'
+                    _token: '<?php echo e(csrf_token()); ?>'
                 },
                 success: function(response) {
                     hide_loading_notification();
@@ -679,7 +687,7 @@
             });
         });
 
-        // Thay đổi kỳ thanh toán
+
         $('#form_receipt_transaction').on('submit', function(event) {
             event.preventDefault();
             var _url = $(this).prop('action')
@@ -724,56 +732,6 @@
             });
         });
 
-        $('.delete_receipt_detail_and_recalculate').click(function() {
-            if (confirm('{{ __('confirm_action') }}')) {
-                var receipt_id = $(this).data('receipt');
-                var detail_id = $(this).data('id');
-                show_loading_notification();
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('receipt.deletePaymentDetailsAndRecalculate') }}",
-                    data: {
-                        receipt_id: receipt_id,
-                        detail_id: detail_id,
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function(response) {
-                        hide_loading_notification();
-                        if (response) {
-                            hide_loading_notification();
-                            var _html = `<div class="alert alert-${response.data} alert-dismissible">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            ${response.message}
-                            </div>`;
-                            $('.box_alert').prepend(_html);
-                            setTimeout(function() {
-                                $(".alert").fadeOut(3000, function() {});
-                            }, 800);
-                            if (response.data == 'success') {
-                                location.reload();
-                            }
-
-                        } else {
-                            hide_loading_notification();
-                            var _html = `<div class="alert alert-warning alert-dismissible">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            Bạn không có quyền thao tác chức năng này!
-                            </div>`;
-                            $('.box_alert').prepend(_html);
-                            setTimeout(function() {
-                                $(".alert").fadeOut(3000, function() {});
-                            }, 800);
-                        }
-                    },
-                    error: function(data) {
-                        hide_loading_notification();
-                        var errors = data.responseJSON.message;
-                        alert(data);
-                    }
-                });
-            }
-        })
-
 
         // Hàm cập nhật giải trình lưu lại trong JSON và tính lại số tiền
         function updateJsonExplanation() {
@@ -796,4 +754,6 @@
             });
         }
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\steamwonders\resources\views/admin/pages/receipt/show.blade.php ENDPATH**/ ?>

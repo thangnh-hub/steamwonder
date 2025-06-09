@@ -71,8 +71,8 @@
                                                 <div class="form-group">
                                                     <label>@lang('Username') <small class="text-red">*</small></label>
                                                     <input type="text" class="form-control"
-                                                        placeholder="@lang('Username')"
-                                                        value="{{ $detail->username ?? '' }}" disabled readonly>
+                                                        placeholder="@lang('Username')" name="username"
+                                                        value="{{ $detail->username ?? '' }}" required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -134,22 +134,6 @@
                 </div>
 
                 <div class="col-lg-4">
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">@lang('Publish')</h3>
-                        </div>
-                        <div class="box-body">
-                            <div class="btn-set">
-                                <button type="submit" class="btn btn-info">
-                                    <i class="fa fa-save"></i> @lang('Save')
-                                </button>
-                                &nbsp;&nbsp;
-                                <a class="btn btn-success " href="{{ route(Request::segment(2) . '.index') }}">
-                                    <i class="fa fa-bars"></i> @lang('List')
-                                </a>
-                            </div>
-                        </div>
-                    </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
                             <h3 class="box-title">@lang('Status')</h3>

@@ -42,6 +42,7 @@
             </div>
         <?php endif; ?>
         <form role="form" action="<?php echo e(route(Request::segment(2) . '.store')); ?>" method="POST">
+            <input type="hidden" name="member_id" value="<?php echo e($member->id ?? ''); ?>">
             <div class="row">
                 <div class="col-lg-8">
                     <div class="box box-primary">
@@ -70,8 +71,8 @@
                                                 <div class="form-group">
                                                     <label><?php echo app('translator')->get('Username'); ?> <small class="text-red">*</small></label>
                                                     <input type="text" class="form-control" name="username"
-                                                        placeholder="<?php echo app('translator')->get('Username'); ?>" value="<?php echo e(old('username')); ?>"
-                                                        required>
+                                                        placeholder="<?php echo app('translator')->get('Username'); ?>"
+                                                        value="<?php echo e(old('username') ?? ($member->phone ?? '')); ?>" required>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -88,7 +89,8 @@
                                                 <div class="form-group">
                                                     <label><?php echo app('translator')->get('First Name'); ?> <small class="text-red">*</small></label>
                                                     <input type="text" class="form-control" name="first_name"
-                                                        placeholder="<?php echo app('translator')->get('First Name'); ?>" value="<?php echo e(old('first_name')); ?>"
+                                                        placeholder="<?php echo app('translator')->get('First Name'); ?>"
+                                                        value="<?php echo e(old('first_name') ?? ($member->first_name ?? '')); ?>"
                                                         required>
                                                 </div>
                                             </div>
@@ -96,7 +98,8 @@
                                                 <div class="form-group">
                                                     <label><?php echo app('translator')->get('Last Name'); ?> <small class="text-red">*</small></label>
                                                     <input type="text" class="form-control" name="last_name"
-                                                        placeholder="<?php echo app('translator')->get('Last Name'); ?>" value="<?php echo e(old('last_name')); ?>"
+                                                        placeholder="<?php echo app('translator')->get('Last Name'); ?>"
+                                                        value="<?php echo e(old('last_name') ?? ($member->last_name ?? '')); ?>"
                                                         required>
                                                 </div>
                                             </div>
@@ -105,21 +108,24 @@
                                                 <div class="form-group">
                                                     <label><?php echo app('translator')->get('Email'); ?></label>
                                                     <input type="email" class="form-control" name="email"
-                                                        placeholder="<?php echo app('translator')->get('Email'); ?>" value="<?php echo e(old('email')); ?>">
+                                                        placeholder="<?php echo app('translator')->get('Email'); ?>"
+                                                        value="<?php echo e(old('email') ?? ($member->email ?? '')); ?>">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label><?php echo app('translator')->get('Phone'); ?><small class="text-red">*</small></label>
                                                     <input type="text" class="form-control" name="phone" required
-                                                        placeholder="<?php echo app('translator')->get('Phone'); ?>" value="<?php echo e(old('phone')); ?>">
+                                                        placeholder="<?php echo app('translator')->get('Phone'); ?>"
+                                                        value="<?php echo e(old('phone') ?? ($member->phone ?? '')); ?>">
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label><?php echo app('translator')->get('Address'); ?></label>
                                                     <input type="text" class="form-control" name="address"
-                                                        placeholder="<?php echo app('translator')->get('Address'); ?>" value="<?php echo e(old('address')); ?>">
+                                                        placeholder="<?php echo app('translator')->get('Address'); ?>"
+                                                        value="<?php echo e(old('address') ?? ($member->address ?? '')); ?>">
                                                 </div>
                                             </div>
 
@@ -133,22 +139,6 @@
                 </div>
 
                 <div class="col-lg-4">
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <h3 class="box-title"><?php echo app('translator')->get('Publish'); ?></h3>
-                        </div>
-                        <div class="box-body">
-                            <div class="btn-set">
-                                <button type="submit" class="btn btn-info">
-                                    <i class="fa fa-save"></i> <?php echo app('translator')->get('Save'); ?>
-                                </button>
-                                &nbsp;&nbsp;
-                                <a class="btn btn-success " href="<?php echo e(route(Request::segment(2) . '.index')); ?>">
-                                    <i class="fa fa-bars"></i> <?php echo app('translator')->get('List'); ?>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
                     <div class="box box-primary">
                         <div class="box-header with-border">
                             <h3 class="box-title"><?php echo app('translator')->get('Status'); ?></h3>
