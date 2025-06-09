@@ -96,8 +96,7 @@
                                         <?php echo app('translator')->get('Reset'); ?>
                                     </a>
 
-                                    <button type="button" data-toggle="modal" data-target="#create_crmdata_student"
-                                        class="btn btn-success btn-sm"><?php echo app('translator')->get('Import Excel'); ?></button>
+                                    
                                 </div>
                             </div>
                         </div>

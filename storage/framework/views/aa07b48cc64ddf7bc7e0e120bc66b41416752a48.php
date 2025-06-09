@@ -1,4 +1,3 @@
-
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -21,7 +20,7 @@
                         <input type="hidden" name="referer" value="<?php echo e($referer); ?>">
                         <input type="hidden" name="current" value="<?php echo e($current); ?>">
                         <div class="form-group">
-                            <input type="text" class="form-control" name="email" placeholder="<?php echo app('translator')->get('Địa chỉ Email của bạn ... '); ?>"
+                            <input type="text" class="form-control" name="email" placeholder="<?php echo app('translator')->get('Username'); ?>"
                                 required>
                         </div>
                         <div class="form-group">
@@ -36,20 +35,17 @@
                         </div>
 
                     </form>
-                    
                     <div class="text-center mt-3">
                         <a class="text-info" href="<?php echo e(route('frontend.password.forgot.get')); ?>"><?php echo app('translator')->get('Quên mật khẩu'); ?></a>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer d-flex justify-content-center">
-                <div class="signup-section"><?php echo app('translator')->get('Chưa phải là thành viên?'); ?> <a href="javascript:void(0)" class="text-info"
-                        data-toggle="modal" data-target="#registernModal" data-dismiss="modal"> <?php echo app('translator')->get('Đăng ký'); ?></a>.
-                </div>
-            </div>
+            
         </div>
     </div>
 </div>
+
+
 <div class="modal fade" id="registernModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
