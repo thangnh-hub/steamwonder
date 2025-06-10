@@ -90,10 +90,52 @@
             margin-top: 50px;
         }
 
+        .btn {
+            display: inline-block;
+            margin-bottom: 0;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            -ms-touch-action: manipulation;
+            touch-action: manipulation;
+            cursor: pointer;
+            background-image: none;
+            border: 1px solid transparent;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            border-radius: 4px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .btn {
+            border-radius: 3px;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+            border: 1px solid transparent;
+        }
+
+        .btn-success {
+            color: #fff;
+            background-color: #00a65a;
+            border-color: #008d4c;
+            position: fixed;
+            top: 50px;
+            right: 30px;
+        }
+
         @media print {
             body {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+            }
+
+            .btn-success {
+                display: none;
             }
 
             .fee-table th,
@@ -192,7 +234,8 @@
 <body>
 
     <div class="wrapper">
-
+        <button class="btn btn-success btn-print"><i class="fa fa-print" aria-hidden="true"></i> @lang('In TBP')
+        </button>
         <div class="header">
             <img src="https://steamwonders.vn/data/logo/header.jpg" alt="Banner-header" srcset="">
             {{-- <div class="logo">
@@ -299,7 +342,8 @@
                     <tr class="section">
                         <td class="text-center">{{ \App\Helpers::intToRoman($i) }}</td>
                         <td class="text-uppercase">@lang('Các khoản thu đầu năm')</td>
-                        <td>{{ number_format($serviceYearly['total_amount'] ?? 0, 0, ',', '.') }}</td>
+                        <td class="text-right">{{ number_format($serviceYearly['total_amount'] ?? 0, 0, ',', '.') }}
+                        </td>
                         <td></td>
                     </tr>
                     @if (isset($serviceYearly['services']) && count($serviceYearly['services']) > 0)
@@ -307,7 +351,8 @@
                             <tr>
                                 <td class="text-center">{{ $loop->index + 1 }}</td>
                                 <td>{{ $item['service']->name ?? '' }}</td>
-                                <td>{{ number_format($item['total_amount'] ?? 0, 0, ',', '.') }}</td>
+                                <td class="text-right">{{ number_format($item['total_amount'] ?? 0, 0, ',', '.') }}
+                                </td>
                                 <td>
                                     Năm học: {{ \App\Helpers::getYear($item['min_month']) }}
                                 </td>
@@ -402,21 +447,20 @@
                 @php $i++; @endphp
                 @endif
 
-                @if (
-                    $detail->prev_balance != 0 ||
-                        (isset($detail->json_params->explanation) && count((array) $detail->json_params->explanation) > 0))
+                @if ($detail->prev_balance != 0 || isset($detail->student->receiptAdjustment))
                     <tr class="section">
                         <td class="text-center">{{ \App\Helpers::intToRoman($i) }}</td>
                         <td>@lang('CÁC KHOẢN TRUY THU/HOÀN TRẢ') [+ Có , - Nợ]</td>
                         <td class="text-right">{{ number_format($detail->prev_balance ?? 0, 0, ',', '.') }}</td>
                         <td></td>
                     </tr>
-                    @if (isset($detail->json_params->explanation) && count((array) $detail->json_params->explanation) > 0)
-                        @foreach ($detail->json_params->explanation as $item)
+                    @if (isset($detail->student->receiptAdjustment) && count((array) $detail->student->receiptAdjustment) > 0)
+                        @foreach ($detail->student->receiptAdjustment as $item)
                             <tr>
                                 <td class="text-center">{{ $loop->index + 1 }}</td>
-                                <td>{{ $item->content ?? '' }}</td>
-                                <td class="text-right">{{ number_format(abs($item->value ?? 0), 0, ',', '.') }}</td>
+                                <td>{{ $item->note ?? '' }}</td>
+                                <td class="text-right">{{ number_format(abs($item->final_amount ?? 0), 0, ',', '.') }}
+                                </td>
                                 <td></td>
                             </tr>
                         @endforeach
@@ -503,8 +547,10 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
+            $('.btn-print').click(function() {
+                window.print();
+            })
             // Mở hộp thoại in
-            window.print();
         });
     </script>
 </body>

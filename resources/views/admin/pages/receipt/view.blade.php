@@ -266,11 +266,11 @@
                                         </tr>
                                     </thead>
                                     <tbody class="box_explanation">
-                                        @if (isset($detail->json_params->explanation))
-                                            @foreach ($detail->json_params->explanation as $key => $item)
+                                        @if (isset($detail->student->receiptAdjustment))
+                                            @foreach ($detail->student->receiptAdjustment as $key => $item)
                                                 <tr class="item_explanation">
-                                                    <td>{{ $item->content ?? '' }}</td>
-                                                    <td>{{ number_format($item->value, 0, ',', '.') }}</td>
+                                                    <td>{{ $item->note ?? '' }}</td>
+                                                    <td>{{ number_format($item->final_amount, 0, ',', '.') }}</td>
                                                 </tr>
                                             @endforeach
                                         @endif
