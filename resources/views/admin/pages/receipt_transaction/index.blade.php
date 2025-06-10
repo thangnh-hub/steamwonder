@@ -46,13 +46,15 @@
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label>@lang('Từ ngày')</label>
-                                <input type="date" name="from_date" class="form-control" value="{{$params['from_date']}}">
+                                <input type="date" name="from_date" class="form-control"
+                                    value="{{ $params['from_date'] ?? '' }}">
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label>@lang('Đến ngày ngày')</label>
-                                <input type="date" name="to_date" class="form-control" value="{{$params['to_date']}}">
+                                <input type="date" name="to_date" class="form-control"
+                                    value="{{ $params['to_date'] ?? '' }}">
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -129,7 +131,9 @@
                                         {{ $row->receipt->receipt_name ?? '' }}
                                     </td>
                                     <td>
-                                        {{ $row->receipt->student->student_code ?? '' }} - {{ $row->receipt->student->first_name ?? '' }} {{ $row->receipt->student->last_name ?? '' }}
+                                        {{ $row->receipt->student->student_code ?? '' }} -
+                                        {{ $row->receipt->student->first_name ?? '' }}
+                                        {{ $row->receipt->student->last_name ?? '' }}
                                     </td>
                                     <td>
                                         {{ date('d-m-Y', strTotime($row->payment_date)) }}

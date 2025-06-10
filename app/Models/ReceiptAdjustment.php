@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Carbon\Carbon;
 class ReceiptAdjustment extends Model
 {
     /**
@@ -36,6 +36,13 @@ class ReceiptAdjustment extends Model
             })
             ->when(!empty($params['type']), function ($query) use ($params) {
                 return $query->where('tb_receipt_adjustment.type', $params['type']);
+            })
+            ->when(!empty($params['month']), function ($query) use ($params) {
+                $year = Carbon::createFromFormat('Y-m', $params['month'])->year;
+                $month = Carbon::createFromFormat('Y-m', $params['month'])->month;
+
+                return $query->whereYear('tb_receipt_adjustment.month', $year)
+                    ->whereMonth('tb_receipt_adjustment.month', $month);
             })
             ->when(!empty($params['status']), function ($query) use ($params) {
                 return $query->where('tb_receipt_adjustment.status', $params['status']);

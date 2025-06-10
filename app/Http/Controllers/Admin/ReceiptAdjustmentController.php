@@ -30,8 +30,8 @@ class ReceiptAdjustmentController extends Controller
      */
     public function index(Request $request)
     {
-        $params = $request->only(['keyword', 'status', 'type']);
-        $rows = ReceiptAdjustment::getSqlReceiptAdjustment($params)->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
+        $params = $request->only(['keyword', 'status', 'type','month']);
+        $rows = ReceiptAdjustment::getSqlReceiptAdjustment($params)->orderBy('id','DESC')->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
         $this->responseData['rows'] = $rows;
         $this->responseData['students'] = Student::all();
         $this->responseData['status'] = Consts::STATUS_RECEIPT_DETAIL;

@@ -636,10 +636,10 @@
                         </div>
                         <div class="modal-footer">
                             <?php if($detail->status == 'approved'): ?>
-                            <button type="submit" class="btn btn-success btn_save_transaction">
-                                <i class="fa fa-save"></i> <?php echo app('translator')->get('Lưu lại'); ?>
-                            </button>
-                             <?php endif; ?>
+                                <button type="submit" class="btn btn-success btn_save_transaction">
+                                    <i class="fa fa-save"></i> <?php echo app('translator')->get('Lưu lại'); ?>
+                                </button>
+                            <?php endif; ?>
                             <button type="button" class="btn btn-danger" data-dismiss="modal">
                                 <i class="fa fa-remove"></i> <?php echo app('translator')->get('Đóng'); ?>
                             </button>
