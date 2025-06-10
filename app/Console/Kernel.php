@@ -33,6 +33,11 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             LeaveBalanceService::updateMonthlyLeaveBalance();
         })->monthlyOn(1, '00:00');
+
+        $schedule->command('mealmenus:generate-next-month')
+                //  ->monthlyOn(15, '00:00')
+                 ->dailyAt('15:01')
+                 ->withoutOverlapping();
     }
 
     /**

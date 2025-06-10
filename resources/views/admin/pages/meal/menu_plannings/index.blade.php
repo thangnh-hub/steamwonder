@@ -15,7 +15,7 @@
 @endsection
 
 @section('content')
-    <form action="{{ route('data_menues.import') }}" method="post" enctype="multipart/form-data">
+    {{-- <form action="{{ route('data_menues.import') }}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="modal-body row">
             <div class="col-md-12">
@@ -31,7 +31,7 @@
                 </div>
             </div>
         </div>
-    </form>
+    </form> --}}
     <section class="content">
         <div class="box box-default">
             <div class="box-header with-border">
@@ -156,7 +156,7 @@
                                     @if (isset($row->menuDishes) && count($row->menuDishes) > 0)
                                         <ul >
                                             @foreach ($row->menuDishes as $dish)
-                                                <li>{{ $loop->iteration }}. {{ $dish->dishes->name ?? '' }}</li>
+                                                <a href="{{ route('dishes.edit',$dish->dishes->id) }}"><li>{{ $loop->iteration }}. {{ $dish->dishes->name ?? '' }}</li></a>
                                             @endforeach
                                         </ul>
                                     @else
