@@ -109,6 +109,7 @@ Route::group(['namespace' => 'Admin'], function () {
                 'payment_cycle' => 'PaymentCycleController',
                 'deductions' => 'DeductionController',
                 'receipt' => 'ReceiptController',
+                'receipt_adjustment' => 'ReceiptAdjustmentController',
                 'attendance' => 'AttendancesController',
                 'promotions' => 'PromotionController',
                 'suppliers' => 'MealSupplierController',
@@ -121,7 +122,7 @@ Route::group(['namespace' => 'Admin'], function () {
                 'menu_dailys' => 'MealMenuDailyController',
                 'warehouse_ingredients' => 'MealWarehouseIngredientController',
             ]);
-            
+
             //Thực đơn mẫu
             Route::post('meal_dishes_move_to_meal', 'MealMenuPlanningController@moveDish')->name('mealmenu.moveDish');
             Route::delete('meal_dishes_delete', 'MealMenuPlanningController@deleteDish')->name('mealmenu.deleteDish');
@@ -140,11 +141,11 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('menu-dailys/date/{date}/area/{area_id}', 'MealMenuDailyController@showByDate')->name('menu_dailys.showByDate');
             // Thống kê thực đơn theo tuần
             Route::get('mealmenu/report-by-week', 'MealMenuDailyController@reportByWeek')->name('mealmenu.week.report');
-            
+
             //Kho thực phẩm
             Route::get('warehouse_ingredients_entry', 'MealWarehouseIngredientController@viewWarehouseIncredientEntry')->name('meal_warehouse_ingredients_entry');
             Route::post('warehouse_ingredients_entry_store', 'MealWarehouseIngredientController@storeWarehouseIncredientEntry')->name('meal_warehouse_ingredients_entry_store');
-            
+
             Route::get('attendance/check-out/index', 'AttendancesController@checkout')->name('attendance.checkout');
             Route::get('attendance/summary-by-month/index', 'AttendancesController@attendanceSummaryByMonth')->name('attendance.summary_by_month');
             Route::post('attendance/summary-by-month/update_or_store', 'AttendancesController@updateOrstoreAttendance')->name('attendance.summary_by_month.update_or_store');

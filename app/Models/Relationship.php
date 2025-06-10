@@ -42,7 +42,7 @@ class Relationship extends Model
             ->when(!empty($params['id']), function ($query) use ($params) {
                 return $query->where('tb_relationships.id', $params['id']);
             });
-        
+
         $query->groupBy('tb_relationships.id');
         return $query;
     }

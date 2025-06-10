@@ -38,6 +38,12 @@ class Consts
         'fixed_amount' => 'fixed_amount',
         'add_month' => 'add_month',
     ];
+    const TYPE_RECEIPT_ADJUSTMENT = [
+        'dunokytruoc' => 'dunokytruoc',
+        'khuyenmai' => 'khuyenmai',
+        'phatsinh' => 'phatsinh',
+        'doisoat' => 'doisoat',
+    ];
     const TYPE_RECEIPT = [
         'new_student' => 'new_student',
         'renew' => 'renew',

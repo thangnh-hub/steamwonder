@@ -8,6 +8,7 @@ use App\Http\Services\VietQrService;
 use App\Http\Services\DataPermissionService;
 use App\Http\Services\ReceiptService;
 use App\Models\Receipt;
+use App\Models\ReceiptAdjustment;
 use App\Models\ReceiptDetail;
 use App\Models\ReceiptTransaction;
 use App\Models\Area;
@@ -87,7 +88,7 @@ class ReceiptController extends Controller
         $detail = $receipt;
         $this->responseData['detail'] = $detail;
         $this->responseData['due_date'] = Carbon::parse($detail->created_at)->endOfMonth()->format('Y-m-d');
-
+        $this->responseData['type'] = Consts::TYPE_RECEIPT_ADJUSTMENT;
         $this->responseData['payment_cycle'] = PaymentCycle::all();
         $this->responseData['module_name'] = 'Thanh toán TBP';
         return $this->responseView($this->viewPart . '.show');
@@ -150,6 +151,18 @@ class ReceiptController extends Controller
                         'admin_updated_id' => $admin->id,
                     ]);
                 }
+                // Nếu thanh toán thừa sẽ tạo dư nợ cho kỳ sau
+                if ((int)$receipt->total_paid - (int)$receipt->total_final > 0) {
+                    ReceiptAdjustment::create([
+                        'student_id' => $receipt->student_id,
+                        'receipt_id_old' => $receipt->id,
+                        'type' => Consts::TYPE_RECEIPT_ADJUSTMENT['dunokytruoc'],
+                        'final_amount' => (int)$receipt->total_paid - (int)$receipt->total_final,
+                        'status' => Consts::STATUS_RECEIPT_DETAIL['expected'],
+                        'note' => 'Dư nợ: ' . $receipt->receipt_code,
+                        'admin_created_id' => Auth::guard('admin')->user()->id,
+                    ]);
+                }
             }
             $receipt->cashier_id = $admin->id;
             $receipt->admin_updated_id = $admin->id;
@@ -194,19 +207,76 @@ class ReceiptController extends Controller
 
     public function updateJsonExplanation(Request $request, $id)
     {
+        $result = null;
         $receipt = Receipt::find($id);
         $prev_balance = $request->input('prev_balance') ?? 0;
-        $explanation = $request->input('explanation');
-        $json_params = json_decode(json_encode($receipt->json_params), true);
-        $json_params['explanation'] = $explanation;
-        // Cập nhật số dư kỳ trước
+        $adjustment = $request->input('adjustment');
+        $list_id = $request->input('receipt_adjustment') ?? [];
+        $list_doisoat = $request->input('list_doisoat') ?? [];
+        if (empty($receipt)) {
+            Session::flash('errorMessage', ' Không tìm thấy TBP!');
+            return $this->sendResponse('warning', 'Không tìm thấy TBP!');
+        }
+        if($receipt->status != Consts::STATUS_RECEIPT['pending']){
+            Session::flash('errorMessage', ' TBP đã được duyệt và không thể sửa!');
+            return $this->sendResponse('warning', 'TBP đã được duyệt và không thể sửa!');
+        }
+
+
+        // Cập nhật lại receipt_id cho các receipt_adjustment doisoat,dunokytruoc
+        if (count($list_id) > 0) {
+            foreach ($list_id as $id_receipt_adjustment) {
+                $receipt_adjustment = ReceiptAdjustment::find($id_receipt_adjustment);
+                if ($receipt_adjustment->receipt_id == null || $receipt_adjustment->receipt_id == $receipt->id) {
+                    $receipt_adjustment->receipt_id = $receipt->id;
+                    $receipt_adjustment->save();
+                } else {
+                    $result = 'warning';
+                    Session::flash('errorMessage', $receipt_adjustment->note . ' đã được gắn với TBP khác!');
+                }
+            }
+        } else {
+
+            ReceiptAdjustment::whereIn('id', $list_doisoat)
+                ->where(function ($where) use ($id) {
+                    return $where->whereNull('tb_receipt_adjustment.receipt_id')
+                        ->orWhere('tb_receipt_adjustment.receipt_id', $id);
+                })
+                ->update([
+                    'receipt_id' => null,
+                ]);
+        }
+
+        // Thêm mới hoặc cập nhật receipt_adjustment khuyenmai, phatsinh
+        foreach ($adjustment as $key => $item) {
+            if ($key == 0) {
+                continue;
+            }
+            $receipt_adjustment_other = ReceiptAdjustment::find($key);
+            if ($receipt_adjustment_other) {
+                $receipt_adjustment_other->note = $item['note'];
+                $receipt_adjustment_other->final_amount = $item['final_amount'];
+                $receipt_adjustment_other->type = $item['type'];
+                $receipt_adjustment_other->save();
+            } else {
+                ReceiptAdjustment::create([
+                    'receipt_id' => $receipt->id,
+                    'student_id' => $receipt->student_id,
+                    'type' => $item['type'],
+                    'final_amount' => $item['final_amount'] ?? 0,
+                    'note' => $item['note'],
+                ]);
+            }
+        }
+
+        // Cập nhật số dư kỳ trước, tổng tiền và số tiền còn phải thu
         $receipt->prev_balance = $prev_balance;
-        // Cập nhật lại tổng tiền và số tiền còn phải thu
         $receipt->total_final = $receipt->total_amount - $receipt->total_discount - $receipt->prev_balance;
         $receipt->total_due = $receipt->total_final - $receipt->total_paid;
-        $receipt->json_params = $json_params;
+        // $receipt->json_params = $json_params;
         $receipt->save();
-        return $this->sendResponse($receipt, 'Cập nhật thành công!');
+        $result = $receipt;
+        return $this->sendResponse($result, 'Cập nhật thành công!');
     }
 
     public function print(Request $request, $id)
@@ -258,8 +328,6 @@ class ReceiptController extends Controller
                 return $detail['total_discount_amount'] > 0; // Lọc các dịch vụ có discount_amount > 0
             });
 
-        // dd($listServiceDiscount);
-        // dd($listServiceDiscount);
         $serviceMonthly = $groupByServiceType->get('monthly', collect()); // Dịch vụ loại monthly
         $serviceYearly = $groupByServiceType->get('yearly', collect()); // Dịch vụ loại monthly
         // Lấy các loại còn lại ngoài monthly và yearly
@@ -274,8 +342,6 @@ class ReceiptController extends Controller
                 $carry['services'] = ($carry['services'] ?? collect())->merge($item['services']); // Gộp chi tiết
                 return $carry;
             }, []);
-
-
 
         // Lấy từng từng nhóm
         $this->responseData['groupByServiceType'] = $groupByServiceType;
@@ -337,15 +403,15 @@ class ReceiptController extends Controller
     public function CrudReceiptTransaction(Request $request)
     {
         $admin = Auth::guard('admin')->user();
-        $params = $request->only(['receipt_id', 'paid_amount', 'json_params','payment_date']);
+        $params = $request->only(['receipt_id', 'paid_amount', 'json_params', 'payment_date']);
         $receipt_id = $request->input('receipt_id');
         $type = $request->input('type');
         $result = $message = '';
         $receipt = Receipt::find($receipt_id);
-        if(empty($receipt)){
+        if (empty($receipt)) {
             return $this->sendResponse('error', 'Không tìm thấy TBP!');
         }
-        if($this->checkStatusReceipt($receipt_id) == false){
+        if ($this->checkStatusReceipt($receipt_id) == false) {
             return $this->sendResponse('warning', 'TBP đã thanh toán!');
         }
         switch ($type) {
@@ -357,7 +423,7 @@ class ReceiptController extends Controller
                 // Lấy tổng tiền receipt_transaction
                 $total_paid = $receipt->receiptTransaction->sum('paid_amount');
                 $receipt->total_paid = $total_paid;
-                $receipt->total_due = ($receipt->total_final - $total_paid > 0) ? $receipt->total_final - $total_paid : 0;
+                $receipt->total_due = $receipt->total_final - $total_paid;
                 $receipt->save();
 
                 $result = "success";

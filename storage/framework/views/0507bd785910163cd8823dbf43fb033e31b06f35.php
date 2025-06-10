@@ -3,6 +3,11 @@
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('style'); ?>
     <style>
+        .item_adjustment:last-child {
+            position: absolute;
+            top: -100vh;
+        }
+
         .modal-dialog.modal-custom {
             max-width: 80%;
             width: auto;
@@ -22,6 +27,10 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+        }
+
+        .table-bordered>tbody>tr>td {
+            vertical-align: middle
         }
     </style>
 <?php $__env->stopSection(); ?>
@@ -128,8 +137,7 @@
                                             </th>
                                             <th class="text-right">
                                                 <input type="number" name="prev_balance"
-                                                    <?php echo e($detail->status == 'pending' ? '' : 'disabled'); ?>
-
+                                                    <?php echo e($detail->status == 'pending' ? '' : 'disabled'); ?> readonly
                                                     class="form-control pull-right prev_balance" style="max-width: 200px;"
                                                     placeholder="Nhập số dư kỳ trước" data-toggle="tooltip"
                                                     title="Tổng số dư kỳ trước của học sinh này, nếu có"
@@ -138,6 +146,8 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+
+
                                         <?php if(isset($detail->prev_receipt_detail) && count($detail->prev_receipt_detail) > 0): ?>
                                             <tr>
                                                 <th>Tháng</th>
@@ -172,40 +182,125 @@
                                         <?php endif; ?>
                                     </tbody>
                                     <tbody class="box_explanation">
-                                        <?php if(isset($detail->json_params->explanation)): ?>
-                                            <?php $__currentLoopData = $detail->json_params->explanation; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <tr class="item_explanation">
-                                                    <td colspan="6">
-                                                        <input type="text"
-                                                            <?php echo e($detail->status == 'pending' ? '' : 'disabled'); ?>
+                                        <?php if(isset($detail->student->receiptAdjustment)): ?>
+                                            <?php $__currentLoopData = $detail->student->receiptAdjustment; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <?php if($item->receipt_id == null || $item->receipt_id == $detail->id): ?>
+                                                    <tr
+                                                        class="item_adjustment <?php echo e(in_array($item->type, ['dunokytruoc', 'doisoat']) ? 'bg-gray' : ''); ?>">
+                                                        <td class="text-center">
+                                                            <?php if($detail->status == 'pending'): ?>
+                                                                <?php if(in_array($item->type, ['dunokytruoc', 'doisoat'])): ?>
+                                                                    <input type="checkbox" class="check_doisoat"
+                                                                        onclick="updateBalance()"
+                                                                        name="receipt_adjustment[]"
+                                                                        value="<?php echo e($item->id); ?>"
+                                                                        <?php echo e($item->receipt_id == $detail->id ? 'checked' : ''); ?>>
+                                                                <?php endif; ?>
+                                                            <?php endif; ?>
+                                                        </td>
+                                                        <td colspan="4">
+                                                            <?php if(in_array($item->type, ['dunokytruoc', 'doisoat'])): ?>
+                                                                <?php echo e($item->note); ?>
 
-                                                            name="explanation[<?php echo e($key); ?>][content]"
-                                                            class="form-control action_change" value="<?php echo e($item->content); ?>"
-                                                            placeholder="Nội dung Truy thu/Hoàn trả">
-                                                    </td>
-                                                    <td>
-                                                        <input type="number"
-                                                            <?php echo e($detail->status == 'pending' ? '' : 'disabled'); ?>
+                                                            <?php else: ?>
+                                                                <input type="text"
+                                                                    <?php echo e($detail->status == 'pending' ? '' : 'disabled'); ?>
 
-                                                            name="explanation[<?php echo e($key); ?>][value]"
-                                                            class="form-control action_change" value="<?php echo e($item->value); ?>"
-                                                            placeholder="Giá trị tương ứng">
-                                                    </td>
+                                                                    name="adjustment[<?php echo e($item->id); ?>][note]"
+                                                                    class="form-control action_change"
+                                                                    value="<?php echo e($item->note); ?>"
+                                                                    placeholder="Nội dung Truy thu/Hoàn trả">
+                                                            <?php endif; ?>
+                                                        </td>
+                                                        <td>
+                                                            <?php if(in_array($item->type, ['dunokytruoc', 'doisoat'])): ?>
+                                                                <input type="hidden" name="list_doisoat[]"
+                                                                    value="<?php echo e($item->id); ?>">
+                                                                <span
+                                                                    class="final_amount"><?php echo e((int) $item->final_amount); ?></span>
+                                                            <?php else: ?>
+                                                                <input type="number"
+                                                                    <?php echo e($detail->status == 'pending' ? '' : 'disabled'); ?>
 
-                                                    <td>
-                                                        <?php if($detail->status == 'pending'): ?>
-                                                            <button class="btn btn-sm btn-danger" type="button"
-                                                                data-toggle="tooltip"
-                                                                onclick="$(this).closest('tr').remove();updateBalance()"
-                                                                title="<?php echo app('translator')->get('Xóa giải trình'); ?>"
-                                                                data-original-title="<?php echo app('translator')->get('Xóa giải trình'); ?>">
-                                                                <i class="fa fa-trash"></i>
-                                                            </button>
-                                                        <?php endif; ?>
-                                                    </td>
-                                                </tr>
+                                                                    name="adjustment[<?php echo e($item->id); ?>][final_amount]"
+                                                                    class="form-control action_change"
+                                                                    value="<?php echo e((int) $item->final_amount); ?>"
+                                                                    placeholder="Giá trị tương ứng">
+                                                            <?php endif; ?>
+                                                        </td>
+                                                        <td>
+                                                            <?php if(in_array($item->type, ['dunokytruoc', 'doisoat'])): ?>
+                                                                <?php echo e(__($item->type)); ?>
+
+                                                            <?php else: ?>
+                                                                <select name="adjustment[<?php echo e($item->id); ?>][type]"
+                                                                    class="form-control">
+                                                                    <?php $__currentLoopData = $type; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                        <?php if(!in_array($key, ['dunokytruoc', 'doisoat'])): ?>
+                                                                            <option value="<?php echo e($key); ?>">
+                                                                                <?php echo e(__($val)); ?></option>
+                                                                        <?php endif; ?>
+                                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                                </select>
+                                                            <?php endif; ?>
+                                                        </td>
+                                                        <td>
+                                                            <?php if($detail->status == 'pending'): ?>
+                                                                <?php if(!in_array($item->type, ['dunokytruoc', 'doisoat'])): ?>
+                                                                    <button
+                                                                        class="btn btn-sm btn-success btn_save_adjustment"
+                                                                        type="button" data-toggle="tooltip" onclick=""
+                                                                        title="<?php echo app('translator')->get('Save'); ?>">
+                                                                        <i class="fa fa-save"></i>
+                                                                    </button>
+                                                                    <button class="btn btn-sm btn-danger" type="button"
+                                                                        data-toggle="tooltip"
+                                                                        onclick="$(this).closest('tr').remove();updateBalance()"
+                                                                        title="<?php echo app('translator')->get('Delete'); ?>">
+                                                                        <i class="fa fa-trash"></i>
+                                                                    </button>
+                                                                <?php endif; ?>
+                                                            <?php endif; ?>
+                                                        </td>
+                                                    </tr>
+                                                <?php endif; ?>
                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         <?php endif; ?>
+                                        
+                                        <tr class="item_adjustment">
+                                            <td class="text-center"></td>
+                                            <td colspan="4">
+                                                <input type="text" name="adjustment[0][note]"
+                                                    class="form-control action_change"
+                                                    placeholder="Nội dung Truy thu/Hoàn trả">
+                                            </td>
+                                            <td>
+                                                <input type="number" name="adjustment[0][final_amount]"
+                                                    class="form-control action_change" placeholder="Giá trị tương ứng">
+                                            </td>
+                                            <td>
+                                                <select name="adjustment[0][type]" class="form-control">
+                                                    <?php $__currentLoopData = $type; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <?php if(!in_array($key, ['dunokytruoc', 'doisoat'])): ?>
+                                                            <option value="<?php echo e($key); ?>">
+                                                                <?php echo e(__($val)); ?></option>
+                                                        <?php endif; ?>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-success btn_save_adjustment" type="button"
+                                                    data-toggle="tooltip" onclick="" title="<?php echo app('translator')->get('Save'); ?>">
+                                                    <i class="fa fa-save"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-danger" type="button"
+                                                    data-toggle="tooltip"
+                                                    onclick="$(this).closest('tr').remove();updateBalance()"
+                                                    title="<?php echo app('translator')->get('Delete'); ?>">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </form>
@@ -331,7 +426,8 @@
                                                 <span><?php echo app('translator')->get('Đã thu'); ?></span>
                                                 <?php if($detail->status != 'pending'): ?>
                                                     <button type="button" class="btn btn-warning btn-sm"
-                                                        data-toggle="modal" data-target="#modal_receipt_transaction">Chi tiết</button>
+                                                        data-toggle="modal" data-target="#modal_receipt_transaction">Chi
+                                                        tiết</button>
                                                 <?php endif; ?>
                                             </div>
                                         </td>
@@ -341,7 +437,11 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><?php echo app('translator')->get('Số tiền còn phải thu (+) hoặc thừa (-)'); ?></td>
+                                        <td> <?php echo app('translator')->get('Số tiền còn phải thu (+) hoặc thừa (-)'); ?>
+                                            <span data-toggle="tooltip"
+                                                title="Số tiền thừa sẽ được chuyển qua kỳ thanh toán tiếp theo"><i
+                                                    class="fa fa-question-circle-o" aria-hidden="true"></i></span>
+                                        </td>
                                         <td class="text-right total_due" data-due="<?php echo e($detail->total_due); ?>">
                                             <?php echo e(number_format($detail->total_due, 0, ',', '.') ?? ''); ?>
 
@@ -463,8 +563,6 @@
                 </div>
             </div>
         </div>
-
-
         <div class="modal fade" id="modal_receipt_transaction" data-backdrop="static" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -502,7 +600,7 @@
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     <?php else: ?>
                                         <tr>
-                                            <td colspan="4" class="text-center"><?php echo app('translator')->get('Chưa có giao dịch nào'); ?></td>
+                                            <td colspan="5" class="text-center"><?php echo app('translator')->get('Chưa có giao dịch nào'); ?></td>
                                         </tr>
                                     <?php endif; ?>
                                 </tbody>
@@ -520,8 +618,8 @@
                                 <div class="col-xs-12 col-md-6">
                                     <div class="form-group">
                                         <label><?php echo app('translator')->get('Ngày thanh toán'); ?> <small class="text-red">*</small></label>
-                                        <input type="date" class="form-control" name="payment_date"
-                                            value="" required>
+                                        <input type="date" class="form-control" name="payment_date" value=""
+                                            required>
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-md-12">
@@ -551,58 +649,96 @@
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('script'); ?>
     <script>
-        $(document).on('change keyup', '.prev_balance', function() {
+        // Thêm giải trình html
+        var adjustmentTypes = <?php echo json_encode($type, 15, 512) ?>;
+        $('.btn_explanation').click(function() {
+            var lastElement = $('.item_adjustment').last();
+            var clonedElement = lastElement.clone();
+            // Lấy giá trị `key` cuối cùng từ dòng cuối hoặc gán giá trị thời gian thực
+            var currentDateTime = Math.floor(Date.now() / 1000);
+            // Điều chỉnh tất cả các input và select trong dòng clone
+            clonedElement.find('input, select').each(function() {
+                var name = $(this).attr('name');
+                if (name) {
+                    // Thay thế key cũ bằng key mới
+                    var updatedName = name.replace(/\[\d+\]/, `[${currentDateTime}]`);
+                    $(this).attr('name', updatedName); // Cập nhật name
+                }
+                if ($(this).is('input')) {
+                    $(this).val(''); // Reset giá trị input
+                } else if ($(this).is('select')) {
+                    $(this).prop('selectedIndex', 0); // Chọn option đầu tiên
+                }
+            });
+            // Thêm dòng clone vào bảng
+            lastElement.before(clonedElement);
+            return;
+        })
+
+        // Thay đổi giá trị prev_balance khi các cập nhật giải trình
+        $(document).on('click', '.btn_save_adjustment', function() {
+            updateBalance();
+        })
+
+        function updateBalance() {
+            var total = 0;
+            $('input.action_change[type="number"]').each(function() {
+                var value = parseFloat($(this).val()) ||
+                    0; // Chuyển giá trị thành số, mặc định 0 nếu không hợp lệ
+                total += value;
+            });
+            $('.final_amount').each(function() {
+                var value = parseFloat($(this).html()) || 0; // Chuyển giá trị thành số, mặc định 0 nếu không hợp lệ
+                if ($(this).parents('tr').find('.check_doisoat').is(':checked') == true) {
+                    total += value;
+                }
+            });
+            $('.prev_balance').val(total).change();
+        }
+
+        //Thay đổi số tiền tổng
+        $(document).on('change', '.prev_balance', function() {
             var _balance = parseInt($(this).val(), 10);
             if (isNaN(_balance)) {
                 _balance = 0;
             }
-            var _total_prev_balance = parseInt($('.total_prev_balance').data('balance'));
-            var _total_final = parseInt($('.total_final').data('final'), 10);
-            var _total_due = parseInt($('.total_due').data('due'), 10);
-
             $('.total_prev_balance').html(new Intl.NumberFormat('vi-VN').format(_balance));
-            $('.total_final').html(new Intl.NumberFormat('vi-VN').format(_total_final + _total_prev_balance -
-                _balance));
-            $('.total_due').html(new Intl.NumberFormat('vi-VN').format(_total_due + _total_prev_balance -
-                _balance));
             updateJsonExplanation();
         })
-        // Thay đổi giá trị prev_balance khi các cập nhật giải trình
-        $(document).on('change', '.action_change', function() {
-            updateBalance();
-        })
 
-        // Thêm giải trình html
-        $('.btn_explanation').click(function() {
-            var currentDateTime = Math.floor(Date.now() / 1000);
+        // Hàm cập nhật giải trình lưu lại trong JSON và tính lại số tiền
+        function updateJsonExplanation() {
+            var _url = $('#form_update_explanation').prop('action')
+            var formData = $('#form_update_explanation').serialize();
+            show_loading_notification();
+            $.ajax({
+                type: "POST",
+                url: _url,
+                data: formData,
+                success: function(response) {
+                    hide_loading_notification();
+                    if (response.data == 'warning') {
+                        location.reload();
+                    }
+                    $('.total_final').html(new Intl.NumberFormat('vi-VN').format(response.data.total_final));
+                    $('.total_due').html(new Intl.NumberFormat('vi-VN').format(response.data.total_due));
+                },
+                error: function(data) {
+                    hide_loading_notification();
+                    var errors = data.responseJSON.message;
+                    alert(data);
+                }
+            });
+        }
 
-            var _html = `
-            <tr class="item_explanation">
-                <td colspan="6">
-                    <input type="text" name="explanation[${currentDateTime}][content]" class="form-control action_change"
-                        placeholder="Nội dung Truy thu/Hoàn trả">
-                </td>
-                <td>
-                    <input type="number" name="explanation[${currentDateTime}][value]" class="form-control action_change"
-                        placeholder="Giá trị tương ứng">
-                </td>
-                <td>
-                    <button class="btn btn-sm btn-danger" type="button" data-toggle="tooltip"
-                    onclick="$(this).closest('tr').remove();updateBalance()"
-                        title="<?php echo app('translator')->get('Delete'); ?>" data-original-title="<?php echo app('translator')->get('Delete'); ?>">
-                        <i class="fa fa-trash"></i>
-                    </button>
-                </td>
-            </tr>
-            `;
-            $('.box_explanation').append(_html);
-        })
+
 
         // Cập nhật giải trình khi form được submit
-        $('#form_update_explanation').on('submit', function(event) {
-            event.preventDefault();
-            updateJsonExplanation();
-        });
+        // $('#form_update_explanation').on('submit', function(event) {
+        //     event.preventDefault();
+        //     updateJsonExplanation();
+        // });
+
 
         // Xử lý sự kiện click nút duyệt TBP
         $('.btn_approved').click(function() {
@@ -642,16 +778,6 @@
             }
 
         });
-
-        function updateBalance() {
-            var total = 0;
-            $('input.action_change[type="number"]').each(function() {
-                var value = parseFloat($(this).val()) ||
-                    0; // Chuyển giá trị thành số, mặc định 0 nếu không hợp lệ
-                total += value;
-            });
-            $('.prev_balance').val(total).change();
-        }
 
         $(document).on('click', '.update_student_service', function() {
             var _id = $(this).data('id');
@@ -788,28 +914,6 @@
                 });
             }
         })
-
-
-        // Hàm cập nhật giải trình lưu lại trong JSON và tính lại số tiền
-        function updateJsonExplanation() {
-            var _url = $('#form_update_explanation').prop('action')
-            var formData = $('#form_update_explanation').serialize();
-            show_loading_notification();
-            $.ajax({
-                type: "POST",
-                url: _url,
-                data: formData,
-                success: function(response) {
-                    hide_loading_notification();
-                    console.log(response.data);
-                },
-                error: function(data) {
-                    hide_loading_notification();
-                    var errors = data.responseJSON.message;
-                    alert(data);
-                }
-            });
-        }
     </script>
 <?php $__env->stopSection(); ?>
 

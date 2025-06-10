@@ -267,11 +267,11 @@
                                         </tr>
                                     </thead>
                                     <tbody class="box_explanation">
-                                        <?php if(isset($detail->json_params->explanation)): ?>
-                                            <?php $__currentLoopData = $detail->json_params->explanation; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <?php if(isset($detail->student->receiptAdjustment)): ?>
+                                            <?php $__currentLoopData = $detail->student->receiptAdjustment; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <tr class="item_explanation">
-                                                    <td><?php echo e($item->content ?? ''); ?></td>
-                                                    <td><?php echo e(number_format($item->value, 0, ',', '.')); ?></td>
+                                                    <td><?php echo e($item->note ?? ''); ?></td>
+                                                    <td><?php echo e(number_format($item->final_amount, 0, ',', '.')); ?></td>
                                                 </tr>
                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         <?php endif; ?>

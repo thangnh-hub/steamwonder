@@ -44,6 +44,7 @@
             margin-block-start: 0px !important;
             padding-inline-start: 10px !important;
         }
+
         input[type="radio"] {
             transform: scale(1.5);
         }
@@ -594,21 +595,21 @@
                                                                         data-original-title="@lang('Show')">
                                                                         <i class="fa fa-eye"></i>
                                                                     </button>
-
-                                                                    <a href="{{ route('receipt.show', $row->id) }}">
+                                                                    @if ($admin_auth->id == $row->admin_created_id && $row->type_receipt == 'new_student')
+                                                                        <a href="{{ route('receipt.show', $row->id) }}">
+                                                                            <button type="button"
+                                                                                class="btn btn-sm btn-warning"
+                                                                                title="@lang('Cập nhật')"
+                                                                                data-original-title="@lang('Cập nhật')">
+                                                                                <i class="fa fa-pencil"></i>
+                                                                            </button>
+                                                                        </a>
                                                                         <button type="button"
-                                                                            class="btn btn-sm btn-warning"
-                                                                            title="@lang('Cập nhật')"
-                                                                            data-original-title="@lang('Cập nhật')">
-                                                                            <i class="fa fa-pencil"></i>
+                                                                            class="btn btn-sm btn-danger btn_delete_receipt"
+                                                                            data-id="{{ $row->id }}">
+                                                                            <i class="fa fa-trash"></i>
                                                                         </button>
-                                                                    </a>
-
-                                                                    <button type="button"
-                                                                        class="btn btn-sm btn-danger btn_delete_receipt"
-                                                                        data-id="{{ $row->id }}">
-                                                                        <i class="fa fa-trash"></i>
-                                                                    </button>
+                                                                    @endif
                                                                 </td>
                                                             </tr>
                                                         @endforeach
@@ -659,7 +660,7 @@
                                                                         @php
                                                                             $payment_cycle = $list_payment_cycle->firstWhere(
                                                                                 'id',
-                                                                                (int) $key_cycle
+                                                                                (int) $key_cycle,
                                                                             );
                                                                         @endphp
                                                                         <div class="box-title">
@@ -668,7 +669,7 @@
                                                                             @php
                                                                                 $service_detail = $services->firstWhere(
                                                                                     'id',
-                                                                                    $val->service_id
+                                                                                    $val->service_id,
                                                                                 );
                                                                             @endphp
                                                                             <ul>
@@ -689,7 +690,7 @@
                                                                         @php
                                                                             $service_detail = $services->firstWhere(
                                                                                 'id',
-                                                                                $val->service_id
+                                                                                $val->service_id,
                                                                             );
                                                                         @endphp
 
@@ -755,7 +756,7 @@
                                                                         @php
                                                                             $payment_cycle = $list_payment_cycle->firstWhere(
                                                                                 'id',
-                                                                                (int) $key_cycle
+                                                                                (int) $key_cycle,
                                                                             );
                                                                         @endphp
                                                                         <div class="box-title">
@@ -764,7 +765,7 @@
                                                                             @php
                                                                                 $service_detail = $services->firstWhere(
                                                                                     'id',
-                                                                                    $val->service_id
+                                                                                    $val->service_id,
                                                                                 );
                                                                             @endphp
                                                                             <ul>
@@ -785,7 +786,7 @@
                                                                         @php
                                                                             $service_detail = $services->firstWhere(
                                                                                 'id',
-                                                                                $val->service_id
+                                                                                $val->service_id,
                                                                             );
                                                                         @endphp
 
