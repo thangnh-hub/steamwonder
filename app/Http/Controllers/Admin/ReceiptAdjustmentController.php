@@ -118,6 +118,11 @@ class ReceiptAdjustmentController extends Controller
             'type' => 'required',
         ]);
         $params = $request->all();
+        if ($receiptAdjustment->receipt_id != '') {
+            if ($receiptAdjustment->receipt->status != Consts::STATUS_RECEIPT['pending']) {
+                return redirect()->back()->with('errorMessage', __('Đối soát đã gắn vào TBP đã duyệt'));
+            }
+        }
         $params['admin_updated_id'] = $admin->id;
         $receiptAdjustment->update($params);
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Update successfully!'));
@@ -131,6 +136,11 @@ class ReceiptAdjustmentController extends Controller
      */
     public function destroy(ReceiptAdjustment $receiptAdjustment)
     {
+        if ($receiptAdjustment->receipt_id != '') {
+            if ($receiptAdjustment->receipt->status != Consts::STATUS_RECEIPT['pending']) {
+                return redirect()->back()->with('errorMessage', __('Đối soát đã gắn vào TBP đã duyệt'));
+            }
+        }
         $receiptAdjustment->delete();
         return redirect()->route($this->routeDefault . '.index')->with('successMessage',  __('Delete record successfully!'));
     }
