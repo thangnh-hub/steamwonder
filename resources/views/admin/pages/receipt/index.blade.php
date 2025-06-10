@@ -143,7 +143,7 @@
                 <h3 class="box-title">@lang('List')</h3>
 
             </div>
-            <div class="box-body box_alert">
+            <div class="box-body box_alert table-responsive">
                 @if (session('errorMessage'))
                     <div class="alert alert-warning alert-dismissible">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
