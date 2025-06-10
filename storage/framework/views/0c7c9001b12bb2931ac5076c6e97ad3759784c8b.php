@@ -51,7 +51,7 @@
                                 <div class="top_bar_login ml-auto">
                                     <div class="button">
                                         <a href="<?php echo e(route('frontend.login')); ?>" class="text-white" data-toggle="modal"
-                                        data-target="#loginModal">
+                                            data-target="#loginModal">
                                             <?php echo app('translator')->get('Đăng nhập'); ?>
                                             <div class="button_arrow"><i class="fa fa-sign-in" aria-hidden="true"></i>
                                             </div>
@@ -75,7 +75,8 @@
                         <div class="logo_container">
                             <a href="<?php echo e(route('home')); ?>">
                                 <div class="logo_content d-flex flex-row align-items-end justify-content-start">
-                                    <div class="logo_img"><img src="<?php echo e($setting->logo_header); ?>" alt="<?php echo e($setting->site_title); ?>"></div>
+                                    <div class="logo_img"><img src="<?php echo e($setting->logo_header); ?>"
+                                            alt="<?php echo e($setting->site_title); ?>"></div>
                                     
                                 </div>
                             </a>
@@ -83,16 +84,22 @@
 
                         <nav class="main_nav_contaner ml-auto">
                             <ul class="main_nav">
-                                <?php $__currentLoopData = $menu_childs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val_menu1): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <li
-                                        class="<?php echo e((parse_url(url()->full(), PHP_URL_PATH) == '' && $val_menu1->url_link == '/') || $val_menu1->url_link == parse_url(url()->full(), PHP_URL_PATH) ? 'active' : ''); ?>">
-                                        <a
-                                            href="<?php echo e($val_menu1->url_link ?? 'javascript:void(0)'); ?>"><?php echo e($val_menu1->json_params->name->$locale ?? $val_menu1->name); ?></a>
+                                <?php if(isset($menu_childs) && count($menu_childs) > 0): ?>
+                                    <?php $__currentLoopData = $menu_childs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val_menu1): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <li
+                                            class="<?php echo e((parse_url(url()->full(), PHP_URL_PATH) == '' && $val_menu1->url_link == '/') || $val_menu1->url_link == parse_url(url()->full(), PHP_URL_PATH) ? 'active' : ''); ?>">
+                                            <a
+                                                href="<?php echo e($val_menu1->url_link ?? 'javascript:void(0)'); ?>"><?php echo e($val_menu1->json_params->name->$locale ?? $val_menu1->name); ?></a>
+                                        </li>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <?php endif; ?>
+                                <?php if(isset($user_auth)): ?>
+                                    <li class="">
+                                        <a href="<?php echo e(route('frontend.logout')); ?>"><?php echo app('translator')->get('Đăng xuất'); ?></a>
                                     </li>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <?php endif; ?>
                             </ul>
-                            <div class="search_button"><i class="fa fa-search" aria-hidden="true"></i></div>
-
+                            
                             <!-- Hamburger -->
 
                             <div class="hamburger menu_mm">
@@ -107,23 +114,7 @@
     </div>
 
     <!-- Header Search Panel -->
-    <div class="header_search_container">
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    <div class="header_search_content d-flex flex-row align-items-center justify-content-end">
-                        <form action="#" class="header_search_form">
-                            <input type="search" class="search_input" placeholder="Search" required="required">
-                            <button
-                                class="header_search_button d-flex flex-column align-items-center justify-content-center">
-                                <i class="fa fa-search" aria-hidden="true"></i>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 
     <!-- Header Search Panel -->
     <div class="menu d-flex flex-column align-items-end justify-content-start text-right menu_mm trans_400">
@@ -133,23 +124,23 @@
                 <div></div>
             </div>
         </div>
-        <div class="search">
-            <form action="#" class="header_search_form menu_mm">
-                <input type="search" class="search_input menu_mm" placeholder="Search" required="required">
-                <button
-                    class="header_search_button d-flex flex-column align-items-center justify-content-center menu_mm">
-                    <i class="fa fa-search menu_mm" aria-hidden="true"></i>
-                </button>
-            </form>
-        </div>
+        
         <nav class="menu_nav">
             <ul class="menu_mm">
-                <?php $__currentLoopData = $menu_childs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val_menu1): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <li class="menu_mm">
-                        <a
-                            href="<?php echo e($val_menu1->url_link ?? 'javascript:void(0)'); ?>"><?php echo e($val_menu1->json_params->name->$locale ?? $val_menu1->name); ?></a>
+                <?php if(isset($menu_childs) && count($menu_childs) > 0): ?>
+
+                    <?php $__currentLoopData = $menu_childs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val_menu1): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <li class="menu_mm">
+                            <a
+                                href="<?php echo e($val_menu1->url_link ?? 'javascript:void(0)'); ?>"><?php echo e($val_menu1->json_params->name->$locale ?? $val_menu1->name); ?></a>
+                        </li>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                <?php endif; ?>
+                <?php if(isset($user_auth)): ?>
+                    <li class="">
+                        <a href="<?php echo e(route('frontend.logout')); ?>"><?php echo app('translator')->get('Đăng xuất'); ?></a>
                     </li>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                <?php endif; ?>
             </ul>
         </nav>
         <div class="menu_extra">

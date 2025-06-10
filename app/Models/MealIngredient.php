@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class MealIngredient extends Model
 {
     protected $table = 'tb_meal_ingredients';
-
+    protected $with = array('ingredientCategory', 'unitDefault');
     protected $guarded = [];
 
     protected $casts = [
@@ -20,17 +20,20 @@ class MealIngredient extends Model
             ->when(!empty($params['keyword']), function ($query) use ($params) {
                 $keyword = $params['keyword'];
                 return $query->where(function ($where) use ($keyword) {
-                    return $where->where('name', 'like', '%' . $keyword . '%')  ;
+                    return $where->where('tb_meal_ingredients.name', 'like', '%' . $keyword . '%')  ;
                 });
             })
             ->when(!empty($params['type']), function ($query) use ($params) {
-                return $query->where('type', $params['type']);
+                return $query->where('tb_meal_ingredients.type', $params['type']);
             })
             ->when(!empty($params['status']), function ($query) use ($params) {
-                return $query->where('status', $params['status']);
+                return $query->where('tb_meal_ingredients.status', $params['status']);
             })
             ->when(!empty($params['ingredient_category_id']), function ($query) use ($params) {
-                return $query->where('ingredient_category_id', $params['ingredient_category_id']);
+                return $query->where('tb_meal_ingredients.ingredient_category_id', $params['ingredient_category_id']);
+            })
+            ->when(!empty($params['id']), function ($query) use ($params) {
+                return $query->where('tb_meal_ingredients.id', $params['id']);
             })
             ->when(!empty($params['different_id']), function ($query) use ($params) {
                 if (is_array($params['different_id'])) {

@@ -15,6 +15,23 @@
 @endsection
 
 @section('content')
+    <form action="{{ route('data_menues.import') }}" method="post" enctype="multipart/form-data">
+        @csrf
+        <div class="modal-body row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>@lang('Chọn tệp') </label>
+                    <small class="text-red">*</small>
+                    <div style="display: flex" class="d-flex">
+                        <input id="file" class="form-control" type="file" required name="file"
+                            placeholder="@lang('Select File')" value="">
+                        <button type="submit" class="btn btn-success"><i class="fa fa-file-excel-o"
+                                aria-hidden="true"></i> @lang('Import')</button>   
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
     <section class="content">
         <div class="box box-default">
             <div class="box-header with-border">

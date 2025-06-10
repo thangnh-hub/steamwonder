@@ -29,6 +29,7 @@ class User extends Authenticatable
         'user_code',
         'avatar',
         'json_params',
+        'member_id',
     ];
 
     /**

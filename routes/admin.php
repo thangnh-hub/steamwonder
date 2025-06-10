@@ -120,6 +120,7 @@ Route::group(['namespace' => 'Admin'], function () {
                 'dishes' => 'MealDishesController',
                 'menu_plannings' => 'MealMenuPlanningController',
                 'menu_dailys' => 'MealMenuDailyController',
+                'warehouse_ingredients' => 'MealWarehouseIngredientController',
             ]);
 
             //Thực đơn mẫu
@@ -141,7 +142,9 @@ Route::group(['namespace' => 'Admin'], function () {
             // Thống kê thực đơn theo tuần
             Route::get('mealmenu/report-by-week', 'MealMenuDailyController@reportByWeek')->name('mealmenu.week.report');
 
-
+            //Kho thực phẩm
+            Route::get('warehouse_ingredients_entry', 'MealWarehouseIngredientController@viewWarehouseIncredientEntry')->name('meal_warehouse_ingredients_entry');
+            Route::post('warehouse_ingredients_entry_store', 'MealWarehouseIngredientController@storeWarehouseIncredientEntry')->name('meal_warehouse_ingredients_entry_store');
 
             Route::get('attendance/check-out/index', 'AttendancesController@checkout')->name('attendance.checkout');
             Route::get('attendance/summary-by-month/index', 'AttendancesController@attendanceSummaryByMonth')->name('attendance.summary_by_month');
@@ -316,6 +319,7 @@ Route::group(['namespace' => 'Admin'], function () {
 
         //tìm món và thực đơn
         Route::get('/mealmenu/search-ingredients', 'MealMenuPlanningController@searchIngredients')->name('mealmenu.searchIngredients');
+        Route::get('/mealmenu/search-ingredients_with_tonkho', 'MealWarehouseIngredientController@searchIngredients')->name('mealmenu.searchIngredients.withTonkho');
         Route::get('/mealmenu/search-dishes', 'MealMenuPlanningController@searchDishes')->name('mealmenu.searchDishes');
 
         Route::get('attendance/summary-by-month/show', 'AttendancesController@showSummaryByMonth')->name('attendance.summary_by_month.show');
@@ -400,6 +404,10 @@ Route::group(['namespace' => 'Admin'], function () {
         Route::get('class-export', 'ClassController@exportClass')->name('class.export_class');
         Route::get('admin-export', 'AdminController@exportAdmin')->name('admin.export_admin');
         Route::get('receipt-export', 'ReceiptController@exportReceipt')->name('receipt.export');
+
+        //import dishes
+        Route::post('import_data_dishes', 'MealDishesController@importDataDishes')->name('data_dishes.import');
+        Route::post('import_data_menues', 'MealMenuPlanningController@importDataMenues')->name('data_menues.import');
     });
     // Test teacher
     Route::get('test_teacher', 'TeacherQuizController@testTeacher')->name('test_teacher.test');
