@@ -605,36 +605,41 @@
                                     <?php endif; ?>
                                 </tbody>
                             </table>
+                            <?php if($detail->status == 'approved'): ?>
+                                <div class="row">
+                                    <h4 class="text-center form-group col-md-12"><?php echo app('translator')->get('Thông tin thanh toán cho kỳ này'); ?></h4>
+                                    <div class="col-xs-12 col-md-6">
+                                        <div class="form-group">
+                                            <label><?php echo app('translator')->get('Nhập số tiền thanh toán'); ?> <small class="text-red">*</small></label>
+                                            <input type="number" class="form-control" name="paid_amount"
+                                                placeholder="<?php echo app('translator')->get('Nhập số tiền thanh toán'); ?>" value="<?php echo e(old('paid_amount')); ?>"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6">
+                                        <div class="form-group">
+                                            <label><?php echo app('translator')->get('Ngày thanh toán'); ?> <small class="text-red">*</small></label>
+                                            <input type="date" class="form-control" name="payment_date"
+                                                value="" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-12">
+                                        <div class="form-group">
+                                            <label><?php echo app('translator')->get('Ghi chú'); ?></label>
+                                            <textarea name="json_params[note]" class="form-control" cols="5"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
 
-                            <div class="row">
-                                <h4 class="text-center form-group col-md-12"><?php echo app('translator')->get('Thông tin thanh toán cho kỳ này'); ?></h4>
-                                <div class="col-xs-12 col-md-6">
-                                    <div class="form-group">
-                                        <label><?php echo app('translator')->get('Nhập số tiền thanh toán'); ?> <small class="text-red">*</small></label>
-                                        <input type="number" class="form-control" name="paid_amount"
-                                            placeholder="<?php echo app('translator')->get('Nhập số tiền thanh toán'); ?>" value="<?php echo e(old('paid_amount')); ?>" required>
-                                    </div>
-                                </div>
-                                <div class="col-xs-12 col-md-6">
-                                    <div class="form-group">
-                                        <label><?php echo app('translator')->get('Ngày thanh toán'); ?> <small class="text-red">*</small></label>
-                                        <input type="date" class="form-control" name="payment_date" value=""
-                                            required>
-                                    </div>
-                                </div>
-                                <div class="col-xs-12 col-md-12">
-                                    <div class="form-group">
-                                        <label><?php echo app('translator')->get('Ghi chú'); ?></label>
-                                        <textarea name="json_params[note]" class="form-control" cols="5"></textarea>
-                                    </div>
-                                </div>
-                            </div>
 
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-success btn_save_transaction">
-                                <i class="fa fa-save"></i> <?php echo app('translator')->get('Lưu lại'); ?>
-                            </button>
+                            <?php if($detail->status == 'approved'): ?>
+                                <button type="submit" class="btn btn-success btn_save_transaction">
+                                    <i class="fa fa-save"></i> <?php echo app('translator')->get('Lưu lại'); ?>
+                                </button>
+                            <?php endif; ?>
                             <button type="button" class="btn btn-danger" data-dismiss="modal">
                                 <i class="fa fa-remove"></i> <?php echo app('translator')->get('Đóng'); ?>
                             </button>

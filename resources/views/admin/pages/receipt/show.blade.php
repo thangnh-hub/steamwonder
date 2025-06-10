@@ -622,36 +622,41 @@
                                     @endif
                                 </tbody>
                             </table>
+                            @if ($detail->status == 'approved')
+                                <div class="row">
+                                    <h4 class="text-center form-group col-md-12">@lang('Thông tin thanh toán cho kỳ này')</h4>
+                                    <div class="col-xs-12 col-md-6">
+                                        <div class="form-group">
+                                            <label>@lang('Nhập số tiền thanh toán') <small class="text-red">*</small></label>
+                                            <input type="number" class="form-control" name="paid_amount"
+                                                placeholder="@lang('Nhập số tiền thanh toán')" value="{{ old('paid_amount') }}"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6">
+                                        <div class="form-group">
+                                            <label>@lang('Ngày thanh toán') <small class="text-red">*</small></label>
+                                            <input type="date" class="form-control" name="payment_date"
+                                                value="" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-12">
+                                        <div class="form-group">
+                                            <label>@lang('Ghi chú')</label>
+                                            <textarea name="json_params[note]" class="form-control" cols="5"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
 
-                            <div class="row">
-                                <h4 class="text-center form-group col-md-12">@lang('Thông tin thanh toán cho kỳ này')</h4>
-                                <div class="col-xs-12 col-md-6">
-                                    <div class="form-group">
-                                        <label>@lang('Nhập số tiền thanh toán') <small class="text-red">*</small></label>
-                                        <input type="number" class="form-control" name="paid_amount"
-                                            placeholder="@lang('Nhập số tiền thanh toán')" value="{{ old('paid_amount') }}" required>
-                                    </div>
-                                </div>
-                                <div class="col-xs-12 col-md-6">
-                                    <div class="form-group">
-                                        <label>@lang('Ngày thanh toán') <small class="text-red">*</small></label>
-                                        <input type="date" class="form-control" name="payment_date" value=""
-                                            required>
-                                    </div>
-                                </div>
-                                <div class="col-xs-12 col-md-12">
-                                    <div class="form-group">
-                                        <label>@lang('Ghi chú')</label>
-                                        <textarea name="json_params[note]" class="form-control" cols="5"></textarea>
-                                    </div>
-                                </div>
-                            </div>
 
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-success btn_save_transaction">
-                                <i class="fa fa-save"></i> @lang('Lưu lại')
-                            </button>
+                            @if ($detail->status == 'approved')
+                                <button type="submit" class="btn btn-success btn_save_transaction">
+                                    <i class="fa fa-save"></i> @lang('Lưu lại')
+                                </button>
+                            @endif
                             <button type="button" class="btn btn-danger" data-dismiss="modal">
                                 <i class="fa fa-remove"></i> @lang('Đóng')
                             </button>

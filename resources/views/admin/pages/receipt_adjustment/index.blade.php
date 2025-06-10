@@ -37,7 +37,7 @@
                                     value="{{ isset($params['keyword']) ? $params['keyword'] : '' }}">
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label>@lang('Type')</label>
                                 <select name="type" class="form-control select2 w-100">
@@ -50,7 +50,15 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>@lang('Tháng')</label>
+                                <input type="month" name="month" class="form-control"
+                                    value="{{ $params['month'] ?? '' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label>@lang('Trạng thái')</label>
                                 <select name="status" class="form-control select2 w-100">
@@ -63,7 +71,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label>@lang('Filter')</label>
                                 <div>
@@ -84,8 +92,8 @@
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title">@lang('List')</h3>
-                <button class="btn btn-sm btn-success pull-right" data-toggle="modal"
-                    data-target="#AdjustmentModal">@lang('Tính phí đối soát')</button>
+                {{-- <button class="btn btn-sm btn-success pull-right" data-toggle="modal"
+                    data-target="#AdjustmentModal">@lang('Tính phí đối soát')</button> --}}
             </div>
             <div class="box-body box_alert">
                 @if (session('errorMessage'))
@@ -125,6 +133,7 @@
                                 <th>@lang('TBP tương ứng')</th>
                                 <th>@lang('Loại')</th>
                                 <th>@lang('Số tiền')</th>
+                                <th>@lang('Tháng')</th>
                                 <th>@lang('Ghi chú')</th>
                                 <th>@lang('Trạng thái')</th>
                                 <th>@lang('Action')</th>
@@ -143,7 +152,8 @@
                                     <td>
                                         {{ $row->receipt->receipt_code ?? '' }}
                                         @if ($row->receipt_id != '')
-                                            <a target="_blank" href="{{ route('receipt.show', $row->receipt_id) }}"
+                                            <a href="{{ route('receipt.show', $row->receipt_id) }}"
+                                                onclick="return openCenteredPopup(this.href)"
                                                 class="btn btn-success btn-sm"><i class="fa fa-eye"
                                                     aria-hidden="true"></i></a>
                                         @endif
@@ -155,9 +165,13 @@
                                         {{ number_format($row->final_amount, 0, ',', '.') ?? '' }}
                                     </td>
                                     <td>
+                                        {{ $row->month != '' ? date('m-Y', strtotime($row->month)) : '' }}
+                                    </td>
+                                    <td>
                                         {{ $row->note ?? '' }}
                                         @if ($row->receipt_id_old != '')
-                                            <a target="_blank" href="{{ route('receipt.show', $row->receipt_id_old) }}"
+                                            <a href="{{ route('receipt.show', $row->receipt_id_old) }}"
+                                                onclick="return openCenteredPopup(this.href)"
                                                 class="btn btn-success btn-sm"><i class="fa fa-eye"
                                                     aria-hidden="true"></i></a>
                                         @endif
@@ -203,7 +217,7 @@
 
         </div>
     </section>
-    <div class="modal fade" id="AdjustmentModal" data-backdrop="static" tabindex="-1" role="dialog">
+    {{-- <div class="modal fade" id="AdjustmentModal" data-backdrop="static" tabindex="-1" role="dialog">
         <div class="modal-dialog " role="document">
             <div class="modal-content">
                 <div class="modal-header ">
@@ -239,8 +253,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>@lang('Lớp')</label>
-                                <select name="current_class_id" class="form-control select2"
-                                    style="width: 100%;">
+                                <select name="current_class_id" class="form-control select2" style="width: 100%;">
                                     <option value="">@lang('Please select')</option>
                                     @foreach ($list_class as $key => $value)
                                         <option value="{{ $value->id }}"
@@ -266,7 +279,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
 @endsection
 @section('script')

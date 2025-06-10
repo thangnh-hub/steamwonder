@@ -35,7 +35,7 @@
                                     value="<?php echo e(isset($params['keyword']) ? $params['keyword'] : ''); ?>">
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Type'); ?></label>
                                 <select name="type" class="form-control select2 w-100">
@@ -48,7 +48,15 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label><?php echo app('translator')->get('Tháng'); ?></label>
+                                <input type="month" name="month" class="form-control"
+                                    value="<?php echo e($params['month'] ?? ''); ?>">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Trạng thái'); ?></label>
                                 <select name="status" class="form-control select2 w-100">
@@ -61,7 +69,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Filter'); ?></label>
                                 <div>
@@ -82,8 +90,7 @@
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title"><?php echo app('translator')->get('List'); ?></h3>
-                <button class="btn btn-sm btn-success pull-right" data-toggle="modal"
-                    data-target="#AdjustmentModal"><?php echo app('translator')->get('Tính phí đối soát'); ?></button>
+                
             </div>
             <div class="box-body box_alert">
                 <?php if(session('errorMessage')): ?>
@@ -125,6 +132,7 @@
                                 <th><?php echo app('translator')->get('TBP tương ứng'); ?></th>
                                 <th><?php echo app('translator')->get('Loại'); ?></th>
                                 <th><?php echo app('translator')->get('Số tiền'); ?></th>
+                                <th><?php echo app('translator')->get('Tháng'); ?></th>
                                 <th><?php echo app('translator')->get('Ghi chú'); ?></th>
                                 <th><?php echo app('translator')->get('Trạng thái'); ?></th>
                                 <th><?php echo app('translator')->get('Action'); ?></th>
@@ -146,7 +154,8 @@
                                         <?php echo e($row->receipt->receipt_code ?? ''); ?>
 
                                         <?php if($row->receipt_id != ''): ?>
-                                            <a target="_blank" href="<?php echo e(route('receipt.show', $row->receipt_id)); ?>"
+                                            <a href="<?php echo e(route('receipt.show', $row->receipt_id)); ?>"
+                                                onclick="return openCenteredPopup(this.href)"
                                                 class="btn btn-success btn-sm"><i class="fa fa-eye"
                                                     aria-hidden="true"></i></a>
                                         <?php endif; ?>
@@ -160,10 +169,15 @@
 
                                     </td>
                                     <td>
+                                        <?php echo e($row->month != '' ? date('m-Y', strtotime($row->month)) : ''); ?>
+
+                                    </td>
+                                    <td>
                                         <?php echo e($row->note ?? ''); ?>
 
                                         <?php if($row->receipt_id_old != ''): ?>
-                                            <a target="_blank" href="<?php echo e(route('receipt.show', $row->receipt_id_old)); ?>"
+                                            <a href="<?php echo e(route('receipt.show', $row->receipt_id_old)); ?>"
+                                                onclick="return openCenteredPopup(this.href)"
                                                 class="btn btn-success btn-sm"><i class="fa fa-eye"
                                                     aria-hidden="true"></i></a>
                                         <?php endif; ?>
@@ -211,72 +225,7 @@
 
         </div>
     </section>
-    <div class="modal fade" id="AdjustmentModal" data-backdrop="static" tabindex="-1" role="dialog">
-        <div class="modal-dialog " role="document">
-            <div class="modal-content">
-                <div class="modal-header ">
-                    <h3 class="modal-title text-center col-md-12"><?php echo app('translator')->get('Thêm đối soát'); ?></h3>
-                    </h3>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Keyword'); ?> </label>
-                                <input type="text" class="form-control" name="keyword"
-                                    placeholder="<?php echo app('translator')->get('Lọc theo mã học viên, họ tên hoặc email'); ?>"
-                                    value="<?php echo e(isset($params['keyword']) ? $params['keyword'] : ''); ?>">
-                            </div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Area'); ?></label>
-                                <select name="area_id" class="form-control select2" style="width: 100%;">
-                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
-                                    <?php $__currentLoopData = $list_area; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($value->id); ?>"
-                                            <?php echo e(isset($params['area_id']) && $value->id == $params['area_id'] ? 'selected' : ''); ?>>
-                                            <?php echo e(__($value->name)); ?>
-
-                                            (Mã: <?php echo e($value->code); ?>)
-                                        </option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Lớp'); ?></label>
-                                <select name="current_class_id" class="form-control select2"
-                                    style="width: 100%;">
-                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
-                                    <?php $__currentLoopData = $list_class; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($value->id); ?>"
-                                            <?php echo e(isset($params['current_class_id']) && $value->id == $params['current_class_id'] ? 'selected' : ''); ?>>
-                                            <?php echo e(__($value->name)); ?>
-
-                                        </option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Tháng'); ?></label>
-                                <input type="month" name="month" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">
-                        <i class="fa fa-remove"></i> <?php echo app('translator')->get('Close'); ?>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('script'); ?>

@@ -80,11 +80,18 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Số tiền'); ?> <small class="text-red">*</small></label>
                                 <input type="number" name="final_amount" class="form-control"
                                     value="<?php echo e(intval($detail->final_amount) ?? ''); ?>">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label><?php echo app('translator')->get('Tháng áp dụng'); ?> <small class="text-red">*</small></label>
+                                <input type="date" name="month" class="form-control" required
+                                    value="<?php echo e($detail->month ?? ''); ?>">
                             </div>
                         </div>
                         <div class="col-md-12">

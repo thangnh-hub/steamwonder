@@ -77,10 +77,16 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Số tiền'); ?> <small class="text-red">*</small></label>
                                 <input type="number" name="final_amount" class="form-control" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label><?php echo app('translator')->get('Tháng áp dụng'); ?> <small class="text-red">*</small></label>
+                                <input type="date" name="month" class="form-control" required value="">
                             </div>
                         </div>
                         <div class="col-md-12">

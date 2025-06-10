@@ -110,6 +110,7 @@ Route::group(['namespace' => 'Admin'], function () {
                 'deductions' => 'DeductionController',
                 'receipt' => 'ReceiptController',
                 'receipt_adjustment' => 'ReceiptAdjustmentController',
+                'receipt_transaction' => 'ReceiptTransactionController',
                 'attendance' => 'AttendancesController',
                 'promotions' => 'PromotionController',
                 'suppliers' => 'MealSupplierController',
