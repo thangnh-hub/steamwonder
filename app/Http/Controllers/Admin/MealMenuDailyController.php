@@ -473,4 +473,103 @@ class MealMenuDailyController extends Controller
         return $this->responseView($this->viewPart . '.report_by_week');
     }
 
+    
+    public function generateDailyMenus($fromDate, $toDate, $mealAgeId, $areaId)
+    {
+        $adminId = Auth::guard('admin')->id();
+        $from = Carbon::parse($fromDate);
+        $to = Carbon::parse($toDate);
+
+        // Danh sách ngày (trừ thứ 7 & chủ nhật)
+        $dates = [];
+        for ($date = $from->copy(); $date->lte($to); $date->addDay()) {
+            if (!in_array($date->dayOfWeek, [Carbon::SATURDAY, Carbon::SUNDAY])) {
+                $dates[] = $date->copy();
+            }
+        }
+        // Lấy danh sách thực đơn mẫu phù hợp với nhóm tuổi & cơ sở
+        $planningMenus = MealMenuPlanning::with(['menuDishes', 'menuIngredients'])
+            ->where('meal_age_id', $mealAgeId)
+            ->where('status', 'active')
+            ->get();
+        if ($planningMenus->isEmpty()) {
+            return redirect()->back()->with('errorMessage', 'Không tìm thấy thực đơn mẫu phù hợp.');
+        }
+
+        DB::beginTransaction();
+        try {
+            foreach ($dates as $index => $date) {
+                // Kiểm tra xem ngày đã có thực đơn chưa
+                $existing = MealMenuDaily::where('meal_age_id', $mealAgeId)
+                    ->where('area_id', $areaId)
+                    ->whereDate('date', $date->toDateString())
+                ->first();
+
+                if ($existing) {
+                    continue; // Bỏ qua ngày đã có thực đơn
+                }
+                // Chọn thực đơn mẫu lần lượt
+                $planningMenu = $planningMenus[$index % $planningMenus->count()];
+                $weekday = ucfirst($date->translatedFormat('l'));
+                $name_daily = 'Thực đơn ' . $weekday . ' - ' . $date->format('d/m/Y'). ' - ' . $planningMenu->mealAge->name ?? "";
+                $dailyMenu = MealMenuDaily::create([
+                    'meal_menu_planning_id' => $planningMenu->id,
+                    'meal_age_id' => $mealAgeId,
+                    'area_id' => $areaId,
+                    'date' => $date->toDateString(),
+                    'name' => $name_daily,
+                    'description' => $planningMenu->description,
+                    'count_student' => $planningMenu->count_student,
+                    'json_params' => $planningMenu->json_params,
+                    'status' => 'active',
+                    'admin_created_id' => $adminId,
+                    'admin_updated_id' => $adminId,
+                ]);
+                $dailyMenu->code = 'TD' . str_pad($dailyMenu->id, 5, '0', STR_PAD_LEFT);
+                $dailyMenu->save();
+
+                // Chuẩn bị dữ liệu món ăn
+                $dishData = $planningMenu->menuDishes->map(function ($dish) use ($dailyMenu, $adminId) {
+                    return [
+                        'menu_daily_id' => $dailyMenu->id,
+                        'dishes_id' => $dish->dishes_id,
+                        'json_params' => $dish->json_params,
+                        'type' => $dish->type,
+                        'status' => 'active',
+                        'admin_created_id' => $adminId,
+                        'admin_updated_id' => $adminId,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                })->toArray();
+                // Chuẩn bị dữ liệu nguyên liệu
+                $ingredientData = $planningMenu->menuIngredients->map(function ($ingredient) use ($dailyMenu, $adminId) {
+                    return [
+                        'menu_daily_id' => $dailyMenu->id,
+                        'ingredient_id' => $ingredient->ingredient_id,
+                        'value' => $ingredient->value,
+                        'json_params' => $ingredient->json_params,
+                        'status' => 'active',
+                        'admin_created_id' => $adminId,
+                        'admin_updated_id' => $adminId,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                })->toArray();
+                if (!empty($dishData)) {
+                    MealMenuDishesDaily::insert($dishData);
+                }
+                if (!empty($ingredientData)) {
+                    MealMenuIngredientDaily::insert($ingredientData);
+                }
+            }
+
+            DB::commit();
+            return redirect()->back()->with('successMessage', 'Tạo thực đơn hàng ngày thành công!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            report($e);
+            return redirect()->back()->with('errorMessage', 'Đã xảy ra lỗi: ' . $e->getMessage());
+        }
+    }
 }

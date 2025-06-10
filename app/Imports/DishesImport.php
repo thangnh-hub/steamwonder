@@ -81,9 +81,6 @@ class DishesImport implements ToModel, WithHeadingRow
     return null;
 }
 
-/**
- * Đệ quy chuyển array sang stdClass
- */
 private function arrayToObject($array)
 {
     if (is_array($array)) {

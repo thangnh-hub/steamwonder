@@ -15,23 +15,7 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
-    <form action="<?php echo e(route('data_menues.import')); ?>" method="post" enctype="multipart/form-data">
-        <?php echo csrf_field(); ?>
-        <div class="modal-body row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label><?php echo app('translator')->get('Chọn tệp'); ?> </label>
-                    <small class="text-red">*</small>
-                    <div style="display: flex" class="d-flex">
-                        <input id="file" class="form-control" type="file" required name="file"
-                            placeholder="<?php echo app('translator')->get('Select File'); ?>" value="">
-                        <button type="submit" class="btn btn-success"><i class="fa fa-file-excel-o"
-                                aria-hidden="true"></i> <?php echo app('translator')->get('Import'); ?></button>   
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
+    
     <section class="content">
         <div class="box box-default">
             <div class="box-header with-border">
@@ -161,7 +145,7 @@
                                     <?php if(isset($row->menuDishes) && count($row->menuDishes) > 0): ?>
                                         <ul >
                                             <?php $__currentLoopData = $row->menuDishes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $dish): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <li><?php echo e($loop->iteration); ?>. <?php echo e($dish->dishes->name ?? ''); ?></li>
+                                                <a href="<?php echo e(route('dishes.edit',$dish->dishes->id)); ?>"><li><?php echo e($loop->iteration); ?>. <?php echo e($dish->dishes->name ?? ''); ?></li></a>
                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </ul>
                                     <?php else: ?>
