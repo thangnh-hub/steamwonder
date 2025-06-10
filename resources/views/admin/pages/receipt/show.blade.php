@@ -182,7 +182,7 @@
                                                     <tr
                                                         class="item_adjustment {{ in_array($item->type, ['dunokytruoc', 'doisoat']) ? 'bg-gray' : '' }}">
                                                         <td class="text-center">
-                                                            {{-- @if ($detail->status == 'pending') --}}
+                                                            @if ($detail->status == 'pending')
                                                                 @if (in_array($item->type, ['dunokytruoc', 'doisoat']))
                                                                     <input type="checkbox" class="check_doisoat"
                                                                         onclick="updateBalance()"
@@ -190,7 +190,7 @@
                                                                         value="{{ $item->id }}"
                                                                         {{ $item->receipt_id == $detail->id ? 'checked' : '' }}>
                                                                 @endif
-                                                            {{-- @endif --}}
+                                                            @endif
                                                         </td>
                                                         <td colspan="4">
                                                             @if (in_array($item->type, ['dunokytruoc', 'doisoat']))

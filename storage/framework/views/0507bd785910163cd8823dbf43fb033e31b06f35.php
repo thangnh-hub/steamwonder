@@ -188,7 +188,7 @@
                                                     <tr
                                                         class="item_adjustment <?php echo e(in_array($item->type, ['dunokytruoc', 'doisoat']) ? 'bg-gray' : ''); ?>">
                                                         <td class="text-center">
-                                                            
+                                                            <?php if($detail->status == 'pending'): ?>
                                                                 <?php if(in_array($item->type, ['dunokytruoc', 'doisoat'])): ?>
                                                                     <input type="checkbox" class="check_doisoat"
                                                                         onclick="updateBalance()"
@@ -196,7 +196,7 @@
                                                                         value="<?php echo e($item->id); ?>"
                                                                         <?php echo e($item->receipt_id == $detail->id ? 'checked' : ''); ?>>
                                                                 <?php endif; ?>
-                                                            
+                                                            <?php endif; ?>
                                                         </td>
                                                         <td colspan="4">
                                                             <?php if(in_array($item->type, ['dunokytruoc', 'doisoat'])): ?>
