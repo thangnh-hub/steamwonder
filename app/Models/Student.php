@@ -59,16 +59,16 @@ class Student extends Model
             })
             ->when(!empty($params['admission_id']), function ($query) use ($params) {
                 if (is_array($params['admission_id'])) {
-                  return $query->whereIn('tb_students.admission_id', $params['admission_id']);
+                    return $query->whereIn('tb_students.admission_id', $params['admission_id']);
                 }
-                return $query->where('tb_students.admission_id',$params['admission_id']);
-              })
+                return $query->where('tb_students.admission_id', $params['admission_id']);
+            })
             ->when(!empty($params['permisson_area_id']), function ($query) use ($params) {
                 if (is_array($params['permisson_area_id'])) {
-                  return $query->whereIn('tb_students.area_id', $params['permisson_area_id']);
+                    return $query->whereIn('tb_students.area_id', $params['permisson_area_id']);
                 }
                 return $query->where('tb_students.area_id',  $params['permisson_area_id']);
-              });
+            });
         if (isset($params['area_id']) && !empty($params['area_id'])) {
             $query->where('tb_students.area_id', $params['area_id']);
         }
@@ -137,6 +137,11 @@ class Student extends Model
     public function studentReceipt()
     {
         return $this->hasMany(Receipt::class, 'student_id', 'id');
+    }
+    public function receiptAdjustment()
+    {
+        return $this->hasMany(ReceiptAdjustment::class, 'student_id', 'id')
+        ->orderByRaw("FIELD(type, 'doisoat', 'dunokytruoc', 'khuyenmai', 'phatsinh')");;
     }
     public function studentPromotions()
     {
