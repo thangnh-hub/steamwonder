@@ -35,9 +35,8 @@ class Kernel extends ConsoleKernel
         })->monthlyOn(1, '00:00');
 
         $schedule->command('mealmenus:generate-next-month')
-                //  ->monthlyOn(15, '00:00')
-                 ->dailyAt('15:01')
-                 ->withoutOverlapping();
+            ->monthlyOn(15, '00:00')
+            ->withoutOverlapping();
     }
 
     /**

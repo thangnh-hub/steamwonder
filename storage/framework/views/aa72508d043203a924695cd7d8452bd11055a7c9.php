@@ -28,7 +28,7 @@
     href="<?php echo e(asset('themes/frontend/education/styles/responsive.css')); ?>?v=<?php echo e($ver); ?>">
 <link rel="stylesheet" href="<?php echo e(asset('themes/frontend/dwn/css/sweetalert2.min.css')); ?>?v=<?php echo e($ver); ?>"
     type="text/css">
-
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
 <style>
     .navbar-size {
         position: fixed;
@@ -107,14 +107,54 @@
     .signup-section {
         padding: 0.3rem 0rem;
     }
-    #couserModal .img{
+
+    #couserModal .img {
         width: 100%;
         max-width: 300px;
     }
+
+    .logo_img {
+        max-width: 222px;
+    }
+
+    .logo_img img {
+        width: 100%;
+    }
+
+    .feature {
+        margin-top: 150px
+    }
+
+    .feature .item {
+        padding: 5px;
+        margin-bottom: 20px
+    }
+
+    .feature .item .btn {
+        border: 1px solid #b0b0b0;
+        border-radius: 20px;
+    }
+
+    .fc-toolbar-title {
+        text-transform: capitalize
+    }
+
+    .photo {
+        width: 180px;
+        height: 180px;
+        padding: 8px;
+    }
+
+    .attendance_arrival {
+        border-right: 1px solid #6c757d
+    }
+
     @media (min-width: 576px) {
+
         #couserModal .modal-dialog {
             max-width: 50%;
         }
+
         .modal-dialog {
             max-width: 400px;
         }
@@ -124,7 +164,12 @@
         }
 
     }
+
     @media  only screen and (max-width: 576px) {
+        .feature {
+            margin-top: 50px
+        }
+
         .navbar-size {
             display: block
         }
@@ -132,8 +177,9 @@
         .logo_img {
             width: 100px;
         }
+        .attendance_arrival {
+                border-right: none;
+            }
     }
-
-
 </style>
 <?php /**PATH C:\xampp\htdocs\steamwonders\resources\views/frontend/panels/styles.blade.php ENDPATH**/ ?>
