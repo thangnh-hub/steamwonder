@@ -124,7 +124,7 @@
                                 <table class="table table-bordered table-hover no-footer no-padding">
                                     <thead>
                                         <tr>
-                                            <th colspan="7" class="text-left"><b>1. Số dư kỳ trước <span data-html="true"
+                                            <th colspan="6" class="text-left"><b>1. Số dư kỳ trước <span data-html="true"
                                                         data-toggle="tooltip"
                                                         title="
                                                         Hoàn trả sẽ nhập số nguyên dương (+)
@@ -133,7 +133,7 @@
                                                         <i class="fa fa-question-circle-o" aria-hidden="true"></i></span>
                                                 </b>
                                             </th>
-                                            <th class="text-right">
+                                            <th class="text-right" colspan="2">
                                                 <input type="number" name="prev_balance"
                                                     {{ $detail->status == 'pending' ? '' : 'disabled' }} readonly
                                                     class="form-control pull-right prev_balance" style="max-width: 200px;"
@@ -144,8 +144,6 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-
-
                                         @if (isset($detail->prev_receipt_detail) && count($detail->prev_receipt_detail) > 0)
                                             <tr>
                                                 <th>Tháng</th>
@@ -177,22 +175,19 @@
                                     </tbody>
                                     <tbody class="box_explanation">
                                         @if (isset($detail->student->receiptAdjustment))
-                                            @foreach ($detail->student->receiptAdjustment as $key => $item)
+                                            @foreach ($detail->student->receiptAdjustment as $item)
                                                 @if ($item->receipt_id == null || $item->receipt_id == $detail->id)
                                                     <tr
                                                         class="item_adjustment {{ in_array($item->type, ['dunokytruoc', 'doisoat']) ? 'bg-gray' : '' }}">
                                                         <td class="text-center">
                                                             @if ($detail->status == 'pending')
-                                                                @if (in_array($item->type, ['dunokytruoc', 'doisoat']))
-                                                                    <input type="checkbox" class="check_doisoat"
-                                                                        onclick="updateBalance()"
-                                                                        name="receipt_adjustment[]"
-                                                                        value="{{ $item->id }}"
-                                                                        {{ $item->receipt_id == $detail->id ? 'checked' : '' }}>
-                                                                @endif
+                                                                <input type="checkbox" class="check_doisoat"
+                                                                    onclick="updateBalance()" name="receipt_adjustment[]"
+                                                                    value="{{ $item->id }}"
+                                                                    {{ $item->receipt_id == $detail->id ? 'checked' : '' }}>
                                                             @endif
                                                         </td>
-                                                        <td colspan="4">
+                                                        <td colspan="3">
                                                             @if (in_array($item->type, ['dunokytruoc', 'doisoat']))
                                                                 {{ $item->note }}
                                                             @else
@@ -227,11 +222,22 @@
                                                                     class="form-control">
                                                                     @foreach ($type as $key => $val)
                                                                         @if (!in_array($key, ['dunokytruoc', 'doisoat']))
-                                                                            <option value="{{ $key }}">
+                                                                            <option value="{{ $key }}" {{$item->type == $key ?'selected':''}}>
                                                                                 {{ __($val) }}</option>
                                                                         @endif
                                                                     @endforeach
                                                                 </select>
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if (in_array($item->type, ['dunokytruoc', 'doisoat']))
+                                                                {{ date('m-Y', strtotime($item->month)) }}
+                                                            @else
+                                                                <input type="date"
+                                                                    {{ $detail->status == 'pending' ? '' : 'disabled' }}
+                                                                    name="adjustment[{{ $item->id }}][month]"
+                                                                    class="form-control action_change"
+                                                                    value="{{ $item->month != '' ? date('Y-m-d', strtotime($item->month)) : '' }}">
                                                             @endif
                                                         </td>
                                                         <td>
@@ -243,12 +249,12 @@
                                                                         title="@lang('Save')">
                                                                         <i class="fa fa-save"></i>
                                                                     </button>
-                                                                    <button class="btn btn-sm btn-danger" type="button"
+                                                                    {{-- <button class="btn btn-sm btn-danger" type="button"
                                                                         data-toggle="tooltip"
                                                                         onclick="$(this).closest('tr').remove();updateBalance()"
                                                                         title="@lang('Delete')">
                                                                         <i class="fa fa-trash"></i>
-                                                                    </button>
+                                                                    </button> --}}
                                                                 @endif
                                                             @endif
                                                         </td>
@@ -292,7 +298,7 @@
                                         @endif --}}
                                         <tr class="item_adjustment">
                                             <td class="text-center"></td>
-                                            <td colspan="4">
+                                            <td colspan="3">
                                                 <input type="text" name="adjustment[0][note]"
                                                     class="form-control action_change"
                                                     placeholder="Nội dung Truy thu/Hoàn trả">
@@ -312,16 +318,20 @@
                                                 </select>
                                             </td>
                                             <td>
+                                                <input type="date" name="adjustment[0][month]"
+                                                    class="form-control action_change" value="">
+                                            </td>
+                                            <td>
                                                 <button class="btn btn-sm btn-success btn_save_adjustment" type="button"
                                                     data-toggle="tooltip" onclick="" title="@lang('Save')">
                                                     <i class="fa fa-save"></i>
                                                 </button>
-                                                <button class="btn btn-sm btn-danger" type="button"
+                                                {{-- <button class="btn btn-sm btn-danger" type="button"
                                                     data-toggle="tooltip"
                                                     onclick="$(this).closest('tr').remove();updateBalance()"
                                                     title="@lang('Delete')">
                                                     <i class="fa fa-trash"></i>
-                                                </button>
+                                                </button> --}}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -649,7 +659,6 @@
                                 </div>
                             @endif
 
-
                         </div>
                         <div class="modal-footer">
                             @if ($detail->status == 'approved')
@@ -705,9 +714,11 @@
         function updateBalance() {
             var total = 0;
             $('input.action_change[type="number"]').each(function() {
-                var value = parseFloat($(this).val()) ||
-                    0; // Chuyển giá trị thành số, mặc định 0 nếu không hợp lệ
-                total += value;
+                if ($(this).parents('tr').find('.check_doisoat').is(':checked') == true) {
+                    var value = parseFloat($(this).val()) ||
+                        0; // Chuyển giá trị thành số, mặc định 0 nếu không hợp lệ
+                    total += value;
+                }
             });
             $('.final_amount').each(function() {
                 var value = parseFloat($(this).html()) || 0; // Chuyển giá trị thành số, mặc định 0 nếu không hợp lệ
