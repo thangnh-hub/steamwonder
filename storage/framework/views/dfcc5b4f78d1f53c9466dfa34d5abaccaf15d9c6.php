@@ -188,20 +188,27 @@
                                     </td>
                                     <td>
                                         <?php if(!in_array($row->type, ['dunokytruoc', 'doisoat'])): ?>
-                                            <a class="btn btn-sm btn-warning" data-toggle="tooltip"
-                                                title="<?php echo app('translator')->get('Update'); ?>" data-original-title="<?php echo app('translator')->get('Update'); ?>"
-                                                href="<?php echo e(route(Request::segment(2) . '.edit', $row->id)); ?>">
-                                                <i class="fa fa-pencil-square-o"></i>
-                                            </a>
-                                            <form action="<?php echo e(route(Request::segment(2) . '.destroy', $row->id)); ?>"
-                                                method="POST" style="display:inline;"
-                                                onsubmit="return confirm('<?php echo app('translator')->get('confirm_action'); ?>')">
-                                                <?php echo csrf_field(); ?>
-                                                <?php echo method_field('DELETE'); ?>
-                                                <button class="btn btn-sm btn-danger" type="submit">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </form>
+                                            <?php if($row->receipt_id !== null): ?>
+                                                <a class="btn btn-sm btn-warning" data-toggle="tooltip"
+                                                    title="<?php echo app('translator')->get('Update'); ?>" data-original-title="<?php echo app('translator')->get('Update'); ?>"
+                                                    href="<?php echo e(route('receipt.show', $row->receipt_id)); ?>">
+                                                    <i class="fa fa-pencil-square-o"></i>
+                                                <?php else: ?>
+                                                    <a class="btn btn-sm btn-warning" data-toggle="tooltip"
+                                                        title="<?php echo app('translator')->get('Update'); ?>" data-original-title="<?php echo app('translator')->get('Update'); ?>"
+                                                        href="<?php echo e(route(Request::segment(2) . '.edit', $row->id)); ?>">
+                                                        <i class="fa fa-pencil-square-o"></i>
+                                                    </a>
+                                                    <form action="<?php echo e(route(Request::segment(2) . '.destroy', $row->id)); ?>"
+                                                        method="POST" style="display:inline;"
+                                                        onsubmit="return confirm('<?php echo app('translator')->get('confirm_action'); ?>')">
+                                                        <?php echo csrf_field(); ?>
+                                                        <?php echo method_field('DELETE'); ?>
+                                                        <button class="btn btn-sm btn-danger" type="submit">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                            <?php endif; ?>
                                         <?php endif; ?>
                                     </td>
                                 </tr>

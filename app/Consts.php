@@ -6,6 +6,11 @@ class Consts
 {
     const FIRST_MONTH_DEFAULT = 6;
 
+    const STATUS_RECCEIPT_ADJUSTMENT = [
+        'adjusted' => 'adjusted',
+        'paid' => 'paid',
+
+    ];
     const MEAL_SEASON = [
         'spring' => 'spring', // Mùa xuân
         'summer' => 'summer', // Mùa hè

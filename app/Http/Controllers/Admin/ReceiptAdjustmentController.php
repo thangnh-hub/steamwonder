@@ -30,11 +30,11 @@ class ReceiptAdjustmentController extends Controller
      */
     public function index(Request $request)
     {
-        $params = $request->only(['keyword', 'status', 'type','month']);
-        $rows = ReceiptAdjustment::getSqlReceiptAdjustment($params)->orderBy('id','DESC')->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
+        $params = $request->only(['keyword', 'status', 'type', 'month']);
+        $rows = ReceiptAdjustment::getSqlReceiptAdjustment($params)->orderBy('id', 'DESC')->paginate(Consts::DEFAULT_PAGINATE_LIMIT);
         $this->responseData['rows'] = $rows;
         $this->responseData['students'] = Student::all();
-        $this->responseData['status'] = Consts::STATUS_RECEIPT_DETAIL;
+        $this->responseData['status'] = Consts::STATUS_RECCEIPT_ADJUSTMENT;
         $this->responseData['type'] = Consts::TYPE_RECEIPT_ADJUSTMENT;
         $this->responseData['list_class'] =  tbClass::orderBy('id', 'desc')->get();
         $this->responseData['list_area'] =  Area::where('status', '=', Consts::USER_STATUS['active'])->get();
@@ -119,9 +119,7 @@ class ReceiptAdjustmentController extends Controller
         ]);
         $params = $request->all();
         if ($receiptAdjustment->receipt_id != '') {
-            if ($receiptAdjustment->receipt->status != Consts::STATUS_RECEIPT['pending']) {
-                return redirect()->back()->with('errorMessage', __('Đối soát đã gắn vào TBP đã duyệt'));
-            }
+            return redirect()->back()->with('errorMessage', __('Đối soát đã gắn vào TBP'));
         }
         $params['admin_updated_id'] = $admin->id;
         $receiptAdjustment->update($params);
@@ -137,9 +135,7 @@ class ReceiptAdjustmentController extends Controller
     public function destroy(ReceiptAdjustment $receiptAdjustment)
     {
         if ($receiptAdjustment->receipt_id != '') {
-            if ($receiptAdjustment->receipt->status != Consts::STATUS_RECEIPT['pending']) {
-                return redirect()->back()->with('errorMessage', __('Đối soát đã gắn vào TBP đã duyệt'));
-            }
+            return redirect()->back()->with('errorMessage', __('Đối soát đã gắn vào TBP'));
         }
         $receiptAdjustment->delete();
         return redirect()->route($this->routeDefault . '.index')->with('successMessage',  __('Delete record successfully!'));
