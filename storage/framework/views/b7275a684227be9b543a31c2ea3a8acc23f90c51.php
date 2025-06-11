@@ -102,11 +102,8 @@
                     <div class="box box-warning mb-3">
                         <div class="box-header with-border mb-3">
                             <h3 class="box-title">
-                                <i class="fa fa-user"></i> <?php echo app('translator')->get('Thông tin học sinh'); ?>
-                                <button class="btn btn-sm btn-info pull-right btn_update">
-                                    <i class="fa fa-edit"></i>
-                                    <?php echo app('translator')->get('Cập nhật'); ?>
-                                </button>
+                                <i class="fa fa-user"></i> <?php echo app('translator')->get('Thông tin tài khoản'); ?>
+
                             </h3>
                         </div>
                         <div class="box-body">
@@ -121,8 +118,14 @@
                                     </p>
                                 </div>
                                 <div class="col-sm-6">
-                                    <p><strong><?php echo app('translator')->get('CCCD'); ?>:
-                                        </strong><?php echo e($detail->json_params->cccd ?? 'Chưa cập nhật'); ?></p>
+                                    <p><strong><?php echo app('translator')->get('SĐT'); ?>: </strong><?php echo e($detail->phone ?? 'Chưa cập nhật'); ?></p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p><strong><?php echo app('translator')->get('Email'); ?>: </strong><?php echo e($detail->email ?? ''); ?></p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p><strong><?php echo app('translator')->get('Giới tính'); ?>:
+                                        </strong><?php echo e(__($detail->sex) ?? 'Chưa cập nhật'); ?></p>
                                 </div>
                                 <div class="col-sm-6">
                                     <p><strong><?php echo app('translator')->get('Ngày sinh'); ?>:
@@ -131,112 +134,18 @@
                                     </p>
                                 </div>
 
-                                <div class="col-sm-6">
-                                    <p><strong><?php echo app('translator')->get('SĐT'); ?>: </strong><?php echo e($detail->phone ?? 'Chưa cập nhật'); ?></p>
-                                </div>
-                                <div class="col-sm-6">
-                                    <p><strong><?php echo app('translator')->get('Email'); ?>: </strong><?php echo e($detail->email ?? ''); ?></p>
-                                </div>
-
-                                <div class="col-sm-6">
-                                    <p><strong><?php echo app('translator')->get('Mã học viên'); ?>: </strong><?php echo e($detail->admin_code ?? ''); ?></p>
-                                </div>
 
                                 <div class="col-sm-12">
                                     <p><strong><?php echo app('translator')->get('Địa chỉ'); ?>:
                                         </strong><?php echo e($detail->json_params->address ?? 'Chưa cập nhật'); ?></p>
                                 </div>
-
                             </div>
                         </div>
                     </div>
 
                 </div>
-                <div class="col-lg-8 update_information" style="display: none">
-                    <div class="box box-warning mb-3">
-                        <div class="box-header with-border mb-3">
-                            <h3 class="box-title">
-                                <i class="fa fa-user"></i> <?php echo app('translator')->get('Cập nhật thông tin'); ?>
-                            </h3>
-                        </div>
-                        <div class="box-body">
-                            <form action="<?php echo e(route('frontend.update.account')); ?>" method="post" class="form-update"
-                                name="form-account-update">
-                                <?php echo csrf_field(); ?>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label><?php echo app('translator')->get('Họ và tên'); ?> <small class="text-red">*</small></label>
-                                            <input type="text" class="form-control" name="name"
-                                                placeholder="<?php echo app('translator')->get('Họ và tên'); ?>" value="<?php echo e($detail->name ?? ''); ?>">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label><?php echo app('translator')->get('Ngày sinh'); ?> <small class="text-red">*</small></label>
-                                            <input type="date" class="form-control" name="birthday"
-                                                placeholder="<?php echo app('translator')->get('Ngày sinh'); ?>"
-                                                value="<?php echo e($detail->birthday != '' ? date('Y-m-d', strtotime($detail->birthday)) : null); ?>">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label><?php echo app('translator')->get('SĐT'); ?> <small class="text-red">*</small></label>
-                                            <input type="text" class="form-control" name="phone"
-                                                placeholder="<?php echo app('translator')->get('SĐT'); ?>" value="<?php echo e($detail->phone ?? ''); ?>"
-                                                autocomplete="off">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label><?php echo app('translator')->get('Giới tính'); ?> <small class="text-red">*</small></label>
-                                            <select name="gender" class="form-control">
-                                                <option value="" disabled><?php echo app('translator')->get('Chọn giới tính'); ?></option>
-                                                <?php $__currentLoopData = $gender; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                    <option value="<?php echo e($key); ?>"
-                                                        <?php echo e($detail->gender == $val ? 'selected' : ''); ?>>
-                                                        <?php echo e(__($val)); ?></option>
-                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                            </select>
-
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label><?php echo app('translator')->get('Địa chỉ'); ?></label>
-                                            <textarea rows="3" class="form-control" name="address"><?php echo e($detail->json_params->address ?? ''); ?></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="form-group password-wrapper">
-                                            <label><?php echo app('translator')->get('Mật khẩu'); ?> <small class="text-muted"><i>(Bỏ qua nếu bạn
-                                                        không
-                                                        muốn đổi mật khẩu)</i></small></label>
-                                            <input class="form-control single-input" type="password" name="password"
-                                                value="" autocomplete="off">
-                                            <span class="toggle-password">
-                                                <i class="eye-icon fa fa-eye"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <button type="button"
-                                            class="btn btn-danger btn-sm text-white text-uppercase btn_cancel">
-                                            Hủy</button>
-                                        <button type="submit"
-                                            class="btn btn-success btn-sm text-white text-uppercase">
-                                            <i class="fa fa-save"></i> Lưu thông tin</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                </div>
-
                 <!-- Sidebar -->
-                <?php echo $__env->make('frontend.components.sticky.sidebar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                
 
             </div>
 
