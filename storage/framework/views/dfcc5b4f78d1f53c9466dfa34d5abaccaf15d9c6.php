@@ -192,7 +192,7 @@
                                                     title="<?php echo app('translator')->get('Update'); ?>" data-original-title="<?php echo app('translator')->get('Update'); ?>"
                                                     href="<?php echo e(route('receipt.show', $row->receipt_id)); ?>">
                                                     <i class="fa fa-pencil-square-o"></i>
-                                                    
+                                            
                                             <?php endif; ?>
                                         <?php endif; ?>
                                     </td>

@@ -209,7 +209,7 @@ class ReceiptController extends Controller
     {
         $result = null;
         $receipt = Receipt::find($id);
-
+        $admin = Auth::guard('admin')->user();
 
         $prev_balance = $request->input('prev_balance') ?? 0;
         $adjustment = $request->input('adjustment');
@@ -253,6 +253,7 @@ class ReceiptController extends Controller
         $receipt->prev_balance = $receipt->receiptAdjustment()->sum('final_amount');
         $receipt->total_final = $receipt->total_amount - $receipt->total_discount - $receipt->prev_balance;
         $receipt->total_due = $receipt->total_final - $receipt->total_paid;
+        $receipt->admin_updated_id = $admin->id;
         // $receipt->json_params = $json_params;
         $receipt->save();
         $result = $receipt;
