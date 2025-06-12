@@ -85,13 +85,7 @@
 
 @section('content-header')
     <section class="content-header">
-        <h1>
-            @if(!$show_report)
-            @lang('Thống kê thực đơn theo tuần')
-            @else
-            @lang($module_name)
-            @endif
-        </h1>
+        
     </section>
 @endsection
 
@@ -148,7 +142,13 @@
 
         <div class="box">
             <div class="box-header">
-                <h3 class="box-title">@lang('List')</h3>
+                <h3 class="box-title">
+                    @if(!$show_report)
+                        @lang('Thống kê thực đơn theo tuần')
+                    @else
+                        @lang($module_name)
+                    @endif
+                </h3>
             </div>
             <div class="box-body table-responsive">
                 @if (session('errorMessage'))
@@ -178,13 +178,10 @@
                 @if(!$show_report)
                     <form method="GET" action="{{ route('mealmenu.week.report') }}" class="form-inline mb-3">
                         <div class=" mr-2 box-center">
-                            <select style="width:30%" name="year" id="year" class="form-control select2" onchange="this.form.submit()">
-                                @foreach($years as $year)
-                                    <option value="{{ $year }}" {{ $year == $selected_year ? 'selected' : '' }}>
-                                        {{ $year }}
-                                    </option>
-                                @endforeach
-                            </select>
+                            <input type="month" name="month" class="form-control" style="width: 300px; display: inline-block;"
+                                value="{{ $selected_month ?? now()->format('Y-m') }}"
+                                onchange="this.form.submit()">
+
                         </div>
                     </form>
                     <br>
@@ -199,10 +196,12 @@
                                         <ul class="list-group">
                                             @foreach($currentYearWeeks as $week)
                                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                <a href="{{ route('mealmenu.week.report', ['area_id' => $area->id, 'week' => $week['value'], 'year' => $selected_year]) }}">
-                                                        {{ $week['label'] }}
-                                                    </a>
+                                                <a href="{{ route('mealmenu.week.report', ['area_id' => $area->id, 'week' => $week['value'], 'month' => $selected_month]) }}">
+                                                    {{ $week['label'] }}
+                                                    <i class="fa fa-arrow-right pull-right"></i>
                                                 </li>
+                                                </a>
+                                                
                                             @endforeach
                                         </ul>
                                     </div>
