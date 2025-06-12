@@ -66,4 +66,13 @@ class MealIngredient extends Model
     {
         return $this->belongsTo(MealUnit::class, 'default_unit_id');
     }
+
+    public function ingredientdailyMenus()
+    {
+        return $this->hasMany(MealMenuIngredientDaily::class, 'ingredient_id');
+    }
+    public function ingredientplanningMenus()
+    {
+        return $this->hasMany(MealMenuIngredient::class, 'ingredient_id');
+    }
 }

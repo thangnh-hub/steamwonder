@@ -95,6 +95,10 @@ class MealIngredientController extends Controller
     public function destroy($id)
     {
         $mealIngredient = MealIngredient::findOrFail($id);
+        //kiểm tra xem thực phẩm này có được sử dụng trong thực đơn hàng ngày hay mẫu nào không
+        if ($mealIngredient->ingredientdailyMenus()->count() > 0 || $mealIngredient->ingredientplanningMenus()->count() > 0) {
+            return redirect()->route($this->routeDefault . '.index')->with('errorMessage', __('Thực phẩm đã có trong thực đơn hàng ngày hoặc mẫu, không thể xóa!'));
+        }
         $mealIngredient->delete();
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Delete record successfully!'));
     }

@@ -123,10 +123,11 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <?php $index = 1; ?>
                         <?php $__currentLoopData = $menusGrouped; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $date => $areas): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <?php $__currentLoopData = $areas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $areaId => $menus): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr>
-                                    <td><?php echo e($loop->iteration); ?></td>
+                                    <td><?php echo e($index++); ?></td>
                                     <td><?php echo e(\Carbon\Carbon::parse($date)->format('d/m/Y')); ?></td>
                                     <td><?php echo e($menus->first()->area->name ?? '-'); ?></td>
                                     <td>
