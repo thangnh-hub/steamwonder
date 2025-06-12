@@ -45,7 +45,6 @@
 
         .item_day {
             font-size: 20px;
-            cursor: pointer;
         }
 
         .item_day:hover.text-secondary {
@@ -137,6 +136,8 @@
             margin-bottom: 10px
         }
 
+
+
         @media (max-width: 768px) {
 
             #modal_attendance .modal-dialog {
@@ -190,7 +191,7 @@
                     <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                 </div>
             </div>
-            <form action="{{ route(Request::segment(2) . '.summary_by_month') }}" method="GET">
+            <form action="{{ route(Request::segment(2) . '.studentMeal') }}" method="GET">
                 <div class="box-body">
                     <div class="d-flex-wap">
                         <div class="col-xs-12 col-md-3">
@@ -239,7 +240,7 @@
                                 <div>
                                     <button type="submit" class="btn btn-primary btn-sm mr-10">@lang('Submit')</button>
                                     <a class="btn btn-default btn-sm"
-                                        href="{{ route(Request::segment(2) . '.summary_by_month') }}">
+                                        href="{{ route(Request::segment(2) . '.studentMeal') }}">
                                         @lang('Reset')
                                     </a>
                                 </div>
@@ -287,6 +288,9 @@
                     </div>
                 @else
                     <div class="table-responsive">
+                        <div class="">
+                            Lưu ý:
+                        </div>
                         <table class="table table-hover table-bordered">
                             <thead>
                                 <tr>
@@ -317,19 +321,30 @@
                                             {{ $row->student->nickname != '' ? '(' . $row->student->nickname . ')' : '' }}
                                         </td>
                                         @for ($i = 1; $i <= $daysInMonth; $i++)
-                                            <th class="text-center {{ $carbonDate->copy()->day($i)->dayOfWeek == 0 ? 'bg-danger' : ($carbonDate->copy()->day($i)->dayOfWeek == 6 ? 'bg-warning' : '') }}">
+                                            <td class="text-center box-item">
                                                 @if ($carbonDate->copy()->day($i)->dayOfWeek != 0)
-                                                    <div class="item_day {{ isset($row->attendances_by_day[$i]) ? 'text-success' : 'text-secondary' }}"
-                                                        id="item_{{ $row->class_id }}_{{ $row->student_id }}_{{ $carbonDate->copy()->day($i)->format('Y-m-d') }}"
-                                                        data-class="{{ $row->class_id }}"
-                                                        data-student="{{ $row->student_id }}"
-                                                        data-date="{{ $carbonDate->copy()->day($i)->format('Y-m-d') }}"
-                                                        data-toggle="tooltip" data-original-title="@lang('Lấy điểm danh')">
-                                                        <i class="{{ isset($row->attendances_by_day[$i]) ? 'fa fa-check-circle-o' : 'fa fa-window-minimize' }} "
+                                                    <div
+                                                        class="item_day {{ isset($row->student_meal[$i]) ? ($row->student_meal[$i]->status == 'active' ? 'text-success' : 'text-danger') : 'text-secondary' }}">
+                                                        <i class="{{ isset($row->student_meal[$i]) ? ($row->student_meal[$i]->status == 'active' ? 'fa fa-check-circle-o' : 'fa fa-ban') : 'fa fa-window-minimize' }} "
                                                             aria-hidden="true"></i>
                                                     </div>
+                                                    @if ($carbonDate->copy()->day($i) == $tomorrow)
+                                                        <div class="box-actions" data-class="{{ $row->class_id }}"
+                                                            data-student="{{ $row->student_id }}"
+                                                            data-date="{{ $carbonDate->copy()->day($i)->format('Y-m-d') }}">
+                                                            <button class="btn btn-success btn-sm btn_change_meal"
+                                                                data-status = "active" data-toggle="tooltip"
+                                                                data-original-title="@lang('Có ăn')">
+                                                                <i class="fa fa-check-circle-o"></i>
+                                                            </button>
+                                                            <button class="btn btn-danger btn-sm btn_change_meal"
+                                                                data-status = "deactive" data-toggle="tooltip"
+                                                                data-original-title="@lang('Không ăn')">
+                                                                <i class="fa fa-ban"></i></button>
+                                                        </div>
+                                                    @endif
                                                 @endif
-                                            </th>
+                                            </td>
                                         @endfor
                                     </tr>
                                 @endforeach
@@ -339,83 +354,13 @@
                 @endif
             </div>
         </div>
-
-
-        <div class="modal fade" id="modal_attendance" data-backdrop="static" tabindex="-1" role="dialog">
-            <div class="modal-dialog " role="document">
-                <div class="modal-content">
-                    <div class="modal-header ">
-                        <h3 class="modal-title text-center col-md-12">@lang('Thông tin điểm danh ngày') <span
-                                class="day_attendance"></span>: <span class="student_attendance"></span></h3>
-                        </h3>
-                    </div>
-                    <form action="{{ route('attendance.summary_by_month.update_or_store') }}" method="POST"
-                        id="form_attendance">
-                        @csrf
-                        <div class="modal-body show_detail_attendance">
-
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-success">
-                                <i class="fa fa-save"></i> @lang('Lưu lại')
-                            </button>
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">
-                                <i class="fa fa-remove"></i> @lang('Close')
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade" id="modal_camera" data-backdrop="static" tabindex="-1" role="dialog">
-            <div class="modal-dialog " role="document">
-                <div class="modal-content">
-                    <div class="modal-header ">
-                        <h3 class="modal-title text-center col-md-12">@lang('Chụp ảnh xác nhận')</h3>
-                        </h3>
-                    </div>
-                    <div class="modal-body show_detail_eduction">
-                        <div class="row">
-                            <div class="col-md-12 col-sm-12 col-xs-12 text-center">
-                                <video id="video" autoplay playsinline style="width: 80%"></video>
-                                <canvas id="canvas" style="display:none;"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" id="toggle_camera" class="btn btn-primary" style="display: none;">
-                            <i class="fa fa-fa fa-refresh"></i>Đổi
-                            Camera</button>
-                        <button type="button" id="capture" data-type="" class="btn btn-success">
-                            <i class="fa fa-camera"></i> @lang('Chụp ảnh xác nhận')
-                        </button>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">
-                            <i class="fa fa-remove"></i> @lang('Close')
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </section>
 @endsection
 @section('script')
     <script>
-        let videoStream = null; // Biến lưu trữ stream của camera
-        let currentFacingMode = "user"; // Chế độ camera mặc định: Camera trước
-        var noImage = @json(url('themes/admin/img/no_image.jpg'));
         var areas = @json($areas ?? []);
         var classs = @json($classs ?? []);
-
-
-
         $(document).ready(function() {
-
-            const video = $('#video')[0];
-            const canvas = $('#canvas')[0];
-            const photo_arrival = $('#photo_arrival')[0];
-            const photo_return = $('#photo_return')[0];
             $('.area_id').change(function() {
                 var area_id = $(this).val();
                 var _html = `<option value="">{{ __('Please select') }}</option>`;
@@ -428,129 +373,43 @@
                 $('.class_id').html(_html).trigger('change');
             })
 
-            $('.item_day').click(function() {
-                var class_id = $(this).data('class');
-                var student_id = $(this).data('student');
-                var date = $(this).data('date'); //Y-m-d
-                var student_name = $(this).closest('tr').find('.name_student').text();
-                $('.day_attendance').text(formatDate(date));
-                $('.student_attendance').text(student_name);
-
-                // Gọi ajax lấy thông tin chi tiết
-                var url = "{{ route('attendance.summary_by_month.show') }}";
-                $.ajax({
-                    type: "GET",
-                    url: url,
-                    data: {
-                        'class_id': class_id,
-                        'student_id': student_id,
-                        'date': date,
+            $('.btn_change_meal').click(function() {
+                var status = $(this).data('status');
+                var parents = $(this).closest('.box-actions');
+                var student_id = parents.data('student');
+                var class_id = parents.data('class');
+                var meal_day = parents.data('date');
+                var item_day = parents.closest('.box-item').find('.item_day');
+                var statusClasses = {
+                    active: {
+                        add: 'text-success',
+                        remove: 'text-danger text-secondary',
+                        icon: "<i class='fa fa-check-circle-o' aria-hidden='true'></i>"
                     },
-                    success: function(response) {
-                        if (response) {
-                            $('.show_detail_attendance').html(response.data.view);
-                            $('#modal_attendance').modal('show');
-                            $('.select2').select2({
-                                width: '100%',
-                            });
-                        }
-                    },
-                    error: function(response) {
-                        var errors = response.responseJSON.message;
-                        console.log(errors);
+                    deactive: {
+                        add: 'text-danger',
+                        remove: 'text-success text-secondary',
+                        icon: "<i class='fa fa-ban' aria-hidden='true'></i>"
                     }
-                });
-
-
-            });
-
-            $(document).on('change', '.checkin', function(e) {
-                $('.check_disable').prop('disabled', false);
-            })
-            $(document).on('change', '.absent_unexcused, .absent_excused', function() {
-                $('.check_disable').prop('disabled', true);
-                $('.photo_arrival').attr('src', noImage);
-                $('.img_arrival').val('');
-            })
-
-            // Hiển thị modal chụp ảnh
-            $(document).on('click', '.box_capture', function() {
-                var type = $(this).data('type');
-                // Xác định thiết bị di động
-                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-                // Thiết lập facingMode dựa trên thiết bị
-                const facingMode = isMobile ? {
-                    exact: "environment"
-                } : "user"; // Mobile: Camera sau, Desktop: Camera trước
-                $('#capture').attr('data-type', type);
-                $('#modal_camera').modal('show');
-                // Bật camera
-                checkCameraAvailability();
-                startCamera(facingMode)
-            });
-            // Nút đổi camera
-            $('#toggle_camera').on('click', function() {
-                const newFacingMode = currentFacingMode === "user" ? {
-                    exact: "environment"
-                } : "user";
-                startCamera(newFacingMode);
-            });
-            // Chụp ảnh
-            $(document).on('click', '#capture', function() {
-                var type = $(this).attr('data-type');
-                const context = canvas.getContext('2d');
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                // Hiển thị ảnh đã chụp
-                $('#photo_' + type).attr('src', canvas.toDataURL('image/png', 0.8));
-                $('#image_' + type).val(canvas.toDataURL('image/png', 0.8));
-                // Đóng modal và checked học sinh
-                $('#modal_camera').modal('hide');
-            });
-
-            // Khi tắt modal thì tắt cam
-            $(document).on('hidden.bs.modal', '#modal_camera', function() {
-                if (videoStream) {
-                    // Dừng tất cả các track video
-                    videoStream.getTracks().forEach(track => track.stop());
-                    videoStream = null; // Xóa stream để giải phóng bộ nhớ
-                }
-                $('#toggle_camera').hide();
-                // Xóa nội dung video nếu cần
-                const video = document.querySelector('#video');
-                if (video) {
-                    video.srcObject = null;
-                }
-                // Bỏ checked trạng thái điểm danh nếu chưa chụp ảnh
-                var _id = $('#capture').attr('data-id');
-                if ($('#photo_arrival').attr('src') == noImage) {
-                    $('#student_checkin').prop('checked', false);
-                }
-            });
-
-            // Submit form
-            $(document).on('submit', '#form_attendance', function(e) {
-                e.preventDefault(); // Ngăn form submit truyền thống
-                let formData = $(this).serialize(); // Lấy dữ liệu form
-                let student_id = $(this).find('input[name="student_id"]').val();
-                let class_id = $(this).find('input[name="class_id"]').val();
-                let date = $(this).find('input[name="date"]').val();
-                var item = $('#item_' + class_id + '_' + student_id + '_' + date);
-
-                show_loading_notification();
+                };
                 $.ajax({
-                    url: $(this).attr('action'), // Lấy URL từ action của form
-                    type: 'POST',
-                    data: formData,
+                    type: "POST",
+                    url: "{{ route('attendance.save_studentMeal') }}",
+                    data: {
+                        'status': status,
+                        'student_id': student_id,
+                        'class_id': class_id,
+                        'meal_day': meal_day,
+                        "_token": "{{ csrf_token() }}",
+                    },
                     success: function(response) {
-                        $('#modal_attendance').modal('hide');
-                        hide_loading_notification();
-                        if (response) {
-                            item.removeClass('text-secondary');
-                            item.addClass('text-success');
-                            item.html(
-                                '<i class="fa fa-check-circle-o" aria-hidden="true"></i>');
+                        if (response.data != null) {
+                            if (statusClasses[status]) {
+                                var update = statusClasses[status];
+                                item_day.removeClass(update.remove).addClass(update.add).html(
+                                    update.icon);
+                            }
+
                             var _html = `<div class="alert alert-${response.data} alert-dismissible">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                             ${response.message}
@@ -560,82 +419,31 @@
                                 scrollTop: $(".alert").offset().top
                             }, 1000);
                             setTimeout(function() {
-                                $(".alert").fadeOut(2000, function() {});
+                                $(".alert").fadeOut(3000,
+                                    function() {});
                             }, 800);
+
                         } else {
                             var _html = `<div class="alert alert-warning alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    Bạn không có quyền thao tác chức năng này!
-                    </div>`;
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        Bạn không có quyền thao tác chức năng này!
+                        </div>`;
                             $('.box_alert').prepend(_html);
                             $('html, body').animate({
-                                scrollTop: $(".alert").offset().top
+                                scrollTop: $(".alert-warning").offset().top
                             }, 1000);
                             setTimeout(function() {
-                                $(".alert").fadeOut(2000, function() {});
+                                $(".alert-warning").fadeOut(3000,
+                                    function() {});
                             }, 800);
                         }
                     },
-                    error: function(xhr) {
-
-                        hide_loading_notification();
-                        let errors = response.responseJSON.message;
-                        alert(errors);
+                    error: function(response) {
+                        var errors = response.responseJSON.message;
+                        console.log(errors);
                     }
                 });
             })
         });
-
-
-        function formatDate(dateString) {
-            var date = new Date(dateString);
-            var day = date.getDate(); // Lấy ngày
-            var month = date.getMonth() + 1; // Lấy tháng (cần +1 vì tháng bắt đầu từ 0)
-            var year = date.getFullYear(); // Lấy năm
-            // Đảm bảo ngày và tháng luôn có 2 chữ số
-            day = day < 10 ? '0' + day : day;
-            month = month < 10 ? '0' + month : month;
-            return day + '-' + month + '-' + year; // Trả về định dạng d-m-Y
-        }
-        // Kiểm tra danh sách camera
-        function checkCameraAvailability() {
-            return navigator.mediaDevices.enumerateDevices()
-                .then(devices => {
-                    const videoDevices = devices.filter(device => device.kind === 'videoinput');
-                    if (videoDevices.length > 1) {
-                        // Hiển thị nút "Đổi Camera" nếu có nhiều hơn 1 camera
-                        $('#toggle_camera').show();
-                    } else {
-                        // Ẩn nút "Đổi Camera" nếu chỉ có 1 camera
-                        $('#toggle_camera').hide();
-                    }
-                })
-                .catch(error => {
-                    console.error('Lỗi khi kiểm tra camera:', error);
-                    $('#toggle_camera').hide(); // Ẩn nút nếu không thể kiểm tra
-                });
-        }
-        // Bật camera
-        function startCamera(facingMode) {
-            // Tắt camera hiện tại nếu có
-            if (videoStream) {
-                videoStream.getTracks().forEach(track => track.stop());
-            }
-
-            navigator.mediaDevices.getUserMedia({
-                    video: {
-                        facingMode: facingMode
-                    }
-                })
-                .then(stream => {
-                    videoStream = stream; // Lưu stream
-                    const video = document.querySelector('#video');
-                    video.srcObject = stream;
-                    currentFacingMode = facingMode; // Cập nhật chế độ hiện tại
-                })
-                .catch(error => {
-                    alert('Không thể truy cập camera: ' + error.message);
-                });
-        }
     </script>
 @endsection

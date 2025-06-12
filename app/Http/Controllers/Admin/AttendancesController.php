@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Consts;
 use App\Models\Attendances;
 use App\Models\AttendanceStudent;
+use App\Models\AttendanceStudentMeal;
 use App\Models\tbClass;
 use App\Models\Area;
 use App\Models\Student;
@@ -83,9 +84,6 @@ class AttendancesController extends Controller
         $this->responseData['module_name'] = 'Điểm danh về';
         return $this->responseView($this->viewPart . '.checkout');
     }
-
-
-
     /**
      * Store a newly created resource in storage.
      *
@@ -178,6 +176,75 @@ class AttendancesController extends Controller
             return $this->sendResponse('error', __($ex->getMessage()));
         }
     }
+    public function studentMeal(Request $request)
+    {
+        $admin = Auth::guard('admin')->user();
+        $params = $request->only(['keyword', 'class_id', 'month', 'area_id']);
+        $monthYear = $params['month'] ?? Carbon::now()->format('Y-m');
+        $carbonDate = Carbon::createFromFormat('Y-m', $monthYear);
+        $daysInMonth = $carbonDate->daysInMonth;
+        $params['permission_class'] = DataPermissionService::getPermissionClasses($admin->id);
+        if (isset($params['class_id']) && $params['class_id'] != "") {
+            // Lấy danh sách học sinh theo lớp
+            $studentClass = StudentClass::getSqlStudentClass($params)->with([
+                'studentMeal' => function ($query) use ($monthYear, $daysInMonth) {
+                    $query->whereBetween('meal_day', [
+                        Carbon::createFromFormat('Y-m-d', "$monthYear-01")->startOfDay(),
+                        Carbon::createFromFormat('Y-m-d', "$monthYear-$daysInMonth")->endOfDay()
+                    ])->select('id', 'student_id', 'meal_day', 'status');
+                }
+            ])->get();
+            foreach ($studentClass as $item) {
+                $student_meal = [];
+                foreach (range(1, $daysInMonth) as $day) {
+                    $date = Carbon::createFromFormat('Y-m-d', "$monthYear-$day")->toDateString();
+                    // Lọc dữ liệu studentMeal đã eager loaded
+                    $studentMeal = $item->studentMeal->firstWhere('meal_day', $date);
+                    if ($studentMeal) {
+                        $student_meal[$day] = $studentMeal;
+                    }
+                }
+                // Gắn dữ liệu student_meal cho từng item
+                $item->student_meal = $student_meal;
+            }
+        }
+
+        $this->responseData['areas'] = Area::all();
+        $this->responseData['classs'] = tbClass::whereIn('id', $params['permission_class'])->get();
+        $this->responseData['carbonDate'] = $carbonDate;
+        $this->responseData['daysInMonth'] = $daysInMonth;
+        $this->responseData['rows'] = $studentClass ?? [];
+        $this->responseData['params'] = $params;
+        $this->responseData['day_week'] = Consts::DAY_WEEK_MINI;
+        $this->responseData['tomorrow'] = $carbonDate->copy()->addDay();
+        $this->responseData['module_name'] = 'Quản lý lịch ăn học sinh';
+
+        return $this->responseView($this->viewPart . '.student_meal');
+    }
+
+    public function saveStudentMeal(Request $request)
+    {
+        $status = $request->input('status');
+        $student_id = $request->input('student_id');
+        $class_id = $request->input('class_id');
+        $meal_day = $request->input('meal_day');
+        $currentHour = Carbon::now()->hour;
+        if ($currentHour < 15) {
+            AttendanceStudentMeal::updateOrCreate(
+                [
+                    'student_id' => $student_id,
+                    'class_id' => $class_id,
+                    'meal_day' => Carbon::parse($meal_day)->format('Y-m-d'),
+                ],
+                ['status' => $status]
+            );
+            return $this->sendResponse('success', __('Lưu thông tin thành công!'));
+        }
+        else{
+            return $this->sendResponse('warning', __('Đã quá thời gian thực hiện!'));
+        }
+
+    }
 
     public function attendanceSummaryByMonth(Request $request)
     {
@@ -214,7 +281,6 @@ class AttendancesController extends Controller
                     if ($attendance) {
                         $attendanceStudent = $attendance->attendanceStudent
                             ->firstWhere('student_id', $row->student_id);
-
                         if ($attendanceStudent) {
                             $attendancesByDay[$day] = $attendanceStudent;
                         }
@@ -366,7 +432,7 @@ class AttendancesController extends Controller
         $publicPath = $directory . "/{$fileName}";
         return $publicPath;
     }
-    function isBase64($string)
+    public function isBase64($string)
     {
         return (bool) preg_match('/^data:image\/(png|jpeg|jpg|gif);base64,/', $string);
     }

@@ -254,19 +254,7 @@
                                                     Nghỉ không phép
                                                 </label>
                                             </div>
-                                            <div class="d-flex mb-20">
-                                                <input id="student_<?php echo e($row->student_id); ?>_absent_excused"
-                                                    name="attendance[<?php echo e($row->student_id); ?>][status]"
-                                                    <?php echo e(isset($row->attendance->status) && $row->attendance->status == 'absent_excused' ? 'checked' : ''); ?>
-
-                                                    class="radiobox mr-10 absent_excused"
-                                                    data-id="<?php echo e($row->student_id); ?>" type="radio"
-                                                    value="absent_excused">
-                                                <label class="box_radio"
-                                                    for="student_<?php echo e($row->student_id); ?>_absent_excused">
-                                                    Nghỉ có phép
-                                                </label>
-                                            </div>
+                                            
                                         </td>
                                         <td class="d-flex-wap content_<?php echo e($row->student_id); ?>">
                                             <div class="box_image">

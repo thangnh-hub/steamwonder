@@ -25,15 +25,7 @@
                         <?php echo app('translator')->get('Nghỉ không phép'); ?>
                     </label>
                 </div>
-                <div class="d-flex box_checked">
-                    <input id="student_absent_excused" name="status"
-                        <?php echo e(isset($detail->status) && $detail->status == 'absent_excused' ? 'checked' : ''); ?>
-
-                        class="radiobox mr-10 absent_excused" data-id="" type="radio" value="absent_excused">
-                    <label class="box_radio" for="student_absent_excused">
-                        <?php echo app('translator')->get('Nghỉ có phép'); ?>
-                    </label>
-                </div>
+                
             </div>
             <div class="d-flex-wap align-items-center">
                 <div class="box_image text-center">
