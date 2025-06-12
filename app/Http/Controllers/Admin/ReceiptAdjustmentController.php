@@ -132,12 +132,28 @@ class ReceiptAdjustmentController extends Controller
      * @param  \App\Models\ReceiptAdjustment  $receiptAdjustment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ReceiptAdjustment $receiptAdjustment)
+    public function destroy(ReceiptAdjustment $receiptAdjustment, $id)
     {
-        if ($receiptAdjustment->receipt_id != '') {
-            return redirect()->back()->with('errorMessage', __('Đối soát đã gắn vào TBP'));
-        }
         $receiptAdjustment->delete();
-        return redirect()->route($this->routeDefault . '.index')->with('successMessage',  __('Delete record successfully!'));
+        return $this->sendResponse('success', 'Lưu thông tin thành công!');
+    }
+    public function updateOrCreate(Request $request)
+    {
+        $id = $request->input('id') ?? '';
+        $params = $request->except('id');
+        if ($id != '') {
+            $ReceiptAdjustment = ReceiptAdjustment::find($id);
+            $ReceiptAdjustment->update($params);
+        } else {
+            $ReceiptAdjustment = ReceiptAdjustment::create($params);
+        }
+        return $this->sendResponse($ReceiptAdjustment, 'Lưu thông tin thành công!');
+    }
+    public function delete(Request $request)
+    {
+        $id = $request->input('id');
+        $receiptAdjustment = ReceiptAdjustment::find($id);
+        $receiptAdjustment->delete();
+        return $this->sendResponse('success', 'Lưu thông tin thành công!');
     }
 }

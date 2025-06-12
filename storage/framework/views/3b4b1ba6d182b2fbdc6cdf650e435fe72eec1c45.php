@@ -287,7 +287,7 @@
                                                         <option value="">-Giáo viên đón-</option>
                                                         <?php $__currentLoopData = $list_teacher; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                             <option value="<?php echo e($item->id); ?>"
-                                                                <?php echo e(isset($row->attendance->checkin_teacher_id) && $row->attendance->checkin_teacher_id == $item->id ? 'selected' : ''); ?>>
+                                                                <?php echo e(isset($row->attendance->checkin_teacher_id) && $row->attendance->checkin_teacher_id == $item->id ? 'selected' : ($item->id == $admin_auth->id? 'selected':'')); ?>>
                                                                 <?php echo e($item->name ?? ''); ?></option>
                                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                     </select>
