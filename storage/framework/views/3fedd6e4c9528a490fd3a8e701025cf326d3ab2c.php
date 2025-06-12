@@ -479,7 +479,7 @@
 
                                                                                     </li>
                                                                                     <li>Số lần áp dụng:
-                                                                                        <?php echo e($val->apply_count ?? ''); ?>
+                                                                                        <?php echo e($val->apply_count ?? '1'); ?>
 
                                                                                     </li>
                                                                                 </ul>
@@ -500,7 +500,7 @@
 
                                                                             </li>
                                                                             <li>Số lần áp dụng:
-                                                                                <?php echo e($val->apply_count ?? ''); ?>
+                                                                                <?php echo e($val->apply_count ?? '1'); ?>
 
                                                                             </li>
                                                                         </ul>

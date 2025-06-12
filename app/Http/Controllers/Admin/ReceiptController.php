@@ -263,14 +263,16 @@ class ReceiptController extends Controller
                 $receipt_adjustment_other->type = $item['type'];
                 $receipt_adjustment_other->save();
             } else {
-                ReceiptAdjustment::create([
-                    'receipt_id' => $receipt->id,
-                    'student_id' => $receipt->student_id,
-                    'type' => $item['type'],
-                    'month' => $item['month'],
-                    'final_amount' => $item['final_amount'] ?? 0,
-                    'note' => $item['note'],
-                ]);
+                if ($item['final_amount'] != '' || $item['note'] != '') {
+                    ReceiptAdjustment::create([
+                        'receipt_id' => $receipt->id,
+                        'student_id' => $receipt->student_id,
+                        'type' => $item['type'],
+                        'month' => $item['month'],
+                        'final_amount' => $item['final_amount'] ?? 0,
+                        'note' => $item['note'],
+                    ]);
+                }
             }
         }
 

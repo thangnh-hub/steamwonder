@@ -376,10 +376,10 @@
                                                     data-target="#reincarnationModal">
                                                     <i class="fa fa-recycle"></i> @lang('Xử lý TBP HSM')
                                                 </button>
-                                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
+                                                {{-- <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
                                                     data-target="#sumerReceiptModal">
                                                     <i class="fa fa-sun-o"></i> @lang('Tính phí chỉ kỳ hè')
-                                                </button>
+                                                </button> --}}
                                             </div>
                                             <br>
                                             <div class="table-responsive">
@@ -604,11 +604,11 @@
                                                                                 <i class="fa fa-pencil"></i>
                                                                             </button>
                                                                         </a>
-                                                                        <button type="button"
+                                                                        {{-- <button type="button"
                                                                             class="btn btn-sm btn-danger btn_delete_receipt"
                                                                             data-id="{{ $row->id }}">
                                                                             <i class="fa fa-trash"></i>
-                                                                        </button>
+                                                                        </button> --}}
                                                                     @endif
                                                                 </td>
                                                             </tr>
