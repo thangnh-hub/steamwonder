@@ -251,7 +251,7 @@
                                                     Nghỉ không phép
                                                 </label>
                                             </div>
-                                            <div class="d-flex mb-20">
+                                            {{-- <div class="d-flex mb-20">
                                                 <input id="student_{{ $row->student_id }}_absent_excused"
                                                     name="attendance[{{ $row->student_id }}][status]"
                                                     {{ isset($row->attendance->status) && $row->attendance->status == 'absent_excused' ? 'checked' : '' }}
@@ -262,7 +262,7 @@
                                                     for="student_{{ $row->student_id }}_absent_excused">
                                                     Nghỉ có phép
                                                 </label>
-                                            </div>
+                                            </div> --}}
                                         </td>
                                         <td class="d-flex-wap content_{{ $row->student_id }}">
                                             <div class="box_image">

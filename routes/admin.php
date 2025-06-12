@@ -110,6 +110,7 @@ Route::group(['namespace' => 'Admin'], function () {
                 'deductions' => 'DeductionController',
                 'receipt' => 'ReceiptController',
                 'receipt_adjustment' => 'ReceiptAdjustmentController',
+                'receipt_transaction' => 'ReceiptTransactionController',
                 'attendance' => 'AttendancesController',
                 'promotions' => 'PromotionController',
                 'suppliers' => 'MealSupplierController',
@@ -150,7 +151,8 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('attendance/summary-by-month/index', 'AttendancesController@attendanceSummaryByMonth')->name('attendance.summary_by_month');
             Route::post('attendance/summary-by-month/update_or_store', 'AttendancesController@updateOrstoreAttendance')->name('attendance.summary_by_month.update_or_store');
             // Điểm danh ăn
-            Route::post('attendance/student/meal', 'AttendancesController@studentMeal')->name('attendance.studentMeal');
+            Route::get('attendance/student_meal/index', 'AttendancesController@studentMeal')->name('attendance.studentMeal');
+            Route::post('attendance/student_meal/update_create', 'AttendancesController@saveStudentMeal')->name('attendance.save_studentMeal');
 
             // Import Student Promotion
             Route::post('import_student_promotion', 'StudentController@importStudentPromotion')->name('student.import_promotion');
@@ -414,6 +416,5 @@ Route::group(['namespace' => 'Admin'], function () {
     Route::post('/next-question', 'TeacherQuizController@nextQuestion')->name('next_question');
     Route::post('/previous-question', 'TeacherQuizController@previousQuestion')->name('previous_question');
     Route::get('/result-test-teacher', 'TeacherQuizController@resultTestTeacher')->name('result_test_teacher');
-
     Route::get('/qr-view', 'QrController@showQr')->name('qr.show'); // route to test QR code
 });

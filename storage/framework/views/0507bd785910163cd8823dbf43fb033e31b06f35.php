@@ -126,7 +126,7 @@
                                 <table class="table table-bordered table-hover no-footer no-padding">
                                     <thead>
                                         <tr>
-                                            <th colspan="7" class="text-left"><b>1. Số dư kỳ trước <span data-html="true"
+                                            <th colspan="6" class="text-left"><b>1. Số dư kỳ trước <span data-html="true"
                                                         data-toggle="tooltip"
                                                         title="
                                                         Hoàn trả sẽ nhập số nguyên dương (+)
@@ -135,7 +135,7 @@
                                                         <i class="fa fa-question-circle-o" aria-hidden="true"></i></span>
                                                 </b>
                                             </th>
-                                            <th class="text-right">
+                                            <th class="text-right" colspan="2">
                                                 <input type="number" name="prev_balance"
                                                     <?php echo e($detail->status == 'pending' ? '' : 'disabled'); ?> readonly
                                                     class="form-control pull-right prev_balance" style="max-width: 200px;"
@@ -146,8 +146,6 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-
-
                                         <?php if(isset($detail->prev_receipt_detail) && count($detail->prev_receipt_detail) > 0): ?>
                                             <tr>
                                                 <th>Tháng</th>
@@ -183,22 +181,19 @@
                                     </tbody>
                                     <tbody class="box_explanation">
                                         <?php if(isset($detail->student->receiptAdjustment)): ?>
-                                            <?php $__currentLoopData = $detail->student->receiptAdjustment; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <?php $__currentLoopData = $detail->student->receiptAdjustment; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <?php if($item->receipt_id == null || $item->receipt_id == $detail->id): ?>
                                                     <tr
                                                         class="item_adjustment <?php echo e(in_array($item->type, ['dunokytruoc', 'doisoat']) ? 'bg-gray' : ''); ?>">
                                                         <td class="text-center">
                                                             <?php if($detail->status == 'pending'): ?>
-                                                                <?php if(in_array($item->type, ['dunokytruoc', 'doisoat'])): ?>
-                                                                    <input type="checkbox" class="check_doisoat"
-                                                                        onclick="updateBalance()"
-                                                                        name="receipt_adjustment[]"
-                                                                        value="<?php echo e($item->id); ?>"
-                                                                        <?php echo e($item->receipt_id == $detail->id ? 'checked' : ''); ?>>
-                                                                <?php endif; ?>
+                                                                <input type="checkbox" class="check_doisoat"
+                                                                    onclick="updateBalance()" name="receipt_adjustment[]"
+                                                                    value="<?php echo e($item->id); ?>"
+                                                                    <?php echo e($item->receipt_id == $detail->id ? 'checked' : ''); ?>>
                                                             <?php endif; ?>
                                                         </td>
-                                                        <td colspan="4">
+                                                        <td colspan="3">
                                                             <?php if(in_array($item->type, ['dunokytruoc', 'doisoat'])): ?>
                                                                 <?php echo e($item->note); ?>
 
@@ -237,11 +232,24 @@
                                                                     class="form-control">
                                                                     <?php $__currentLoopData = $type; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                                         <?php if(!in_array($key, ['dunokytruoc', 'doisoat'])): ?>
-                                                                            <option value="<?php echo e($key); ?>">
+                                                                            <option value="<?php echo e($key); ?>" <?php echo e($item->type == $key ?'selected':''); ?>>
                                                                                 <?php echo e(__($val)); ?></option>
                                                                         <?php endif; ?>
                                                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                                 </select>
+                                                            <?php endif; ?>
+                                                        </td>
+                                                        <td>
+                                                            <?php if(in_array($item->type, ['dunokytruoc', 'doisoat'])): ?>
+                                                                <?php echo e(date('m-Y', strtotime($item->month))); ?>
+
+                                                            <?php else: ?>
+                                                                <input type="date"
+                                                                    <?php echo e($detail->status == 'pending' ? '' : 'disabled'); ?>
+
+                                                                    name="adjustment[<?php echo e($item->id); ?>][month]"
+                                                                    class="form-control action_change"
+                                                                    value="<?php echo e($item->month != '' ? date('Y-m-d', strtotime($item->month)) : ''); ?>">
                                                             <?php endif; ?>
                                                         </td>
                                                         <td>
@@ -253,12 +261,7 @@
                                                                         title="<?php echo app('translator')->get('Save'); ?>">
                                                                         <i class="fa fa-save"></i>
                                                                     </button>
-                                                                    <button class="btn btn-sm btn-danger" type="button"
-                                                                        data-toggle="tooltip"
-                                                                        onclick="$(this).closest('tr').remove();updateBalance()"
-                                                                        title="<?php echo app('translator')->get('Delete'); ?>">
-                                                                        <i class="fa fa-trash"></i>
-                                                                    </button>
+                                                                    
                                                                 <?php endif; ?>
                                                             <?php endif; ?>
                                                         </td>
@@ -269,7 +272,7 @@
                                         
                                         <tr class="item_adjustment">
                                             <td class="text-center"></td>
-                                            <td colspan="4">
+                                            <td colspan="3">
                                                 <input type="text" name="adjustment[0][note]"
                                                     class="form-control action_change"
                                                     placeholder="Nội dung Truy thu/Hoàn trả">
@@ -289,16 +292,15 @@
                                                 </select>
                                             </td>
                                             <td>
+                                                <input type="date" name="adjustment[0][month]"
+                                                    class="form-control action_change" value="">
+                                            </td>
+                                            <td>
                                                 <button class="btn btn-sm btn-success btn_save_adjustment" type="button"
                                                     data-toggle="tooltip" onclick="" title="<?php echo app('translator')->get('Save'); ?>">
                                                     <i class="fa fa-save"></i>
                                                 </button>
-                                                <button class="btn btn-sm btn-danger" type="button"
-                                                    data-toggle="tooltip"
-                                                    onclick="$(this).closest('tr').remove();updateBalance()"
-                                                    title="<?php echo app('translator')->get('Delete'); ?>">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
+                                                
                                             </td>
                                         </tr>
                                     </tbody>
@@ -605,36 +607,40 @@
                                     <?php endif; ?>
                                 </tbody>
                             </table>
-
-                            <div class="row">
-                                <h4 class="text-center form-group col-md-12"><?php echo app('translator')->get('Thông tin thanh toán cho kỳ này'); ?></h4>
-                                <div class="col-xs-12 col-md-6">
-                                    <div class="form-group">
-                                        <label><?php echo app('translator')->get('Nhập số tiền thanh toán'); ?> <small class="text-red">*</small></label>
-                                        <input type="number" class="form-control" name="paid_amount"
-                                            placeholder="<?php echo app('translator')->get('Nhập số tiền thanh toán'); ?>" value="<?php echo e(old('paid_amount')); ?>" required>
+                            <?php if($detail->status == 'approved'): ?>
+                                <div class="row">
+                                    <h4 class="text-center form-group col-md-12"><?php echo app('translator')->get('Thông tin thanh toán cho kỳ này'); ?></h4>
+                                    <div class="col-xs-12 col-md-6">
+                                        <div class="form-group">
+                                            <label><?php echo app('translator')->get('Nhập số tiền thanh toán'); ?> <small class="text-red">*</small></label>
+                                            <input type="number" class="form-control" name="paid_amount"
+                                                placeholder="<?php echo app('translator')->get('Nhập số tiền thanh toán'); ?>" value="<?php echo e(old('paid_amount')); ?>"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6">
+                                        <div class="form-group">
+                                            <label><?php echo app('translator')->get('Ngày thanh toán'); ?> <small class="text-red">*</small></label>
+                                            <input type="date" class="form-control" name="payment_date"
+                                                value="" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-12">
+                                        <div class="form-group">
+                                            <label><?php echo app('translator')->get('Ghi chú'); ?></label>
+                                            <textarea name="json_params[note]" class="form-control" cols="5"></textarea>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-xs-12 col-md-6">
-                                    <div class="form-group">
-                                        <label><?php echo app('translator')->get('Ngày thanh toán'); ?> <small class="text-red">*</small></label>
-                                        <input type="date" class="form-control" name="payment_date" value=""
-                                            required>
-                                    </div>
-                                </div>
-                                <div class="col-xs-12 col-md-12">
-                                    <div class="form-group">
-                                        <label><?php echo app('translator')->get('Ghi chú'); ?></label>
-                                        <textarea name="json_params[note]" class="form-control" cols="5"></textarea>
-                                    </div>
-                                </div>
-                            </div>
+                            <?php endif; ?>
 
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-success btn_save_transaction">
-                                <i class="fa fa-save"></i> <?php echo app('translator')->get('Lưu lại'); ?>
-                            </button>
+                            <?php if($detail->status == 'approved'): ?>
+                                <button type="submit" class="btn btn-success btn_save_transaction">
+                                    <i class="fa fa-save"></i> <?php echo app('translator')->get('Lưu lại'); ?>
+                                </button>
+                            <?php endif; ?>
                             <button type="button" class="btn btn-danger" data-dismiss="modal">
                                 <i class="fa fa-remove"></i> <?php echo app('translator')->get('Đóng'); ?>
                             </button>
@@ -683,9 +689,11 @@
         function updateBalance() {
             var total = 0;
             $('input.action_change[type="number"]').each(function() {
-                var value = parseFloat($(this).val()) ||
-                    0; // Chuyển giá trị thành số, mặc định 0 nếu không hợp lệ
-                total += value;
+                if ($(this).parents('tr').find('.check_doisoat').is(':checked') == true) {
+                    var value = parseFloat($(this).val()) ||
+                        0; // Chuyển giá trị thành số, mặc định 0 nếu không hợp lệ
+                    total += value;
+                }
             });
             $('.final_amount').each(function() {
                 var value = parseFloat($(this).html()) || 0; // Chuyển giá trị thành số, mặc định 0 nếu không hợp lệ

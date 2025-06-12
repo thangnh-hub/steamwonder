@@ -211,21 +211,33 @@ class ReceiptController extends Controller
         $receipt = Receipt::find($id);
         $prev_balance = $request->input('prev_balance') ?? 0;
         $adjustment = $request->input('adjustment');
-        $list_id = $request->input('receipt_adjustment') ?? [];
+        $list_id_receipt_adjustment = $request->input('receipt_adjustment') ?? [];
         $list_doisoat = $request->input('list_doisoat') ?? [];
+
+
+        // dd($request->all());
         if (empty($receipt)) {
             Session::flash('errorMessage', ' Không tìm thấy TBP!');
             return $this->sendResponse('warning', 'Không tìm thấy TBP!');
         }
-        if($receipt->status != Consts::STATUS_RECEIPT['pending']){
+        if ($receipt->status != Consts::STATUS_RECEIPT['pending']) {
             Session::flash('errorMessage', ' TBP đã được duyệt và không thể sửa!');
             return $this->sendResponse('warning', 'TBP đã được duyệt và không thể sửa!');
         }
 
-
-        // Cập nhật lại receipt_id cho các receipt_adjustment doisoat,dunokytruoc
-        if (count($list_id) > 0) {
-            foreach ($list_id as $id_receipt_adjustment) {
+        // Cập nhật lại receipt_id cho các receipt_adjustmen
+        // Đổi hết về null sau đó gắn lại
+        ReceiptAdjustment::where('student_id', $receipt->student_id)
+            ->where(function ($where) use ($id) {
+                return $where->whereNull('tb_receipt_adjustment.receipt_id')
+                    ->orWhere('tb_receipt_adjustment.receipt_id', $id);
+            })
+            ->update([
+                'receipt_id' => null,
+            ]);
+        // gắn lại
+        if (count($list_id_receipt_adjustment) > 0) {
+            foreach ($list_id_receipt_adjustment as $id_receipt_adjustment) {
                 $receipt_adjustment = ReceiptAdjustment::find($id_receipt_adjustment);
                 if ($receipt_adjustment->receipt_id == null || $receipt_adjustment->receipt_id == $receipt->id) {
                     $receipt_adjustment->receipt_id = $receipt->id;
@@ -235,17 +247,8 @@ class ReceiptController extends Controller
                     Session::flash('errorMessage', $receipt_adjustment->note . ' đã được gắn với TBP khác!');
                 }
             }
-        } else {
-
-            ReceiptAdjustment::whereIn('id', $list_doisoat)
-                ->where(function ($where) use ($id) {
-                    return $where->whereNull('tb_receipt_adjustment.receipt_id')
-                        ->orWhere('tb_receipt_adjustment.receipt_id', $id);
-                })
-                ->update([
-                    'receipt_id' => null,
-                ]);
         }
+
 
         // Thêm mới hoặc cập nhật receipt_adjustment khuyenmai, phatsinh
         foreach ($adjustment as $key => $item) {
@@ -256,16 +259,20 @@ class ReceiptController extends Controller
             if ($receipt_adjustment_other) {
                 $receipt_adjustment_other->note = $item['note'];
                 $receipt_adjustment_other->final_amount = $item['final_amount'];
+                $receipt_adjustment_other->month = $item['month'];
                 $receipt_adjustment_other->type = $item['type'];
                 $receipt_adjustment_other->save();
             } else {
-                ReceiptAdjustment::create([
-                    'receipt_id' => $receipt->id,
-                    'student_id' => $receipt->student_id,
-                    'type' => $item['type'],
-                    'final_amount' => $item['final_amount'] ?? 0,
-                    'note' => $item['note'],
-                ]);
+                if ($item['final_amount'] != '' || $item['note'] != '') {
+                    ReceiptAdjustment::create([
+                        'receipt_id' => $receipt->id,
+                        'student_id' => $receipt->student_id,
+                        'type' => $item['type'],
+                        'month' => $item['month'],
+                        'final_amount' => $item['final_amount'] ?? 0,
+                        'note' => $item['note'],
+                    ]);
+                }
             }
         }
 
