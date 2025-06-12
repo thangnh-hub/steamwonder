@@ -288,8 +288,13 @@
                     </div>
                 <?php else: ?>
                     <div class="table-responsive">
-                        <div class="">
-                            Lưu ý:
+                        <div class="mb-15">
+                            <b>Lưu ý:</b> - Báo lịch ăn cho học sinh ngày hôm sau phải trước 15h ngày hôm nay
+                            <br>
+                            - <span class="text-success"><i class='fa fa-check-circle-o' aria-hidden='true'></i></span> là
+                            có ăn, <span class="text-danger"><i class='fa fa-ban' aria-hidden='true'></i></span> là không ăn
+                            <br>
+                            - Trường hợp không ăn sẽ được tính là nghỉ có phép
                         </div>
                         <table class="table table-hover table-bordered">
                             <thead>
@@ -409,10 +414,13 @@
                     },
                     success: function(response) {
                         if (response.data != null) {
-                            if (statusClasses[status]) {
-                                var update = statusClasses[status];
-                                item_day.removeClass(update.remove).addClass(update.add).html(
-                                    update.icon);
+                            if (response.data == 'success') {
+                                if (statusClasses[status]) {
+                                    var update = statusClasses[status];
+                                    item_day.removeClass(update.remove).addClass(update.add)
+                                        .html(
+                                            update.icon);
+                                }
                             }
 
                             var _html = `<div class="alert alert-${response.data} alert-dismissible">

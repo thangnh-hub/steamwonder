@@ -123,6 +123,9 @@ Route::group(['namespace' => 'Admin'], function () {
                 'menu_dailys' => 'MealMenuDailyController',
                 'warehouse_ingredients' => 'MealWarehouseIngredientController',
             ]);
+            // receipt adjustment
+            Route::post('receipt_adjustment/update_or_create', 'ReceiptAdjustmentController@updateOrCreate')->name('receipt_adjustment.update_or_create');
+            Route::post('receipt_adjustment/delete', 'ReceiptAdjustmentController@delete')->name('receipt_adjustment.delete');
 
             //Thực đơn mẫu
             Route::post('meal_dishes_move_to_meal', 'MealMenuPlanningController@moveDish')->name('mealmenu.moveDish');
