@@ -181,10 +181,13 @@
                                                         class="item_adjustment {{ in_array($item->type, ['dunokytruoc', 'doisoat']) ? 'bg-gray' : '' }}">
                                                         <td class="text-center">
                                                             @if ($detail->status == 'pending')
-                                                                <input type="checkbox" class="check_doisoat"
-                                                                    onclick="updateBalance()" name="receipt_adjustment[]"
-                                                                    value="{{ $item->id }}"
-                                                                    {{ $item->receipt_id == $detail->id ? 'checked' : '' }}>
+                                                                @if (in_array($item->type, ['dunokytruoc', 'doisoat']))
+                                                                    <input type="checkbox" class="check_doisoat"
+                                                                        onclick="updateBalance()"
+                                                                        name="receipt_adjustment[]"
+                                                                        value="{{ $item->id }}"
+                                                                        {{ $item->receipt_id == $detail->id ? 'checked' : '' }}>
+                                                                @endif
                                                             @endif
                                                         </td>
                                                         <td colspan="3">
@@ -194,7 +197,7 @@
                                                                 <input type="text"
                                                                     {{ $detail->status == 'pending' ? '' : 'disabled' }}
                                                                     name="adjustment[{{ $item->id }}][note]"
-                                                                    class="form-control action_change"
+                                                                    class="form-control action_change adjustment_note"
                                                                     value="{{ $item->note }}"
                                                                     placeholder="Nội dung Truy thu/Hoàn trả">
                                                             @endif
@@ -209,7 +212,7 @@
                                                                 <input type="number"
                                                                     {{ $detail->status == 'pending' ? '' : 'disabled' }}
                                                                     name="adjustment[{{ $item->id }}][final_amount]"
-                                                                    class="form-control action_change"
+                                                                    class="form-control action_change adjustment_final_amount"
                                                                     value="{{ (int) $item->final_amount }}"
                                                                     placeholder="Giá trị tương ứng">
                                                             @endif
@@ -219,10 +222,11 @@
                                                                 {{ __($item->type) }}
                                                             @else
                                                                 <select name="adjustment[{{ $item->id }}][type]"
-                                                                    class="form-control">
+                                                                    class="form-control adjustment_type">
                                                                     @foreach ($type as $key => $val)
                                                                         @if (!in_array($key, ['dunokytruoc', 'doisoat']))
-                                                                            <option value="{{ $key }}" {{$item->type == $key ?'selected':''}}>
+                                                                            <option value="{{ $key }}"
+                                                                                {{ $item->type == $key ? 'selected' : '' }}>
                                                                                 {{ __($val) }}</option>
                                                                         @endif
                                                                     @endforeach
@@ -236,7 +240,7 @@
                                                                 <input type="date"
                                                                     {{ $detail->status == 'pending' ? '' : 'disabled' }}
                                                                     name="adjustment[{{ $item->id }}][month]"
-                                                                    class="form-control action_change"
+                                                                    class="form-control action_change adjustment_month"
                                                                     value="{{ $item->month != '' ? date('Y-m-d', strtotime($item->month)) : '' }}">
                                                             @endif
                                                         </td>
@@ -245,16 +249,19 @@
                                                                 @if (!in_array($item->type, ['dunokytruoc', 'doisoat']))
                                                                     <button
                                                                         class="btn btn-sm btn-success btn_save_adjustment"
-                                                                        type="button" data-toggle="tooltip" onclick=""
+                                                                        data-id = "{{ $item->id }}"
+                                                                        data-student_id = "{{ $detail->student_id }}"
+                                                                        data-receipt_id = "{{ $detail->id }}"
+                                                                        type="button" data-toggle="tooltip"
                                                                         title="@lang('Save')">
                                                                         <i class="fa fa-save"></i>
                                                                     </button>
-                                                                    {{-- <button class="btn btn-sm btn-danger" type="button"
+                                                                    <button class="btn btn-sm btn-danger btn_delete"
+                                                                        type="button" data-id = "{{ $item->id }}"
                                                                         data-toggle="tooltip"
-                                                                        onclick="$(this).closest('tr').remove();updateBalance()"
-                                                                        title="@lang('Delete')">
+                                                                        data-original-title="@lang('Delete')">
                                                                         <i class="fa fa-trash"></i>
-                                                                    </button> --}}
+                                                                    </button>
                                                                 @endif
                                                             @endif
                                                         </td>
@@ -262,53 +269,21 @@
                                                 @endif
                                             @endforeach
                                         @endif
-                                        {{-- @if (isset($detail->json_params->explanation))
-                                            @foreach ($detail->json_params->explanation as $key => $item)
-                                                <tr class="item_explanation">
-                                                    <td class="text-center">
-                                                    </td>
-                                                    <td colspan="5">
-                                                        <input type="text"
-                                                            {{ $detail->status == 'pending' ? '' : 'disabled' }}
-                                                            name="explanation[{{ $key }}][content]"
-                                                            class="form-control action_change" value="{{ $item->content }}"
-                                                            placeholder="Nội dung Truy thu/Hoàn trả">
-                                                    </td>
-                                                    <td>
-                                                        <input type="number"
-                                                            {{ $detail->status == 'pending' ? '' : 'disabled' }}
-                                                            name="explanation[{{ $key }}][value]"
-                                                            class="form-control action_change" value="{{ $item->value }}"
-                                                            placeholder="Giá trị tương ứng">
-                                                    </td>
-
-                                                    <td>
-                                                        @if ($detail->status == 'pending')
-                                                            <button class="btn btn-sm btn-danger" type="button"
-                                                                data-toggle="tooltip"
-                                                                onclick="$(this).closest('tr').remove();updateBalance()"
-                                                                title="@lang('Xóa giải trình')"
-                                                                data-original-title="@lang('Xóa giải trình')">
-                                                                <i class="fa fa-trash"></i>
-                                                            </button>
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        @endif --}}
+                                        {{-- ---- --}}
                                         <tr class="item_adjustment">
                                             <td class="text-center"></td>
                                             <td colspan="3">
                                                 <input type="text" name="adjustment[0][note]"
-                                                    class="form-control action_change"
+                                                    class="form-control action_change adjustment_note"
                                                     placeholder="Nội dung Truy thu/Hoàn trả">
                                             </td>
                                             <td>
                                                 <input type="number" name="adjustment[0][final_amount]"
-                                                    class="form-control action_change" placeholder="Giá trị tương ứng">
+                                                    class="form-control  action_change adjustment_final_amount"
+                                                    placeholder="Giá trị tương ứng">
                                             </td>
                                             <td>
-                                                <select name="adjustment[0][type]" class="form-control">
+                                                <select name="adjustment[0][type]" class="form-control adjustment_type">
                                                     @foreach ($type as $key => $val)
                                                         @if (!in_array($key, ['dunokytruoc', 'doisoat']))
                                                             <option value="{{ $key }}">
@@ -319,21 +294,23 @@
                                             </td>
                                             <td>
                                                 <input type="date" name="adjustment[0][month]"
-                                                    class="form-control action_change" value="">
+                                                    class="form-control action_change adjustment_month" value="">
                                             </td>
                                             <td>
                                                 <button class="btn btn-sm btn-success btn_save_adjustment" type="button"
-                                                    data-toggle="tooltip" onclick="" title="@lang('Save')">
+                                                    data-id="" data-student_id = "{{ $detail->student_id }}"
+                                                    data-receipt_id = "{{ $detail->id }}" data-toggle="tooltip"
+                                                    title="@lang('Save')">
                                                     <i class="fa fa-save"></i>
                                                 </button>
-                                                {{-- <button class="btn btn-sm btn-danger" type="button"
-                                                    data-toggle="tooltip"
-                                                    onclick="$(this).closest('tr').remove();updateBalance()"
-                                                    title="@lang('Delete')">
+                                                <button class="btn btn-sm btn-danger btn_delete" type="button"
+                                                    data-id="" data-toggle="tooltip"
+                                                    data-original-title="@lang('Delete')">
                                                     <i class="fa fa-trash"></i>
-                                                </button> --}}
+                                                </button>
                                             </td>
                                         </tr>
+
                                     </tbody>
                                 </table>
                             </form>
@@ -708,39 +685,95 @@
 
         // Thay đổi giá trị prev_balance khi các cập nhật giải trình
         $(document).on('click', '.btn_save_adjustment', function() {
-            updateBalance();
+            var _tr = $(this).closest('tr');
+            var _id = $(this).attr('data-id');
+            var receipt_id = $(this).attr('data-receipt_id');
+            var student_id = $(this).attr('data-student_id');
+            var note = $(this).closest('tr').find('.adjustment_note').val();
+            var final_amount = $(this).closest('tr').find('.adjustment_final_amount').val();
+            var type = $(this).closest('tr').find('.adjustment_type').val();
+            var month = $(this).closest('tr').find('.adjustment_month').val();
+            $.ajax({
+                type: "POST",
+                url: "{{ route('receipt_adjustment.update_or_create') }}",
+                data: {
+                    id: _id,
+                    receipt_id: receipt_id,
+                    student_id: student_id,
+                    note: note,
+                    final_amount: final_amount,
+                    type: type,
+                    month: month,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response) {
+                        _tr.find('.btn_save_adjustment').attr('data-id', response.data.id)
+                        _tr.find('.btn_delete').attr('data-id', response.data.id)
+                        updateBalance()
+                    } else {
+                        hide_loading_notification();
+                        var _html = `<div class="alert alert-warning alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            Bạn không có quyền thao tác chức năng này!
+                            </div>`;
+                        $('.box_alert').prepend(_html);
+                        setTimeout(function() {
+                            $(".alert").fadeOut(3000, function() {});
+                        }, 800);
+                    }
+
+
+                },
+                error: function(data) {
+                    var errors = data.responseJSON.message;
+                    alert(data);
+                }
+            });
+            // updateBalance();
         })
+        // Xóa prev_balance thì cập nhật giải trình
+        $(document).on('click', '.btn_delete', function() {
+            if (confirm('Xác nhận xóa !')) {
+                var _tr = $(this).closest('tr');
+                var _id = $(this).data('id');
+                if (_id) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('receipt_adjustment.delete') }}",
+                        data: {
+                            id: _id,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            if (response) {
+                                _tr.remove();
+                                updateBalance()
+                            } else {
+                                hide_loading_notification();
+                                var _html = `<div class="alert alert-warning alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            Bạn không có quyền thao tác chức năng này!
+                            </div>`;
+                                $('.box_alert').prepend(_html);
+                                setTimeout(function() {
+                                    $(".alert").fadeOut(3000, function() {});
+                                }, 800);
+                            }
+
+                        },
+                        error: function(data) {
+                            var errors = data.responseJSON.message;
+                            alert(data);
+                        }
+                    });
+                } else {
+                    location.reload();
+                }
+            }
+        });
 
         function updateBalance() {
-            var total = 0;
-            $('input.action_change[type="number"]').each(function() {
-                if ($(this).parents('tr').find('.check_doisoat').is(':checked') == true) {
-                    var value = parseFloat($(this).val()) ||
-                        0; // Chuyển giá trị thành số, mặc định 0 nếu không hợp lệ
-                    total += value;
-                }
-            });
-            $('.final_amount').each(function() {
-                var value = parseFloat($(this).html()) || 0; // Chuyển giá trị thành số, mặc định 0 nếu không hợp lệ
-                if ($(this).parents('tr').find('.check_doisoat').is(':checked') == true) {
-                    total += value;
-                }
-            });
-            $('.prev_balance').val(total).change();
-        }
-
-        //Thay đổi số tiền tổng
-        $(document).on('change', '.prev_balance', function() {
-            var _balance = parseInt($(this).val(), 10);
-            if (isNaN(_balance)) {
-                _balance = 0;
-            }
-            $('.total_prev_balance').html(new Intl.NumberFormat('vi-VN').format(_balance));
-            updateJsonExplanation();
-        })
-
-        // Hàm cập nhật giải trình lưu lại trong JSON và tính lại số tiền
-        function updateJsonExplanation() {
             var _url = $('#form_update_explanation').prop('action')
             var formData = $('#form_update_explanation').serialize();
             show_loading_notification();
@@ -753,6 +786,9 @@
                     if (response.data == 'warning') {
                         location.reload();
                     }
+                    $('.prev_balance').val(response.data.prev_balance);
+                    $('.total_prev_balance').html(new Intl.NumberFormat('vi-VN').format(response.data
+                        .prev_balance));
                     $('.total_final').html(new Intl.NumberFormat('vi-VN').format(response.data.total_final));
                     $('.total_due').html(new Intl.NumberFormat('vi-VN').format(response.data.total_due));
                 },
@@ -764,13 +800,6 @@
             });
         }
 
-
-
-        // Cập nhật giải trình khi form được submit
-        // $('#form_update_explanation').on('submit', function(event) {
-        //     event.preventDefault();
-        //     updateJsonExplanation();
-        // });
 
 
         // Xử lý sự kiện click nút duyệt TBP
