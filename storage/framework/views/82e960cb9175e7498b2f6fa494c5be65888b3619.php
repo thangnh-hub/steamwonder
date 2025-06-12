@@ -6,6 +6,35 @@
 
 <?php $__env->startSection('style'); ?>
     <style>
+      
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            position: relative;
+            max-height: 600px; /* hoặc theo nhu cầu */
+            overflow-y: auto;
+        }
+
+        .card-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            padding: 10px 15px;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .card-footer {
+            padding: 10px 15px;
+            background-color: #f5f5f5;
+            border-top: 1px solid #ddd;
+        }
        .area-block {
             border: 1px solid #ccc;
             padding: 8px;
@@ -57,61 +86,18 @@
 <?php $__env->startSection('content-header'); ?>
     <section class="content-header">
         <h1>
+            <?php if(!$show_report): ?>
+            <?php echo app('translator')->get('Thống kê thực đơn theo tuần'); ?>
+            <?php else: ?>
             <?php echo app('translator')->get($module_name); ?>
+            <?php endif; ?>
         </h1>
     </section>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
     <section class="content">
-        <div class="box box-default">
-            <div class="box-header with-border">
-                <h3 class="box-title"><?php echo app('translator')->get('Filter'); ?></h3>
-                <div class="box-tools pull-right">
-                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                </div>
-            </div>
-            <form action="<?php echo e(route('mealmenu.week.report')); ?>" method="GET">
-                <div class="box-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="week">Chọn tuần:</label>
-                                <input type="week" name="week" id="week" class="form-control mx-2" value="<?php echo e($week); ?>">
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Area'); ?></label>
-                                <select class="form-control select2" name="area_id">
-                                    <option value=""><?php echo app('translator')->get('Chọn'); ?></option>
-                                    <?php $__currentLoopData = $list_area; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $area): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($area->id); ?>" <?php echo e(isset($params['area_id']) && $params['area_id'] == $area->id ? 'selected' : ''); ?>>
-                                            <?php echo e($area->name); ?>
-
-                                        </option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Filter'); ?></label>
-                                <div style="display:flex;jsutify-content:space-between;">
-                                    <button type="submit" class="btn btn-primary btn-sm mr-10"><?php echo app('translator')->get('Submit'); ?></button>
-                                    <a class="btn btn-default btn-sm  mr-10" href="<?php echo e(route('mealmenu.week.report')); ?>">
-                                        <?php echo app('translator')->get('Reset'); ?>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </form>
-        </div>
+        
         
 
         <div class="box">
@@ -144,14 +130,55 @@
 
                     </div>
                 <?php endif; ?>
-                
+               
+                <?php if(!$show_report): ?>
+                    <form method="GET" action="<?php echo e(route('mealmenu.week.report')); ?>" class="form-inline mb-3">
+                        <div class=" mr-2 box-center">
+                            <select style="width:30%" name="year" id="year" class="form-control select2" onchange="this.form.submit()">
+                                <?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $year): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($year); ?>" <?php echo e($year == $selected_year ? 'selected' : ''); ?>>
+                                        <?php echo e($year); ?>
 
-                <?php if(request()->filled('area_id')): ?>
-                    <!-- Nút chuyển đổi chế độ hiển thị -->
-                    <div style="margin-bottom: 15px;">
-                        <button id="btnViewByAge" class="btn btn-primary">Hiển thị theo nhóm tuổi</button>
-                        <button id="btnViewByDay" class="btn btn-default">Hiển thị theo ngày</button>
+                                    </option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </select>
+                        </div>
+                    </form>
+                    <br>
+                    <div class="row">
+                        <?php $__currentLoopData = $list_area; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $area): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <div class="col-md-4 mb-4">
+                                <div class="card shadow-sm">
+                                    <div class="card-header bg-primary text-white">
+                                        <strong><?php echo e($area->name); ?></strong>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-group">
+                                            <?php $__currentLoopData = $currentYearWeeks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $week): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <a href="<?php echo e(route('mealmenu.week.report', ['area_id' => $area->id, 'week' => $week['value'], 'year' => $selected_year])); ?>">
+                                                        <?php echo e($week['label']); ?>
+
+                                                    </a>
+                                                </li>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
+                <?php else: ?>
+                    <div class="mb-3">
+                        <a href="<?php echo e(route('mealmenu.week.report')); ?>" class="btn btn-primary">
+                            ← Quay lại chọn tuần
+                        </a>
+                        <div class="pull-right" style="margin-bottom: 15px;">
+                            <button id="btnViewByAge" class="btn btn-primary"><i class="fa fa-eye"></i> Hiển thị theo nhóm tuổi</button>
+                            <button id="btnViewByDay" class="btn btn-default"><i class="fa fa-eye"></i> Hiển thị theo ngày</button>
+                        </div>
+                    </div>
+                    <br>
                     <!-- View 1: Theo ngày -->
                     <div id="viewByDay" style="display:none;">
                         <table class="table table-bordered">
@@ -244,11 +271,7 @@
                             </tbody>
                         </table>
                     </div>
-
-                <?php else: ?>
-                    <p class="text-muted">Vui lòng chọn khu vực để xem thực đơn.</p>
                 <?php endif; ?>
-
             </div>
         </div>
     </section>
