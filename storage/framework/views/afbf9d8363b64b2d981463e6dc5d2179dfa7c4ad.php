@@ -35,34 +35,7 @@
                             </div>
                         </div>
                         
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Loại món ăn'); ?></label>
-                                <select name="dishes_type" class="form-control select2"style="width: 100%;">
-                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
-                                    <?php $__currentLoopData = $list_type; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($key); ?>"
-                                            <?php echo e(isset($params['dishes_type']) && $params['dishes_type'] == $key ? 'selected' : ''); ?>><?php echo e(__($item)); ?>
-
-                                        </option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Bữa áp dụng'); ?></label>
-                                <select name="dishes_time" class="form-control select2"style="width: 100%;">
-                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
-                                    <?php $__currentLoopData = $list_time; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($key); ?>"
-                                            <?php echo e(isset($params['dishes_time']) && $params['dishes_time'] == $key ? 'selected' : ''); ?>><?php echo e(__($item)); ?>
-
-                                        </option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </select>
-                            </div>
-                        </div>
+                        
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Status'); ?></label>
@@ -138,8 +111,8 @@
                             <th><?php echo app('translator')->get('STT'); ?></th>
                             <th><?php echo app('translator')->get('Tên món ăn'); ?></th>
                             <th><?php echo app('translator')->get('Mã món ăn'); ?></th>
-                            <th><?php echo app('translator')->get('Loại món ăn'); ?></th>
-                            <th><?php echo app('translator')->get('Bữa áp dụng'); ?></th>
+                            <th><?php echo app('translator')->get('Nguyên liệu'); ?></th>
+                            
                             <th><?php echo app('translator')->get('Mô tả'); ?></th>
                             <th><?php echo app('translator')->get('Trạng thái'); ?></th>
                             <th><?php echo app('translator')->get('Thao tác'); ?></th>
@@ -158,13 +131,19 @@
 
                                 </td>
                                 <td>
-                                    <?php echo e(__($row->dishes_type ?? '')); ?>
+                                    <?php $ingredients = $row->getIngredientNames(); ?>
+                                    <?php if(!empty($ingredients)): ?>
+                                    <ul>
+                                        <?php $__currentLoopData = $ingredients; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ingredient): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <li><?php echo e($ingredient); ?></li>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </ul>
+                                    <?php else: ?>
+                                        <span class="badge badge-warning"><?php echo app('translator')->get('Chưa có nguyên liệu'); ?></span>
+                                    <?php endif; ?>
 
                                 </td>
-                                <td>
-                                    <?php echo e(__($row->dishes_time ?? '')); ?>
-
-                                </td>
+                                
                                 <td>
                                     <?php echo e($row->description ?? ""); ?>
 

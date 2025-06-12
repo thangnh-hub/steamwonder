@@ -36,6 +36,8 @@ class MealMenuDailyController extends Controller
 
     public function index(Request $request)
     {
+        // $this->generateDailyMenus('2025-06-01', '2025-06-30', 3, 1); 
+
         $permisson_area_id = DataPermissionService::getPermisisonAreas(Auth::guard('admin')->user()->id);
         if (empty($permisson_area_id)) {
             $permisson_area_id = [-1];
@@ -462,14 +464,36 @@ class MealMenuDailyController extends Controller
         $this->responseData['menusGroupedByAge'] = $menusGroupedByAge;
         $this->responseData['dishesTime'] = $dishesTime;
 
-        $daysInWeek = CarbonPeriod::create($startOfWeek, $endOfWeek);
+        // $daysInWeek = CarbonPeriod::create($startOfWeek, $endOfWeek);
+        $daysInWeek = CarbonPeriod::create($startOfWeek, $endOfWeek)->filter(function ($date) {
+            return $date->dayOfWeek >= Carbon::MONDAY && $date->dayOfWeek <= Carbon::FRIDAY;
+        });
         $this->responseData['params'] = $request->all();
         $this->responseData['menusGrouped'] = $menusGrouped;
         $this->responseData['daysInWeek'] = $daysInWeek;
         $this->responseData['week'] = $week;
 
-        $this->responseData['module_name'] = "Báo cáo thực đơn theo tuần: (Từ " . $startOfWeek->format('d/m/Y') . " đến " . $endOfWeek->format('d/m/Y') . ")";
+        $this->responseData['module_name'] = "Báo cáo thực đơn theo tuần $weekNumber năm $year (Từ " . $startOfWeek->format('d/m/Y') . " đến " . $endOfWeek->format('d/m/Y') . ")";
 
+        //Bổ sung
+        $this->responseData['show_report'] = $request->filled('area_id') && $request->filled('week');
+        $selectedYear = $request->input('year', now()->year);
+        $this->responseData['selected_year'] = $selectedYear;
+
+        $this->responseData['currentYearWeeks'] = collect(range(1, 52))->map(function ($weekNumber) use ($selectedYear) {
+            $startOfWeek = Carbon::now()->setISODate($selectedYear, $weekNumber)->startOfWeek();
+            $endOfWeek = (clone $startOfWeek)->endOfWeek();
+            return [
+                'label' => "Tuần $weekNumber (" . $startOfWeek->format('d/m') . " - " . $endOfWeek->format('d/m') . ")",
+                'value' => $startOfWeek->format('o-\WW')
+            ];
+        });
+
+        $currentYear = now()->year;
+        $years = range($currentYear - 2, $currentYear + 1); // Ví dụ: 3 năm gần đây
+
+        $this->responseData['years'] = $years;
+        $this->responseData['selected_year'] = $request->input('year', $currentYear);
         return $this->responseView($this->viewPart . '.report_by_week');
     }
 

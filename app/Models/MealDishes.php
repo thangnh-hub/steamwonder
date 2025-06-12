@@ -53,6 +53,7 @@ class MealDishes extends Model
         return $this->belongsTo(Admin::class, 'admin_updated_id');
     }
 
+    // hàm lấy định lượng món ăn
     public function getQuantitativeAttribute()
     {
         $raw = $this->json_params->quantitative ?? [];
@@ -61,4 +62,28 @@ class MealDishes extends Model
         })->toArray();
     }
 
+    // lấy tên nguyên liệu
+    public function getIngredientNames()
+    {
+        // Lấy danh sách ID nguyên liệu từ json_params->quantitative
+        $ingredientIds = array_keys((array)($this->json_params->quantitative ?? []));
+
+        if (empty($ingredientIds)) {
+            return [];
+        }
+
+        // Truy vấn bảng nguyên liệu để lấy tên
+        return MealIngredient::whereIn('id', $ingredientIds)
+            ->pluck('name')
+            ->toArray();
+    }
+    public function dishesplanningMenus()
+    {
+        return $this->hasMany(MealMenuDishes::class, 'dishes_id');
+    }
+
+    public function dishesdailyMenus()
+    {
+        return $this->hasMany(MealMenuDishesDaily::class, 'dishes_id');
+    }
 }

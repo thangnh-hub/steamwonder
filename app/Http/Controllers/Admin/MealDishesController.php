@@ -94,6 +94,10 @@ class MealDishesController extends Controller
     public function destroy($id)
     {
         $mealIngredient = MealDishes::findOrFail($id);
+        //kiểm tra xem món ăn này có được sử dụng trong thực đơn hàng ngày hay mẫu nào không
+        if ($mealIngredient->dishesdailyMenus()->count() > 0 || $mealIngredient->dishesplanningMenus()->count() > 0) {
+            return redirect()->route($this->routeDefault . '.index')->with('errorMessage', __('Món ăn đã có trong thực đơn hàng ngày hoặc mẫu, không thể xóa!'));
+        }
         $mealIngredient->delete();
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Delete record successfully!'));
     }

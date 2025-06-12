@@ -120,10 +120,11 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @php $index = 1; @endphp
                         @foreach($menusGrouped as $date => $areas)
                             @foreach($areas as $areaId => $menus)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $index++ }}</td>
                                     <td>{{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}</td>
                                     <td>{{ $menus->first()->area->name ?? '-' }}</td>
                                     <td>
