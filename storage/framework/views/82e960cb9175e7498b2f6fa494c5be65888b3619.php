@@ -151,14 +151,18 @@
                                     <div class="card-body">
                                         <ul class="list-group">
                                             <?php $__currentLoopData = $currentYearWeeks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $week): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                <a href="<?php echo e(route('mealmenu.week.report', ['area_id' => $area->id, 'week' => $week['value'], 'month' => $selected_month])); ?>">
-                                                    <?php echo e($week['label']); ?>
 
-                                                    <i class="fa fa-arrow-right pull-right"></i>
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    <a href="<?php echo e(route('mealmenu.week.report', ['area_id' => $area->id, 'week' => $week['value'], 'month' => $selected_month])); ?>">
+                                                        <?php echo e($week['label']); ?>
+
+                                                    </a>
+
+                                                    <a class="pull-right" href="<?php echo e(route('mealmenu.week.report', ['area_id' => $area->id, 'week' => $week['value'], 'month' => $selected_month])); ?>">
+                                                        <?php echo app('translator')->get('Xem chi tiết '); ?> <i class="fa fa-arrow-right"></i> 
+                                                    </a>
                                                 </li>
-                                                </a>
-                                                
+
                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </ul>
                                     </div>

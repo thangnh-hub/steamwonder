@@ -195,13 +195,17 @@
                                     <div class="card-body">
                                         <ul class="list-group">
                                             @foreach($currentYearWeeks as $week)
+
                                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                <a href="{{ route('mealmenu.week.report', ['area_id' => $area->id, 'week' => $week['value'], 'month' => $selected_month]) }}">
-                                                    {{ $week['label'] }}
-                                                    <i class="fa fa-arrow-right pull-right"></i>
+                                                    <a href="{{ route('mealmenu.week.report', ['area_id' => $area->id, 'week' => $week['value'], 'month' => $selected_month]) }}">
+                                                        {{ $week['label'] }}
+                                                    </a>
+
+                                                    <a class="pull-right" href="{{ route('mealmenu.week.report', ['area_id' => $area->id, 'week' => $week['value'], 'month' => $selected_month]) }}">
+                                                        @lang('Xem chi tiết ') <i class="fa fa-arrow-right"></i> 
+                                                    </a>
                                                 </li>
-                                                </a>
-                                                
+
                                             @endforeach
                                         </ul>
                                     </div>
