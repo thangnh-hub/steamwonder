@@ -472,28 +472,34 @@ class MealMenuDailyController extends Controller
         $this->responseData['menusGrouped'] = $menusGrouped;
         $this->responseData['daysInWeek'] = $daysInWeek;
         $this->responseData['week'] = $week;
-
         $this->responseData['module_name'] = "Báo cáo thực đơn theo tuần $weekNumber năm $year (Từ " . $startOfWeek->format('d/m/Y') . " đến " . $endOfWeek->format('d/m/Y') . ")";
 
         //Bổ sung
         $this->responseData['show_report'] = $request->filled('area_id') && $request->filled('week');
-        $selectedYear = $request->input('year', now()->year);
-        $this->responseData['selected_year'] = $selectedYear;
+        $selectedMonth = $request->input('month', now()->format('Y-m'));
+        $this->responseData['selected_month'] = $selectedMonth;
 
-        $this->responseData['currentYearWeeks'] = collect(range(1, 52))->map(function ($weekNumber) use ($selectedYear) {
-            $startOfWeek = Carbon::now()->setISODate($selectedYear, $weekNumber)->startOfWeek();
-            $endOfWeek = (clone $startOfWeek)->endOfWeek();
-            return [
-                'label' => "Tuần $weekNumber (" . $startOfWeek->format('d/m') . " - " . $endOfWeek->format('d/m') . ")",
-                'value' => $startOfWeek->format('o-\WW')
-            ];
-        });
+        $startOfMonth = Carbon::createFromFormat('Y-m', $selectedMonth)->startOfMonth();
+        $endOfMonth = (clone $startOfMonth)->endOfMonth();
 
-        $currentYear = now()->year;
-        $years = range($currentYear - 2, $currentYear + 1); // Ví dụ: 3 năm gần đây
+        $weeksInMonth = [];
+        $period = CarbonPeriod::create($startOfMonth, $endOfMonth);
+        foreach ($period as $date) {
+            $weekNumber = $date->isoWeek;
+            $yearOfWeek = $date->isoWeekYear;
 
-        $this->responseData['years'] = $years;
-        $this->responseData['selected_year'] = $request->input('year', $currentYear);
+            $key = $yearOfWeek . '-W' . str_pad($weekNumber, 2, '0', STR_PAD_LEFT);
+            if (!isset($weeksInMonth[$key])) {
+                $startOfWeek = Carbon::now()->setISODate($yearOfWeek, $weekNumber)->startOfWeek();
+                $endOfWeek = (clone $startOfWeek)->endOfWeek();
+
+                $weeksInMonth[$key] = [
+                    'label' => "Tuần $weekNumber (" . $startOfWeek->format('d/m') . " - " . $endOfWeek->format('d/m') . ")",
+                    'value' => $key
+                ];
+            }
+        }
+        $this->responseData['currentYearWeeks'] = collect(array_values($weeksInMonth));
         return $this->responseView($this->viewPart . '.report_by_week');
     }
 

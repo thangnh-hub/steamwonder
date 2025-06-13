@@ -141,7 +141,6 @@
                                     <?php else: ?>
                                         <span class="badge badge-warning"><?php echo app('translator')->get('Chưa có nguyên liệu'); ?></span>
                                     <?php endif; ?>
-
                                 </td>
                                 
                                 <td>

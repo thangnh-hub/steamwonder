@@ -85,13 +85,7 @@
 
 <?php $__env->startSection('content-header'); ?>
     <section class="content-header">
-        <h1>
-            <?php if(!$show_report): ?>
-            <?php echo app('translator')->get('Thống kê thực đơn theo tuần'); ?>
-            <?php else: ?>
-            <?php echo app('translator')->get($module_name); ?>
-            <?php endif; ?>
-        </h1>
+        
     </section>
 <?php $__env->stopSection(); ?>
 
@@ -102,7 +96,13 @@
 
         <div class="box">
             <div class="box-header">
-                <h3 class="box-title"><?php echo app('translator')->get('List'); ?></h3>
+                <h3 class="box-title">
+                    <?php if(!$show_report): ?>
+                        <?php echo app('translator')->get('Thống kê thực đơn theo tuần'); ?>
+                    <?php else: ?>
+                        <?php echo app('translator')->get($module_name); ?>
+                    <?php endif; ?>
+                </h3>
             </div>
             <div class="box-body table-responsive">
                 <?php if(session('errorMessage')): ?>
@@ -134,14 +134,10 @@
                 <?php if(!$show_report): ?>
                     <form method="GET" action="<?php echo e(route('mealmenu.week.report')); ?>" class="form-inline mb-3">
                         <div class=" mr-2 box-center">
-                            <select style="width:30%" name="year" id="year" class="form-control select2" onchange="this.form.submit()">
-                                <?php $__currentLoopData = $years; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $year): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <option value="<?php echo e($year); ?>" <?php echo e($year == $selected_year ? 'selected' : ''); ?>>
-                                        <?php echo e($year); ?>
+                            <input type="month" name="month" class="form-control" style="width: 300px; display: inline-block;"
+                                value="<?php echo e($selected_month ?? now()->format('Y-m')); ?>"
+                                onchange="this.form.submit()">
 
-                                    </option>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                            </select>
                         </div>
                     </form>
                     <br>
@@ -155,12 +151,18 @@
                                     <div class="card-body">
                                         <ul class="list-group">
                                             <?php $__currentLoopData = $currentYearWeeks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $week): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+
                                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                <a href="<?php echo e(route('mealmenu.week.report', ['area_id' => $area->id, 'week' => $week['value'], 'year' => $selected_year])); ?>">
+                                                    <a href="<?php echo e(route('mealmenu.week.report', ['area_id' => $area->id, 'week' => $week['value'], 'month' => $selected_month])); ?>">
                                                         <?php echo e($week['label']); ?>
 
                                                     </a>
+
+                                                    <a class="pull-right" href="<?php echo e(route('mealmenu.week.report', ['area_id' => $area->id, 'week' => $week['value'], 'month' => $selected_month])); ?>">
+                                                        <?php echo app('translator')->get('Xem chi tiết '); ?> <i class="fa fa-arrow-right"></i> 
+                                                    </a>
                                                 </li>
+
                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </ul>
                                     </div>
