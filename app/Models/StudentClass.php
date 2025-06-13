@@ -73,4 +73,8 @@ class StudentClass extends Model
     {
         return $this->hasMany(Attendances::class, 'class_id', 'class_id');
     }
+    public function studentMeal()
+    {
+        return $this->hasMany(AttendanceStudentMeal::class, 'student_id', 'student_id');
+    }
 }

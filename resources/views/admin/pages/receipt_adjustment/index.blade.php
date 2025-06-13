@@ -8,8 +8,8 @@
     <section class="content-header">
         <h1>
             @lang($module_name)
-            <a class="btn btn-sm btn-warning pull-right" href="{{ route(Request::segment(2) . '.create') }}"><i
-                    class="fa fa-plus"></i> @lang('Add')</a>
+            {{-- <a class="btn btn-sm btn-warning pull-right" href="{{ route(Request::segment(2) . '.create') }}"><i
+                    class="fa fa-plus"></i> @lang('Add')</a> --}}
         </h1>
 
     </section>
@@ -186,21 +186,21 @@
                                                     title="@lang('Update')" data-original-title="@lang('Update')"
                                                     href="{{ route('receipt.show', $row->receipt_id) }}">
                                                     <i class="fa fa-pencil-square-o"></i>
-                                                @else
-                                                    <a class="btn btn-sm btn-warning" data-toggle="tooltip"
-                                                        title="@lang('Update')" data-original-title="@lang('Update')"
-                                                        href="{{ route(Request::segment(2) . '.edit', $row->id) }}">
-                                                        <i class="fa fa-pencil-square-o"></i>
-                                                    </a>
-                                                    <form action="{{ route(Request::segment(2) . '.destroy', $row->id) }}"
-                                                        method="POST" style="display:inline;"
-                                                        onsubmit="return confirm('@lang('confirm_action')')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button class="btn btn-sm btn-danger" type="submit">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-                                                    </form>
+                                            {{-- @else
+                                                <a class="btn btn-sm btn-warning" data-toggle="tooltip"
+                                                    title="@lang('Update')" data-original-title="@lang('Update')"
+                                                    href="{{ route(Request::segment(2) . '.edit', $row->id) }}">
+                                                    <i class="fa fa-pencil-square-o"></i>
+                                                </a>
+                                                <form action="{{ route(Request::segment(2) . '.destroy', $row->id) }}"
+                                                    method="POST" style="display:inline;"
+                                                    onsubmit="return confirm('@lang('confirm_action')')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn btn-sm btn-danger" type="submit">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </form> --}}
                                             @endif
                                         @endif
                                     </td>

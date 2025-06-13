@@ -209,11 +209,12 @@ class ReceiptController extends Controller
     {
         $result = null;
         $receipt = Receipt::find($id);
+        $admin = Auth::guard('admin')->user();
+
         $prev_balance = $request->input('prev_balance') ?? 0;
         $adjustment = $request->input('adjustment');
         $list_id_receipt_adjustment = $request->input('receipt_adjustment') ?? [];
         $list_doisoat = $request->input('list_doisoat') ?? [];
-
 
         // dd($request->all());
         if (empty($receipt)) {
@@ -225,9 +226,9 @@ class ReceiptController extends Controller
             return $this->sendResponse('warning', 'TBP đã được duyệt và không thể sửa!');
         }
 
-        // Cập nhật lại receipt_id cho các receipt_adjustmen
         // Đổi hết về null sau đó gắn lại
         ReceiptAdjustment::where('student_id', $receipt->student_id)
+            ->whereIn('type', ['doisoat', 'dunokytruoc'])
             ->where(function ($where) use ($id) {
                 return $where->whereNull('tb_receipt_adjustment.receipt_id')
                     ->orWhere('tb_receipt_adjustment.receipt_id', $id);
@@ -248,36 +249,11 @@ class ReceiptController extends Controller
                 }
             }
         }
-
-
-        // Thêm mới hoặc cập nhật receipt_adjustment khuyenmai, phatsinh
-        foreach ($adjustment as $key => $item) {
-            if ($key == 0) {
-                continue;
-            }
-            $receipt_adjustment_other = ReceiptAdjustment::find($key);
-            if ($receipt_adjustment_other) {
-                $receipt_adjustment_other->note = $item['note'];
-                $receipt_adjustment_other->final_amount = $item['final_amount'];
-                $receipt_adjustment_other->month = $item['month'];
-                $receipt_adjustment_other->type = $item['type'];
-                $receipt_adjustment_other->save();
-            } else {
-                ReceiptAdjustment::create([
-                    'receipt_id' => $receipt->id,
-                    'student_id' => $receipt->student_id,
-                    'type' => $item['type'],
-                    'month' => $item['month'],
-                    'final_amount' => $item['final_amount'] ?? 0,
-                    'note' => $item['note'],
-                ]);
-            }
-        }
-
         // Cập nhật số dư kỳ trước, tổng tiền và số tiền còn phải thu
-        $receipt->prev_balance = $prev_balance;
+        $receipt->prev_balance = $receipt->receiptAdjustment()->sum('final_amount');
         $receipt->total_final = $receipt->total_amount - $receipt->total_discount - $receipt->prev_balance;
         $receipt->total_due = $receipt->total_final - $receipt->total_paid;
+        $receipt->admin_updated_id = $admin->id;
         // $receipt->json_params = $json_params;
         $receipt->save();
         $result = $receipt;

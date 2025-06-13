@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\MealMenuDaily;
+use App\Models\AttendanceStudentMeal;
 use App\Models\MealAges;
+use App\Models\tbClass;
 use App\Models\MealDishes;
 use App\Models\MealMenuDishes;
 use App\Models\MealMenuDishesDaily;
@@ -36,6 +38,8 @@ class MealMenuDailyController extends Controller
 
     public function index(Request $request)
     {
+        // $this->generateDailyMenus('2025-06-01', '2025-06-30', 3, 1); 
+
         $permisson_area_id = DataPermissionService::getPermisisonAreas(Auth::guard('admin')->user()->id);
         if (empty($permisson_area_id)) {
             $permisson_area_id = [-1];
@@ -462,14 +466,42 @@ class MealMenuDailyController extends Controller
         $this->responseData['menusGroupedByAge'] = $menusGroupedByAge;
         $this->responseData['dishesTime'] = $dishesTime;
 
-        $daysInWeek = CarbonPeriod::create($startOfWeek, $endOfWeek);
+        // $daysInWeek = CarbonPeriod::create($startOfWeek, $endOfWeek);
+        $daysInWeek = CarbonPeriod::create($startOfWeek, $endOfWeek)->filter(function ($date) {
+            return $date->dayOfWeek >= Carbon::MONDAY && $date->dayOfWeek <= Carbon::FRIDAY;
+        });
         $this->responseData['params'] = $request->all();
         $this->responseData['menusGrouped'] = $menusGrouped;
         $this->responseData['daysInWeek'] = $daysInWeek;
         $this->responseData['week'] = $week;
+        $this->responseData['module_name'] = "Báo cáo thực đơn theo tuần $weekNumber năm $year (Từ " . $startOfWeek->format('d/m/Y') . " đến " . $endOfWeek->format('d/m/Y') . ")";
 
-        $this->responseData['module_name'] = "Báo cáo thực đơn theo tuần: (Từ " . $startOfWeek->format('d/m/Y') . " đến " . $endOfWeek->format('d/m/Y') . ")";
+        //Bổ sung
+        $this->responseData['show_report'] = $request->filled('area_id') && $request->filled('week');
+        $selectedMonth = $request->input('month', now()->format('Y-m'));
+        $this->responseData['selected_month'] = $selectedMonth;
 
+        $startOfMonth = Carbon::createFromFormat('Y-m', $selectedMonth)->startOfMonth();
+        $endOfMonth = (clone $startOfMonth)->endOfMonth();
+
+        $weeksInMonth = [];
+        $period = CarbonPeriod::create($startOfMonth, $endOfMonth);
+        foreach ($period as $date) {
+            $weekNumber = $date->isoWeek;
+            $yearOfWeek = $date->isoWeekYear;
+
+            $key = $yearOfWeek . '-W' . str_pad($weekNumber, 2, '0', STR_PAD_LEFT);
+            if (!isset($weeksInMonth[$key])) {
+                $startOfWeek = Carbon::now()->setISODate($yearOfWeek, $weekNumber)->startOfWeek();
+                $endOfWeek = (clone $startOfWeek)->endOfWeek();
+
+                $weeksInMonth[$key] = [
+                    'label' => "Tuần $weekNumber (" . $startOfWeek->format('d/m') . " - " . $endOfWeek->format('d/m') . ")",
+                    'value' => $key
+                ];
+            }
+        }
+        $this->responseData['currentYearWeeks'] = collect(array_values($weeksInMonth));
         return $this->responseView($this->viewPart . '.report_by_week');
     }
 
@@ -571,5 +603,150 @@ class MealMenuDailyController extends Controller
             report($e);
             return redirect()->back()->with('errorMessage', 'Đã xảy ra lỗi: ' . $e->getMessage());
         }
+    }
+
+    // Sổ ăn
+    public function calendarByMonth(Request $request)
+    {
+        // $this->updateMealMenuCount('2025-06-02', 1,3);
+
+        $month = $request->input('month') ?? now()->format('Y-m');
+        $area_id = $request->input('area_id');
+
+        // Lấy danh sách khu vực theo quyền
+        $permisson_area_id = DataPermissionService::getPermisisonAreas(Auth::guard('admin')->user()->id);
+        if (empty($permisson_area_id)) $permisson_area_id = [-1];
+
+        $params_area = [
+            'id' => $permisson_area_id,
+            'status' => Consts::STATUS['active'],
+        ];
+        $this->responseData['list_area'] = Area::getsqlArea($params_area)->get();
+
+        $colorMap = [
+            1 => '#3498db', 
+            2 => '#27ae60',
+            3 => '#f48fb1',
+        ];
+
+        // Lấy dữ liệu thực đơn
+        $startOfMonth = Carbon::parse($month . '-01')->startOfMonth();
+        $endOfMonth = (clone $startOfMonth)->endOfMonth();
+
+        $menus = MealMenuDaily::with(['mealAge'])
+            ->whereBetween('date', [$startOfMonth, $endOfMonth])
+            ->whereIn('area_id', $permisson_area_id)
+            ->when($area_id, fn($q) => $q->where('area_id', $area_id))
+            ->get();
+
+        $calendarEvents = [];
+        $today = Carbon::today();
+        
+        foreach ($menus as $menu) {
+            $menuDate = Carbon::parse($menu->date);
+            if ($menuDate->greaterThan($today)) {
+                continue;
+            }
+            $mealAgeName = $menu->mealAge->name ?? 'Chưa rõ';
+            $mealAgeId = $menu->mealAge->id ?? 0;
+            $color = $colorMap[$mealAgeId] ?? '#cccccc';
+
+            $calendarEvents[] = [
+                'title' => $mealAgeName . ': ' . ($menu->count_student ?? 0) . ' suất',
+                'start' => $menu->date,
+                'color' => $color,
+                'textColor' => '#fff',
+                'display' => 'block',
+                'menu_daily_id'=>$menu->id,
+                'extendedProps' => [
+                    'meal_age_id' => $mealAgeId,
+                    'date' => $menu->date,
+                ]
+            ];
+        }
+
+        $this->responseData['calendarEvents'] = $calendarEvents;
+        $this->responseData['month'] = $month;
+        $this->responseData['selected_area_id'] = $area_id;
+        $this->responseData['module_name'] = 'Sổ ăn tháng ' . Carbon::parse($month)->format('m/Y');
+        return $this->responseView($this->viewPart . '.calendar_by_month');
+    }
+
+    //Hàm ajax chi tiết sổ ăn
+    public function getAttendanceDetail(Request $request)
+    {
+        $mealAgeId = $request->input('meal_age_id');
+        $date = $request->input('date');
+        $selectedAreaId = $request->area_id;
+        $menu_daily_id = $request->menu_daily_id;
+        $area_name = Area::findOrFail($selectedAreaId)->name ?? "";
+
+        $mealAge = MealAges::findOrFail($mealAgeId);
+        $educationAgeIds = explode(',', $mealAge->list_education_age);
+
+        //Lấy thực đơn hàng ngày
+
+        // Lấy danh sách lớp theo độ tuổi trong meal_age
+       $classes = tbClass::withCount([
+            'attendances as attendance_count' => function ($query) use ($date) {
+                $query->whereDate('meal_day', $date)->where('status', 'active');
+            }
+        ])
+        ->whereIn('education_age_id', $educationAgeIds)
+        ->where('area_id', $selectedAreaId) // Thêm lọc khu vực
+        ->where('status', 'active')
+        ->having('attendance_count', '>', 0) // Chỉ lấy lớp có điểm danh
+        ->get();
+
+
+        $html = view($this->viewPart . '.view_detal_calendar', compact('classes', 'mealAge', 'date','area_name','menu_daily_id'))->render();
+
+        return response()->json(['html' => $html]);
+    }
+
+    public function updateMealMenuCount($date, $area_id, $meal_age_id)
+    {
+        // Lấy nhóm tuổi
+        $mealAge = MealAges::find($meal_age_id);
+        if (!$mealAge || empty($mealAge->list_education_age)) {
+            return false;
+        }
+
+        $educationAgeIds = explode(',', $mealAge->list_education_age);
+
+        // Lấy danh sách lớp thuộc khu vực và nhóm tuổi
+        $classIds = tbClass::where('area_id', $area_id)
+            ->whereIn('education_age_id', $educationAgeIds)
+            ->where('status', 'active')
+            ->pluck('id');
+
+        if ($classIds->isEmpty()) {
+            return false;
+        }
+
+        // Đếm số học sinh điểm danh ăn
+        $count = AttendanceStudentMeal::whereIn('class_id', $classIds)
+            ->whereDate('meal_day', $date)
+            ->where('status', 'active')
+            ->distinct('student_id')
+            ->count('student_id');
+
+        // Tìm thực đơn cần cập nhật
+        $menu = MealMenuDaily::where([
+            'meal_age_id' => $meal_age_id,
+            'area_id' => $area_id,
+            'date' => $date,
+        ])->first();
+        if ($menu) {
+            $menu->count_student = $count;
+            $menu->save();
+
+            // Tính toán lại nguyên liệu cho thực đơn
+            $menuPlanningService = new MenuPlanningService();
+            $menuPlanningService->recalculateIngredientsDaily($menu->id);
+            return true;
+        }
+
+        return false; // Không có thực đơn để update
     }
 }

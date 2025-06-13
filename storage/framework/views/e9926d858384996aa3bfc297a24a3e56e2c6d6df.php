@@ -384,10 +384,7 @@
                                                     data-target="#reincarnationModal">
                                                     <i class="fa fa-recycle"></i> <?php echo app('translator')->get('Xử lý TBP HSM'); ?>
                                                 </button>
-                                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
-                                                    data-target="#sumerReceiptModal">
-                                                    <i class="fa fa-sun-o"></i> <?php echo app('translator')->get('Tính phí chỉ kỳ hè'); ?>
-                                                </button>
+                                                
                                             </div>
                                             <br>
                                             <div class="table-responsive">

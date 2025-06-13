@@ -294,7 +294,7 @@
                                                         <option value="">-Giáo viên đón-</option>
                                                         @foreach ($list_teacher as $item)
                                                             <option value="{{ $item->id }}"
-                                                                {{ isset($row->attendance->checkin_teacher_id) && $row->attendance->checkin_teacher_id == $item->id ? 'selected' : '' }}>
+                                                                {{ isset($row->attendance->checkin_teacher_id) && $row->attendance->checkin_teacher_id == $item->id ? 'selected' : ($item->id == $admin_auth->id? 'selected':'') }}>
                                                                 {{ $item->name ?? '' }}</option>
                                                         @endforeach
                                                     </select>

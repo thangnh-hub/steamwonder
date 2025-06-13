@@ -34,9 +34,15 @@ class Kernel extends ConsoleKernel
             LeaveBalanceService::updateMonthlyLeaveBalance();
         })->monthlyOn(1, '00:00');
 
+        //Chạy thự đơn hàng ngày cho tháng sau
         $schedule->command('mealmenus:generate-next-month')
             ->monthlyOn(15, '00:00')
             //  ->dailyAt('09:05')
+            ->withoutOverlapping();
+
+        // Chạy update lại suất ăn    
+        $schedule->command('mealmenus:update-count-today')
+            ->dailyAt('16:00')
             ->withoutOverlapping();
     }
 

@@ -123,6 +123,9 @@ Route::group(['namespace' => 'Admin'], function () {
                 'menu_dailys' => 'MealMenuDailyController',
                 'warehouse_ingredients' => 'MealWarehouseIngredientController',
             ]);
+            // receipt adjustment
+            Route::post('receipt_adjustment/update_or_create', 'ReceiptAdjustmentController@updateOrCreate')->name('receipt_adjustment.update_or_create');
+            Route::post('receipt_adjustment/delete', 'ReceiptAdjustmentController@delete')->name('receipt_adjustment.delete');
 
             //Thực đơn mẫu
             Route::post('meal_dishes_move_to_meal', 'MealMenuPlanningController@moveDish')->name('mealmenu.moveDish');
@@ -142,7 +145,9 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('menu-dailys/date/{date}/area/{area_id}', 'MealMenuDailyController@showByDate')->name('menu_dailys.showByDate');
             // Thống kê thực đơn theo tuần
             Route::get('mealmenu/report-by-week', 'MealMenuDailyController@reportByWeek')->name('mealmenu.week.report');
-
+            // Sổ báo ăn
+            Route::get('mealmenu/calendar-month', 'MealMenuDailyController@calendarByMonth')->name('meal-menu-daily.calendar-by-month');
+            
             //Kho thực phẩm
             Route::get('warehouse_ingredients_entry', 'MealWarehouseIngredientController@viewWarehouseIncredientEntry')->name('meal_warehouse_ingredients_entry');
             Route::post('warehouse_ingredients_entry_store', 'MealWarehouseIngredientController@storeWarehouseIncredientEntry')->name('meal_warehouse_ingredients_entry_store');
@@ -151,7 +156,8 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('attendance/summary-by-month/index', 'AttendancesController@attendanceSummaryByMonth')->name('attendance.summary_by_month');
             Route::post('attendance/summary-by-month/update_or_store', 'AttendancesController@updateOrstoreAttendance')->name('attendance.summary_by_month.update_or_store');
             // Điểm danh ăn
-            Route::post('attendance/student/meal', 'AttendancesController@studentMeal')->name('attendance.studentMeal');
+            Route::get('attendance/student_meal/index', 'AttendancesController@studentMeal')->name('attendance.studentMeal');
+            Route::post('attendance/student_meal/update_create', 'AttendancesController@saveStudentMeal')->name('attendance.save_studentMeal');
 
             // Import Student Promotion
             Route::post('import_student_promotion', 'StudentController@importStudentPromotion')->name('student.import_promotion');
@@ -322,9 +328,12 @@ Route::group(['namespace' => 'Admin'], function () {
         Route::get('/mealmenu/search-ingredients', 'MealMenuPlanningController@searchIngredients')->name('mealmenu.searchIngredients');
         Route::get('/mealmenu/search-ingredients_with_tonkho', 'MealWarehouseIngredientController@searchIngredients')->name('mealmenu.searchIngredients.withTonkho');
         Route::get('/mealmenu/search-dishes', 'MealMenuPlanningController@searchDishes')->name('mealmenu.searchDishes');
+        Route::get('calendar/attendance-detail', 'MealMenuDailyController@getAttendanceDetail')->name('admin.calendar.getAttendanceDetail');
+
+        //Ajax view sổ ăn
+
 
         Route::get('attendance/summary-by-month/show', 'AttendancesController@showSummaryByMonth')->name('attendance.summary_by_month.show');
-
         Route::get('receipt_view/{id}', 'ReceiptController@viewIndex')->name('receipt.view');
         Route::get('/camera', 'CameraController@index')->name('camera');
         Route::post('/save-image', 'CameraController@saveImage')->name('save.image');
@@ -415,7 +424,6 @@ Route::group(['namespace' => 'Admin'], function () {
     Route::post('/next-question', 'TeacherQuizController@nextQuestion')->name('next_question');
     Route::post('/previous-question', 'TeacherQuizController@previousQuestion')->name('previous_question');
     Route::get('/result-test-teacher', 'TeacherQuizController@resultTestTeacher')->name('result_test_teacher');
-
     Route::get('/qr-view', 'QrController@showQr')->name('qr.show'); // route to test QR code
 
     // test drive google

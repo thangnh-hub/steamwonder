@@ -6,6 +6,35 @@
 
 @section('style')
     <style>
+      
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            position: relative;
+            max-height: 600px; /* hoặc theo nhu cầu */
+            overflow-y: auto;
+        }
+
+        .card-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            padding: 10px 15px;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .card-footer {
+            padding: 10px 15px;
+            background-color: #f5f5f5;
+            border-top: 1px solid #ddd;
+        }
        .area-block {
             border: 1px solid #ccc;
             padding: 8px;
@@ -56,15 +85,13 @@
 
 @section('content-header')
     <section class="content-header">
-        <h1>
-            @lang($module_name)
-        </h1>
+        
     </section>
 @endsection
 
 @section('content')
     <section class="content">
-        <div class="box box-default">
+        {{-- <div class="box box-default">
             <div class="box-header with-border">
                 <h3 class="box-title">@lang('Filter')</h3>
                 <div class="box-tools pull-right">
@@ -110,12 +137,18 @@
                     </div>
                 </div>
             </form>
-        </div>
+        </div> --}}
         {{-- End search form --}}
 
         <div class="box">
             <div class="box-header">
-                <h3 class="box-title">@lang('List')</h3>
+                <h3 class="box-title">
+                    @if(!$show_report)
+                        @lang('Thống kê thực đơn theo tuần')
+                    @else
+                        @lang($module_name)
+                    @endif
+                </h3>
             </div>
             <div class="box-body table-responsive">
                 @if (session('errorMessage'))
@@ -141,14 +174,56 @@
 
                     </div>
                 @endif
-                
+               
+                @if(!$show_report)
+                    <form method="GET" action="{{ route('mealmenu.week.report') }}" class="form-inline mb-3">
+                        <div class=" mr-2 box-center">
+                            <input type="month" name="month" class="form-control" style="width: 300px; display: inline-block;"
+                                value="{{ $selected_month ?? now()->format('Y-m') }}"
+                                onchange="this.form.submit()">
 
-                @if(request()->filled('area_id'))
-                    <!-- Nút chuyển đổi chế độ hiển thị -->
-                    <div style="margin-bottom: 15px;">
-                        <button id="btnViewByAge" class="btn btn-primary">Hiển thị theo nhóm tuổi</button>
-                        <button id="btnViewByDay" class="btn btn-default">Hiển thị theo ngày</button>
+                        </div>
+                    </form>
+                    <br>
+                    <div class="row">
+                        @foreach($list_area as $area)
+                            <div class="col-md-4 mb-4">
+                                <div class="card shadow-sm">
+                                    <div class="card-header bg-primary text-white">
+                                        <strong>{{ $area->name }}</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-group">
+                                            @foreach($currentYearWeeks as $week)
+
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    <a href="{{ route('mealmenu.week.report', ['area_id' => $area->id, 'week' => $week['value'], 'month' => $selected_month]) }}">
+                                                        {{ $week['label'] }}
+                                                    </a>
+
+                                                    <a class="pull-right" href="{{ route('mealmenu.week.report', ['area_id' => $area->id, 'week' => $week['value'], 'month' => $selected_month]) }}">
+                                                        @lang('Xem chi tiết ') <i class="fa fa-arrow-right"></i> 
+                                                    </a>
+                                                </li>
+
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
+                @else
+                    <div class="mb-3">
+                        <a href="{{ route('mealmenu.week.report') }}" class="btn btn-primary">
+                            ← Quay lại chọn tuần
+                        </a>
+                        <div class="pull-right" style="margin-bottom: 15px;">
+                            <button id="btnViewByAge" class="btn btn-primary"><i class="fa fa-eye"></i> Hiển thị theo nhóm tuổi</button>
+                            <button id="btnViewByDay" class="btn btn-default"><i class="fa fa-eye"></i> Hiển thị theo ngày</button>
+                        </div>
+                    </div>
+                    <br>
                     <!-- View 1: Theo ngày -->
                     <div id="viewByDay" style="display:none;">
                         <table class="table table-bordered">
@@ -241,11 +316,7 @@
                             </tbody>
                         </table>
                     </div>
-
-                @else
-                    <p class="text-muted">Vui lòng chọn khu vực để xem thực đơn.</p>
                 @endif
-
             </div>
         </div>
     </section>

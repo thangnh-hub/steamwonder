@@ -26,7 +26,7 @@
                     </label>
                 </div>
                 <div class="d-flex box_checked">
-                    <input id="student_absent_excused" name="status"
+                    <input id="student_absent_excused" name="status" readonly
                         <?php echo e(isset($detail->status) && $detail->status == 'absent_excused' ? 'checked' : ''); ?>
 
                         class="radiobox mr-10 absent_excused" data-id="" type="radio" value="absent_excused">

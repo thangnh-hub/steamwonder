@@ -169,8 +169,6 @@
     <section class="content-header">
         <h1>
             <?php echo app('translator')->get($module_name); ?>
-            <a class="btn btn-sm btn-warning pull-right" href="<?php echo e(route(Request::segment(2) . '.create')); ?>"><i
-                    class="fa fa-plus"></i> <?php echo app('translator')->get('Add'); ?></a>
         </h1>
     </section>
 <?php $__env->stopSection(); ?>

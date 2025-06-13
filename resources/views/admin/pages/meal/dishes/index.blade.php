@@ -51,7 +51,7 @@
                             </div>
                         </div>
                         
-                        <div class="col-md-3">
+                        {{-- <div class="col-md-3">
                             <div class="form-group">
                                 <label>@lang('Loại món ăn')</label>
                                 <select name="dishes_type" class="form-control select2"style="width: 100%;">
@@ -76,7 +76,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>@lang('Status')</label>
@@ -149,8 +149,9 @@
                             <th>@lang('STT')</th>
                             <th>@lang('Tên món ăn')</th>
                             <th>@lang('Mã món ăn')</th>
-                            <th>@lang('Loại món ăn')</th>
-                            <th>@lang('Bữa áp dụng')</th>
+                            <th>@lang('Nguyên liệu')</th>
+                            {{-- <th>@lang('Loại món ăn')</th>
+                            <th>@lang('Bữa áp dụng')</th> --}}
                             <th>@lang('Mô tả')</th>
                             <th>@lang('Trạng thái')</th>
                             <th>@lang('Thao tác')</th>
@@ -167,11 +168,23 @@
                                     {{ 'MA' . str_pad($row->id, 5, '0', STR_PAD_LEFT) }}
                                 </td>
                                 <td>
+                                    @php $ingredients = $row->getIngredientNames(); @endphp
+                                    @if (!empty($ingredients))
+                                    <ul>
+                                        @foreach ($ingredients as $ingredient)
+                                            <li>{{ $ingredient }}</li>
+                                        @endforeach
+                                    </ul>
+                                    @else
+                                        <span class="badge badge-warning">@lang('Chưa có nguyên liệu')</span>
+                                    @endif
+                                </td>
+                                {{-- <td>
                                     {{ __($row->dishes_type ?? '') }}
                                 </td>
                                 <td>
                                     {{ __($row->dishes_time ?? '') }}
-                                </td>
+                                </td> --}}
                                 <td>
                                     {{ $row->description ?? "" }}
                                 </td>
