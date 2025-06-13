@@ -145,7 +145,9 @@ Route::group(['namespace' => 'Admin'], function () {
             Route::get('menu-dailys/date/{date}/area/{area_id}', 'MealMenuDailyController@showByDate')->name('menu_dailys.showByDate');
             // Thống kê thực đơn theo tuần
             Route::get('mealmenu/report-by-week', 'MealMenuDailyController@reportByWeek')->name('mealmenu.week.report');
-
+            // Sổ báo ăn
+            Route::get('mealmenu/calendar-month', 'MealMenuDailyController@calendarByMonth')->name('meal-menu-daily.calendar-by-month');
+            
             //Kho thực phẩm
             Route::get('warehouse_ingredients_entry', 'MealWarehouseIngredientController@viewWarehouseIncredientEntry')->name('meal_warehouse_ingredients_entry');
             Route::post('warehouse_ingredients_entry_store', 'MealWarehouseIngredientController@storeWarehouseIncredientEntry')->name('meal_warehouse_ingredients_entry_store');
@@ -326,9 +328,12 @@ Route::group(['namespace' => 'Admin'], function () {
         Route::get('/mealmenu/search-ingredients', 'MealMenuPlanningController@searchIngredients')->name('mealmenu.searchIngredients');
         Route::get('/mealmenu/search-ingredients_with_tonkho', 'MealWarehouseIngredientController@searchIngredients')->name('mealmenu.searchIngredients.withTonkho');
         Route::get('/mealmenu/search-dishes', 'MealMenuPlanningController@searchDishes')->name('mealmenu.searchDishes');
+        Route::get('calendar/attendance-detail', 'MealMenuDailyController@getAttendanceDetail')->name('admin.calendar.getAttendanceDetail');
+
+        //Ajax view sổ ăn
+
 
         Route::get('attendance/summary-by-month/show', 'AttendancesController@showSummaryByMonth')->name('attendance.summary_by_month.show');
-
         Route::get('receipt_view/{id}', 'ReceiptController@viewIndex')->name('receipt.view');
         Route::get('/camera', 'CameraController@index')->name('camera');
         Route::post('/save-image', 'CameraController@saveImage')->name('save.image');
