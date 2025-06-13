@@ -129,4 +129,9 @@ class tbClass extends Model
             ->where('is_teacher_main', 1)
             ->with('teacher');
     }
+
+    public function attendances()
+    {
+        return $this->hasMany(AttendanceStudentMeal::class, 'class_id', 'id');
+    }
 }
