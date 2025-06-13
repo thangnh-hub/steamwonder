@@ -232,6 +232,8 @@ class AdminController extends Controller
             $arr_insert['json_params']['area_id'] = $params['json_params']['area_id'] ?? [];
             // Nếu không tồn tại menu mở rộng thì set null
             $arr_insert['json_params']['menu_id'] = $params['json_params']['menu_id'] ?? [];
+            // Nếu không tồn tại image_cv thì set null
+            $arr_insert['json_params']['gallery_image'] = $params['json_params']['gallery_image'] ?? [];
             // Nếu không tồn tại chức năng mở rộng thì set null
             $arr_insert['json_params']['function_code'] = $params['json_params']['function_code'] ?? [];
             // Gán lại giá trị json_params
