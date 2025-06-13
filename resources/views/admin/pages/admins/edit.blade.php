@@ -3,7 +3,14 @@
 @section('title')
     @lang($module_name)
 @endsection
-
+@section('style')
+    <style>
+        .gallery-image img {
+            width: 150px !important;
+            height: 150px !important;
+        }
+    </style>
+@endsection
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -72,6 +79,11 @@
                                     <li>
                                         <a href="#tab_4" data-toggle="tab">
                                             <h5>@lang('Menu mở rộng') (@lang('Chỉ IT cấu hình'))</h5>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#tab_5" data-toggle="tab">
+                                            <h5>@lang('Ảnh CV')</h5>
                                         </a>
                                     </li>
                                 </ul>
@@ -185,7 +197,6 @@
                                             @endforeach
                                         </div>
                                     </div>
-
                                     <div class="tab-pane" id="tab_3">
 
                                         <div class="masonry-container">
@@ -239,16 +250,12 @@
                                                                     </li>
                                                                 @endif
                                                             @endforeach
-
                                                         </ul>
                                                     </div>
                                                 @endforeach
                                             @endif
-
                                         </div>
-
                                     </div>
-
                                     <div class="tab-pane" id="tab_4">
                                         <div class="masonry-container">
                                             @if (count($activeMenus) == 0)
@@ -274,7 +281,46 @@
                                         </div>
 
                                     </div>
-
+                                    <div class="tab-pane " id="tab_5">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <input class="btn btn-warning btn-sm add-gallery-image"
+                                                        data-toggle="tooltip" title="Nhấn để chọn thêm ảnh"
+                                                        type="button" value="Thêm ảnh" />
+                                                </div>
+                                                <div class="row list-gallery-image">
+                                                    @isset($admin->json_params->gallery_image)
+                                                        @foreach ($admin->json_params->gallery_image as $key => $value)
+                                                            @if ($value != null)
+                                                                <div class="col-lg-2 col-md-3 col-sm-4 mb-1 gallery-image">
+                                                                    <div id="avatar-holder-{{ $key }}">
+                                                                        <img width="150px" height="150px" class="img-width"
+                                                                            src="{{ $value }}">
+                                                                    </div>
+                                                                    <input type="text"
+                                                                        name="json_params[gallery_image][{{ $key }}]"
+                                                                        class="hidden" id="gallery_image_{{ $key }}"
+                                                                        value="{{ $value }}">
+                                                                    <div class="btn-action">
+                                                                        <span
+                                                                            class="btn btn-sm btn-success btn-upload lfm mr-5"
+                                                                            data-input="gallery_image_{{ $key }}"
+                                                                            data-preview="avatar-holder-{{ $key }}">
+                                                                            <i class="fa fa-upload"></i>
+                                                                        </span>
+                                                                        <span class="btn btn-sm btn-danger btn-remove">
+                                                                            <i class="fa fa-trash"></i>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+                                                        @endforeach
+                                                    @endisset
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -487,8 +533,61 @@
                 par.find('.inp_hidden').val("");
             });
 
-        })
+            CKEDITOR.replace('content_vi', ck_options);
+            var no_image_link = '{{ url('themes/admin/img/no_image.jpg') }}';
 
-        CKEDITOR.replace('content_vi', ck_options);
+            $('.add-gallery-image').click(function(event) {
+                let keyRandom = new Date().getTime();
+                let elementParent = $('.list-gallery-image');
+                let elementAppend =
+                    '<div class="col-lg-2 col-md-3 col-sm-4 mb-1 gallery-image">';
+                elementAppend += '<div id="gallery-holder-' + keyRandom +
+                    '"><img width="150px" height="150px" class="img-width"';
+                elementAppend += 'src="' + no_image_link + '"> </div>';
+                elementAppend += '<input type="text" name="json_params[gallery_image][' + keyRandom +
+                    ']" class="hidden" id="gallery_image_' + keyRandom +
+                    '">';
+                elementAppend += '<div class="btn-action">';
+                elementAppend +=
+                    '<span class="btn btn-sm btn-success btn-upload lfm mr-5" data-input="gallery_image_' +
+                    keyRandom +
+                    '" data-type="cms-image" data-preview="gallery-holder-' + keyRandom + '">';
+                elementAppend += '<i class="fa fa-upload"></i>';
+                elementAppend += '</span>';
+                elementAppend += '<span class="btn btn-sm btn-danger btn-remove">';
+                elementAppend += '<i class="fa fa-trash"></i>';
+                elementAppend += '</span>';
+                elementAppend += '</div>';
+                elementParent.append(elementAppend);
+
+                $('.lfm').filemanager('Images', {
+                    prefix: route_prefix
+                });
+                // $('.lfm').filemanager('Images', {
+                //     prefix: '{{ route('ckfinder_browser') }}'
+                // });
+            });
+            // Change image for img tag gallery-image
+            $('.list-gallery-image').on('change', 'input', function() {
+                let _root = $(this).closest('.gallery-image');
+                var img_path = $(this).val();
+                _root.find('img').attr('src', img_path);
+            });
+
+            // Delete image
+            $('.list-gallery-image').on('click', '.btn-remove', function() {
+                // if (confirm("@lang('confirm_action')")) {
+                let _root = $(this).closest('.gallery-image');
+                _root.remove();
+                // }
+            });
+
+            $('.list-gallery-image').on('mouseover', '.gallery-image', function(e) {
+                $(this).find('.btn-action').show();
+            });
+            $('.list-gallery-image').on('mouseout', '.gallery-image', function(e) {
+                $(this).find('.btn-action').hide();
+            });
+        })
     </script>
 @endsection
