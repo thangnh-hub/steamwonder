@@ -224,12 +224,41 @@ class AttendancesController extends Controller
 
     public function saveStudentMeal(Request $request)
     {
+        $admin = Auth::guard('admin')->user();
         $status = $request->input('status');
         $student_id = $request->input('student_id');
         $class_id = $request->input('class_id');
         $meal_day = $request->input('meal_day');
         $currentHour = Carbon::now()->hour;
         if ($currentHour < 15) {
+            if ($status == 'deactive') {
+                //Lấy ngày điểm danh của lớp
+                $attendance = Attendances::where('class_id', $class_id)->whereDate('tracked_at', $meal_day)->first();
+                // Chưa có thì tạo mới
+                if (!$attendance) {
+                    $attendance =  Attendances::create([
+                        'class_id' => $class_id,
+                        'tracked_at' => $meal_day,
+                        'admin_created_id' => $admin->id,
+                    ]);
+                }
+                // Lấy thông tin điểm danh của học sinh
+                $attendance_student = AttendanceStudent::where('student_id', $student_id)
+                    ->where('class_attendance_id', $attendance->id)->first();
+                if ($attendance_student) {
+                    $params['admin_updated_id'] = $admin->id;
+                    $params['status'] = Consts::ATTENDANCE_STATUS['absent_excused'];
+                    $attendance_student->update($params);
+                } else {
+                    $params['class_attendance_id'] = $attendance->id;
+                    $params['student_id'] = $student_id;
+                    $params['status'] = Consts::ATTENDANCE_STATUS['absent_excused'];
+                    $params['checkin_at'] = Carbon::now();
+                    $params['admin_created_id'] = $admin->id;
+                    $params['checkin_teacher_id'] = $admin->id;
+                    AttendanceStudent::create($params);
+                }
+            }
             AttendanceStudentMeal::updateOrCreate(
                 [
                     'student_id' => $student_id,
@@ -239,11 +268,9 @@ class AttendancesController extends Controller
                 ['status' => $status]
             );
             return $this->sendResponse('success', __('Lưu thông tin thành công!'));
-        }
-        else{
+        } else {
             return $this->sendResponse('warning', __('Đã quá thời gian thực hiện!'));
         }
-
     }
 
     public function attendanceSummaryByMonth(Request $request)
