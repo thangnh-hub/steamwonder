@@ -333,7 +333,7 @@
                                                         <i class="{{ isset($row->student_meal[$i]) ? ($row->student_meal[$i]->status == 'active' ? 'fa fa-check-circle-o' : 'fa fa-ban') : 'fa fa-window-minimize' }} "
                                                             aria-hidden="true"></i>
                                                     </div>
-                                                    @if ($carbonDate->copy()->day($i) == $tomorrow)
+                                                    @if ($carbonDate->copy()->day($i) == $tomorrow && $carbonDate->isSameMonth(now()))
                                                         <div class="box-actions" data-class="{{ $row->class_id }}"
                                                             data-student="{{ $row->student_id }}"
                                                             data-date="{{ $carbonDate->copy()->day($i)->format('Y-m-d') }}">
