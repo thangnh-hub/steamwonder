@@ -338,7 +338,7 @@
                                                         <i class="<?php echo e(isset($row->student_meal[$i]) ? ($row->student_meal[$i]->status == 'active' ? 'fa fa-check-circle-o' : 'fa fa-ban') : 'fa fa-window-minimize'); ?> "
                                                             aria-hidden="true"></i>
                                                     </div>
-                                                    <?php if($carbonDate->copy()->day($i) == $tomorrow): ?>
+                                                    <?php if($carbonDate->copy()->day($i) == $tomorrow && $carbonDate->isSameMonth(now())): ?>
                                                         <div class="box-actions" data-class="<?php echo e($row->class_id); ?>"
                                                             data-student="<?php echo e($row->student_id); ?>"
                                                             data-date="<?php echo e($carbonDate->copy()->day($i)->format('Y-m-d')); ?>">
