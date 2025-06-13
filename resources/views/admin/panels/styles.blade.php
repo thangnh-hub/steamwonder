@@ -11,7 +11,7 @@
 
 <link rel="stylesheet" href="{{ asset('themes/admin/plugins/nestable/jquery.nestable.min.css') }}">
 
-
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.5/main.min.css" rel="stylesheet" />
 <style>
     .loading-notification {
         display: none;
