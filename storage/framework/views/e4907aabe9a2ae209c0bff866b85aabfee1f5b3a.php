@@ -156,7 +156,7 @@
                 locale: 'vi',
                 initialDate: '<?php echo e($month); ?>-01', // ví dụ: 2025-06
                 firstDay: 1, // bắt đầu từ Thứ 2
-                hiddenDays: [0, 6], // Ẩn Chủ nhật (0) và Thứ 7 (6)
+                // hiddenDays: [0, 6], 
                 dayHeaderFormat: { weekday: 'long' }, // Hiện đầy đủ: "Thứ Hai", "Thứ Ba"
                 events: <?php echo json_encode($calendarEvents, 15, 512) ?>,
                 eventDisplay: 'block',

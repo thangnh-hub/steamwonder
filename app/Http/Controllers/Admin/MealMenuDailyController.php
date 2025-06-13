@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\MealMenuDaily;
+use App\Models\AttendanceStudentMeal;
 use App\Models\MealAges;
 use App\Models\tbClass;
 use App\Models\MealDishes;
@@ -607,6 +608,8 @@ class MealMenuDailyController extends Controller
     // Sổ ăn
     public function calendarByMonth(Request $request)
     {
+        // $this->updateMealMenuCount('2025-06-02', 1,3);
+
         $month = $request->input('month') ?? now()->format('Y-m');
         $area_id = $request->input('area_id');
 
@@ -686,7 +689,7 @@ class MealMenuDailyController extends Controller
         // Lấy danh sách lớp theo độ tuổi trong meal_age
        $classes = tbClass::withCount([
             'attendances as attendance_count' => function ($query) use ($date) {
-                $query->whereDate('meal_day', $date);
+                $query->whereDate('meal_day', $date)->where('status', 'active');
             }
         ])
         ->whereIn('education_age_id', $educationAgeIds)
@@ -701,5 +704,49 @@ class MealMenuDailyController extends Controller
         return response()->json(['html' => $html]);
     }
 
+    public function updateMealMenuCount($date, $area_id, $meal_age_id)
+    {
+        // Lấy nhóm tuổi
+        $mealAge = MealAges::find($meal_age_id);
+        if (!$mealAge || empty($mealAge->list_education_age)) {
+            return false;
+        }
 
+        $educationAgeIds = explode(',', $mealAge->list_education_age);
+
+        // Lấy danh sách lớp thuộc khu vực và nhóm tuổi
+        $classIds = tbClass::where('area_id', $area_id)
+            ->whereIn('education_age_id', $educationAgeIds)
+            ->where('status', 'active')
+            ->pluck('id');
+
+        if ($classIds->isEmpty()) {
+            return false;
+        }
+
+        // Đếm số học sinh điểm danh ăn
+        $count = AttendanceStudentMeal::whereIn('class_id', $classIds)
+            ->whereDate('meal_day', $date)
+            ->where('status', 'active')
+            ->distinct('student_id')
+            ->count('student_id');
+
+        // Tìm thực đơn cần cập nhật
+        $menu = MealMenuDaily::where([
+            'meal_age_id' => $meal_age_id,
+            'area_id' => $area_id,
+            'date' => $date,
+        ])->first();
+        if ($menu) {
+            $menu->count_student = $count;
+            $menu->save();
+
+            // Tính toán lại nguyên liệu cho thực đơn
+            $menuPlanningService = new MenuPlanningService();
+            $menuPlanningService->recalculateIngredientsDaily($menu->id);
+            return true;
+        }
+
+        return false; // Không có thực đơn để update
+    }
 }
