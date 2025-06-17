@@ -17,9 +17,10 @@ class CreateTbMealWarehouseIngredientsTable extends Migration
             $table->id();
             $table->foreignId('area_id')->constrained('tb_areas')->comment('Cơ sở');
             $table->foreignId('ingredient_id')->constrained('tb_meal_ingredients')->comment('Thực phẩm');
+            $table->foreignId('entry_id')->constrained('tb_meal_warehouse_entry')->comment('phiếu');
             $table->float('quantity')->nullable();
             $table->json('json_params')->nullable();
-            $table->string('status')->nullable()->default('active');
+            $table->string('status')->nullable()->default('new');
             $table->foreignId('admin_created_id')->nullable()->constrained('admins');
             $table->foreignId('admin_updated_id')->nullable()->constrained('admins');
             $table->timestamps();

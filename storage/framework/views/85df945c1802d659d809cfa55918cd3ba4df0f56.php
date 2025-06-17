@@ -1,81 +1,82 @@
-@extends('admin.layouts.app')
 
-@section('title')
-    @lang($module_name)
-@endsection
 
-@section('content')
+<?php $__env->startSection('title'); ?>
+    <?php echo app('translator')->get($module_name); ?>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
     <!-- Main content -->
     <section class="content">
         <div id="loading-notification" class="loading-notification">
-            <p>@lang('Please wait')...</p>
+            <p><?php echo app('translator')->get('Please wait'); ?>...</p>
         </div>
-        @if (session('errorMessage'))
+        <?php if(session('errorMessage')): ?>
             <div class="alert alert-warning alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                {{ session('errorMessage') }}
+                <?php echo e(session('errorMessage')); ?>
+
             </div>
-        @endif
-        @if (session('successMessage'))
+        <?php endif; ?>
+        <?php if(session('successMessage')): ?>
             <div class="alert alert-success alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                {{ session('successMessage') }}
-            </div>
-        @endif
+                <?php echo e(session('successMessage')); ?>
 
-        @if ($errors->any())
+            </div>
+        <?php endif; ?>
+
+        <?php if($errors->any()): ?>
             <div class="alert alert-danger alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 
-                @foreach ($errors->all() as $error)
-                    <p>{{ $error }}</p>
-                @endforeach
+                <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <p><?php echo e($error); ?></p>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
             </div>
-        @endif
+        <?php endif; ?>
 
-        <form role="form" action="{{ route("meal_warehouse_ingredients_entry_store") }}" method="POST">
-            @csrf
-
+        <form role="form" action="<?php echo e(route(Request::segment(2) . '.store')); ?>" method="POST">
+            <?php echo csrf_field(); ?>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title text-uppercase">@lang('Thêm mới nhập kho')</h3>
+                            <h3 class="box-title text-uppercase"><?php echo app('translator')->get('Thêm mới nhập kho'); ?></h3>
                         </div>
                         <div class="box-body">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>@lang('Cơ sở')<small class="text-red"> *</small></label>
+                                        <label><?php echo app('translator')->get('Cơ sở'); ?><small class="text-red"> *</small></label>
                                         <select required class="area_id form-control select2" name="area_id"
                                             autocomplete="off">
                                             <option value="">Chọn</option>
-                                            @foreach ($list_area as $key => $val)
-                                                <option value="{{ $val->id }}">
-                                                    {{ $val->name }}
+                                            <?php $__currentLoopData = $list_area; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($val->id); ?>">
+                                                    <?php echo e($val->name); ?>
+
                                                 </option>
-                                            @endforeach
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </select>
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>@lang('Tên phiếu nhập kho') <small class="text-red">*</small></label>
+                                        <label><?php echo app('translator')->get('Tên phiếu nhập kho'); ?> <small class="text-red">*</small></label>
                                         <input type="text" class="form-control" name="name"
-                                            placeholder="@lang('Tên phiếu nhập kho')" value="{{ old('name') }}" required>
+                                            placeholder="<?php echo app('translator')->get('Tên phiếu nhập kho'); ?>" value="<?php echo e(old('name')); ?>" required>
                                     </div>
                                 </div>
 
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label>@lang('Ghi chú')</label>
+                                        <label><?php echo app('translator')->get('Ghi chú'); ?></label>
                                         <textarea cols="5" name="json_params[note]" class="form-control"
-                                            placeholder="@lang('Ghi chú')">{{ old('json_params.note') }}</textarea>
+                                            placeholder="<?php echo app('translator')->get('Ghi chú'); ?>"><?php echo e(old('json_params.note')); ?></textarea>
                                     </div>
                                 </div>
-
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-5">
@@ -85,24 +86,24 @@
                                                     <select style="width:100%" class="form-control select2" name=""
                                                         id="search_code_post">
                                                         <option value="">Danh mục thực phẩm...</option>
-                                                        @foreach ($category_products as $category_product)
-                                                            @if ($category_product->category_parent == null || $category_product->category_parent == 0)
-                                                                <option value="{{ $category_product->id }}">
-                                                                    {{ $category_product->name ?? '' }}</option>
-                                                                @isset($category_product->children)
-                                                                    @foreach ($category_product->children as $child_1)
-                                                                        <option value="{{ $child_1->id }}">
-                                                                            -- {{ $child_1->name ?? '' }}</option>
-                                                                        @isset($child_1->children)
-                                                                            @foreach ($child_1->children as $child_2)
-                                                                                <option value="{{ $child_2->id }}">
-                                                                                    ---- {{ $child_2->name ?? '' }}</option>
-                                                                            @endforeach
-                                                                        @endisset
-                                                                    @endforeach
-                                                                @endisset
-                                                            @endif
-                                                        @endforeach
+                                                        <?php $__currentLoopData = $category_products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category_product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                            <?php if($category_product->category_parent == null || $category_product->category_parent == 0): ?>
+                                                                <option value="<?php echo e($category_product->id); ?>">
+                                                                    <?php echo e($category_product->name ?? ''); ?></option>
+                                                                <?php if(isset($category_product->children)): ?>
+                                                                    <?php $__currentLoopData = $category_product->children; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $child_1): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                        <option value="<?php echo e($child_1->id); ?>">
+                                                                            -- <?php echo e($child_1->name ?? ''); ?></option>
+                                                                        <?php if(isset($child_1->children)): ?>
+                                                                            <?php $__currentLoopData = $child_1->children; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $child_2): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                                <option value="<?php echo e($child_2->id); ?>">
+                                                                                    ---- <?php echo e($child_2->name ?? ''); ?></option>
+                                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                                        <?php endif; ?>
+                                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                                <?php endif; ?>
+                                                            <?php endif; ?>
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                     </select>
                                                 </div>
 
@@ -136,23 +137,23 @@
                                             </div><!-- /.box-body -->
                                         </div>
                                         <div  class="col-md-7">
-                                            <h4 style="padding-bottom:10px;">@lang('Danh sách thực phẩm nhập kho')</h4>
+                                            <h4 style="padding-bottom:10px;"><?php echo app('translator')->get('Danh sách thực phẩm nhập kho'); ?></h4>
                                             <table id="myTable"
                                                 class="table table-hover table-bordered table-responsive">
                                                 <thead>
                                                     <tr>
-                                                        <th>@lang('STT')</th>
-                                                        <th>@lang('Sản phẩm')</th>
-                                                        <th>@lang('ĐVT')</th>
-                                                        <th>@lang('Số lượng')</th>
-                                                        <th>@lang('Tồn kho')</th>
-                                                        <th>@lang('Chọn')</th>
+                                                        <th><?php echo app('translator')->get('STT'); ?></th>
+                                                        <th><?php echo app('translator')->get('Sản phẩm'); ?></th>
+                                                        <th><?php echo app('translator')->get('ĐVT'); ?></th>
+                                                        <th><?php echo app('translator')->get('Số lượng'); ?></th>
+                                                        <th><?php echo app('translator')->get('Tồn kho'); ?></th>
+                                                        <th><?php echo app('translator')->get('Chọn'); ?></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody class="tbody-order" id="post_related">
                                                     <tr>
                                                         <td colspan="8" class="text-center show_empty">
-                                                            @lang('Vui lòng chọn thực phẩm để nhập kho')
+                                                            <?php echo app('translator')->get('Vui lòng chọn thực phẩm để nhập kho'); ?>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -164,12 +165,12 @@
                             </div>
                         </div>
                         <div class="box-footer">
-                            <a class="btn btn-sm btn-success">
-                                <i class="fa fa-bars"></i> @lang('List')
+                            <a href="<?php echo e(route(Request::segment(2) . '.store')); ?>" class="btn btn-sm btn-success">
+                                <i class="fa fa-bars"></i> <?php echo app('translator')->get('List'); ?>
                             </a>
                             <button class="btn btn-info save-order pull-right">
                                 <i class="fa fa-save"></i>
-                                @lang('Lưu thông tin')
+                                <?php echo app('translator')->get('Lưu thông tin'); ?>
                             </button>
                         </div>
                     </div>
@@ -178,9 +179,9 @@
         </form>
     </section>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('script')
+<?php $__env->startSection('script'); ?>
    
     <script>
         function calculateTotal() {
@@ -238,7 +239,7 @@
             $('input.related_post_item2:checked').each(function() {
                 checked_post.push($(this).val());
             });
-            let url = "{{ route('mealmenu.searchIngredients.withTonkho') }}/";
+            let url = "<?php echo e(route('mealmenu.searchIngredients.withTonkho')); ?>/";
             $('#loading-notification').css('display', 'flex');
 
             $.ajax({
@@ -298,7 +299,7 @@
             if (ischecked) {
                 _root.remove();
                 let _id = $(this).val();
-                let url = "{{ route('mealmenu.searchIngredients.withTonkho') }}/";
+                let url = "<?php echo e(route('mealmenu.searchIngredients.withTonkho')); ?>/";
                 $('#loading-notification').css('display', 'flex');
                 $.ajax({
                     type: "GET",
@@ -318,10 +319,11 @@
                                 list.forEach(item => {
                                     _item += '<tr class="valign-middle">';
                                     _item += '<input type="hidden" name="cart[' + item.id +
-                                        '][product_id]" value="' + item.id + '">';
+                                        '][ingredient_id]" value="' + item.id + '">';
                                     _item += '<td class="order-number">' + stt + '</td>';
                                     _item += '<td>' + item.name + '</td>';
-                                    _item += '<td>' + item.unit_default_name + '</td>';
+                                    _item += '<td><input name="cart[' + item.id +
+                                        '][unit_id]" type="hidden" value="' + item.default_unit_id + '" class="form-control">' + item.unit_default_name + '</td>';
                                     _item += '<td><input name="cart[' + item.id +
                                         '][quantity]" value="1" class="input-field form-control quantity-input" type="number"></td>';
                                    
@@ -351,4 +353,6 @@
             }
         });
     </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('admin.layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\laragon\www\steamwonder\resources\views/admin/pages/meal/warehouse_ingredients_entry/create.blade.php ENDPATH**/ ?>

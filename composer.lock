@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7ba7004155a918610feeb54ed60b6958",
+    "content-hash": "47433698468e9eb8b375151fcba7f31e",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1488,6 +1488,69 @@
             "time": "2022-02-09T13:33:34+00:00"
         },
         {
+            "name": "firebase/php-jwt",
+            "version": "v6.10.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/firebase/php-jwt.git",
+                "reference": "a49db6f0a5033aef5143295342f1c95521b075ff"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/a49db6f0a5033aef5143295342f1c95521b075ff",
+                "reference": "a49db6f0a5033aef5143295342f1c95521b075ff",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4||^8.0"
+            },
+            "require-dev": {
+                "guzzlehttp/guzzle": "^6.5||^7.4",
+                "phpspec/prophecy-phpunit": "^2.0",
+                "phpunit/phpunit": "^9.5",
+                "psr/cache": "^1.0||^2.0",
+                "psr/http-client": "^1.0",
+                "psr/http-factory": "^1.0"
+            },
+            "suggest": {
+                "ext-sodium": "Support EdDSA (Ed25519) signatures",
+                "paragonie/sodium_compat": "Support EdDSA (Ed25519) signatures when libsodium is not present"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Firebase\\JWT\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Neuman Vong",
+                    "email": "neuman+pear@twilio.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Anant Narayanan",
+                    "email": "anant@php.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
+            "homepage": "https://github.com/firebase/php-jwt",
+            "keywords": [
+                "jwt",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/firebase/php-jwt/issues",
+                "source": "https://github.com/firebase/php-jwt/tree/v6.10.0"
+            },
+            "time": "2023-12-01T16:26:39+00:00"
+        },
+        {
             "name": "fruitcake/laravel-cors",
             "version": "v2.2.0",
             "source": {
@@ -1568,6 +1631,1005 @@
             "time": "2022-02-23T14:25:13+00:00"
         },
         {
+            "name": "google/apiclient",
+            "version": "v2.16.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/googleapis/google-api-php-client.git",
+                "reference": "d7066f3a205aaeb83cce439613770e69394a43c8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/d7066f3a205aaeb83cce439613770e69394a43c8",
+                "reference": "d7066f3a205aaeb83cce439613770e69394a43c8",
+                "shasum": ""
+            },
+            "require": {
+                "firebase/php-jwt": "~6.0",
+                "google/apiclient-services": "~0.350",
+                "google/auth": "^1.37",
+                "guzzlehttp/guzzle": "^6.5.8||^7.4.5",
+                "guzzlehttp/psr7": "^1.9.1||^2.2.1",
+                "monolog/monolog": "^2.9||^3.0",
+                "php": "^7.4|^8.0",
+                "phpseclib/phpseclib": "^3.0.36"
+            },
+            "require-dev": {
+                "cache/filesystem-adapter": "^1.1",
+                "composer/composer": "^1.10.23",
+                "phpcompatibility/php-compatibility": "^9.2",
+                "phpspec/prophecy-phpunit": "^2.0",
+                "phpunit/phpunit": "^9.5",
+                "squizlabs/php_codesniffer": "^3.8",
+                "symfony/css-selector": "~2.1",
+                "symfony/dom-crawler": "~2.1"
+            },
+            "suggest": {
+                "cache/filesystem-adapter": "For caching certs and tokens (using Google\\Client::setCache)"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/aliases.php"
+                ],
+                "psr-4": {
+                    "Google\\": "src/"
+                },
+                "classmap": [
+                    "src/aliases.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "Client library for Google APIs",
+            "homepage": "http://developers.google.com/api-client-library/php",
+            "keywords": [
+                "google"
+            ],
+            "support": {
+                "issues": "https://github.com/googleapis/google-api-php-client/issues",
+                "source": "https://github.com/googleapis/google-api-php-client/tree/v2.16.1"
+            },
+            "time": "2024-12-12T17:34:46+00:00"
+        },
+        {
+            "name": "google/apiclient-services",
+            "version": "v0.355.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/googleapis/google-api-php-client-services.git",
+                "reference": "235e6a45ecafd77accc102b5ab6d529aab54da23"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/235e6a45ecafd77accc102b5ab6d529aab54da23",
+                "reference": "235e6a45ecafd77accc102b5ab6d529aab54da23",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4||^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7||^8.5.13"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "autoload.php"
+                ],
+                "psr-4": {
+                    "Google\\Service\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "Client library for Google APIs",
+            "homepage": "http://developers.google.com/api-client-library/php",
+            "keywords": [
+                "google"
+            ],
+            "support": {
+                "issues": "https://github.com/googleapis/google-api-php-client-services/issues",
+                "source": "https://github.com/googleapis/google-api-php-client-services/tree/v0.355.0"
+            },
+            "time": "2024-05-11T01:02:11+00:00"
+        },
+        {
+            "name": "google/auth",
+            "version": "v1.37.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/googleapis/google-auth-library-php.git",
+                "reference": "25eed0045d8cf107424a8b9010c9fdcc0734ceb0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/25eed0045d8cf107424a8b9010c9fdcc0734ceb0",
+                "reference": "25eed0045d8cf107424a8b9010c9fdcc0734ceb0",
+                "shasum": ""
+            },
+            "require": {
+                "firebase/php-jwt": "^6.0",
+                "guzzlehttp/guzzle": "^6.5.8||^7.4.5",
+                "guzzlehttp/psr7": "^2.4.5",
+                "php": "^7.4||^8.0",
+                "psr/cache": "^1.0||^2.0||^3.0",
+                "psr/http-message": "^1.1||^2.0"
+            },
+            "require-dev": {
+                "guzzlehttp/promises": "^2.0",
+                "kelvinmo/simplejwt": "0.7.1",
+                "phpseclib/phpseclib": "^3.0",
+                "phpspec/prophecy-phpunit": "^2.0",
+                "phpunit/phpunit": "^9.0.0",
+                "sebastian/comparator": ">=1.2.3",
+                "squizlabs/php_codesniffer": "^3.5"
+            },
+            "suggest": {
+                "phpseclib/phpseclib": "May be used in place of OpenSSL for signing strings or for token management. Please require version ^2."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Google\\Auth\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "Google Auth Library for PHP",
+            "homepage": "http://github.com/google/google-auth-library-php",
+            "keywords": [
+                "Authentication",
+                "google",
+                "oauth2"
+            ],
+            "support": {
+                "docs": "https://googleapis.github.io/google-auth-library-php/main/",
+                "issues": "https://github.com/googleapis/google-auth-library-php/issues",
+                "source": "https://github.com/googleapis/google-auth-library-php/tree/v1.37.2"
+            },
+            "time": "2024-12-11T18:15:11+00:00"
+        },
+        {
+            "name": "google/cloud",
+            "version": "v0.236.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/googleapis/google-cloud-php.git",
+                "reference": "6db60e5bce108d4c16f7a1cc0dee056f5289d310"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php/zipball/6db60e5bce108d4c16f7a1cc0dee056f5289d310",
+                "reference": "6db60e5bce108d4c16f7a1cc0dee056f5289d310",
+                "shasum": ""
+            },
+            "require": {
+                "google/auth": "^1.34",
+                "google/common-protos": "^4.4",
+                "google/gax": "^1.27.0",
+                "guzzlehttp/guzzle": "^6.5.8|^7.4.4",
+                "guzzlehttp/psr7": "^2.6",
+                "monolog/monolog": "^2.9||^3.0",
+                "php": ">=7.4",
+                "psr/http-message": "^1.0|^2.0",
+                "ramsey/uuid": "^4.0",
+                "rize/uri-template": "~0.3"
+            },
+            "conflict": {
+                "psr/log": ">=3"
+            },
+            "replace": {
+                "google/access-context-manager": "0.5.1",
+                "google/analytics-admin": "0.22.1",
+                "google/analytics-data": "0.16.1",
+                "google/apps-meet": "0.1.1",
+                "google/cloud-access-approval": "1.2.1",
+                "google/cloud-advisorynotifications": "0.7.1",
+                "google/cloud-ai-platform": "0.34.0",
+                "google/cloud-alloydb": "0.9.1",
+                "google/cloud-api-gateway": "1.3.1",
+                "google/cloud-api-keys": "0.4.1",
+                "google/cloud-apigee-connect": "1.2.1",
+                "google/cloud-apigee-registry": "0.5.1",
+                "google/cloud-appengine-admin": "1.3.1",
+                "google/cloud-artifact-registry": "0.6.1",
+                "google/cloud-asset": "1.14.3",
+                "google/cloud-assured-workloads": "0.11.1",
+                "google/cloud-automl": "1.6.1",
+                "google/cloud-bare-metal-solution": "0.6.1",
+                "google/cloud-batch": "0.16.2",
+                "google/cloud-beyondcorp-appconnections": "0.4.1",
+                "google/cloud-beyondcorp-appconnectors": "0.4.1",
+                "google/cloud-beyondcorp-appgateways": "0.4.1",
+                "google/cloud-beyondcorp-clientconnectorservices": "0.4.1",
+                "google/cloud-beyondcorp-clientgateways": "0.4.1",
+                "google/cloud-bigquery": "1.30.0",
+                "google/cloud-bigquery-analyticshub": "0.4.1",
+                "google/cloud-bigquery-connection": "1.5.1",
+                "google/cloud-bigquery-data-exchange": "0.4.1",
+                "google/cloud-bigquery-datapolicies": "0.5.1",
+                "google/cloud-bigquery-migration": "0.4.1",
+                "google/cloud-bigquery-reservation": "1.3.1",
+                "google/cloud-bigquery-storage": "1.10.0",
+                "google/cloud-bigquerydatatransfer": "1.8.1",
+                "google/cloud-bigtable": "1.30.2",
+                "google/cloud-billing": "1.9.3",
+                "google/cloud-billing-budgets": "1.4.1",
+                "google/cloud-binary-authorization": "0.8.2",
+                "google/cloud-build": "0.15.1",
+                "google/cloud-certificate-manager": "0.6.1",
+                "google/cloud-channel": "1.9.1",
+                "google/cloud-commerce-consumer-procurement": "0.2.1",
+                "google/cloud-common-protos": "0.5.0",
+                "google/cloud-compute": "1.15.0",
+                "google/cloud-confidentialcomputing": "0.7.1",
+                "google/cloud-config": "0.3.2",
+                "google/cloud-contact-center-insights": "1.9.1",
+                "google/cloud-container": "1.27.0",
+                "google/cloud-container-analysis": "0.5.2",
+                "google/cloud-core": "1.56.0",
+                "google/cloud-data-catalog": "1.9.2",
+                "google/cloud-data-fusion": "0.6.1",
+                "google/cloud-datacatalog-lineage": "0.5.1",
+                "google/cloud-dataflow": "0.6.0",
+                "google/cloud-dataform": "0.4.1",
+                "google/cloud-datalabeling": "0.5.1",
+                "google/cloud-dataplex": "0.14.2",
+                "google/cloud-dataproc": "3.13.0",
+                "google/cloud-dataproc-metastore": "0.11.1",
+                "google/cloud-datastore": "1.27.1",
+                "google/cloud-datastore-admin": "0.8.1",
+                "google/cloud-datastream": "1.5.1",
+                "google/cloud-debugger": "1.8.3",
+                "google/cloud-deploy": "0.17.1",
+                "google/cloud-dialogflow": "1.11.1",
+                "google/cloud-dialogflow-cx": "0.3.0",
+                "google/cloud-discoveryengine": "0.9.0",
+                "google/cloud-dlp": "1.12.1",
+                "google/cloud-dms": "1.5.1",
+                "google/cloud-document-ai": "1.11.0",
+                "google/cloud-domains": "0.5.1",
+                "google/cloud-edgenetwork": "0.3.1",
+                "google/cloud-error-reporting": "0.22.2",
+                "google/cloud-essential-contacts": "0.4.1",
+                "google/cloud-eventarc": "1.3.1",
+                "google/cloud-eventarc-publishing": "0.6.0",
+                "google/cloud-filestore": "1.5.3",
+                "google/cloud-firestore": "1.41.1",
+                "google/cloud-functions": "1.6.1",
+                "google/cloud-game-servers": "1.2.3",
+                "google/cloud-gke-backup": "0.6.1",
+                "google/cloud-gke-connect-gateway": "0.4.0",
+                "google/cloud-gke-hub": "0.9.1",
+                "google/cloud-gke-multi-cloud": "0.5.1",
+                "google/cloud-gsuite-addons": "0.3.1",
+                "google/cloud-iam": "0.5.1",
+                "google/cloud-iam-credentials": "1.2.1",
+                "google/cloud-iap": "1.4.1",
+                "google/cloud-ids": "0.5.1",
+                "google/cloud-iot": "1.7.1",
+                "google/cloud-kms": "1.21.1",
+                "google/cloud-kms-inventory": "0.4.1",
+                "google/cloud-language": "0.32.2",
+                "google/cloud-life-sciences": "0.6.1",
+                "google/cloud-logging": "1.29.2",
+                "google/cloud-managed-identities": "1.3.1",
+                "google/cloud-media-translation": "0.4.0",
+                "google/cloud-memcache": "1.3.1",
+                "google/cloud-migrationcenter": "0.4.1",
+                "google/cloud-monitoring": "1.9.1",
+                "google/cloud-netapp": "0.2.1",
+                "google/cloud-network-connectivity": "1.5.1",
+                "google/cloud-network-management": "1.5.1",
+                "google/cloud-network-security": "0.6.1",
+                "google/cloud-notebooks": "0.7.1",
+                "google/cloud-optimization": "0.6.1",
+                "google/cloud-orchestration-airflow": "1.6.0",
+                "google/cloud-org-policy": "0.6.1",
+                "google/cloud-osconfig": "1.3.1",
+                "google/cloud-oslogin": "1.9.1",
+                "google/cloud-policy-troubleshooter": "1.3.0",
+                "google/cloud-policysimulator": "0.2.1",
+                "google/cloud-policytroubleshooter-iam": "0.2.1",
+                "google/cloud-private-catalog": "0.4.0",
+                "google/cloud-profiler": "1.3.1",
+                "google/cloud-pubsub": "2.0.0-RC1",
+                "google/cloud-quotas": "0.1.1",
+                "google/cloud-rapidmigrationassessment": "0.3.1",
+                "google/cloud-recaptcha-enterprise": "1.9.0",
+                "google/cloud-recommendations-ai": "0.7.1",
+                "google/cloud-recommender": "1.11.1",
+                "google/cloud-redis": "1.9.1",
+                "google/cloud-redis-cluster": "0.2.1",
+                "google/cloud-resource-manager": "0.8.1",
+                "google/cloud-resource-settings": "1.2.1",
+                "google/cloud-retail": "1.6.0",
+                "google/cloud-run": "0.8.1",
+                "google/cloud-scheduler": "1.10.1",
+                "google/cloud-secret-manager": "1.13.1",
+                "google/cloud-securesourcemanager": "0.2.1",
+                "google/cloud-security-center": "1.23.0",
+                "google/cloud-security-private-ca": "1.5.1",
+                "google/cloud-security-public-ca": "0.3.1",
+                "google/cloud-securitycentermanagement": "0.2.3",
+                "google/cloud-service-control": "1.4.0",
+                "google/cloud-service-directory": "1.3.1",
+                "google/cloud-service-management": "1.3.1",
+                "google/cloud-service-usage": "1.3.0",
+                "google/cloud-servicehealth": "0.1.2",
+                "google/cloud-shell": "1.3.1",
+                "google/cloud-spanner": "1.73.0",
+                "google/cloud-speech": "1.17.0",
+                "google/cloud-sql-admin": "0.13.1",
+                "google/cloud-storage": "1.39.0",
+                "google/cloud-storage-transfer": "1.4.1",
+                "google/cloud-storageinsights": "0.3.1",
+                "google/cloud-support": "0.2.1",
+                "google/cloud-talent": "1.3.1",
+                "google/cloud-tasks": "1.14.2",
+                "google/cloud-telcoautomation": "0.2.1",
+                "google/cloud-text-to-speech": "1.8.1",
+                "google/cloud-tpu": "1.4.1",
+                "google/cloud-trace": "1.8.2",
+                "google/cloud-translate": "1.17.2",
+                "google/cloud-video-live-stream": "0.7.1",
+                "google/cloud-video-stitcher": "0.8.1",
+                "google/cloud-video-transcoder": "0.10.1",
+                "google/cloud-videointelligence": "1.15.1",
+                "google/cloud-vision": "1.9.0",
+                "google/cloud-vm-migration": "0.6.1",
+                "google/cloud-vmware-engine": "0.5.2",
+                "google/cloud-vpc-access": "1.3.1",
+                "google/cloud-web-risk": "1.5.1",
+                "google/cloud-web-security-scanner": "0.8.1",
+                "google/cloud-workflows": "0.5.1",
+                "google/grafeas": "0.9.1",
+                "google/longrunning": "0.3.0",
+                "google/shopping-common-protos": "0.2.0",
+                "google/shopping-css": "0.2.1",
+                "google/shopping-merchant-inventories": "0.3.1",
+                "google/shopping-merchant-reports": "0.6.1"
+            },
+            "require-dev": {
+                "erusev/parsedown": "^1.6",
+                "flix-tech/avro-php": "^5.0.0",
+                "google/cloud-tools": "^0.13.0",
+                "kreait/firebase-php": "^5.26.5",
+                "opis/closure": "^3.0",
+                "phpdocumentor/reflection": "^5.0",
+                "phpseclib/phpseclib": "^3.0",
+                "phpspec/prophecy-phpunit": "^2.1",
+                "phpunit/phpunit": "^9.6",
+                "psr/log": "^1.1.1 || 2.0"
+            },
+            "suggest": {
+                "opis/closure": "May be used to serialize closures to process jobs in the batch daemon. Please require version ^3.",
+                "phpseclib/phpseclib": "May be used in place of OpenSSL for creating signed Cloud Storage URLs. Please require version ^2."
+            },
+            "bin": [
+                "Core/bin/google-cloud-batch",
+                "Debugger/bin/google-cloud-debugger"
+            ],
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "BigQueryStorage/metadata/descriptor_fix.php"
+                ],
+                "psr-4": {
+                    "Grafeas\\": "Grafeas/src",
+                    "Google\\Cloud\\": [
+                        "CommonProtos/src"
+                    ],
+                    "Google\\Apps\\Meet\\": "AppsMeet/src",
+                    "Google\\Cloud\\Dlp\\": "Dlp/src",
+                    "Google\\Cloud\\Iam\\": "Iam/src",
+                    "Google\\Cloud\\Iap\\": "Iap/src",
+                    "Google\\Cloud\\Ids\\": "Ids/src",
+                    "Google\\Cloud\\Iot\\": "Iot/src",
+                    "Google\\Cloud\\Kms\\": "Kms/src",
+                    "Google\\Cloud\\Run\\": "Run/src",
+                    "Google\\Cloud\\Sql\\": "SqlAdmin/src",
+                    "Google\\Cloud\\Tpu\\": "Tpu/src",
+                    "Google\\Cloud\\Core\\": "Core/src",
+                    "Google\\Cloud\\Asset\\": "Asset/src",
+                    "Google\\Cloud\\Batch\\": "Batch/src",
+                    "Google\\Cloud\\Build\\": "Build/src",
+                    "Google\\Cloud\\Redis\\": "Redis/src",
+                    "Google\\Cloud\\Shell\\": "Shell/src",
+                    "Google\\Cloud\\Tasks\\": "Tasks/src",
+                    "Google\\Cloud\\Trace\\": "Trace/src",
+                    "Google\\LongRunning\\": "LongRunning/src/LongRunning",
+                    "GPBMetadata\\Grafeas\\": "Grafeas/metadata",
+                    "Google\\Cloud\\AutoMl\\": "AutoMl/src",
+                    "Google\\Cloud\\Config\\": "Config/src",
+                    "Google\\Cloud\\Deploy\\": "Deploy/src",
+                    "Google\\Cloud\\Gaming\\": "Gaming/src",
+                    "Google\\Cloud\\GkeHub\\": "GkeHub/src",
+                    "Google\\Cloud\\NetApp\\": "NetApp/src",
+                    "Google\\Cloud\\PubSub\\": "PubSub/src",
+                    "Google\\Cloud\\Retail\\": "Retail/src",
+                    "Google\\Cloud\\Speech\\": "Speech/src",
+                    "Google\\Cloud\\Talent\\": "Talent/src",
+                    "Google\\Cloud\\Vision\\": "Vision/src",
+                    "Google\\Shopping\\Css\\": "ShoppingCss/src",
+                    "Google\\Cloud\\AlloyDb\\": "AlloyDb/src",
+                    "Google\\Cloud\\ApiKeys\\": "ApiKeys/src",
+                    "Google\\Cloud\\Billing\\": "Billing/src",
+                    "Google\\Cloud\\Channel\\": "Channel/src",
+                    "Google\\Cloud\\Compute\\": "Compute/src",
+                    "Google\\Cloud\\Domains\\": "Domains/src",
+                    "Google\\Cloud\\Logging\\": "Logging/src",
+                    "Google\\Cloud\\OsLogin\\": "OsLogin/src",
+                    "Google\\Cloud\\Spanner\\": "Spanner/src",
+                    "Google\\Cloud\\Storage\\": "Storage/src",
+                    "Google\\Cloud\\Support\\": "Support/src",
+                    "Google\\Cloud\\WebRisk\\": "WebRisk/src",
+                    "Google\\Shopping\\Type\\": "ShoppingCommonProtos/src/Type",
+                    "Google\\Analytics\\Data\\": "AnalyticsData/src",
+                    "Google\\Cloud\\BigQuery\\": "BigQuery/src",
+                    "Google\\Cloud\\Bigtable\\": "Bigtable/src",
+                    "Google\\Cloud\\CloudDms\\": "Dms/src",
+                    "Google\\Cloud\\Dataflow\\": "Dataflow/src",
+                    "Google\\Cloud\\Dataform\\": "Dataform/src",
+                    "Google\\Cloud\\Dataplex\\": "Dataplex/src",
+                    "Google\\Cloud\\Dataproc\\": "Dataproc/src",
+                    "Google\\Cloud\\Debugger\\": "Debugger/src",
+                    "Google\\Cloud\\Eventarc\\": "Eventarc/src",
+                    "Google\\Cloud\\Language\\": "Language/src",
+                    "Google\\Cloud\\Memcache\\": "Memcache/src",
+                    "Google\\Cloud\\OsConfig\\": "OsConfig/src",
+                    "Google\\Cloud\\Profiler\\": "Profiler/src",
+                    "GPBMetadata\\Google\\Iam\\": "Iam/metadata",
+                    "GPBMetadata\\Google\\Rpc\\": "CommonProtos/metadata/Rpc",
+                    "Google\\Analytics\\Admin\\": "AnalyticsAdmin/src",
+                    "Google\\Cloud\\AppEngine\\": "AppEngineAdmin/src",
+                    "Google\\Cloud\\Container\\": "Container/src",
+                    "Google\\Cloud\\Datastore\\": "Datastore/src",
+                    "Google\\Cloud\\Filestore\\": "Filestore/src",
+                    "Google\\Cloud\\Firestore\\": "Firestore/src",
+                    "Google\\Cloud\\Functions\\": "Functions/src",
+                    "Google\\Cloud\\GkeBackup\\": "GkeBackup/src",
+                    "Google\\Cloud\\Metastore\\": "DataprocMetastore/src",
+                    "Google\\Cloud\\Notebooks\\": "Notebooks/src",
+                    "Google\\Cloud\\OrgPolicy\\": [
+                        "OrgPolicy/src",
+                        "Asset/external/protos/Cloud/OrgPolicy"
+                    ],
+                    "Google\\Cloud\\Scheduler\\": "Scheduler/src",
+                    "Google\\Cloud\\Translate\\": "Translate/src",
+                    "Google\\Cloud\\VpcAccess\\": "VpcAccess/src",
+                    "Google\\Cloud\\Workflows\\": "Workflows/src",
+                    "Google\\Apps\\Script\\Type\\": "GSuiteAddOns/external/protos",
+                    "Google\\Cloud\\AIPlatform\\": "AiPlatform/src",
+                    "Google\\Cloud\\ApiGateway\\": "ApiGateway/src",
+                    "Google\\Cloud\\DataFusion\\": "DataFusion/src",
+                    "Google\\Cloud\\Datastream\\": "Datastream/src",
+                    "Google\\Cloud\\Dialogflow\\": "Dialogflow/src",
+                    "Google\\Cloud\\DocumentAI\\": "DocumentAi/src",
+                    "Google\\Cloud\\Monitoring\\": "Monitoring/src",
+                    "Google\\Cloud\\CloudQuotas\\": "Quotas/src",
+                    "Google\\Cloud\\DataCatalog\\": "DataCatalog/src",
+                    "Google\\Cloud\\EdgeNetwork\\": "EdgeNetwork/src",
+                    "Google\\Cloud\\Recommender\\": "Recommender/src",
+                    "Google\\Cloud\\VMMigration\\": "VmMigration/src",
+                    "GPBMetadata\\Google\\Pubsub\\": "PubSub/metadata",
+                    "Google\\Cloud\\DataLabeling\\": "DataLabeling/src",
+                    "Google\\Cloud\\GSuiteAddOns\\": "GSuiteAddOns/src",
+                    "Google\\Cloud\\LifeSciences\\": "LifeSciences/src",
+                    "Google\\Cloud\\Optimization\\": "Optimization/src",
+                    "Google\\Cloud\\ServiceUsage\\": "ServiceUsage/src",
+                    "Google\\Cloud\\TextToSpeech\\": "TextToSpeech/src",
+                    "Google\\Cloud\\VmwareEngine\\": "VmwareEngine/src",
+                    "GPBMetadata\\Google\\Logging\\": "Logging/metadata",
+                    "GPBMetadata\\Google\\Spanner\\": "Spanner/metadata",
+                    "Google\\ApiCore\\LongRunning\\": "LongRunning/src/ApiCore/LongRunning",
+                    "Google\\Cloud\\ApigeeConnect\\": "ApigeeConnect/src",
+                    "Google\\Cloud\\Dialogflow\\Cx\\": "DialogflowCx/src",
+                    "Google\\Cloud\\GkeMultiCloud\\": "GkeMultiCloud/src",
+                    "Google\\Cloud\\Kms\\Inventory\\": "KmsInventory/src",
+                    "Google\\Cloud\\Redis\\Cluster\\": "RedisCluster/src",
+                    "Google\\Cloud\\SecretManager\\": "SecretManager/src",
+                    "Google\\Cloud\\ServiceHealth\\": "ServiceHealth/src",
+                    "GPBMetadata\\Google\\Bigtable\\": "Bigtable/metadata",
+                    "GPBMetadata\\Google\\Dataflow\\": "Dataflow/metadata",
+                    "GPBMetadata\\Google\\Devtools\\": "CommonProtos/metadata/Devtools",
+                    "Google\\Cloud\\AccessApproval\\": "AccessApproval/src",
+                    "Google\\Cloud\\ApigeeRegistry\\": "ApigeeRegistry/src",
+                    "Google\\Cloud\\ErrorReporting\\": "ErrorReporting/src",
+                    "Google\\Cloud\\PrivateCatalog\\": "PrivateCatalog/src",
+                    "Google\\Cloud\\SecurityCenter\\": "SecurityCenter/src",
+                    "Google\\Cloud\\ServiceControl\\": "ServiceControl/src",
+                    "Google\\Cloud\\Video\\Stitcher\\": "VideoStitcher/src",
+                    "GPBMetadata\\Google\\Appengine\\": "AppEngineAdmin/metadata",
+                    "GPBMetadata\\Google\\Apps\\Meet\\": "AppsMeet/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Iap\\": "Iap/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Ids\\": "Ids/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Iot\\": "Iot/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Kms\\": "Kms/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Run\\": "Run/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Sql\\": "SqlAdmin/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Tpu\\": "Tpu/metadata",
+                    "GPBMetadata\\Google\\Container\\": "Container/metadata",
+                    "GPBMetadata\\Google\\Datastore\\": "Datastore/metadata",
+                    "GPBMetadata\\Google\\Firestore\\": "Firestore/metadata",
+                    "Google\\Cloud\\Billing\\Budgets\\": "BillingBudgets/src",
+                    "Google\\Cloud\\Datastore\\Admin\\": "DatastoreAdmin/src",
+                    "Google\\Cloud\\DiscoveryEngine\\": "DiscoveryEngine/src",
+                    "Google\\Cloud\\Iam\\Credentials\\": "IamCredentials/src",
+                    "Google\\Cloud\\MigrationCenter\\": "MigrationCenter/src",
+                    "Google\\Cloud\\NetworkSecurity\\": "NetworkSecurity/src",
+                    "Google\\Cloud\\PolicySimulator\\": "PolicySimulator/src",
+                    "Google\\Cloud\\ResourceManager\\": "ResourceManager/src",
+                    "Google\\Cloud\\StorageInsights\\": "StorageInsights/src",
+                    "Google\\Cloud\\StorageTransfer\\": "StorageTransfer/src",
+                    "Google\\Cloud\\TelcoAutomation\\": "TelcoAutomation/src",
+                    "GPBMetadata\\Google\\Monitoring\\": "Monitoring/metadata",
+                    "Google\\Cloud\\ArtifactRegistry\\": "ArtifactRegistry/src",
+                    "Google\\Cloud\\AssuredWorkloads\\": "AssuredWorkloads/src",
+                    "Google\\Cloud\\BigQuery\\Storage\\": "BigQueryStorage/src",
+                    "Google\\Cloud\\MediaTranslation\\": "MediaTranslation/src",
+                    "Google\\Cloud\\ResourceSettings\\": "ResourceSettings/src",
+                    "Google\\Cloud\\ServiceDirectory\\": "ServiceDirectory/src",
+                    "Google\\Cloud\\Video\\LiveStream\\": "VideoLiveStream/src",
+                    "Google\\Cloud\\Video\\Transcoder\\": "VideoTranscoder/src",
+                    "GPBMetadata\\Google\\Api\\Apikeys\\": "ApiKeys/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Asset\\": "Asset/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Audit\\": "CommonProtos/metadata/Audit",
+                    "GPBMetadata\\Google\\Cloud\\Batch\\": "Batch/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Redis\\": "Redis/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Shell\\": "Shell/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Tasks\\": "Tasks/metadata",
+                    "GPBMetadata\\Google\\Longrunning\\": "LongRunning/metadata/Longrunning",
+                    "GPBMetadata\\Google\\Privacy\\Dlp\\": "Dlp/metadata",
+                    "Google\\Cloud\\BareMetalSolution\\": "BareMetalSolution/src",
+                    "Google\\Cloud\\ContainerAnalysis\\": "ContainerAnalysis/src",
+                    "Google\\Cloud\\EssentialContacts\\": "EssentialContacts/src",
+                    "Google\\Cloud\\ManagedIdentities\\": "ManagedIdentities/src",
+                    "Google\\Cloud\\NetworkManagement\\": "NetworkManagement/src",
+                    "Google\\Cloud\\Security\\PublicCA\\": "SecurityPublicCA/src",
+                    "Google\\Cloud\\ServiceManagement\\": "ServiceManagement/src",
+                    "Google\\Cloud\\VideoIntelligence\\": "VideoIntelligence/src",
+                    "GPBMetadata\\Google\\Cloud\\Automl\\": "AutoMl/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Common\\": "CommonProtos/metadata/Common",
+                    "GPBMetadata\\Google\\Cloud\\Config\\": "Config/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Deploy\\": "Deploy/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Gaming\\": "Gaming/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Gkehub\\": "GkeHub/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Netapp\\": "NetApp/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Retail\\": "Retail/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Speech\\": "Speech/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Talent\\": "Talent/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Vision\\": "Vision/metadata",
+                    "GPBMetadata\\Google\\Shopping\\Css\\": "ShoppingCss/metadata",
+                    "Google\\Cloud\\BigQuery\\Migration\\": "BigQueryMigration/src",
+                    "Google\\Cloud\\CertificateManager\\": "CertificateManager/src",
+                    "Google\\Cloud\\GkeConnect\\Gateway\\": "GkeConnectGateway/src",
+                    "Google\\Cloud\\Security\\PrivateCA\\": "SecurityPrivateCa/src",
+                    "Google\\Cloud\\WebSecurityScanner\\": "WebSecurityScanner/src",
+                    "GPBMetadata\\Google\\Cloud\\Alloydb\\": "AlloyDb/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Billing\\": "Billing/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Channel\\": "Channel/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Compute\\": "Compute/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Domains\\": "Domains/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Oslogin\\": "OsLogin/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Secrets\\": "SecretManager/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Support\\": "Support/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Webrisk\\": "WebRisk/metadata",
+                    "GPBMetadata\\Google\\Shopping\\Type\\": "ShoppingCommonProtos/metadata/Type",
+                    "Google\\Cloud\\BigQuery\\Connection\\": "BigQueryConnection/src",
+                    "Google\\Cloud\\BinaryAuthorization\\": "BinaryAuthorization/src",
+                    "Google\\Cloud\\DataCatalog\\Lineage\\": "DataCatalogLineage/src",
+                    "Google\\Cloud\\Eventarc\\Publishing\\": "EventarcPublishing/src",
+                    "Google\\Cloud\\NetworkConnectivity\\": "NetworkConnectivity/src",
+                    "Google\\Cloud\\RecaptchaEnterprise\\": "RecaptchaEnterprise/src",
+                    "Google\\Cloud\\SecureSourceManager\\": "SecureSourceManager/src",
+                    "Google\\Shopping\\Merchant\\Reports\\": "ShoppingMerchantReports/src",
+                    "GPBMetadata\\Google\\Analytics\\Data\\": "AnalyticsData/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Clouddms\\": "Dms/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Dataform\\": "Dataform/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Dataplex\\": "Dataplex/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Dataproc\\": "Dataproc/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Eventarc\\": "Eventarc/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Language\\": "Language/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Memcache\\": "Memcache/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Osconfig\\": "OsConfig/metadata",
+                    "GPBMetadata\\Google\\Devtools\\Build\\": "Build/metadata",
+                    "Google\\Cloud\\BigQuery\\Reservation\\": "BigQueryReservation/src",
+                    "Google\\Cloud\\PolicyTroubleshooter\\": "PolicyTroubleshooter/src",
+                    "Google\\Cloud\\RecommendationEngine\\": "RecommendationEngine/src",
+                    "GPBMetadata\\Google\\Analytics\\Admin\\": "AnalyticsAdmin/metadata",
+                    "GPBMetadata\\Google\\Api\\Cloudquotas\\": "Quotas/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Filestore\\": "Filestore/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Functions\\": "Functions/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Gkebackup\\": "GkeBackup/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Metastore\\": "DataprocMetastore/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Notebooks\\": "Notebooks/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Orgpolicy\\": [
+                        "OrgPolicy/metadata",
+                        "Asset/external/metadata/Cloud/Orgpolicy"
+                    ],
+                    "GPBMetadata\\Google\\Cloud\\Scheduler\\": "Scheduler/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Translate\\": "Translate/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Vpcaccess\\": "VpcAccess/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Workflows\\": "Workflows/metadata",
+                    "GPBMetadata\\Google\\Datastore\\Admin\\": "DatastoreAdmin/metadata",
+                    "GPBMetadata\\Google\\Iam\\Credentials\\": "IamCredentials/metadata",
+                    "GPBMetadata\\Google\\Storagetransfer\\": "StorageTransfer/metadata",
+                    "Google\\Cloud\\AdvisoryNotifications\\": "AdvisoryNotifications/src",
+                    "Google\\Cloud\\BigQuery\\AnalyticsHub\\": "BigQueryAnalyticsHub/src",
+                    "Google\\Cloud\\BigQuery\\DataExchange\\": "BigQueryDataExchange/src",
+                    "Google\\Cloud\\BigQuery\\DataPolicies\\": "BigQueryDataPolicies/src",
+                    "Google\\Cloud\\BigQuery\\DataTransfer\\": "BigQueryDataTransfer/src",
+                    "Google\\Cloud\\ConfidentialComputing\\": "ConfidentialComputing/src",
+                    "Google\\Cloud\\ContactCenterInsights\\": "ContactCenterInsights/src",
+                    "GPBMetadata\\Google\\Api\\Serviceusage\\": "ServiceUsage/metadata",
+                    "GPBMetadata\\Google\\Apps\\Script\\Type\\": "GSuiteAddOns/external/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Aiplatform\\": "AiPlatform/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Apigateway\\": "ApiGateway/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Datafusion\\": "DataFusion/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Datastream\\": "Datastream/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Dialogflow\\": "Dialogflow/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Documentai\\": "DocumentAi/metadata",
+                    "Google\\Cloud\\BeyondCorp\\AppGateways\\": "BeyondCorpAppGateways/src",
+                    "GPBMetadata\\Google\\Cloud\\Datacatalog\\": "DataCatalog/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Edgenetwork\\": "EdgeNetwork/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Recommender\\": "Recommender/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Vmmigration\\": "VmMigration/metadata",
+                    "Google\\Identity\\AccessContextManager\\": "AccessContextManager/src",
+                    "Google\\Shopping\\Merchant\\Inventories\\": "ShoppingMerchantInventories/src",
+                    "GPBMetadata\\Google\\Api\\Servicecontrol\\": "ServiceControl/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Datalabeling\\": "DataLabeling/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Gsuiteaddons\\": "GSuiteAddOns/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Lifesciences\\": "LifeSciences/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Optimization\\": "Optimization/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Texttospeech\\": "TextToSpeech/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Vmwareengine\\": "VmwareEngine/metadata",
+                    "Google\\Cloud\\BeyondCorp\\AppConnectors\\": "BeyondCorpAppConnectors/src",
+                    "Google\\Cloud\\PolicyTroubleshooter\\Iam\\": "PolicyTroubleshooterIam/src",
+                    "Google\\Cloud\\RapidMigrationAssessment\\": "RapidMigrationAssessment/src",
+                    "Google\\Cloud\\SecurityCenterManagement\\": "SecurityCenterManagement/src",
+                    "GPBMetadata\\Google\\Cloud\\Apigeeconnect\\": "ApigeeConnect/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Dialogflow\\Cx\\": "DialogflowCx/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Gkemulticloud\\": "GkeMultiCloud/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Kms\\Inventory\\": "KmsInventory/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Redis\\Cluster\\": "RedisCluster/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Secretmanager\\": "SecretManager/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Servicehealth\\": "ServiceHealth/metadata",
+                    "GPBMetadata\\Google\\Devtools\\Cloudbuild\\": "Build/metadata",
+                    "GPBMetadata\\Google\\Devtools\\Cloudtrace\\": "Trace/metadata",
+                    "Google\\Cloud\\BeyondCorp\\AppConnections\\": "BeyondCorpAppConnections/src",
+                    "Google\\Cloud\\BeyondCorp\\ClientGateways\\": "BeyondCorpClientGateways/src",
+                    "GPBMetadata\\Google\\Cloud\\Accessapproval\\": "AccessApproval/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Apigeeregistry\\": "ApigeeRegistry/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Privatecatalog\\": "PrivateCatalog/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Securitycenter\\": "SecurityCenter/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Video\\Stitcher\\": "VideoStitcher/metadata",
+                    "GPBMetadata\\Google\\Api\\Servicemanagement\\": "ServiceManagement/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Billing\\Budgets\\": "BillingBudgets/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Discoveryengine\\": "DiscoveryEngine/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Migrationcenter\\": "MigrationCenter/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Networksecurity\\": "NetworkSecurity/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Policysimulator\\": "PolicySimulator/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Resourcemanager\\": "ResourceManager/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Storageinsights\\": "StorageInsights/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Telcoautomation\\": "TelcoAutomation/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Assuredworkloads\\": "AssuredWorkloads/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Bigquery\\Storage\\": "BigQueryStorage/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Mediatranslation\\": "MediaTranslation/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Resourcesettings\\": "ResourceSettings/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Servicedirectory\\": "ServiceDirectory/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Video\\Livestream\\": "VideoLiveStream/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Video\\Transcoder\\": "VideoTranscoder/metadata",
+                    "GPBMetadata\\Google\\Devtools\\Clouddebugger\\": "Debugger/metadata",
+                    "GPBMetadata\\Google\\Devtools\\Cloudprofiler\\": "Profiler/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Baremetalsolution\\": "BareMetalSolution/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Essentialcontacts\\": "EssentialContacts/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Managedidentities\\": "ManagedIdentities/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Networkmanagement\\": "NetworkManagement/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Security\\Publicca\\": "SecurityPublicCA/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Videointelligence\\": "VideoIntelligence/metadata",
+                    "Google\\Cloud\\Commerce\\Consumer\\Procurement\\": "CommerceConsumerProcurement/src",
+                    "Google\\Cloud\\Orchestration\\Airflow\\Service\\": "OrchestrationAirflow/src",
+                    "GPBMetadata\\Google\\Cloud\\Bigquery\\Migration\\": "BigQueryMigration/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Certificatemanager\\": "CertificateManager/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Gkeconnect\\Gateway\\": "GkeConnectGateway/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Security\\Privateca\\": "SecurityPrivateCa/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Websecurityscanner\\": "WebSecurityScanner/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Bigquery\\Connection\\": "BigQueryConnection/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Binaryauthorization\\": "BinaryAuthorization/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Datacatalog\\Lineage\\": "DataCatalogLineage/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Eventarc\\Publishing\\": "EventarcPublishing/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Networkconnectivity\\": "NetworkConnectivity/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Recaptchaenterprise\\": "RecaptchaEnterprise/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Securesourcemanager\\": "SecureSourceManager/metadata",
+                    "GPBMetadata\\Google\\Devtools\\Artifactregistry\\": "ArtifactRegistry/metadata",
+                    "GPBMetadata\\Google\\Shopping\\Merchant\\Reports\\": "ShoppingMerchantReports/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Bigquery\\Reservation\\": "BigQueryReservation/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Policytroubleshooter\\": "PolicyTroubleshooter/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Recommendationengine\\": "RecommendationEngine/metadata",
+                    "GPBMetadata\\Google\\Devtools\\Containeranalysis\\": "ContainerAnalysis/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Advisorynotifications\\": "AdvisoryNotifications/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Bigquery\\Analyticshub\\": "BigQueryAnalyticsHub/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Bigquery\\Dataexchange\\": "BigQueryDataExchange/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Bigquery\\Datapolicies\\": "BigQueryDataPolicies/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Bigquery\\Datatransfer\\": "BigQueryDataTransfer/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Confidentialcomputing\\": "ConfidentialComputing/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Contactcenterinsights\\": "ContactCenterInsights/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Beyondcorp\\Appgateways\\": "BeyondCorpAppGateways/metadata",
+                    "GPBMetadata\\Google\\Devtools\\Clouderrorreporting\\": "ErrorReporting/metadata",
+                    "Google\\Cloud\\BeyondCorp\\ClientConnectorServices\\": "BeyondCorpClientConnectorServices/src",
+                    "GPBMetadata\\Google\\Identity\\Accesscontextmanager\\": "AccessContextManager/metadata",
+                    "GPBMetadata\\Google\\Shopping\\Merchant\\Inventories\\": "ShoppingMerchantInventories/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Beyondcorp\\Appconnectors\\": "BeyondCorpAppConnectors/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Policytroubleshooter\\Iam\\": "PolicyTroubleshooterIam/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Rapidmigrationassessment\\": "RapidMigrationAssessment/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Securitycentermanagement\\": "SecurityCenterManagement/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Beyondcorp\\Appconnections\\": "BeyondCorpAppConnections/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Beyondcorp\\Clientgateways\\": "BeyondCorpClientGateways/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Commerce\\Consumer\\Procurement\\": "CommerceConsumerProcurement/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Orchestration\\Airflow\\Service\\": "OrchestrationAirflow/metadata",
+                    "GPBMetadata\\Google\\Cloud\\Beyondcorp\\Clientconnectorservices\\": "BeyondCorpClientConnectorServices/metadata"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Dave Supplee",
+                    "email": "dwsupplee@gmail.com"
+                },
+                {
+                    "name": "John Pedrie",
+                    "email": "john@pedrie.com"
+                }
+            ],
+            "description": "Google Cloud Client Library",
+            "homepage": "http://github.com/googleapis/google-cloud-php",
+            "keywords": [
+                "Tasks",
+                "big query",
+                "bigquery",
+                "bigtable",
+                "cloud",
+                "datastore",
+                "gcs",
+                "google",
+                "google api",
+                "google api client",
+                "google apis",
+                "google apis client",
+                "google cloud",
+                "google cloud platform",
+                "kms",
+                "language",
+                "natural language",
+                "pub sub",
+                "pubsub",
+                "spanner",
+                "speech",
+                "stackdriver logging",
+                "storage",
+                "translate",
+                "translation",
+                "vision"
+            ],
+            "support": {
+                "issues": "https://github.com/googleapis/google-cloud-php/issues",
+                "source": "https://github.com/googleapis/google-cloud-php/tree/v0.236.0"
+            },
+            "time": "2024-02-23T23:49:35+00:00"
+        },
+        {
+            "name": "google/common-protos",
+            "version": "v4.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/googleapis/common-protos-php.git",
+                "reference": "dfc232e90823cedca107b56e7371f2e2f35b9427"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/googleapis/common-protos-php/zipball/dfc232e90823cedca107b56e7371f2e2f35b9427",
+                "reference": "dfc232e90823cedca107b56e7371f2e2f35b9427",
+                "shasum": ""
+            },
+            "require": {
+                "google/protobuf": "^3.6.1",
+                "php": ">=7.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Google\\Api\\": "src/Api",
+                    "Google\\Iam\\": "src/Iam",
+                    "Google\\Rpc\\": "src/Rpc",
+                    "Google\\Type\\": "src/Type",
+                    "Google\\Cloud\\": "src/Cloud",
+                    "GPBMetadata\\Google\\Api\\": "metadata/Api",
+                    "GPBMetadata\\Google\\Iam\\": "metadata/Iam",
+                    "GPBMetadata\\Google\\Rpc\\": "metadata/Rpc",
+                    "GPBMetadata\\Google\\Type\\": "metadata/Type",
+                    "GPBMetadata\\Google\\Cloud\\": "metadata/Cloud",
+                    "GPBMetadata\\Google\\Logging\\": "metadata/Logging"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "Google API Common Protos for PHP",
+            "homepage": "https://github.com/googleapis/common-protos-php",
+            "keywords": [
+                "google"
+            ],
+            "support": {
+                "issues": "https://github.com/googleapis/common-protos-php/issues",
+                "source": "https://github.com/googleapis/common-protos-php/tree/v4.5.0"
+            },
+            "time": "2023-11-29T21:08:16+00:00"
+        },
+        {
+            "name": "google/gax",
+            "version": "v1.29.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/googleapis/gax-php.git",
+                "reference": "e400e2432475f0ab85d3fdd6eddbc995ba787a21"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/googleapis/gax-php/zipball/e400e2432475f0ab85d3fdd6eddbc995ba787a21",
+                "reference": "e400e2432475f0ab85d3fdd6eddbc995ba787a21",
+                "shasum": ""
+            },
+            "require": {
+                "google/auth": "^1.34.0",
+                "google/common-protos": "^4.4",
+                "google/grpc-gcp": "^0.2||^0.3",
+                "google/longrunning": "~0.2",
+                "google/protobuf": "^3.22",
+                "grpc/grpc": "^1.13",
+                "guzzlehttp/promises": "^1.4||^2.0",
+                "guzzlehttp/psr7": "^2.0",
+                "php": ">=7.4"
+            },
+            "conflict": {
+                "ext-protobuf": "<3.7.0"
+            },
+            "require-dev": {
+                "phpspec/prophecy-phpunit": "^2.0",
+                "phpunit/phpunit": "^9.0",
+                "squizlabs/php_codesniffer": "3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Google\\ApiCore\\": "src",
+                    "GPBMetadata\\ApiCore\\": "metadata/ApiCore"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Google API Core for PHP",
+            "homepage": "https://github.com/googleapis/gax-php",
+            "keywords": [
+                "google"
+            ],
+            "support": {
+                "issues": "https://github.com/googleapis/gax-php/issues",
+                "source": "https://github.com/googleapis/gax-php/tree/v1.29.2"
+            },
+            "time": "2024-12-11T18:10:54+00:00"
+        },
+        {
+            "name": "google/grpc-gcp",
+            "version": "v0.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/GoogleCloudPlatform/grpc-gcp-php.git",
+                "reference": "4d8b455a45a89f57e1552cadc41a43bc34c40456"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/GoogleCloudPlatform/grpc-gcp-php/zipball/4d8b455a45a89f57e1552cadc41a43bc34c40456",
+                "reference": "4d8b455a45a89f57e1552cadc41a43bc34c40456",
+                "shasum": ""
+            },
+            "require": {
+                "google/auth": "^1.3",
+                "google/protobuf": "^v3.3.0",
+                "grpc/grpc": "^v1.13.0",
+                "php": "^7.4||^8.0",
+                "psr/cache": "^1.0.1||^2.0.0||^3.0.0"
+            },
+            "require-dev": {
+                "google/cloud-spanner": "^1.7",
+                "phpunit/phpunit": "^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Grpc\\Gcp\\": "src/"
+                },
+                "classmap": [
+                    "src/generated/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "gRPC GCP library for channel management",
+            "support": {
+                "issues": "https://github.com/GoogleCloudPlatform/grpc-gcp-php/issues",
+                "source": "https://github.com/GoogleCloudPlatform/grpc-gcp-php/tree/v0.3.0"
+            },
+            "time": "2023-04-24T14:37:29+00:00"
+        },
+        {
+            "name": "google/protobuf",
+            "version": "v3.25.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/protocolbuffers/protobuf-php.git",
+                "reference": "57d440fc54a00fda5b8781e8d9bf0140ea6d8e52"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/57d440fc54a00fda5b8781e8d9bf0140ea6d8e52",
+                "reference": "57d440fc54a00fda5b8781e8d9bf0140ea6d8e52",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": ">=5.0.0"
+            },
+            "suggest": {
+                "ext-bcmath": "Need to support JSON deserialization"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Google\\Protobuf\\": "src/Google/Protobuf",
+                    "GPBMetadata\\Google\\Protobuf\\": "src/GPBMetadata/Google/Protobuf"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "proto library for PHP",
+            "homepage": "https://developers.google.com/protocol-buffers/",
+            "keywords": [
+                "proto"
+            ],
+            "support": {
+                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v3.25.8"
+            },
+            "time": "2025-05-27T21:04:40+00:00"
+        },
+        {
             "name": "graham-campbell/guzzle-factory",
             "version": "v7.0.2",
             "source": {
@@ -1631,6 +2693,50 @@
                 }
             ],
             "time": "2025-01-12T01:44:21+00:00"
+        },
+        {
+            "name": "grpc/grpc",
+            "version": "1.57.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/grpc/grpc-php.git",
+                "reference": "b610c42022ed3a22f831439cb93802f2a4502fdf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/grpc/grpc-php/zipball/b610c42022ed3a22f831439cb93802f2a4502fdf",
+                "reference": "b610c42022ed3a22f831439cb93802f2a4502fdf",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0"
+            },
+            "require-dev": {
+                "google/auth": "^v1.3.0"
+            },
+            "suggest": {
+                "ext-protobuf": "For better performance, install the protobuf C extension.",
+                "google/protobuf": "To get started using grpc quickly, install the native protobuf library."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Grpc\\": "src/lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "gRPC library for PHP",
+            "homepage": "https://grpc.io",
+            "keywords": [
+                "rpc"
+            ],
+            "support": {
+                "source": "https://github.com/grpc/grpc-php/tree/v1.57.0"
+            },
+            "time": "2023-08-14T23:57:54+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -1959,16 +3065,16 @@
         },
         {
             "name": "jaybizzle/crawler-detect",
-            "version": "v1.3.4",
+            "version": "v1.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JayBizzle/Crawler-Detect.git",
-                "reference": "d3b7ff28994e1b0de764ab7412fa269a79634ff3"
+                "reference": "fbf1a3e81d61b088e7af723fb3c7a4ee92ac7e34"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/d3b7ff28994e1b0de764ab7412fa269a79634ff3",
-                "reference": "d3b7ff28994e1b0de764ab7412fa269a79634ff3",
+                "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/fbf1a3e81d61b088e7af723fb3c7a4ee92ac7e34",
+                "reference": "fbf1a3e81d61b088e7af723fb3c7a4ee92ac7e34",
                 "shasum": ""
             },
             "require": {
@@ -2005,9 +3111,9 @@
             ],
             "support": {
                 "issues": "https://github.com/JayBizzle/Crawler-Detect/issues",
-                "source": "https://github.com/JayBizzle/Crawler-Detect/tree/v1.3.4"
+                "source": "https://github.com/JayBizzle/Crawler-Detect/tree/v1.3.5"
             },
-            "time": "2025-03-05T23:12:10+00:00"
+            "time": "2025-06-11T17:58:05+00:00"
         },
         {
             "name": "jenssegers/agent",
@@ -3347,16 +4453,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v5.4.0",
+            "version": "v5.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "447a020a1f875a434d62f2a401f53b82a396e494"
+                "reference": "ae59794362fe85e051a58ad36b289443f57be7a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/447a020a1f875a434d62f2a401f53b82a396e494",
-                "reference": "447a020a1f875a434d62f2a401f53b82a396e494",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/ae59794362fe85e051a58ad36b289443f57be7a9",
+                "reference": "ae59794362fe85e051a58ad36b289443f57be7a9",
                 "shasum": ""
             },
             "require": {
@@ -3399,9 +4505,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
-                "source": "https://github.com/nikic/PHP-Parser/tree/v5.4.0"
+                "source": "https://github.com/nikic/PHP-Parser/tree/v5.5.0"
             },
-            "time": "2024-12-30T11:07:19+00:00"
+            "time": "2025-05-31T08:24:38+00:00"
         },
         {
             "name": "opis/closure",
@@ -3467,6 +4573,123 @@
                 "source": "https://github.com/opis/closure/tree/3.6.3"
             },
             "time": "2022-01-27T09:35:39+00:00"
+        },
+        {
+            "name": "paragonie/constant_time_encoding",
+            "version": "v2.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/constant_time_encoding.git",
+                "reference": "52a0d99e69f56b9ec27ace92ba56897fe6993105"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/constant_time_encoding/zipball/52a0d99e69f56b9ec27ace92ba56897fe6993105",
+                "reference": "52a0d99e69f56b9ec27ace92ba56897fe6993105",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7|^8"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6|^7|^8|^9",
+                "vimeo/psalm": "^1|^2|^3|^4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ParagonIE\\ConstantTime\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com",
+                    "homepage": "https://paragonie.com",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Steve 'Sc00bz' Thomas",
+                    "email": "steve@tobtu.com",
+                    "homepage": "https://www.tobtu.com",
+                    "role": "Original Developer"
+                }
+            ],
+            "description": "Constant-time Implementations of RFC 4648 Encoding (Base-64, Base-32, Base-16)",
+            "keywords": [
+                "base16",
+                "base32",
+                "base32_decode",
+                "base32_encode",
+                "base64",
+                "base64_decode",
+                "base64_encode",
+                "bin2hex",
+                "encoding",
+                "hex",
+                "hex2bin",
+                "rfc4648"
+            ],
+            "support": {
+                "email": "info@paragonie.com",
+                "issues": "https://github.com/paragonie/constant_time_encoding/issues",
+                "source": "https://github.com/paragonie/constant_time_encoding"
+            },
+            "time": "2024-05-08T12:18:48+00:00"
+        },
+        {
+            "name": "paragonie/random_compat",
+            "version": "v9.99.100",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/random_compat.git",
+                "reference": "996434e5492cb4c3edcb9168db6fbb1359ef965a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/996434e5492cb4c3edcb9168db6fbb1359ef965a",
+                "reference": "996434e5492cb4c3edcb9168db6fbb1359ef965a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">= 7"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*|5.*",
+                "vimeo/psalm": "^1"
+            },
+            "suggest": {
+                "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com",
+                    "homepage": "https://paragonie.com"
+                }
+            ],
+            "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
+            "keywords": [
+                "csprng",
+                "polyfill",
+                "pseudorandom",
+                "random"
+            ],
+            "support": {
+                "email": "info@paragonie.com",
+                "issues": "https://github.com/paragonie/random_compat/issues",
+                "source": "https://github.com/paragonie/random_compat"
+            },
+            "time": "2020-10-15T08:29:30+00:00"
         },
         {
             "name": "phpoffice/phpspreadsheet",
@@ -3648,6 +4871,116 @@
                 }
             ],
             "time": "2024-07-20T21:41:07+00:00"
+        },
+        {
+            "name": "phpseclib/phpseclib",
+            "version": "3.0.43",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpseclib/phpseclib.git",
+                "reference": "709ec107af3cb2f385b9617be72af8cf62441d02"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/709ec107af3cb2f385b9617be72af8cf62441d02",
+                "reference": "709ec107af3cb2f385b9617be72af8cf62441d02",
+                "shasum": ""
+            },
+            "require": {
+                "paragonie/constant_time_encoding": "^1|^2|^3",
+                "paragonie/random_compat": "^1.4|^2.0|^9.99.99",
+                "php": ">=5.6.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*"
+            },
+            "suggest": {
+                "ext-dom": "Install the DOM extension to load XML formatted public keys.",
+                "ext-gmp": "Install the GMP (GNU Multiple Precision) extension in order to speed up arbitrary precision integer arithmetic operations.",
+                "ext-libsodium": "SSH2/SFTP can make use of some algorithms provided by the libsodium-php extension.",
+                "ext-mcrypt": "Install the Mcrypt extension in order to speed up a few other cryptographic operations.",
+                "ext-openssl": "Install the OpenSSL extension in order to speed up a wide variety of cryptographic operations."
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "phpseclib/bootstrap.php"
+                ],
+                "psr-4": {
+                    "phpseclib3\\": "phpseclib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jim Wigginton",
+                    "email": "terrafrost@php.net",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Patrick Monnerat",
+                    "email": "pm@datasphere.ch",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Andreas Fischer",
+                    "email": "bantu@phpbb.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Hans-Jürgen Petrich",
+                    "email": "petrich@tronic-media.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Graham Campbell",
+                    "email": "graham@alt-three.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP Secure Communications Library - Pure-PHP implementations of RSA, AES, SSH2, SFTP, X.509 etc.",
+            "homepage": "http://phpseclib.sourceforge.net",
+            "keywords": [
+                "BigInteger",
+                "aes",
+                "asn.1",
+                "asn1",
+                "blowfish",
+                "crypto",
+                "cryptography",
+                "encryption",
+                "rsa",
+                "security",
+                "sftp",
+                "signature",
+                "signing",
+                "ssh",
+                "twofish",
+                "x.509",
+                "x509"
+            ],
+            "support": {
+                "issues": "https://github.com/phpseclib/phpseclib/issues",
+                "source": "https://github.com/phpseclib/phpseclib/tree/3.0.43"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/terrafrost",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/phpseclib",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/phpseclib/phpseclib",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-12-14T21:12:59+00:00"
         },
         {
             "name": "pimple/pimple",
@@ -4468,6 +5801,68 @@
                 }
             ],
             "time": "2021-09-25T23:10:38+00:00"
+        },
+        {
+            "name": "rize/uri-template",
+            "version": "0.3.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rize/UriTemplate.git",
+                "reference": "34a5b96d0b65a5dddb7d20f09b6527a43faede24"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rize/UriTemplate/zipball/34a5b96d0b65a5dddb7d20f09b6527a43faede24",
+                "reference": "34a5b96d0b65a5dddb7d20f09b6527a43faede24",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.8.36"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Rize\\": "src/Rize"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marut K",
+                    "homepage": "http://twitter.com/rezigned"
+                }
+            ],
+            "description": "PHP URI Template (RFC 6570) supports both expansion & extraction",
+            "keywords": [
+                "RFC 6570",
+                "template",
+                "uri"
+            ],
+            "support": {
+                "issues": "https://github.com/rize/UriTemplate/issues",
+                "source": "https://github.com/rize/UriTemplate/tree/0.3.8"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.me/rezigned",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/rezigned",
+                    "type": "github"
+                },
+                {
+                    "url": "https://opencollective.com/rize-uri-template",
+                    "type": "open_collective"
+                }
+            ],
+            "time": "2024-08-30T07:09:40+00:00"
         },
         {
             "name": "spatie/dropbox-api",
@@ -7407,16 +8802,16 @@
         },
         {
             "name": "filp/whoops",
-            "version": "2.18.0",
+            "version": "2.18.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filp/whoops.git",
-                "reference": "a7de6c3c6c3c022f5cfc337f8ede6a14460cf77e"
+                "reference": "89dabca1490bc77dbcab41c2b20968c7e44bf7c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filp/whoops/zipball/a7de6c3c6c3c022f5cfc337f8ede6a14460cf77e",
-                "reference": "a7de6c3c6c3c022f5cfc337f8ede6a14460cf77e",
+                "url": "https://api.github.com/repos/filp/whoops/zipball/89dabca1490bc77dbcab41c2b20968c7e44bf7c3",
+                "reference": "89dabca1490bc77dbcab41c2b20968c7e44bf7c3",
                 "shasum": ""
             },
             "require": {
@@ -7466,7 +8861,7 @@
             ],
             "support": {
                 "issues": "https://github.com/filp/whoops/issues",
-                "source": "https://github.com/filp/whoops/tree/2.18.0"
+                "source": "https://github.com/filp/whoops/tree/2.18.2"
             },
             "funding": [
                 {
@@ -7474,7 +8869,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-15T12:00:00+00:00"
+            "time": "2025-06-11T20:42:19+00:00"
         },
         {
             "name": "hamcrest/hamcrest-php",
@@ -9398,5 +10793,5 @@
         "php": "^7.2.5|^8.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.1.0"
 }

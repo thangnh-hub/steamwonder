@@ -26,21 +26,28 @@ class MealWareHouseEntry extends Model
 
     public static function getSqlWareHouseWareHouseEntry($params = [])
     {
-        $query = WareHouseEntry::select('tb_meal_warehouse_entry.*')
+        $query = MealWareHouseEntry::select('tb_meal_warehouse_entry.*')
             ->selectRaw('sum(tb_meal_warehouse_entry_detail.quantity) AS total_product')
             ->leftJoin('tb_meal_warehouse_entry_detail', 'tb_meal_warehouse_entry.id', '=', 'tb_meal_warehouse_entry_detail.entry_id')
             ->when(!empty($params['keyword']), function ($query) use ($params) {
                 $keyword = $params['keyword'];
                 return $query->where(function ($where) use ($keyword) {
-                    return $where->where('tb_meal_warehouse_entry.name', 'like', '%' . $keyword . '%')
-                        ->orWhere('tb_meal_warehouse_entry.code', 'like', '%' . $keyword . '%');
+                    return $where->where('tb_meal_warehouse_entry.name', 'like', '%' . $keyword . '%');
                 });
             })
             
             ->when(!empty($params['status']), function ($query) use ($params) {
                 return $query->where('tb_meal_warehouse_entry.status', $params['status']);
             })
-           
+            ->when(!empty($params['area_id']), function ($query) use ($params) {
+                return $query->where('tb_meal_warehouse_entry.area_id', $params['area_id']);
+            })
+            ->when(!empty($params['permisson_area_id']), function ($query) use ($params) {
+                if (is_array($params['permisson_area_id'])) {
+                    return $query->whereIn('tb_meal_warehouse_entry.area_id', $params['permisson_area_id']);
+                }
+                return $query->where('tb_meal_warehouse_entry.area_id',  $params['permisson_area_id']);
+            })
             ->when(!empty($params['type']), function ($query) use ($params) {
                 return $query->where('tb_meal_warehouse_entry.type', $params['type']);
             });
@@ -61,5 +68,9 @@ class MealWareHouseEntry extends Model
     public function area()
     {
         return $this->belongsTo(Area::class, 'area_id');
+    }
+    public function mealEntryDetails()
+    {
+        return $this->hasMany(MealWareHouseEntryDetail::class, 'entry_id');
     }
 }
