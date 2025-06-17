@@ -122,6 +122,7 @@ Route::group(['namespace' => 'Admin'], function () {
                 'menu_plannings' => 'MealMenuPlanningController',
                 'menu_dailys' => 'MealMenuDailyController',
                 'warehouse_ingredients' => 'MealWarehouseIngredientController',
+                'warehouse_ingredients_entry' => 'MealWarehouseEntryController',
             ]);
             // receipt adjustment
             Route::post('receipt_adjustment/update_or_create', 'ReceiptAdjustmentController@updateOrCreate')->name('receipt_adjustment.update_or_create');
@@ -148,10 +149,6 @@ Route::group(['namespace' => 'Admin'], function () {
             // Sổ báo ăn
             Route::get('mealmenu/calendar-month', 'MealMenuDailyController@calendarByMonth')->name('meal-menu-daily.calendar-by-month');
             
-            //Kho thực phẩm
-            Route::get('warehouse_ingredients_entry', 'MealWarehouseIngredientController@viewWarehouseIncredientEntry')->name('meal_warehouse_ingredients_entry');
-            Route::post('warehouse_ingredients_entry_store', 'MealWarehouseIngredientController@storeWarehouseIncredientEntry')->name('meal_warehouse_ingredients_entry_store');
-
             Route::get('attendance/check-out/index', 'AttendancesController@checkout')->name('attendance.checkout');
             Route::get('attendance/summary-by-month/index', 'AttendancesController@attendanceSummaryByMonth')->name('attendance.summary_by_month');
             Route::post('attendance/summary-by-month/update_or_store', 'AttendancesController@updateOrstoreAttendance')->name('attendance.summary_by_month.update_or_store');
