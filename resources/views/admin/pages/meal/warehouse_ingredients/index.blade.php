@@ -58,19 +58,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label>@lang('Status')</label>
-                                <select name="status" class="form-control select2" style="width: 100%;">
-                                    <option value="">@lang('Please select')</option>
-                                    @foreach ($list_status as $key => $item)
-                                        <option value="{{ $key }}"
-                                            {{ isset($params['status']) && $params['status'] == $key ? 'selected' : '' }}>{{ __($item) }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
+                       
                         
                         <div class="col-md-2">
                             <div class="form-group">
@@ -130,7 +118,6 @@
                             <th rowspan="2">@lang('STT')</th>
                             <th rowspan="2">@lang('Thực phẩm')</th>
                             <th colspan="{{ $areas_from_rows->count() }}">@lang('Cơ sở')</th>
-                            <th rowspan="2">@lang('Ghi chú')</th>
                         </tr>
                         <tr class="text-center">
                             @foreach($areas_from_rows as $area)
@@ -142,11 +129,10 @@
                         @forelse($ingredients_data as $index => $item)
                             <tr>
                                 <td class="text-center">{{ $loop->iteration }}</td>
-                                <td>{{ $item['ingredient_name'] }}</td>
+                                <td>{{ $item['ingredient_name'] }} ({{ $item['ingredient_unit'] }})</td>
                                 @foreach($areas_from_rows as $area)
                                     <td class="text-end">{{ $item['area_quantities'][$area->id] ?? "" }}</td>
                                 @endforeach
-                                <td>{{ $item['note'] }}</td>
                             </tr>
                         @empty
                             <tr>
