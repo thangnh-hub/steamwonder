@@ -44,13 +44,15 @@
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Từ ngày'); ?></label>
-                                <input type="date" name="from_date" class="form-control" value="<?php echo e($params['from_date']); ?>">
+                                <input type="date" name="from_date" class="form-control"
+                                    value="<?php echo e($params['from_date'] ?? ''); ?>">
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label><?php echo app('translator')->get('Đến ngày ngày'); ?></label>
-                                <input type="date" name="to_date" class="form-control" value="<?php echo e($params['to_date']); ?>">
+                                <input type="date" name="to_date" class="form-control"
+                                    value="<?php echo e($params['to_date'] ?? ''); ?>">
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -130,7 +132,10 @@
 
                                     </td>
                                     <td>
-                                        <?php echo e($row->receipt->student->student_code ?? ''); ?> - <?php echo e($row->receipt->student->first_name ?? ''); ?> <?php echo e($row->receipt->student->last_name ?? ''); ?>
+                                        <?php echo e($row->receipt->student->student_code ?? ''); ?> -
+                                        <?php echo e($row->receipt->student->first_name ?? ''); ?>
+
+                                        <?php echo e($row->receipt->student->last_name ?? ''); ?>
 
                                     </td>
                                     <td>

@@ -153,31 +153,42 @@
                                     <td><?php echo e($row->first_name ?? ''); ?> <?php echo e($row->last_name ?? ''); ?></td>
                                     <td>
                                         <?php if(isset($row->parentStudents)): ?>
-                                            <?php $__currentLoopData = $row->parentStudents; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $student): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <a href="<?php echo e(route('students.show', optional($student->student)->id)); ?>"
-                                                    data-toggle="tooltip" title="<?php echo app('translator')->get('Chi tiết học sinh'); ?>"
-                                                    data-original-title="<?php echo app('translator')->get('Chi tiết học sinh'); ?>"
-                                                    onclick="return openCenteredPopup(this.href)">
-                                                    <?php echo e(optional($student->student)->student_code ?? ''); ?>
+                                            <ul>
+                                                <?php $__currentLoopData = $row->parentStudents; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $student): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <li>
+                                                        <a href="<?php echo e(route('students.show', optional($student->student)->id)); ?>"
+                                                            data-toggle="tooltip" title="<?php echo app('translator')->get('Chi tiết học sinh'); ?>"
+                                                            data-original-title="<?php echo app('translator')->get('Chi tiết học sinh'); ?>"
+                                                            onclick="return openCenteredPopup(this.href)">
+                                                            <?php echo e(optional($student->student)->student_code ?? ''); ?>
 
-                                                    <?php echo e(optional($student->student)->first_name ?? ''); ?>
+                                                            <?php echo e(optional($student->student)->first_name ?? ''); ?>
 
-                                                    <?php echo e(optional($student->student)->last_name ?? ''); ?>
+                                                            <?php echo e(optional($student->student)->last_name ?? ''); ?>
 
-                                                    <i class="fa fa-eye"></i>
-                                                </a>
-                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                            <i class="fa fa-eye"></i>
+                                                        </a>
+                                                    </li>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            </ul>
                                         <?php endif; ?>
                                     </td>
                                     <td><?php echo e($row->identity_card ?? ''); ?></td>
                                     <td><?php echo e($row->phone ?? ''); ?></td>
                                     <td><?php echo e($row->email ?? ''); ?></td>
                                     <td>
-                                        <?php if(isset($row->user)): ?>
-                                            <a href="<?php echo e(route('users.edit', optional($row->user)->id)); ?>" data-toggle="tooltip"
-                                                title="<?php echo app('translator')->get('Chi tiết tài khoản'); ?>" onclick="return openCenteredPopup(this.href)">
+                                        <?php if($row->user): ?>
+                                            <a href="<?php echo e(route('users.edit', optional($row->user)->id)); ?>"
+                                                data-toggle="tooltip" title="<?php echo app('translator')->get('Chi tiết tài khoản'); ?>"
+                                                onclick="return openCenteredPopup(this.href)">
                                                 <?php echo e(optional($row->user)->username ?? ''); ?>
 
+                                            </a>
+                                        <?php else: ?>
+                                            <a target="_blank"
+                                                href="<?php echo e(route('users.create', ['member_id' => $row->id])); ?>"
+                                                data-toggle="tooltip" title="<?php echo app('translator')->get('Tạo tài khoản'); ?>">
+                                                <i class="fa fa-plus"></i> <?php echo app('translator')->get('Tạo tài khoản'); ?>
                                             </a>
                                         <?php endif; ?>
                                     </td>

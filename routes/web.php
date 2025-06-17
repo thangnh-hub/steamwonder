@@ -54,6 +54,8 @@ Route::namespace('FrontEnd')->group(function () {
             Route::get('/my-class', 'UserController@myClass')->name('frontend.user.class');
             Route::get('/my-parent', 'UserController@myParent')->name('frontend.user.parent');
             Route::get('/my-attendance', 'UserController@myAttendance')->name('frontend.user.attendance');
+            Route::get('/my-teacher', 'UserController@myTeacher')->name('frontend.user.teacher');
+            Route::get('/my-receipt', 'UserController@myReceipt')->name('frontend.user.receipt');
             Route::post('/update-account', 'UserController@changeAccount')->name('frontend.update.account');
             Route::post('/update-password', 'UserController@changePassword')->name('frontend.update.password');
         });

@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title'); ?>
     <?php echo app('translator')->get($module_name); ?>
 <?php $__env->stopSection(); ?>
@@ -8,7 +6,12 @@
     <section class="content-header">
         <h1>
             <?php echo app('translator')->get($module_name); ?>
-            
+            <div class="pull-right" style="display: flex; margin-left:15px ">
+                <input class="form-control" type="file" name="files" id="fileImport" placeholder="<?php echo app('translator')->get('Select File'); ?>">
+                <button type="button" class="btn btn-sm btn-success" onclick="importFile()">
+                    <i class="fa fa-file-excel-o"></i>
+                    <?php echo app('translator')->get('Import dữ liệu'); ?></button>
+            </div>
             <a class="btn btn-sm btn-warning pull-right" href="<?php echo e(route(Request::segment(2) . '.create')); ?>"><i
                     class="fa fa-plus"></i>
                 <?php echo app('translator')->get('Thêm mới người dùng'); ?></a>

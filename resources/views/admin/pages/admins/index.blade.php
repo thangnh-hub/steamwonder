@@ -8,12 +8,12 @@
     <section class="content-header">
         <h1>
             @lang($module_name)
-            {{-- <div class="pull-right" style="display: flex; margin-left:15px ">
+            <div class="pull-right" style="display: flex; margin-left:15px ">
                 <input class="form-control" type="file" name="files" id="fileImport" placeholder="@lang('Select File')">
                 <button type="button" class="btn btn-sm btn-success" onclick="importFile()">
                     <i class="fa fa-file-excel-o"></i>
                     @lang('Import dữ liệu')</button>
-            </div> --}}
+            </div>
             <a class="btn btn-sm btn-warning pull-right" href="{{ route(Request::segment(2) . '.create') }}"><i
                     class="fa fa-plus"></i>
                 @lang('Thêm mới người dùng')</a>

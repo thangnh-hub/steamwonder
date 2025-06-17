@@ -2,14 +2,15 @@
     <section class="student">
         <div class="container">
             <div class="row">
-                <div class="col-lg-12 information">
+                <div class="col-lg-12 information box-day">
                     <div class="box box-warning mb-3">
                         <div class="box-header with-border mb-3">
                             <h4 class="box-title d-flex justify-content-between flex-wrap">
                                 <span class="mb-3"><i class="fa fa-calendar-check-o"></i> <?php echo app('translator')->get('Thông tin điểm danh trong ngày'); ?>
                                 </span>
-                                <button class="btn btn-warning"><?php echo app('translator')->get('Xem theo tháng'); ?></button>
-                            </h3>
+                                <button class="btn btn-warning text-white"
+                                    onclick="showTab(this,'box-month')"><?php echo app('translator')->get('Xem theo tháng'); ?></button>
+                                </h3>
                         </div>
                         <div class="box-body">
                             <div class="row">
@@ -93,14 +94,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-12 information">
+                <div class="col-lg-12 information box-month" style="display: none;">
                     <div class="box box-warning mb-3">
                         <div class="box-header with-border mb-3">
                             <h4 class="box-title d-flex justify-content-between flex-wrap">
                                 <span class="mb-3"> <i class="fa fa-calendar-check-o"></i> <?php echo app('translator')->get('Thông tin điểm danh theo tháng'); ?>
                                 </span>
-                                <button class="btn btn-warning"><?php echo app('translator')->get('Xem hôm nay'); ?></button>
-                            </h3>
+                                <button class="btn btn-warning text-white"
+                                    onclick="showTab(this,'box-day')"><?php echo app('translator')->get('Xem hôm nay'); ?></button>
+                                </h3>
                         </div>
                         <div class="box-body">
                             <div id="calendar">
@@ -108,26 +110,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-12 information">
-                    <div class="box box-warning mb-3">
-                        <div class="box-header with-border mb-3">
-                            <h3 class="box-title d-flex justify-content-between">
-                                <span> <i class="fa fa-calendar-check-o"></i> <?php echo app('translator')->get('Thống kê điểm danh theo tháng'); ?>
-                                </span>
-                            </h3>
-                        </div>
-                        <div class="box-body">
-                            <div id="calendar">
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
         </div>
     </section>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        function showTab(th, _class) {
+            $(th).parents('.information').hide();
+            $('.' + _class).show();
+
             var calendarEl = document.getElementById('calendar');
+            if (!calendarEl) {
+                console.error('Phần tử #calendar không tồn tại.');
+                return;
+            }
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 locale: 'vi',
@@ -138,18 +134,19 @@
                 },
                 events: <?php echo json_encode($events, 15, 512) ?>,
                 eventClick: function(info) {
-                    var details = info.event.extendedProps.details;
-                    var detailsList = '';
-                    details.forEach(function(item) {
-                        detailsList +=
-                            `<li class="list-group-item">${item.student_name} - ${item.status}</li>`;
-                    });
+                    var details = info.event.extendedProps.details || [];
+                    var detailsList = details.length > 0 ?
+                        details.map(item =>
+                            `<li class="list-group-item">${item.student_name} - ${item.status}</li>`).join('') :
+                        '<li class="list-group-item">Không có thông tin chi tiết</li>';
+
                     $('#attendanceDetails').html(detailsList);
                     $('#attendanceModal').modal('show');
                 }
             });
+
             calendar.render();
-        });
+        }
     </script>
 <?php $__env->stopSection(); ?>
 

@@ -12,6 +12,7 @@ use App\Models\HvExamQuestions;
 use App\Models\HvExamAnswers;
 use App\Models\HvExamOption;
 use App\Models\Admin;
+use App\Models\Role;
 use App\Models\Department;
 use Carbon\Carbon;
 use Exception;
@@ -51,25 +52,28 @@ class AdminsImport implements ToCollection
                 if ($this->rowCount == 1) {
                     continue;
                 }
-
-                // kiểm tra phòng ban
-                if ($row[9] !== null && $row[9] !== '') {
-                    preg_match_all('/\b\w/u', trim($row[9]), $matches);
-                    $code = implode('', $matches[0]);
-                    $department = Department::where('name', trim($row[9]))
-                        ->where('code', $code)
-                        ->where('area_id', trim($row[6]))
-                        ->first();
-                    // chưa có thì tạo mới
-                    if (empty($department)) {
-                        $department = Department::create([
-                            'name' => trim($row[9]),
-                            'code' => strtoupper($code),
-                            'area_id' => trim($row[6]),
-                            'admin_created_id' => $admin->id,
-                        ]);
+                if (!empty(trim($row[2]))) {
+                    $deleteAdmin = Admin::where('admin_code', trim($row[2]))->first();
+                    if ($deleteAdmin) {
+                        $deleteAdmin->delete();
+                        $this->rowError++;
+                        $this->arrErrorMessage[] = "Lỗi tại vị trí {$this->rowCount}: Đã xóa nhân viên " . trim($row[2]);
+                        continue;
                     }
                 }
+                // Kiểm tra quyền
+                $id_role = trim($row[5]);
+                if (!empty($id_role)) {
+                    $role = Role::find($id_role);
+                }
+                if (empty($role)) {
+                    $role = Role::create([
+                        'name' => trim($row[4]),
+                        'status' => Consts::STATUS['active'],
+                        'admin_created_id' => $admin->id,
+                    ]);
+                }
+                $id_role = $role->id;
 
                 // Find the last admin code
                 $lastAdmin = Admin::orderBy('id', 'desc')->first();
@@ -83,29 +87,65 @@ class AdminsImport implements ToCollection
                 $admin_code_auto = 'NV' . $newNumericPart;
 
                 $json = [
-                    "position" =>  trim($row[3]),
+                    "position" =>  null,
                     "address" =>  null,
-                    "brief" =>  trim($row[11]),
+                    "brief" =>  $row[9] ?? null,
+                    'admin_type' => trim($row[10]),
                     "content" =>  null,
                     "area_id" =>  null,
                     "role_extend" =>  null,
                 ];
-                $user = Admin::create([
-                    'admin_code' => $admin_code_auto,
-                    'admin_type' => trim($row[4]),
-                    'department_id' => $department->id ?? null,
-                    'area_id' => trim($row[6]),
-                    'password' => Consts::USER_PW_DEFAULT,
-                    'name' => trim($row[1]),
-                    'email' => $admin_code_auto.'@gmail.com',
-                    'role' => trim($row[5]),
-                    'status' => Consts::STATUS['active'],
-                    'gender' => Consts::GENDER['other'],
-                    'json_params' => $json,
-                    'admin_created_id' => $admin->id,
-                ]);
-                $this->rowInsert++;
-                continue;
+
+                // Kiểm tra admin_code
+                $admin_code = trim($row[1] ?? '');
+                if (!empty($admin_code)) {
+                    $existingAdmin = Admin::where('admin_code', $admin_code)->first();
+                    if ($existingAdmin) {
+                        // Cập nhật thông tin admin
+                        $existingAdmin->update([
+                            'name' => trim($row[0]),
+                            'area_id' => trim($row[7]),
+                            'email' => $row[8] != '' ? $row[8] : $existingAdmin->email,
+                            'role' => $id_role,
+                            'admin_type' => trim($row[10]),
+                            'status' => Consts::STATUS['active'],
+                            'json_params' => $json,
+                            'admin_updated_id' => $admin->id,
+                        ]);
+                        $this->rowUpdate++;
+                        continue;
+                    } else {
+                        // Tạo mới admin
+                        $user = Admin::create([
+                            'admin_code' => $admin_code_auto,
+                            'name' => trim($row[0]),
+                            'email' => $row[8] != '' ? $row[8] : $admin_code_auto . '@gmail.com',
+                            'password' => Consts::USER_PW_DEFAULT,
+                            'admin_type' => trim($row[10]),
+                            'area_id' => trim($row[7]),
+                            'role' => $id_role,
+                            'status' => Consts::STATUS['active'],
+                            'json_params' => $json,
+                            'admin_updated_id' => $admin->id,
+                        ]);
+                        $this->rowInsert++;
+                        continue;
+                    }
+                } else {
+                    $user = Admin::create([
+                        'admin_code' => $admin_code_auto,
+                        'name' => trim($row[0]),
+                        'area_id' => trim($row[7]),
+                        'email' => $row[8] != '' ? $row[8] : $admin_code_auto . '@gmail.com',
+                        'password' => Consts::USER_PW_DEFAULT,
+                        'role' => $id_role,
+                        'status' => Consts::STATUS['active'],
+                        'json_params' => $json,
+                        'admin_updated_id' => $admin->id,
+                    ]);
+                    $this->rowInsert++;
+                    continue;
+                }
             }
             DB::commit();
             $this->hasError = false;

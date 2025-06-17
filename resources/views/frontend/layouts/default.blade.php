@@ -66,6 +66,20 @@
                                 @lang('Thông tin điểm danh')
                             </a>
                         </div>
+                        <div class="item col-6 col-lg-3">
+                            <a href="{{ route('frontend.user.teacher') }}"
+                                class="btn btn {{ parse_url(route('frontend.user.teacher'), PHP_URL_PATH) == parse_url(url()->full(), PHP_URL_PATH) ? 'btn-success' : 'btn-light' }} ">
+                                <i class="fa fa-graduation-cap" aria-hidden="true"></i>
+                                @lang('Thông tin giáo viên')
+                            </a>
+                        </div>
+                        <div class="item col-6 col-lg-3">
+                            <a href="{{ route('frontend.user.receipt') }}"
+                                class="btn btn {{ parse_url(route('frontend.user.receipt'), PHP_URL_PATH) == parse_url(url()->full(), PHP_URL_PATH) ? 'btn-success' : 'btn-light' }} ">
+                                <i class="fa fa-usd" aria-hidden="true"></i>
+                                @lang('TBP và L.Sử thanh toán')
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

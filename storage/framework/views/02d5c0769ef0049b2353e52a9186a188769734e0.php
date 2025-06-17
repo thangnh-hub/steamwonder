@@ -2,12 +2,12 @@
     <?php echo app('translator')->get($module_name); ?>
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('style'); ?>
-<style>
-    .gallery-image img{
-        width: 150px !important;
-        height: 150px !important;
-    }
-</style>
+    <style>
+        .gallery-image img {
+            width: 150px !important;
+            height: 150px !important;
+        }
+    </style>
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content'); ?>
     <!-- Content Header (Page header) -->
@@ -213,54 +213,51 @@
                                                                 <label
                                                                     for="json_access_module_code_<?php echo e($module->id); ?>"><strong><?php echo e(__($module->name)); ?></strong></label>
                                                             </li>
-                                                            
-
-                                                            <?php
-                                                                $accessibleFunctions =
-                                                                    $admin->permission_access_by_role->function_code ??
-                                                                    [];
-                                                                $jsonFunctionCodes =
-                                                                    $admin->json_params->function_code ?? [];
-                                                            ?>
-
                                                             <?php $__currentLoopData = $module->moduleFunctions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $func): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                <?php
-                                                                    $isAccessibleByRole = in_array(
-                                                                        $func->function_code,
-                                                                        $accessibleFunctions,
-                                                                    );
-                                                                    $isChecked =
-                                                                        $isAccessibleByRole ||
-                                                                        in_array(
-                                                                            $func->function_code,
-                                                                            $jsonFunctionCodes,
-                                                                        );
-                                                                ?>
-                                                                <li>
-                                                                    <input type="checkbox" class="mr-15"
-                                                                        name="json_params[function_code][]"
-                                                                        value="<?php echo e($func->function_code); ?>"
-                                                                        id="json_access_function_code_<?php echo e($func->id); ?>"
-                                                                        <?php echo e($isChecked ? 'checked' : ''); ?>
+                                                                <?php if(isset($admin->permission_access_by_role->function_code) &&
+                                                                        in_array($func->function_code, $admin->permission_access_by_role->function_code)): ?>
+                                                                    <li>
+                                                                        <input type="checkbox" class="mr-15" checked
+                                                                            disabled>
+                                                                        <label style="font-style: italic;"
+                                                                            class="text-danger"
+                                                                            for="json_access_function_code_<?php echo e($func->id); ?>"><?php echo e(__($func->name)); ?>
 
-                                                                        <?php echo e($isAccessibleByRole ? 'disabled' : ''); ?>>
-                                                                    <label
-                                                                        for="json_access_function_code_<?php echo e($func->id); ?>"
-                                                                        style="<?php echo e($isAccessibleByRole ? 'font-style: italic;' : ''); ?>"
-                                                                        class="<?php echo e($isAccessibleByRole ? 'text-danger' : ''); ?>">
-                                                                        <?php echo e(__($func->name)); ?>
+                                                                            (<?php echo e($func->function_code ?? ''); ?>)
+                                                                        </label>
+                                                                    </li>
+                                                                <?php else: ?>
+                                                                    <?php
+                                                                        $checked = '';
+                                                                        if (
+                                                                            isset($admin->json_params->function_code) &&
+                                                                            in_array(
+                                                                                $func->function_code,
+                                                                                $admin->json_params->function_code,
+                                                                            )
+                                                                        ) {
+                                                                            $checked = 'checked';
+                                                                        }
+                                                                    ?>
+                                                                    <li>
+                                                                        <input name="json_params[function_code][]"
+                                                                            type="checkbox"
+                                                                            value="<?php echo e($func->function_code); ?>"
+                                                                            id="json_access_function_code_<?php echo e($func->id); ?>"
+                                                                            class="mr-15" <?php echo e($checked); ?>>
+                                                                        <label
+                                                                            for="json_access_function_code_<?php echo e($func->id); ?>"><?php echo e(__($func->name)); ?>
 
-                                                                        (<?php echo e($func->function_code ?? ''); ?>)
-                                                                    </label>
-                                                                </li>
+                                                                            (<?php echo e($func->function_code ?? ''); ?>)
+                                                                        </label>
+                                                                    </li>
+                                                                <?php endif; ?>
                                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                         </ul>
                                                     </div>
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             <?php endif; ?>
-
                                         </div>
-
                                     </div>
                                     <div class="tab-pane" id="tab_4">
                                         <div class="masonry-container">

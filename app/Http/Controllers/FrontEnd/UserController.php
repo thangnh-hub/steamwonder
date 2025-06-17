@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Models\LessonUser;
 use App\Models\Attendances;
 use App\Models\AttendanceStudent;
+use App\Models\Receipt;
 use Exception;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
@@ -175,11 +176,6 @@ class UserController extends Controller
     public function forgotPasswordForm(Request $request)
     {
         $this->responseData['menu'] = Menu::getSqlMenu(['status' => 'active', 'order_by' => ['iorder' => 'ASC']])->get();
-        // các thông số thẻ meta
-        $this->responseData['meta']['seo_title'] = $this->responseData['seo_title'] ?? '';
-        $this->responseData['meta']['seo_keyword'] = $this->responseData['seo_keyword'] ?? '';
-        $this->responseData['meta']['seo_description'] = $this->responseData['seo_description'] ?? '';
-        $this->responseData['meta']['seo_image'] = $this->responseData['seo_image'];
         return $this->responseView('frontend.pages.user.forgot_password');
     }
 
@@ -210,10 +206,6 @@ class UserController extends Controller
     {
         $this->responseData['menu'] = Menu::getSqlMenu(['status' => 'active', 'order_by' => ['iorder' => 'ASC']])->get();
         // các thông số thẻ meta
-        $this->responseData['meta']['seo_title'] = $this->responseData['seo_title'] ?? '';
-        $this->responseData['meta']['seo_keyword'] = $this->responseData['seo_keyword'] ?? '';
-        $this->responseData['meta']['seo_description'] = $this->responseData['seo_description'] ?? '';
-        $this->responseData['meta']['seo_image'] = $this->responseData['seo_image'];
         $this->responseData['token'] = $token;
         return $this->responseView('frontend.pages.user.reset_password');
         // return $this->responseView('pages.user.reset_password');
@@ -375,12 +367,12 @@ class UserController extends Controller
             switch ($val->status) {
                 case 'checkin':
                     $events[] = [
-                        'title' => 'Giờ đến: ' . Carbon::parse($val->checkin_at)->format('H:i'),
+                        'title' => 'Đến: ' . Carbon::parse($val->checkin_at)->format('H:i'),
                         'start' => Carbon::parse($val->attendance->tracked_at)->format('Y-m-d'),
                     ];
                     if ($val->checkout_at != null) {
                         $events[] = [
-                            'title' => 'Giờ vể: ' . Carbon::parse($val->checkout_at)->format('H:i'),
+                            'title' => 'Vể: ' . Carbon::parse($val->checkout_at)->format('H:i'),
                             'start' => Carbon::parse($val->attendance->tracked_at)->format('Y-m-d'),
                         ];
                     }
@@ -406,6 +398,26 @@ class UserController extends Controller
         return $this->responseView('frontend.pages.user.attendance');
     }
 
+
+    /**
+     * tài chính: Lịch sử thông báo phí và lịch sử thanh toán
+     */
+    public function myTeacher()
+    {
+        if (!Auth::guard('web')->check()) {
+            return redirect()->route('home')->with('errorMessage', __('Yêu cầu đăng nhập!'));
+        }
+        $student = $this->getStudent();
+        $teachers = $student->currentClass->teacher->filter(function ($val) {
+            return $val->pivot->status != Consts::STATUS_DELETE;
+        });
+        $this->responseData['teachers'] = $teachers;
+        $this->responseData['student'] = $student;
+        $this->responseData['class'] = $student->currentClass;
+        return $this->responseView('frontend.pages.user.teacher');
+    }
+
+
     /**
      * tài chính: Lịch sử thông báo phí và lịch sử thanh toán
      */
@@ -414,8 +426,13 @@ class UserController extends Controller
         if (!Auth::guard('web')->check()) {
             return redirect()->route('home')->with('errorMessage', __('Yêu cầu đăng nhập!'));
         }
-
-        return $this->responseView('frontend.pages.user.attendance');
+        $student = $this->getStudent();
+        $receipt = Receipt::where('student_id', $student->id)
+            // ->where('status','!=',Consts::STATUS_RECEIPT['pending'])
+            ->with(['receiptTransaction', 'receiptTransaction.user_cashier'])
+            ->get();
+        $this->responseData['rows'] = $receipt;
+        return $this->responseView('frontend.pages.user.receipt');
     }
     /**
      * Thực đơn hàng ngày
