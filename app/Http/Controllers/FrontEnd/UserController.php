@@ -179,7 +179,7 @@ class UserController extends Controller
         $this->responseData['meta']['seo_title'] = $this->responseData['seo_title'] ?? '';
         $this->responseData['meta']['seo_keyword'] = $this->responseData['seo_keyword'] ?? '';
         $this->responseData['meta']['seo_description'] = $this->responseData['seo_description'] ?? '';
-        $this->responseData['meta']['seo_image'] = $this->responseData['seo_image'];
+        $this->responseData['meta']['seo_image'] = $this->responseData['seo_image'] ?? '';
         return $this->responseView('frontend.pages.user.forgot_password');
     }
 

@@ -1,6 +1,8 @@
 <div id="loading-notification" class="loading-notification">
     <p><?php echo app('translator')->get('Please wait'); ?>...</p>
 </div>
+<!-- Dialog sẽ load nội dung từ URL -->
+<div id="popupDialog" style="display: none;"></div>
 <!-- jQuery 3 -->
 <script src="<?php echo e(asset('themes/admin/js/jquery.min.js')); ?>"></script>
 <script src="<?php echo e(asset('themes/admin/js/jquery.validate.min.js')); ?>"></script>
@@ -195,8 +197,8 @@
         const screenWidth = window.innerWidth || document.documentElement.clientWidth || screen.width;
         const screenHeight = window.innerHeight || document.documentElement.clientHeight || screen.height;
 
-        width = width || screenWidth * 0.8;
-        height = height || screenHeight * 0.8;
+        width = width || screenWidth * 0.9;
+        height = height || screenHeight * 0.9;
 
         const left = screenLeft + (screenWidth - width) / 2;
         const top = screenTop + (screenHeight - height) / 2;

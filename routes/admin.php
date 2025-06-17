@@ -422,4 +422,8 @@ Route::group(['namespace' => 'Admin'], function () {
     Route::post('/previous-question', 'TeacherQuizController@previousQuestion')->name('previous_question');
     Route::get('/result-test-teacher', 'TeacherQuizController@resultTestTeacher')->name('result_test_teacher');
     Route::get('/qr-view', 'QrController@showQr')->name('qr.show'); // route to test QR code
+
+    // test drive google
+    Route::get('/google-drive', 'GoogleDriveController@index')->name('google_drive.index');
+    Route::post('/google-drive/upload', 'GoogleDriveController@upload')->name('google_drive.upload');
 });
