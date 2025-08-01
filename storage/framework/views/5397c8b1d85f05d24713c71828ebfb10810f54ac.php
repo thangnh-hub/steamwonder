@@ -59,20 +59,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label><?php echo app('translator')->get('Status'); ?></label>
-                                <select name="status" class="form-control select2" style="width: 100%;">
-                                    <option value=""><?php echo app('translator')->get('Please select'); ?></option>
-                                    <?php $__currentLoopData = $list_status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($key); ?>"
-                                            <?php echo e(isset($params['status']) && $params['status'] == $key ? 'selected' : ''); ?>><?php echo e(__($item)); ?>
-
-                                        </option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </select>
-                            </div>
-                        </div>
+                       
                         
                         <div class="col-md-2">
                             <div class="form-group">
@@ -134,7 +121,6 @@
                             <th rowspan="2"><?php echo app('translator')->get('STT'); ?></th>
                             <th rowspan="2"><?php echo app('translator')->get('Thực phẩm'); ?></th>
                             <th colspan="<?php echo e($areas_from_rows->count()); ?>"><?php echo app('translator')->get('Cơ sở'); ?></th>
-                            <th rowspan="2"><?php echo app('translator')->get('Ghi chú'); ?></th>
                         </tr>
                         <tr class="text-center">
                             <?php $__currentLoopData = $areas_from_rows; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $area): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -146,11 +132,10 @@
                         <?php $__empty_1 = true; $__currentLoopData = $ingredients_data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <tr>
                                 <td class="text-center"><?php echo e($loop->iteration); ?></td>
-                                <td><?php echo e($item['ingredient_name']); ?></td>
+                                <td><?php echo e($item['ingredient_name']); ?> (<?php echo e($item['ingredient_unit']); ?>)</td>
                                 <?php $__currentLoopData = $areas_from_rows; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $area): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <td class="text-end"><?php echo e($item['area_quantities'][$area->id] ?? ""); ?></td>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                <td><?php echo e($item['note']); ?></td>
                             </tr>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <tr>

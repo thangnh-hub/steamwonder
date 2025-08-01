@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Models\MealIngredient;
 use App\Models\MealIngredientCategory;
 use Illuminate\Http\Request;
+use App\Http\Services\MenuPlanningService;
 use Illuminate\Support\Facades\Auth;
 use App\Consts;
 use App\Models\MealUnit;
+use Exception;
 
 class MealIngredientController extends Controller
 {
@@ -101,5 +103,23 @@ class MealIngredientController extends Controller
         }
         $mealIngredient->delete();
         return redirect()->route($this->routeDefault . '.index')->with('successMessage', __('Delete record successfully!'));
+    }
+    public function searchIngredients(Request $request, MenuPlanningService $menuPlanningService)
+    {
+        try {
+            $params_product = $request->all();
+            $rows = MealIngredient::getSqlIngredient($params_product)->get();
+            foreach ($rows as $row) {
+                $row->ingredient_category_name = $row->ingredientCategory ? $row->ingredientCategory->name : '';
+                $row->unit_default_name = $row->unitDefault ? $row->unitDefault->name : '';
+                $row->ton_kho = $menuPlanningService->calculateIngredientStock($row->id, $request->area_id);
+            }
+            if ($rows->count() > 0) {
+                return $this->sendResponse($rows, 'success');
+            }
+            return $this->sendResponse('', __('No records available!'));
+        } catch (Exception $ex) {
+            abort(422, __($ex->getMessage()));
+        }
     }
 }
