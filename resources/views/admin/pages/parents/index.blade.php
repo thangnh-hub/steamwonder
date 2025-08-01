@@ -189,7 +189,7 @@
                                     <td>@lang($row->status)</td>
                                     <td>
                                         <a class="btn btn-sm btn-warning" data-toggle="tooltip" title="@lang('Update')"
-                                            href="{{ route('parents.edit', $row->id) }}">
+                                            href="{{ route('parents.edit', $row->id) }}" onclick="return openDialogReload(this.href)">
                                             <i class="fa fa-pencil-square-o"></i>
                                         </a>
 

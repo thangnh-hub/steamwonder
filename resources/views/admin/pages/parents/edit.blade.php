@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('admin.layouts.dialog')
 
 @section('title')
     @lang($module_name)

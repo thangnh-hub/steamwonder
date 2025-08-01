@@ -8,10 +8,6 @@
 <script src="{{ asset('themes/admin/js/jquery.validate.min.js') }}"></script>
 <!-- CKEditor-->
 <script src="{{ asset('vendor/ckeditor/ckeditor.js') }}"></script>
-{{-- <script src="//cdn.ckeditor.com/4.17.2/full/ckeditor.js"></script> --}}
-<!-- ckfinder-->
-{{-- <script src="{{ asset('js/ckfinder/ckfinder.js') }}"></script>
-<script>CKFinder.config( { connectorPath: '/ckfinder/connector' } );</script> --}}
 @include('ckfinder::setup')
 <!-- Custom & config js -->
 <script src="{{ asset('themes/admin/js/custom.js') }}"></script>
@@ -26,10 +22,11 @@
 <script src="{{ asset('themes/admin/js/app.min.js') }}"></script>
 
 <script src="{{ asset('themes/admin/plugins/nestable/jquery.nestable.min.js') }}"></script>
+{{-- sử dụng cho openDialogReload --}}
+<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
 
 <script>
-    $(".select2").select2();
-
     // Call single input
     function _lfm(th) {
         $(th).filemanager('Images', {
@@ -37,14 +34,6 @@
             // prefix: '{{ route('ckfinder_browser') }}'
         });
     }
-
-    $('.lfm').filemanager('Images', {
-        prefix: '{{ route('ckfinder_browser') }}'
-    });
-
-    $('.file').filemanager('Files', {
-        prefix: '{{ route('ckfinder_browser') }}'
-    });
 
     const filterArray = (array, fields, value) => {
         fields = Array.isArray(fields) ? fields : [fields];
@@ -212,4 +201,44 @@
         console.log(width, height);
         return false; // Ngăn mở link mặc định
     }
+
+    function openDialogReload(url, width, height) {
+        const screenWidth = window.innerWidth || document.documentElement.clientWidth || screen.width;
+        const screenHeight = window.innerHeight || document.documentElement.clientHeight || screen.height;
+        width = width || screenWidth * 0.9;
+        height = height || screenHeight * 0.9;
+
+        $('#popupDialog').dialog({
+            modal: true,
+            width: width,
+            height: height,
+            title: "Popup Dialog",
+            open: function() {
+                const dialog = $(this);
+                dialog.load(url, function() {
+                    initPlugins(dialog);
+                });
+            },
+            close: function() {
+                location.reload();
+            }
+        });
+        return false;
+    }
+
+    function initPlugins(scope = document) {
+        $(scope).find(".select2").select2();
+        $(scope).find('.lfm').filemanager('Images', {
+            prefix: '{{ route('ckfinder_browser') }}'
+        });
+
+        $(scope).find('.file').filemanager('Files', {
+            prefix: '{{ route('ckfinder_browser') }}'
+        });
+        $(scope).find('.lfm').filemanager('Images', {
+            prefix: '{{ route('ckfinder_browser') }}'
+        });
+    }
+
+    initPlugins();
 </script>
